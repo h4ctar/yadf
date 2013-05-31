@@ -7,6 +7,8 @@ Superficial clone of Dwarf Fortress
 
 https://sourceforge.net/projects/yadf
 
+https://github.com/bensmith87/yadf
+
 Author:
 -------
 Ben Smith (bensmith87@gmail.com)
