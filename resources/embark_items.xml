@@ -1,0 +1,25 @@
+<items>
+    <item type="Barrel" quantity="2">
+        <items>
+            <item type="Bread" quantity="10" />
+        </items>
+    </item>
+    <item type="Barrel" quantity="2">
+        <items>
+            <item type="Beer" quantity="10" />
+        </items>
+    </item>
+    <item type="Sack" quantity="1">
+        <items>
+            <item type="Seed" quantity="20" />
+        </items>
+    </item>
+    <item type="Oven" />
+    <item type="Anvil" />
+    <item type="Pick" />
+    <item type="Axe" />
+    <item type="Rolling pin" />
+    <item type="Hoe" />
+    <item type="Hammer" />
+    <item type="Saw" />
+</items>

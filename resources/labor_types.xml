@@ -1,0 +1,14 @@
+<laborTypes>
+    <laborType name="Mining" professionName="Miner" sprite="33" />
+    <laborType name="Carpentry" professionName="Carpenter" sprite="34" />
+    <laborType name="Wood cutting" professionName="Wood cutter" tool="Axe" sprite="35" />
+    <laborType name="Masonry" professionName="Mason" sprite="36" />
+    <laborType name="Building" professionName="Builder" tool="Hammer" sprite="37" />
+    <laborType name="Blacksmithing" professionName="Blacksmith" sprite="38" />
+    <laborType name="Hauling" professionName="Hauler" sprite="39" />
+    <laborType name="Furnace operating" professionName="Furnace operator" sprite="40" />
+    <laborType name="Farming" professionName="Farmer" tool="Hoe" sprite="41" />
+    <laborType name="Milling" professionName="Miller" sprite="42" />
+    <laborType name="Cooking" professionName="Chef" sprite="43" />
+    <laborType name="Brewing" professionName="Brewer" sprite="32" />
+</laborTypes>

@@ -1,0 +1,91 @@
+<categories>
+    <category name="Plant">
+        <itemTypes>
+            <itemType name="Seed" weight="1" sprite="17" />
+            <itemType name="Wheat" weight="1" sprite="18" />
+            <itemType name="Flour" weight="1" sprite="0" />
+        </itemTypes>
+    </category>
+    <category name="Food">
+        <itemTypes>
+            <itemType name="Pork" weight="1" sprite="25" />
+            <itemType name="Fish" weight="1" sprite="1" />
+            <itemType name="Bread" weight="1" sprite="20" />
+        </itemTypes>
+    </category>
+    <category name="Drink">
+        <itemTypes>
+            <itemType name="Beer" weight="1" sprite="2" />
+        </itemTypes>
+    </category>
+    <category name="Wood">
+        <itemTypes>
+            <itemType name="Log" weight="10" sprite="3" />
+            <itemType name="Plank" category="Wood" weight="1" sprite="21" />
+        </itemTypes>
+    </category>
+    <category name="Stone">
+        <itemTypes>
+            <itemType name="Rock" weight="20" sprite="4" />
+        </itemTypes>
+    </category>
+    <category name="Ore">
+        <itemTypes>
+            <itemType name="Gold ore" weight="20" sprite="5" />
+            <itemType name="Iron ore" weight="20" sprite="6" />
+            <itemType name="Coal ore" weight="20" sprite="7" />
+        </itemTypes>
+    </category>
+    <category name="Bar">
+        <itemTypes>
+            <itemType name="Gold bar" weight="20" sprite="8" />
+            <itemType name="Iron bar" weight="20" sprite="9" />
+        </itemTypes>
+    </category>
+    <category name="Furniture">
+        <itemTypes>
+            <itemType name="Bed" weight="20" placeable="true" sprite="10" />
+            <itemType name="Chair" weight="20" placeable="true" sprite="11" />
+            <itemType name="Table" weight="20" placeable="true" sprite="12" />
+            <itemType name="Oven" weight="20" placeable="true" sprite="23" />
+            <itemType name="Chest" weight="20" capacity="10" placeable="true" sprite="26" />
+            <itemType name="Cabinet" weight="20" capacity="10" placeable="true" sprite="19" />
+            <itemType name="Armor rack" weight="20" capacity="10" placeable="true" sprite="27" />
+            <itemType name="Weapon rack" weight="20" capacity="10" placeable="true" sprite="27" />
+        </itemTypes>
+    </category>
+    <category name="Tool">
+        <itemTypes>
+            <itemType name="Pick" weight="2" sprite="13" />
+            <itemType name="Axe" weight="2" sprite="14" />
+            <itemType name="Saw" weight="2" sprite="15" />
+            <itemType name="Hammer" weight="2" sprite="16" />
+            <itemType name="Hoe" weight="2" sprite="22" />
+            <itemType name="Rolling pin" weight="1" sprite="24" />
+            <itemType name="Anvil" weight="1" sprite="28" />
+        </itemTypes>
+    </category>
+    <category name="Armor">
+        <itemTypes>
+            <itemType name="Helmet" weight="2" sprite="28" />
+            <itemType name="Breast plate" weight="2" sprite="29" />
+            <itemType name="Leggings" weight="2" sprite="30" />
+            <itemType name="Gauntlets" weight="2" sprite="0" />
+            <itemType name="Boots" weight="2" sprite="45" />
+        </itemTypes>
+    </category>
+    <category name="Weapons">
+        <itemTypes>
+            <itemType name="Sword" weight="2" sprite="46" />
+            <itemType name="Battle axe" weight="2" sprite="0" />
+            <itemType name="Battle hammer" weight="2" sprite="0" />
+            <itemType name="Spear" weight="2" sprite="0" />
+            <itemType name="Bow" weight="2" sprite="0" />
+            <itemType name="Arrow" weight="2" sprite="0" />
+        </itemTypes>
+    </category>
+    <category name="Storage">
+        <itemType name="Barrel" weight="4" capacity="10" sprite="47" />
+        <itemType name="Sack" weight="2" capacity="10" sprite="19" />
+    </category>
+</categories>

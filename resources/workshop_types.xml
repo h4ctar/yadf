@@ -1,0 +1,44 @@
+<workshops>
+    <workshopType name="Carpenters workshop" sprite="5">
+        <resources>
+            <resource name="Log" quantity="4" />
+        </resources>
+    </workshopType>
+    <workshopType name="Mill" sprite="1">
+        <resources>
+            <resource name="Log" quantity="4" />
+        </resources>
+    </workshopType>
+    <workshopType name="Kitchen" sprite="6">
+        <resources>
+            <resource name="Log" quantity="4" />
+            <resource name="Rolling pin" quantity="1" />
+            <resource name="Oven" quantity="1" />
+        </resources>
+    </workshopType>
+    <workshopType name="Brewery" sprite="4">
+        <resources>
+            <resource name="Log" quantity="4" />
+        </resources>
+    </workshopType>
+    <workshopType name="Sawmill" sprite="0">
+        <resources>
+            <resource name="Log" quantity="4" />
+        </resources>
+    </workshopType>
+    <workshopType name="Blacksmiths workshop" sprite="2">
+        <resources>
+            <resource name="Log" quantity="4" />
+        </resources>
+    </workshopType>
+    <workshopType name="Masons workshop" sprite="3">
+        <resources>
+            <resource name="Log" quantity="4" />
+        </resources>
+    </workshopType>
+    <workshopType name="Smelter" sprite="7">
+        <resources>
+            <resource name="Log" quantity="4" />
+        </resources>
+    </workshopType>
+</workshops>

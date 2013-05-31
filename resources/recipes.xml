@@ -1,0 +1,89 @@
+<recipes>
+    <recipe name="Craft bed" item="Bed" workshop="Carpenters workshop" skill="Carpentry">
+        <resources>
+            <resource name="Log" />
+        </resources>
+    </recipe>
+    <recipe name="Craft wooden chair" item="Chair" workshop="Carpenters workshop" skill="Carpentry">
+        <resources>
+            <resource name="Log" />
+        </resources>
+    </recipe>
+    <recipe name="Craft wooden table" item="Table" workshop="Carpenters workshop" skill="Carpentry">
+        <resources>
+            <resource name="Log" />
+        </resources>
+    </recipe>
+    <recipe name="Grind flour" item="Flour" workshop="Mill" skill="Milling">
+        <resources>
+            <resource name="Wheat" />
+        </resources>
+    </recipe>
+    <recipe name="Bake Bread" item="Bread" workshop="Kitchen" skill="Cooking" quantity="10">
+        <resources>
+            <resource name="Flour" />
+        </resources>
+    </recipe>
+    <recipe name="Brew Beer" item="Beer" workshop="Brewery" skill="Brewing" quantity="10">
+        <resources>
+            <resource name="Wheat" />
+        </resources>
+    </recipe>
+    <recipe name="Saw planks" item="Plank" workshop="Sawmill" skill="Carpentry" quantity="10">
+        <resources>
+            <resource name="Log" />
+        </resources>
+    </recipe>
+    <recipe name="Create pick" item="Pick" workshop="Blacksmiths workshop" skill="Blacksmithing">
+        <resources>
+            <resource name="Plank" />
+            <resource name="Iron bar" />
+        </resources>
+    </recipe>
+    <recipe name="Create axe" item="Axe" workshop="Blacksmiths workshop" skill="Blacksmithing">
+        <resources>
+            <resource name="Plank" />
+            <resource name="Iron bar" />
+        </resources>
+    </recipe>
+    <recipe name="Create saw" item="Saw" workshop="Blacksmiths workshop" skill="Blacksmithing">
+        <resources>
+            <resource name="Plank" />
+            <resource name="Iron bar" />
+        </resources>
+    </recipe>
+    <recipe name="Create hammer" item="Hammer" workshop="Blacksmiths workshop" skill="Blacksmithing">
+        <resources>
+            <resource name="Plank" />
+            <resource name="Iron bar" />
+        </resources>
+    </recipe>
+    <recipe name="Create hoe" item="Hoe" workshop="Blacksmiths workshop" skill="Blacksmithing">
+        <resources>
+            <resource name="Plank" />
+            <resource name="Iron bar" />
+        </resources>
+    </recipe>
+    <recipe name="Craft rock chair" item="Chair" workshop="Masons workshop" skill="Masonry">
+        <resources>
+            <resource name="Rock" />
+        </resources>
+    </recipe>
+    <recipe name="Craft rock table" item="Table" workshop="Masons workshop" skill="Masonry">
+        <resources>
+            <resource name="Rock" />
+        </resources>
+    </recipe>
+    <recipe name="Smelt gold" item="Gold bar" workshop="Smelter" skill="Furnace operating">
+        <resources>
+            <resource name="Gold ore" />
+            <resource name="Log" />
+        </resources>
+    </recipe>
+    <recipe name="Smelt iron" item="Iron bar" workshop="Smelter" skill="Furnace operating">
+        <resources>
+            <resource name="Iron ore" />
+            <resource name="Log" />
+        </resources>
+    </recipe>
+</recipes>
