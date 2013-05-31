@@ -37,7 +37,7 @@ import simulation.stock.Stockpile;
 /**
  * The Class SetStockpileCommand.
  */
-public class SetStockpileCommand extends Command {
+public class SetStockpileCommand extends AbstractCommand {
 
     /** The stockpile id. */
     private final int stockpileId;

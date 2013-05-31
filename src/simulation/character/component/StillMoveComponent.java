@@ -39,7 +39,7 @@ import simulation.map.RegionMap;
 /**
  * The Class StillMoveComponent.
  */
-public class StillMoveComponent extends MoveComponent {
+public class StillMoveComponent extends AbstractMoveComponent {
 
     /**
      * {@inheritDoc}

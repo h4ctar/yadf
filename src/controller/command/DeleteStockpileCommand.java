@@ -36,7 +36,7 @@ import simulation.Player;
 /**
  * The Class DeleteStockpileCommand.
  */
-public class DeleteStockpileCommand extends Command {
+public class DeleteStockpileCommand extends AbstractCommand {
 
     /** The stockpile id. */
     private final int stockpileId;

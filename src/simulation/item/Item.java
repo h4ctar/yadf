@@ -38,13 +38,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import simulation.Entity;
+import simulation.AbstractEntity;
 import simulation.map.MapIndex;
 
 /**
  * The Class Item.
  */
-public class Item extends Entity {
+public class Item extends AbstractEntity {
 
     /** The type of the item. */
     private final ItemType itemType;

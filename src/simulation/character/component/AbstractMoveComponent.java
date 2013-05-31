@@ -41,7 +41,7 @@ import simulation.map.WalkableNode;
 /**
  * The Class MoveComponent.
  */
-public abstract class MoveComponent extends CharacterComponent {
+public abstract class AbstractMoveComponent extends AbstractCharacterComponent {
 
     /**
      * Check blocked.

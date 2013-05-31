@@ -43,7 +43,7 @@ import javax.swing.JTable;
 import logger.Logger;
 import userinterface.Connection;
 import userinterface.lobby.IMainWindow;
-import controller.command.Command;
+import controller.command.AbstractCommand;
 
 /**
  * The Class DedicatedServerPanel.
@@ -92,14 +92,14 @@ public class DedicatedServerPanel extends JPanel {
         public void run() {
             try {
                 while (running()) {
-                    List<Command> commands = new ArrayList<>();
+                    List<AbstractCommand> commands = new ArrayList<>();
                     // Get commands from all players
                     for (Connection connection : connections) {
                         Object object = connection.readObject();
                         @SuppressWarnings("unchecked")
-                        List<Command> newCommands = (List<Command>) object;
+                        List<AbstractCommand> newCommands = (List<AbstractCommand>) object;
 
-                        for (Command command : newCommands) {
+                        for (AbstractCommand command : newCommands) {
                             Logger.getInstance().log(this,
                                     command.getClass().getSimpleName() + " from " + connection.getAddress());
                         }

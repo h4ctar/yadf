@@ -45,13 +45,12 @@ import simulation.map.MapIndex;
 /**
  * The Class ChopTreeJob.
  */
-public class ChopTreeJob implements IDesignationJob {
+public class ChopTreeJob extends AbstractDesignationJob {
 
     /**
      * The Enum State.
      */
     enum State {
-
         /** The waiting for dwarf. */
         WAITING_FOR_DWARF,
         /** The goto. */
@@ -86,34 +85,24 @@ public class ChopTreeJob implements IDesignationJob {
 
     /**
      * Instantiates a new chop tree job.
-     * 
-     * @param tree the tree
-     * @param designation the designation
+     * @param treeTmp the tree
+     * @param designationTmp the designation
      */
-    public ChopTreeJob(final Tree tree, final ChopTreeDesignation designation) {
-        this.tree = tree;
-        this.designation = designation;
+    public ChopTreeJob(final Tree treeTmp, final ChopTreeDesignation designationTmp) {
+        tree = treeTmp;
+        designation = designationTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MapIndex getPosition() {
         return tree.getPosition();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         return "Chopping tree";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message);
@@ -131,25 +120,16 @@ public class ChopTreeJob implements IDesignationJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Chop down tree";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {
@@ -204,6 +184,9 @@ public class ChopTreeJob implements IDesignationJob {
 
                 done = true;
             }
+            break;
+
+        default:
             break;
         }
     }

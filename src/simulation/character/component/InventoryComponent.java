@@ -39,7 +39,7 @@ import simulation.item.Item;
 /**
  * The Class InventoryComponent.
  */
-public class InventoryComponent extends CharacterComponent {
+public class InventoryComponent extends AbstractCharacterComponent {
 
     /** The item hauling. */
     private Item itemHauling;

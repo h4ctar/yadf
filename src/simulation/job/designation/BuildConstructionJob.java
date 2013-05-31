@@ -50,7 +50,7 @@ import simulation.map.WalkableNode;
 /**
  * The Class BuildConstructionJob.
  */
-public class BuildConstructionJob implements IDesignationJob {
+public class BuildConstructionJob extends AbstractDesignationJob {
 
     /**
      * The different states that this job can be in.
@@ -253,6 +253,5 @@ public class BuildConstructionJob implements IDesignationJob {
         default:
             break;
         }
-
     }
 }

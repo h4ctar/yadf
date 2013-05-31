@@ -36,11 +36,10 @@ import simulation.map.MapIndex;
 /**
  * The Class Tree.
  */
-public class Tree extends Entity {
+public class Tree extends AbstractEntity {
 
     /**
      * Instantiates a new tree.
-     * 
      * @param position the position
      */
     public Tree(final MapIndex position) {

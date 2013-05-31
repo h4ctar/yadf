@@ -40,8 +40,7 @@ import simulation.item.Item;
 /**
  * The Class EatDrinkJob.
  */
-public class EatDrinkJob implements IJob {
-
+public class EatDrinkJob extends AbstractJob {
     /**
      * The Enum State.
      */

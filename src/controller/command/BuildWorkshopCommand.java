@@ -38,7 +38,7 @@ import simulation.map.MapIndex;
 /**
  * The Class BuildWorkshopCommand.
  */
-public class BuildWorkshopCommand extends Command {
+public class BuildWorkshopCommand extends AbstractCommand {
 
     /** The workshop type. */
     private final String workshopType;

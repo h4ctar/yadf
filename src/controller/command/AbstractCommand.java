@@ -29,20 +29,47 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package simulation.job.designation;
+package controller.command;
 
-import simulation.job.IJob;
-import simulation.map.MapIndex;
+import java.io.Serializable;
+
+import simulation.Player;
+import simulation.Region;
 
 /**
- * The Interface IDesignationJob.
+ * A command is anything that alters a player.
+ * 
+ * @author Ben Smith (bensmith87@gmail.com)
  */
-public interface IDesignationJob extends IJob {
+public abstract class AbstractCommand implements Serializable {
+
+    /** The player id. */
+    protected int playerId;
+
+    /** The player that this command is applied to. */
+    protected transient Player player;
 
     /**
-     * Gets the position.
+     * The default constructor.
      * 
-     * @return the position
+     * @param playerTmp The player that this command is applied to
      */
-    public abstract MapIndex getPosition();
+    public AbstractCommand(final Player playerTmp) {
+        player = playerTmp;
+        playerId = player.getId();
+    }
+
+    /**
+     * Applies the command to the player.
+     */
+    public abstract void doCommand();
+
+    /**
+     * Update player.
+     * 
+     * @param region the region
+     */
+    public void updatePlayer(final Region region) {
+        player = region.getPlayer(playerId);
+    }
 }

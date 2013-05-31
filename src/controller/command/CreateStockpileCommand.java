@@ -38,7 +38,7 @@ import simulation.stock.Stockpile;
 /**
  * The Class CreateStockpileCommand.
  */
-public class CreateStockpileCommand extends Command {
+public class CreateStockpileCommand extends AbstractCommand {
 
     /** The selection. */
     private final MapArea area;
@@ -59,6 +59,6 @@ public class CreateStockpileCommand extends Command {
      */
     @Override
     public void doCommand() {
-        player.getStockManager().addStockpile(new Stockpile(area));
+        player.getStockManager().addStockpile(new Stockpile(area, player));
     }
 }

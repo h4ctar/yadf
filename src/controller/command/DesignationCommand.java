@@ -38,7 +38,7 @@ import simulation.map.MapArea;
 /**
  * The Class DesignationCommand.
  */
-public class DesignationCommand extends Command {
+public class DesignationCommand extends AbstractCommand {
 
     /** The selection. */
     private MapArea area = new MapArea();

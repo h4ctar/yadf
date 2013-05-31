@@ -40,18 +40,17 @@ import simulation.map.RegionMap;
 /**
  * The Class ChannelDesignation.
  */
-public class ChannelDesignation extends Designation {
+public class ChannelDesignation extends AbstractDesignation {
 
     /** The block type. */
     private final BlockType blockType;
 
     /**
      * Instantiates a new channel designation.
-     * 
-     * @param blockType the block type
+     * @param blockTypeTmp the block type
      */
-    public ChannelDesignation(final BlockType blockType) {
-        this.blockType = blockType;
+    public ChannelDesignation(final BlockType blockTypeTmp) {
+        blockType = blockTypeTmp;
     }
 
     /**
@@ -76,7 +75,7 @@ public class ChannelDesignation extends Designation {
      * {@inheritDoc}
      */
     @Override
-    protected IDesignationJob createJob(final MapIndex mapIndex, final Region region) {
+    protected AbstractDesignationJob createJob(final MapIndex mapIndex, final Region region) {
         return new ChannelJob(mapIndex, blockType, this);
     }
 }

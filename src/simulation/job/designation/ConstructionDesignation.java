@@ -38,39 +38,29 @@ import simulation.map.MapIndex;
 /**
  * The Class ConstructionDesignation.
  */
-public class ConstructionDesignation extends Designation {
+public class ConstructionDesignation extends AbstractDesignation {
 
     /** The block type. */
     private final BlockType blockType;
 
     /**
      * Instantiates a new construction designation.
-     * 
-     * @param blockType the block type
+     * @param blockTypeTmp the block type
      */
-    public ConstructionDesignation(final BlockType blockType) {
-        this.blockType = blockType;
+    public ConstructionDesignation(final BlockType blockTypeTmp) {
+        blockType = blockTypeTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Construction Designation (" + blockType.name() + ")";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected IDesignationJob createJob(final MapIndex mapIndex, final Region region) {
+    protected AbstractDesignationJob createJob(final MapIndex mapIndex, final Region region) {
         return new BuildConstructionJob(mapIndex, blockType, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean valid(final MapIndex mapIndex, final Region region) {
         return region.checkIndexValid(mapIndex);

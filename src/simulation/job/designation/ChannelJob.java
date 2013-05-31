@@ -46,13 +46,12 @@ import simulation.map.RegionMap;
 /**
  * The Class ChannelJob.
  */
-public class ChannelJob implements IDesignationJob {
+public class ChannelJob extends AbstractDesignationJob {
 
     /**
      * The different states that this job can be in.
      */
     enum State {
-
         /** The start. */
         START,
         /** The goto. */
@@ -91,14 +90,15 @@ public class ChannelJob implements IDesignationJob {
     /**
      * Instantiates a new channel job.
      * 
-     * @param position the position
-     * @param blockType the block type
-     * @param designation the designation
+     * @param positionTmp the position
+     * @param blockTypeTmp the block type
+     * @param designationTmp the designation
      */
-    public ChannelJob(final MapIndex position, final BlockType blockType, final ChannelDesignation designation) {
-        this.position = position;
-        this.blockType = blockType;
-        this.designation = designation;
+    public ChannelJob(final MapIndex positionTmp, final BlockType blockTypeTmp,
+            final ChannelDesignation designationTmp) {
+        position = positionTmp;
+        blockType = blockTypeTmp;
+        designation = designationTmp;
     }
 
     /**
@@ -223,6 +223,9 @@ public class ChannelJob implements IDesignationJob {
 
             done = true;
 
+            break;
+
+        default:
             break;
         }
     }

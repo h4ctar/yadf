@@ -49,7 +49,7 @@ import simulation.workshop.Workshop;
 /**
  * The Class CraftJob.
  */
-public class CraftJob implements IJob {
+public class CraftJob extends AbstractJob {
 
     /**
      * The different states that this job can be in.

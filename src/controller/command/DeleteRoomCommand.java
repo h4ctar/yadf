@@ -37,7 +37,7 @@ import simulation.room.Room;
 /**
  * The Class DeleteRoomCommand.
  */
-public class DeleteRoomCommand extends Command {
+public class DeleteRoomCommand extends AbstractCommand {
 
     /** The room id. */
     private final int roomId;

@@ -71,8 +71,8 @@ import userinterface.lobby.LobbyPanel;
 import userinterface.lobby.LobbyType;
 import userinterface.server.DedicatedServerPanel;
 import userinterface.stock.StocksPane;
+import controller.AbstractController;
 import controller.ClientController;
-import controller.Controller;
 import controller.IControllerListener;
 import controller.SinglePlayerController;
 
@@ -197,7 +197,7 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
     private Region region;
 
     /** The controller. */
-    private Controller controller;
+    private AbstractController controller;
 
     /** The client runnable. */
     private ClientRunnable clientRunnable;

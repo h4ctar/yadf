@@ -38,7 +38,7 @@ import simulation.map.MapArea;
 /**
  * The Class CreateFarmCommand.
  */
-public class CreateFarmCommand extends Command {
+public class CreateFarmCommand extends AbstractCommand {
 
     /** The area. */
     private final MapArea area;

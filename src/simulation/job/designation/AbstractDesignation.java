@@ -36,20 +36,21 @@ import java.util.List;
 
 import simulation.Player;
 import simulation.Region;
+import simulation.job.AbstractJob;
 import simulation.job.IJob;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
 /**
- * Abstract class for a designation Designations are groups or areas of jobs to do that can be added to or subtracted
- * from and spawn jobs.
+ * abstract class Abstractfor a designation Designations are groups or areas of jobs to do that can be added to or
+ * subtracted from and spawn jobs.
  * 
  * @author Ben Smith (bensmith87@gmail.com)
  */
-public abstract class Designation implements IJob {
+public abstract class AbstractDesignation extends AbstractJob {
 
     /** The jobs. */
-    protected List<IDesignationJob> jobs = new ArrayList<>();
+    protected List<AbstractDesignationJob> jobs = new ArrayList<>();
 
     /** The map indicies. */
     protected List<MapIndex> mapIndicies = new ArrayList<>();
@@ -204,7 +205,7 @@ public abstract class Designation implements IJob {
      * @param index The location of the job to be removed
      */
     private void removeJob(final MapIndex index) {
-        for (IDesignationJob job : jobs) {
+        for (AbstractDesignationJob job : jobs) {
             if (job.getPosition().equals(index)) {
                 job.interrupt("Designation removed");
                 return;
@@ -220,7 +221,7 @@ public abstract class Designation implements IJob {
      * @param region the region
      * @return the i designation job
      */
-    protected abstract IDesignationJob createJob(MapIndex mapIndex, Region region);
+    protected abstract AbstractDesignationJob createJob(MapIndex mapIndex, Region region);
 
     /**
      * Template method that should return if a particular location(map index) is valid for the particular designation

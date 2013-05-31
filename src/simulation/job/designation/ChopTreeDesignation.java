@@ -38,30 +38,21 @@ import simulation.map.MapIndex;
 /**
  * The Class ChopTreeDesignation.
  */
-public class ChopTreeDesignation extends Designation {
+public class ChopTreeDesignation extends AbstractDesignation {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Chop Tree Designation";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean valid(final MapIndex mapIndex, final Region region) {
         Tree tree = region.getTree(mapIndex);
         return tree != null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected IDesignationJob createJob(final MapIndex mapIndex, final Region region) {
+    protected AbstractDesignationJob createJob(final MapIndex mapIndex, final Region region) {
         Tree tree = region.getTree(mapIndex);
 
         if (tree != null) {

@@ -37,12 +37,12 @@ import java.util.List;
 import logger.Logger;
 import simulation.Region;
 import userinterface.Connection;
-import controller.command.Command;
+import controller.command.AbstractCommand;
 
 /**
  * The Class ClientController.
  */
-public class ClientController extends Controller {
+public class ClientController extends AbstractController {
 
     /** The connection. */
     private final Connection connection;
@@ -78,9 +78,9 @@ public class ClientController extends Controller {
             connection.writeObject(localCommands);
 
             @SuppressWarnings("unchecked")
-            List<Command> commands = (List<Command>) connection.readObject();
+            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
 
-            for (Command command : commands) {
+            for (AbstractCommand command : commands) {
                 Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
                 command.updatePlayer(region);
                 command.doCommand();

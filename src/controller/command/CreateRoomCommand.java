@@ -40,7 +40,7 @@ import simulation.room.Room;
  * 
  * @author Ben Smith (bensmith87@gmail.com)
  */
-public class CreateRoomCommand extends Command {
+public class CreateRoomCommand extends AbstractCommand {
 
     /** The area that the room should occupy. */
     private final MapArea area;

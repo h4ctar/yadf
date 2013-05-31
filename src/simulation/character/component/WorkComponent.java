@@ -39,7 +39,7 @@ import simulation.job.IJob;
 /**
  * The Class WorkComponent.
  */
-public class WorkComponent extends CharacterComponent {
+public class WorkComponent extends AbstractCharacterComponent {
 
     /** The job. */
     private IJob job;

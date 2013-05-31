@@ -29,45 +29,52 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package simulation.character.component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import simulation.Player;
 import simulation.Region;
-import controller.command.Command;
+import simulation.character.GameCharacter;
 
 /**
- * Abstract base class for the controller, basically every command that changes the region must go through the
- * controller.
- * 
- * @author Ben Smith (bensmith87@gmail.com)
+ * The Interface ICharacterComponent.
  */
-public abstract class Controller {
-    /** A vector of the local commands, i.e. commands that apply to the local region/player */
-    protected List<Command> localCommands = new ArrayList<>();
+public abstract class AbstractCharacterComponent {
+
+    /** The listeners to be notified of changes to this component. */
+    private final List<IComponentListener> listeners = new ArrayList<>();
 
     /**
-     * Adds a command to the local command vector.
+     * Add a listener to this component.
      * 
-     * @param command the command
+     * @param listener the listener to add
      */
-    public synchronized void addCommand(final Command command) {
-        localCommands.add(command);
+    public void addListener(final IComponentListener listener) {
+        listeners.add(listener);
     }
 
     /**
-     * Close the controller, the implementation should use this to close all connections etc...
+     * Update.
      * 
-     * @throws Exception the exception
+     * @param character the character
+     * @param player the player
+     * @param region the region
      */
-    public abstract void close() throws Exception;
+    public abstract void update(GameCharacter character, Player player, Region region);
 
     /**
-     * Does all the commands.
-     * 
-     * @param region the region
-     * @throws Exception the exception
+     * Notify all of the listeners.
      */
-    public abstract void doCommands(Region region) throws Exception;
+    protected void notifyListeners() {
+        for (IComponentListener listener : listeners) {
+            listener.componentChanged();
+        }
+    }
+
+    /**
+     * Kill.
+     */
+    abstract void kill();
 }

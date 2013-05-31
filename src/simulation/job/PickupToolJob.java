@@ -41,7 +41,7 @@ import simulation.item.Item;
 /**
  * The Class PickupToolJob.
  */
-public class PickupToolJob implements IJob {
+public class PickupToolJob extends AbstractJob {
 
     /**
      * The Enum State.

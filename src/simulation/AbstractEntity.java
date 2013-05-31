@@ -36,7 +36,7 @@ import simulation.map.MapIndex;
 /**
  * The Class Entity.
  */
-public abstract class Entity extends GameObject {
+public abstract class AbstractEntity extends GameObject {
 
     /** The position of the entity. */
     protected MapIndex position;
@@ -45,7 +45,7 @@ public abstract class Entity extends GameObject {
      * Instantiates a new entity.
      * @param positionTmp the position
      */
-    public Entity(final MapIndex positionTmp) {
+    public AbstractEntity(final MapIndex positionTmp) {
         position = new MapIndex(positionTmp);
     }
 

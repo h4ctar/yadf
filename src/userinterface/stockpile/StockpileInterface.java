@@ -46,7 +46,7 @@ import org.jdesktop.swingx.JXTreeTable;
 
 import simulation.Player;
 import simulation.stock.Stockpile;
-import controller.Controller;
+import controller.AbstractController;
 import controller.command.DeleteStockpileCommand;
 
 /**
@@ -58,7 +58,7 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
     private Stockpile stockpile;
 
     /** The controller. */
-    private final Controller controller;
+    private final AbstractController controller;
 
     /** The player. */
     private final Player player;
@@ -78,7 +78,7 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public StockpileInterface(final Player playerTmp, final Controller controllerTmp) {
+    public StockpileInterface(final Player playerTmp, final AbstractController controllerTmp) {
         player = playerTmp;
         controller = controllerTmp;
         setupLayout();

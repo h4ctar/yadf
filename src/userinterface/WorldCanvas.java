@@ -52,7 +52,7 @@ import simulation.farm.Farm;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;
 import simulation.job.JobManager;
-import simulation.job.designation.Designation;
+import simulation.job.designation.AbstractDesignation;
 import simulation.labor.LaborType;
 import simulation.map.BlockType;
 import simulation.map.IMapListener;
@@ -128,9 +128,9 @@ public class WorldCanvas extends JComponent implements IMapListener {
      */
     public void drawDesignations(final Graphics g) {
         JobManager jobManager = player.getJobManager();
-        Designation[] designations = jobManager.getDesignations();
+        AbstractDesignation[] designations = jobManager.getDesignations();
 
-        for (Designation designation : designations) {
+        for (AbstractDesignation designation : designations) {
             List<MapIndex> mapIndicies = new ArrayList<>(designation.getMapIndicies());
             for (MapIndex mapIndex : mapIndicies) {
                 if (mapIndex.z == viewPosition.z) {

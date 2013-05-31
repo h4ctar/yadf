@@ -41,13 +41,15 @@ import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
 import simulation.job.HaulJob;
+import simulation.job.IJob;
+import simulation.job.IJobListener;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
 /**
  * The Class Stockpile.
  */
-public class Stockpile extends GameObject {
+public class Stockpile extends GameObject implements IJobListener, IStockManagerListener {
 
     /** Is the position in the stockpile used. */
     private final boolean[][] used;
@@ -60,6 +62,8 @@ public class Stockpile extends GameObject {
 
     /** What item type the stockpile accepts. */
     private final List<ItemType> itemTypes = new ArrayList<>();
+
+    private Player player;
 
     /**
      * An array of haul tasks that have been created for this stockpile, its remembered so they can be canceled if the
@@ -74,10 +78,12 @@ public class Stockpile extends GameObject {
      * Constructor for the stockpile.
      * @param areaTmp The area the stockpile will occupy
      */
-    public Stockpile(final MapArea areaTmp) {
+    public Stockpile(final MapArea areaTmp, final Player playerTmp) {
         area = areaTmp;
+        player = playerTmp;
         used = new boolean[area.width][area.height];
         Logger.getInstance().log(this, "Stockpile id: " + getId());
+        player.getStockManager().addListener(this);
     }
 
     /**
@@ -89,9 +95,8 @@ public class Stockpile extends GameObject {
             MapIndex pos = item.getPosition().sub(area.pos);
             used[pos.x][pos.y] = true;
             items.add(item);
+            notifyListeners();
         }
-
-        item.setUsed(false);
     }
 
     /**
@@ -208,13 +213,19 @@ public class Stockpile extends GameObject {
                 count++;
             }
         }
-
         return count == ItemTypeManager.getInstance().getNumberOfItemTypesInCategory(categoryName);
+    }
+
+    @Override
+    public void jobChanged(final IJob job) {
+        if (job.isDone()) {
+            haulJobs.remove(job);
+            System.out.println("job removed");
+        }
     }
 
     /**
      * Removes the item.
-     * 
      * @param item the item
      */
     public void removeItemFromStorage(final Item item) {
@@ -224,6 +235,7 @@ public class Stockpile extends GameObject {
         if (!items.remove(item)) {
             Logger.getInstance().log(this, "Item removal failed(" + pos.x + ", " + pos.y + ") - " + items.size());
         }
+        notifyListeners();
     }
 
     /**
@@ -260,18 +272,17 @@ public class Stockpile extends GameObject {
     }
 
     /**
-     * Tries to fill the stockpile, if any positions are not taken it will try to find and unstored item and add a job
-     * to haul it into position.
-     * @param player the player
+     * Notify the listeners that something has changed for the stockpile.
      */
-    public void update(final Player player) {
-        boolean changed = false;
-        // Remove done haul tasks
-        for (int i = 0; i < haulJobs.size(); i++) {
-            if (haulJobs.get(i).isDone()) {
-                haulJobs.remove(i);
-            }
+    private void notifyListeners() {
+        for (IStockpileListener listener : listeners) {
+            listener.update();
         }
+    }
+
+    @Override
+    public void stockManagerChanged() {
+        // TODO: should pass what has changed and only check if its something we care about
         // Create haul tasks to fill up the stockpile
         if (!itemTypes.isEmpty()) {
             for (int x = 0; x < area.width; x++) {
@@ -281,35 +292,13 @@ public class Stockpile extends GameObject {
                         if (item != null) {
                             used[x][y] = true;
                             HaulJob haulJob = new HaulJob(item, true, area.pos.add(x, y, 0));
-                            haulJobs.add(haulJob);
+                            haulJob.addListener(this);
                             player.getJobManager().addJob(haulJob);
+                            haulJobs.add(haulJob);
                         }
                     }
                 }
             }
-        }
-        // Remove items marked for removal
-        for (int i = 0; i < items.size(); i++) {
-            Item item = items.get(i);
-            if (item.getRemove()) {
-                MapIndex pos = item.getPosition().sub(area.pos);
-                used[pos.x][pos.y] = true;
-                items.remove(i);
-                i--;
-                changed = true;
-            }
-        }
-        if (changed) {
-            notifyListeners();
-        }
-    }
-
-    /**
-     * Notify the listeners that something has changed for the stockpile.
-     */
-    private void notifyListeners() {
-        for (IStockpileListener listener : listeners) {
-            listener.update();
         }
     }
 }

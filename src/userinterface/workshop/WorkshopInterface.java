@@ -50,7 +50,7 @@ import simulation.Player;
 import simulation.recipe.Recipe;
 import simulation.recipe.RecipeManager;
 import simulation.workshop.Workshop;
-import controller.Controller;
+import controller.AbstractController;
 import controller.command.CancelOrderCommand;
 import controller.command.DeleteRoomCommand;
 import controller.command.NewOrderCommand;
@@ -142,7 +142,7 @@ public class WorkshopInterface extends JInternalFrame {
     private JButton cancelOrderButton;
 
     /** The controller. */
-    private final Controller controller;
+    private final AbstractController controller;
 
     /** The player. */
     private final Player player;
@@ -156,7 +156,7 @@ public class WorkshopInterface extends JInternalFrame {
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public WorkshopInterface(final Player playerTmp, final Controller controllerTmp) {
+    public WorkshopInterface(final Player playerTmp, final AbstractController controllerTmp) {
         player = playerTmp;
         controller = controllerTmp;
 

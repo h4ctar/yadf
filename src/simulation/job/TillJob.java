@@ -43,7 +43,7 @@ import simulation.labor.LaborTypeManager;
 /**
  * The Class TillJob.
  */
-public class TillJob implements IJob {
+public class TillJob extends AbstractJob {
 
     /**
      * The Enum State.

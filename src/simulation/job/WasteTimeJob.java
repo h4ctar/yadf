@@ -38,7 +38,7 @@ import simulation.character.GameCharacter;
 /**
  * The Class WasteTimeJob.
  */
-public class WasteTimeJob implements IJob {
+public class WasteTimeJob extends AbstractJob {
 
     /** The dwarf that is wasting time. */
     private final GameCharacter character;

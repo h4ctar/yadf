@@ -38,7 +38,7 @@ import simulation.map.RegionMap;
 /**
  * The Class MineDesignation.
  */
-public class MineDesignation extends Designation {
+public class MineDesignation extends AbstractDesignation {
 
     /**
      * {@inheritDoc}
@@ -62,7 +62,7 @@ public class MineDesignation extends Designation {
      * {@inheritDoc}
      */
     @Override
-    protected IDesignationJob createJob(final MapIndex mapIndex, final Region region) {
+    protected AbstractDesignationJob createJob(final MapIndex mapIndex, final Region region) {
         return new MineJob(mapIndex, this);
     }
 }

@@ -38,7 +38,7 @@ import simulation.character.GameCharacter;
 /**
  * The Class AttackComponent.
  */
-public class AttackComponent extends CharacterComponent {
+public class AttackComponent extends AbstractCharacterComponent {
 
     /** The enemy. */
     private GameCharacter enemy;

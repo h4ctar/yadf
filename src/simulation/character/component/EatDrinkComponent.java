@@ -39,7 +39,7 @@ import simulation.job.EatDrinkJob;
 /**
  * The Class EatDrinkComponent.
  */
-public class EatDrinkComponent extends CharacterComponent {
+public class EatDrinkComponent extends AbstractCharacterComponent {
 
     /** How many simulation steps since the dwarf last ate. */
     private int hunger = 0;

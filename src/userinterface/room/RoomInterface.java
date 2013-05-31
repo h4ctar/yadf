@@ -47,7 +47,7 @@ import javax.swing.WindowConstants;
 
 import simulation.Player;
 import simulation.room.Room;
-import controller.Controller;
+import controller.AbstractController;
 import controller.command.DeleteRoomCommand;
 
 /**
@@ -68,7 +68,7 @@ public class RoomInterface extends JInternalFrame implements ActionListener {
     private JButton destroyRoomButton;
 
     /** The controller. */
-    private final Controller controller;
+    private final AbstractController controller;
 
     /** The player. */
     private final Player player;
@@ -82,7 +82,7 @@ public class RoomInterface extends JInternalFrame implements ActionListener {
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public RoomInterface(final Player playerTmp, final Controller controllerTmp) {
+    public RoomInterface(final Player playerTmp, final AbstractController controllerTmp) {
         player = playerTmp;
         controller = controllerTmp;
 

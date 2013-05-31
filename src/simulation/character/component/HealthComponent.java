@@ -38,7 +38,7 @@ import simulation.character.GameCharacter;
 /**
  * The Class HealthComponent.
  */
-public class HealthComponent extends CharacterComponent {
+public class HealthComponent extends AbstractCharacterComponent {
 
     /** The maximum amount of health a dwarf can have. */
     private static final int MAX_HEALTH = 10000;

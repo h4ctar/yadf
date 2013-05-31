@@ -38,7 +38,7 @@ import simulation.character.GameCharacter;
 /**
  * The Class KillEveryoneComponent.
  */
-public class KillEveryoneComponent extends CharacterComponent {
+public class KillEveryoneComponent extends AbstractCharacterComponent {
 
     /** The dwarf. */
     private GameCharacter dwarf;

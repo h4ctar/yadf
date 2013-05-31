@@ -41,7 +41,7 @@ import simulation.room.Room;
 /**
  * The Class PlaceItemJob.
  */
-public class PlaceItemJob implements IJob {
+public class PlaceItemJob extends AbstractJob {
 
     /**
      * The different states that this job can be in.

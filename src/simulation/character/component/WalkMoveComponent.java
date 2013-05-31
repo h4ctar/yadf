@@ -45,7 +45,7 @@ import simulation.map.WalkableNode;
  * 
  * @author Ben Smith (bensmith87@gmail.com)
  */
-public class WalkMoveComponent extends MoveComponent {
+public class WalkMoveComponent extends AbstractMoveComponent {
 
     /** Where to go. */
     private final MapIndex target;

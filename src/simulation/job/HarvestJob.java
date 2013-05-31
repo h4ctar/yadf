@@ -44,7 +44,7 @@ import simulation.labor.LaborTypeManager;
 /**
  * The Class HarvestJob.
  */
-public class HarvestJob implements IJob {
+public class HarvestJob extends AbstractJob {
 
     /**
      * The Enum State.

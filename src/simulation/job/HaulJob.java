@@ -44,13 +44,12 @@ import simulation.map.MapIndex;
 /**
  * The Class HaulJob.
  */
-public class HaulJob implements IJob {
+public class HaulJob extends AbstractJob {
 
     /**
      * The Enum State.
      */
     enum State {
-
         /** The looking for item. */
         LOOKING_FOR_ITEM,
         /** The waiting for dwarf. */
@@ -90,7 +89,6 @@ public class HaulJob implements IJob {
 
     /**
      * Instantiates a new haul job.
-     * 
      * @param characterTmp the character
      * @param itemTmp the item
      * @param storeItemTmp the store item
@@ -104,7 +102,6 @@ public class HaulJob implements IJob {
 
     /**
      * Instantiates a new haul job.
-     * 
      * @param itemTmp the item
      * @param storeItemTmp the store item
      * @param dropPositionTmp the drop position
@@ -118,7 +115,6 @@ public class HaulJob implements IJob {
 
     /**
      * Instantiates a new haul job.
-     * 
      * @param itemTypeTmp the item type
      * @param dropPositionTmp the drop position
      */
@@ -130,7 +126,6 @@ public class HaulJob implements IJob {
 
     /**
      * Gets the drop position.
-     * 
      * @return the drop position
      */
     public MapIndex getDropPosition() {
@@ -139,16 +134,12 @@ public class HaulJob implements IJob {
 
     /**
      * Gets the item.
-     * 
      * @return the item
      */
     public Item getItem() {
         return item;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         if (character == null) {
@@ -168,9 +159,6 @@ public class HaulJob implements IJob {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message);
@@ -187,25 +175,16 @@ public class HaulJob implements IJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Hauling " + item.getType().name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {
@@ -222,6 +201,7 @@ public class HaulJob implements IJob {
                 item = player.getStockManager().getUnusedItem(itemType.name);
             }
             if (item != null) {
+                item.setUsed(true);
                 state = State.WAITING_FOR_DWARF;
             }
             break;
@@ -274,6 +254,7 @@ public class HaulJob implements IJob {
                 }
 
                 done = true;
+                notifyListeners();
             }
             break;
 

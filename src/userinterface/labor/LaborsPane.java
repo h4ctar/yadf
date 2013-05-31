@@ -38,7 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import simulation.Player;
-import controller.Controller;
+import controller.AbstractController;
 
 /**
  * The Class LaborsPane.
@@ -75,7 +75,7 @@ public class LaborsPane extends JPanel {
      * @param player the player
      * @param controller the controller
      */
-    public void setup(final Player player, final Controller controller) {
+    public void setup(final Player player, final AbstractController controller) {
         laborTableModel = new LaborTableModel(player, controller);
         laborsTable.setModel(laborTableModel);
     }

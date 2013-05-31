@@ -47,7 +47,7 @@ import simulation.labor.LaborTypeManager;
 /**
  * The Class SkillComponent.
  */
-public class SkillComponent extends CharacterComponent {
+public class SkillComponent extends AbstractCharacterComponent {
 
     /** How proficient the dwarf is in the different labors. */
     private final Map<LaborType, Integer> laborSkills;

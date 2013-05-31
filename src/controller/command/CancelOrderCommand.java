@@ -37,7 +37,7 @@ import simulation.workshop.Workshop;
 /**
  * The Class CancelOrderCommand.
  */
-public class CancelOrderCommand extends Command {
+public class CancelOrderCommand extends AbstractCommand {
 
     /** The workshop id. */
     private final int workshopId;

@@ -45,7 +45,7 @@ import simulation.map.WalkableNode;
 /**
  * The Class IdleMoveComponent.
  */
-public class IdleMoveComponent extends MoveComponent {
+public class IdleMoveComponent extends AbstractMoveComponent {
 
     /** How many simulation steps since last walking step taken. */
     private int simulationSteps = 0;

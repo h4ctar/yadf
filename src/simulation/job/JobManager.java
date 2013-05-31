@@ -41,7 +41,7 @@ import simulation.Region;
 import simulation.job.designation.ChannelDesignation;
 import simulation.job.designation.ChopTreeDesignation;
 import simulation.job.designation.ConstructionDesignation;
-import simulation.job.designation.Designation;
+import simulation.job.designation.AbstractDesignation;
 import simulation.job.designation.DesignationType;
 import simulation.job.designation.MineDesignation;
 import simulation.map.BlockType;
@@ -66,7 +66,7 @@ public class JobManager implements Serializable {
     private final List<IJob> newJobs = new ArrayList<>();
 
     /** The designations. */
-    private final Designation[] designations;
+    private final AbstractDesignation[] designations;
 
     /** Listeners to be notified when something changes. */
     private final List<IJobManagerListener> listeners = new ArrayList<>();
@@ -76,7 +76,7 @@ public class JobManager implements Serializable {
      * 
      */
     public JobManager() {
-        designations = new Designation[DesignationType.values().length];
+        designations = new AbstractDesignation[DesignationType.values().length];
         designations[DesignationType.MINE.ordinal()] = new MineDesignation();
         designations[DesignationType.CHANNEL.ordinal()] = new ChannelDesignation(null);
         designations[DesignationType.CHOP_TREE.ordinal()] = new ChopTreeDesignation();
@@ -85,7 +85,7 @@ public class JobManager implements Serializable {
         designations[DesignationType.CARVE_STAIR.ordinal()] = new ChannelDesignation(BlockType.STAIR);
 
         // This can't be done in the designations constructor because the player.getJobManager call would return null
-        for (Designation designation : designations) {
+        for (AbstractDesignation designation : designations) {
             jobs.add(designation);
         }
     }
@@ -115,7 +115,7 @@ public class JobManager implements Serializable {
      * @param type The designation type that the caller wants
      * @return A reference to the designation
      */
-    public Designation getDesignation(final DesignationType type) {
+    public AbstractDesignation getDesignation(final DesignationType type) {
         return designations[type.ordinal()];
     }
 
@@ -124,7 +124,7 @@ public class JobManager implements Serializable {
      * 
      * @return A reference to the designations array
      */
-    public Designation[] getDesignations() {
+    public AbstractDesignation[] getDesignations() {
         return designations;
     }
 

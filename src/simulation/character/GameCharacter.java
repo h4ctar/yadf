@@ -35,15 +35,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import logger.Logger;
-import simulation.Entity;
+import simulation.AbstractEntity;
 import simulation.Player;
 import simulation.Region;
+import simulation.character.component.AbstractMoveComponent;
 import simulation.character.component.AttackComponent;
 import simulation.character.component.EatDrinkComponent;
 import simulation.character.component.HealthComponent;
 import simulation.character.component.IdleMoveComponent;
 import simulation.character.component.InventoryComponent;
-import simulation.character.component.MoveComponent;
 import simulation.character.component.StillMoveComponent;
 import simulation.character.component.WalkMoveComponent;
 import simulation.map.MapIndex;
@@ -51,7 +51,7 @@ import simulation.map.MapIndex;
 /**
  * The Class GameCharacter.
  */
-public class GameCharacter extends Entity {
+public class GameCharacter extends AbstractEntity {
 
     /** The health. */
     private final HealthComponent health;
@@ -60,7 +60,7 @@ public class GameCharacter extends Entity {
     private final List<ICharacterListener> listeners;
 
     /** The move. */
-    private MoveComponent move;
+    private AbstractMoveComponent move;
 
     /** The eat drink. */
     private final EatDrinkComponent eatDrink;

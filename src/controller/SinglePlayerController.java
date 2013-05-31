@@ -35,12 +35,12 @@ import java.io.IOException;
 
 import logger.Logger;
 import simulation.Region;
-import controller.command.Command;
+import controller.command.AbstractCommand;
 
 /**
  * The Class SinglePlayerController.
  */
-public class SinglePlayerController extends Controller {
+public class SinglePlayerController extends AbstractController {
 
     /**
      * {@inheritDoc}
@@ -54,7 +54,7 @@ public class SinglePlayerController extends Controller {
      */
     @Override
     public synchronized void doCommands(final Region region) throws IOException {
-        for (Command command : localCommands) {
+        for (AbstractCommand command : localCommands) {
             Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
             command.doCommand();
         }

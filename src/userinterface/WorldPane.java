@@ -58,7 +58,7 @@ import userinterface.dwarf.DwarfInterface;
 import userinterface.room.RoomInterface;
 import userinterface.stockpile.StockpileInterface;
 import userinterface.workshop.WorkshopInterface;
-import controller.Controller;
+import controller.AbstractController;
 import controller.command.BuildWorkshopCommand;
 import controller.command.CreateFarmCommand;
 import controller.command.CreateRoomCommand;
@@ -81,7 +81,7 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
     private Region region;
 
     /** The controller. */
-    private Controller controller;
+    private AbstractController controller;
 
     /* Internal frame interfaces */
     /** The stockpile interface. */
@@ -517,7 +517,7 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public void setup(final Region regionTmp, final Player playerTmp, final Controller controllerTmp) {
+    public void setup(final Region regionTmp, final Player playerTmp, final AbstractController controllerTmp) {
         region = regionTmp;
         player = playerTmp;
         controller = controllerTmp;

@@ -44,7 +44,7 @@ import simulation.item.ItemTypeManager;
 import simulation.stock.IStockpileListener;
 import simulation.stock.Stockpile;
 import userinterface.labor.LaborNode;
-import controller.Controller;
+import controller.AbstractController;
 import controller.command.SetStockpileCommand;
 
 /**
@@ -56,7 +56,7 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
     private final Stockpile stockpile;
 
     /** The controller. */
-    private final Controller controller;
+    private final AbstractController controller;
 
     /** The player. */
     private final Player player;
@@ -71,7 +71,7 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
      * @param controllerTmp the controller
      * @param playerTmp the player
      */
-    public StockpileTreeTableModel(final Stockpile stockpileTmp, final Controller controllerTmp,
+    public StockpileTreeTableModel(final Stockpile stockpileTmp, final AbstractController controllerTmp,
             final Player playerTmp) {
         stockpile = stockpileTmp;
         controller = controllerTmp;

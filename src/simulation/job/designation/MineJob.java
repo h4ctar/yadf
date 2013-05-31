@@ -45,7 +45,7 @@ import simulation.map.RegionMap;
 /**
  * Task to do some mining.
  */
-public class MineJob implements IDesignationJob {
+public class MineJob extends AbstractDesignationJob {
 
     /**
      * The different states that this job can be in.

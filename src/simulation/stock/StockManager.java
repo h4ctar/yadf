@@ -275,11 +275,6 @@ public class StockManager implements Serializable {
      * @param player the player
      */
     public void update(final Player player) {
-        // update the stockpiles and sum how many items they need to be full
-        for (Stockpile stockpile : stockpiles) {
-            stockpile.update(player);
-        }
-
         // delete the stockpiles that need to be removed
         for (int i = 0; i < stockpiles.size(); i++) {
             if (stockpiles.get(i).getRemove()) {

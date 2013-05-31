@@ -38,7 +38,7 @@ import simulation.map.MapIndex;
 /**
  * The Class PlaceItemCommand.
  */
-public class PlaceItemCommand extends Command {
+public class PlaceItemCommand extends AbstractCommand {
 
     /** The item type name. */
     private final String itemTypeName;

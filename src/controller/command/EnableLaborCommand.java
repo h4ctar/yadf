@@ -37,7 +37,7 @@ import simulation.character.Dwarf;
 /**
  * The Class EnableLaborCommand.
  */
-public class EnableLaborCommand extends Command {
+public class EnableLaborCommand extends AbstractCommand {
 
     /** The dwarf id. */
     private final int dwarfId;

@@ -50,7 +50,7 @@ import simulation.workshop.WorkshopTypeManager;
 /**
  * The Class BuildWorkshopJob.
  */
-public class BuildWorkshopJob implements IJob {
+public class BuildWorkshopJob extends AbstractJob {
 
     /**
      * The different states that this job can be in.

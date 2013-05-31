@@ -43,13 +43,12 @@ import simulation.labor.LaborTypeManager;
 /**
  * The Class PlantJob.
  */
-public class PlantJob implements IJob {
+public class PlantJob extends AbstractJob {
 
     /**
      * The Enum State.
      */
     enum State {
-
         /** The start. */
         START,
         /** The haul. */

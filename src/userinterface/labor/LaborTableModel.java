@@ -42,7 +42,7 @@ import simulation.character.GameCharacter;
 import simulation.character.component.IComponentListener;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
-import controller.Controller;
+import controller.AbstractController;
 import controller.command.EnableLaborCommand;
 
 /**
@@ -54,7 +54,7 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
     private final Player player;
 
     /** The controller. */
-    private final Controller controller;
+    private final AbstractController controller;
 
     /**
      * Instantiates a new labor table model.
@@ -62,7 +62,7 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public LaborTableModel(final Player playerTmp, final Controller controllerTmp) {
+    public LaborTableModel(final Player playerTmp, final AbstractController controllerTmp) {
         player = playerTmp;
         controller = controllerTmp;
         player.addListener(this);
