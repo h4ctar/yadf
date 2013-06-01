@@ -36,6 +36,7 @@ import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
 import simulation.character.component.WalkMoveComponent;
+import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.labor.LaborTypeManager;
@@ -69,8 +70,8 @@ public class HaulJob extends AbstractJob {
     /** The item. */
     private Item item = null;
 
-    /** The store item. */
-    private final boolean storeItem;
+    /** If not null, the item should be stored here. */
+    private final IContainer container;
 
     /** The drop position. */
     private final MapIndex dropPosition;
@@ -91,37 +92,38 @@ public class HaulJob extends AbstractJob {
      * Instantiates a new haul job.
      * @param characterTmp the character
      * @param itemTmp the item
-     * @param storeItemTmp the store item
+     * @param containerTmp the container to put the item in
      * @param dropPositionTmp the drop position
      */
-    public HaulJob(final GameCharacter characterTmp, final Item itemTmp, final boolean storeItemTmp,
+    public HaulJob(final GameCharacter characterTmp, final Item itemTmp, final IContainer containerTmp,
             final MapIndex dropPositionTmp) {
-        this(itemTmp, storeItemTmp, dropPositionTmp);
+        this(itemTmp, containerTmp, dropPositionTmp);
         character = characterTmp;
     }
 
     /**
      * Instantiates a new haul job.
      * @param itemTmp the item
-     * @param storeItemTmp the store item
+     * @param containerTmp the container to put the item in
      * @param dropPositionTmp the drop position
      */
-    public HaulJob(final Item itemTmp, final boolean storeItemTmp, final MapIndex dropPositionTmp) {
+    public HaulJob(final Item itemTmp, final IContainer containerTmp, final MapIndex dropPositionTmp) {
         item = itemTmp;
-        storeItem = storeItemTmp;
+        container = containerTmp;
         dropPosition = dropPositionTmp;
         itemType = item.getType();
     }
 
     /**
      * Instantiates a new haul job.
-     * @param itemTypeTmp the item type
+     * @param itemTypeTmp the item
+     * @param containerTmp the container to put the item in
      * @param dropPositionTmp the drop position
      */
-    public HaulJob(final ItemType itemTypeTmp, final MapIndex dropPositionTmp) {
-        itemType = itemTypeTmp;
+    public HaulJob(final ItemType itemTypeTmp, final IContainer containerTmp, final MapIndex dropPositionTmp) {
+        container = containerTmp;
         dropPosition = dropPositionTmp;
-        storeItem = false;
+        itemType = itemTypeTmp;
     }
 
     /**
@@ -190,11 +192,6 @@ public class HaulJob extends AbstractJob {
         if (isDone()) {
             return;
         }
-        if (storeItem) {
-            if (player.getStockManager().getStockpile(dropPosition) == null) {
-                interrupt("Stockpile has been deleted");
-            }
-        }
         switch (state) {
         case LOOKING_FOR_ITEM:
             if (item == null) {
@@ -224,12 +221,10 @@ public class HaulJob extends AbstractJob {
             }
 
             if (walkComponent.isArrived()) {
-                if (item.isStored()) {
-                    player.getStockManager().removeItemFromStorage(item);
-                }
+                player.getStockManager().removeItem(item);
                 walkComponent = character.walkToPosition(dropPosition, false);
                 character.getInventory().pickupHaulItem(item);
-                player.getStockManager().removeItemFromStorage(item);
+                player.getStockManager().removeItem(item);
                 state = State.GOTO_DROP;
             }
             break;
@@ -249,8 +244,13 @@ public class HaulJob extends AbstractJob {
 
                 character.beIdleMovement();
 
-                if (storeItem) {
-                    player.getStockManager().storeItemInStockpile(item);
+                if (container != null) {
+                    if (container.getRemove()) {
+                        Logger.getInstance().log(this, "Can't store item, container has been removed");
+                        player.getStockManager().addItem(item);
+                    } else {
+                        container.addItem(item);
+                    }
                 }
 
                 done = true;

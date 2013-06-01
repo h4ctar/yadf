@@ -34,7 +34,7 @@ package userinterface.labor;
 import javax.swing.table.AbstractTableModel;
 
 import logger.Logger;
-import simulation.GameObject;
+import simulation.AbstractGameObject;
 import simulation.IPlayerListener;
 import simulation.Player;
 import simulation.character.Dwarf;
@@ -159,7 +159,7 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
     }
 
     @Override
-    public void playerChanged(final GameObject gameObject, final boolean added) {
+    public void playerChanged(final AbstractGameObject gameObject, final boolean added) {
         Logger.getInstance().log(this, "playerChanged");
         if (gameObject instanceof Dwarf) {
             Dwarf dwarf = (Dwarf) gameObject;

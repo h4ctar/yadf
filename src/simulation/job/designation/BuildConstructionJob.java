@@ -189,7 +189,8 @@ public class BuildConstructionJob extends AbstractDesignationJob {
 
         switch (state) {
         case WAITING_FOR_RESOURCES:
-            haulJob = new HaulJob(ItemTypeManager.getInstance().getItemType("Rock"), position);
+            haulJob = new HaulJob(ItemTypeManager.getInstance().getItemType("Rock"), player.getStockManager(),
+                    position);
             state = State.HAUL_RESOURCES;
             break;
 

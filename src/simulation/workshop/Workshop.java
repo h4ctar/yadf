@@ -35,10 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import logger.Logger;
 import misc.MyRandom;
-
-import simulation.GameObject;
+import simulation.AbstractGameObject;
 import simulation.Player;
+import simulation.item.IContainer;
+import simulation.item.Item;
 import simulation.job.CraftJob;
 import simulation.job.IJob;
 import simulation.map.MapIndex;
@@ -48,7 +50,7 @@ import simulation.recipe.RecipeManager;
 /**
  * The Class Workshop.
  */
-public class Workshop extends GameObject {
+public class Workshop extends AbstractGameObject implements IContainer {
 
     public static MapIndex getRandomPostition(final MapIndex position) {
         Random random = MyRandom.getInstance();
@@ -212,9 +214,36 @@ public class Workshop extends GameObject {
         }
     }
 
+    /**
+     * Notify all the listeners that something has changed in the workshop.
+     */
     private void notifyListeners() {
         for (IWorkshopListener listener : listeners) {
-            listener.update();
+            listener.workshopChanged();
         }
+    }
+
+    @Override
+    public boolean addItem(final Item item) {
+        Logger.getInstance().log(this, "Not implemented yet");
+        return false;
+    }
+
+    @Override
+    public boolean removeItem(final Item item) {
+        Logger.getInstance().log(this, "Not implemented yet");
+        return false;
+    }
+
+    @Override
+    public Item getUnusedItem(final String itemTypeName) {
+        Logger.getInstance().log(this, "Not implemented yet");
+        return null;
+    }
+
+    @Override
+    public Item getUnusedItemFromCategory(final String category) {
+        Logger.getInstance().log(this, "Not implemented yet");
+        return null;
     }
 }

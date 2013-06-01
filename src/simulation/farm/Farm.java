@@ -34,7 +34,7 @@ package simulation.farm;
 import java.util.ArrayList;
 import java.util.List;
 
-import simulation.GameObject;
+import simulation.AbstractGameObject;
 import simulation.Player;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -42,7 +42,7 @@ import simulation.map.MapIndex;
 /**
  * The Class Farm.
  */
-public class Farm extends GameObject {
+public class Farm extends AbstractGameObject {
 
     /** The area. */
     private final MapArea area;

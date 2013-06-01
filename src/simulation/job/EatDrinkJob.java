@@ -187,7 +187,7 @@ public class EatDrinkJob extends AbstractJob {
         case WAITING_FOR_DWARF:
             if (character.acquireLock()) {
                 // TODO: this should find the position of a table and chair.
-                haulJob = new HaulJob(character, foodItem, false, foodItem.getPosition());
+                haulJob = new HaulJob(character, foodItem, player.getStockManager(), foodItem.getPosition());
                 state = State.HAUL;
             }
             break;

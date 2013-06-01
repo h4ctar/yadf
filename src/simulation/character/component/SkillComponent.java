@@ -224,9 +224,7 @@ public class SkillComponent extends AbstractCharacterComponent {
                     continue;
                 }
                 tool.setUsed(true);
-                if (tool.isStored()) {
-                    player.getStockManager().removeItemFromStorage(tool);
-                }
+                player.getStockManager().removeItem(tool);
                 pickupToolJob = new PickupToolJob(character, tool);
                 player.getJobManager().addJob(pickupToolJob);
                 break;

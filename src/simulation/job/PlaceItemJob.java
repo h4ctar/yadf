@@ -150,7 +150,7 @@ public class PlaceItemJob extends AbstractJob {
 
             item.setUsed(true);
 
-            haulJob = new HaulJob(item, false, position);
+            haulJob = new HaulJob(item, player.getStockManager(), position);
             state = State.HAUL_ITEM;
             break;
 

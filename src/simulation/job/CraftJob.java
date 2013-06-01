@@ -174,7 +174,7 @@ public class CraftJob extends AbstractJob {
             for (Entry<ItemType, Integer> entry : recipe.resources.entrySet()) {
                 ItemType itemType = entry.getKey();
                 for (int i = 0; i < entry.getValue().intValue(); i++) {
-                    HaulJob haulJob = new HaulJob(itemType, workshop.getRandomPosition());
+                    HaulJob haulJob = new HaulJob(itemType, workshop, workshop.getRandomPosition());
                     haulJobs.add(haulJob);
                 }
             }

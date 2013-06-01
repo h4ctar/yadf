@@ -169,7 +169,7 @@ public class PlantJob extends AbstractJob {
                 return;
             }
 
-            haulJob = new HaulJob(dwarf, seed, false, farmPlot.getPosition());
+            haulJob = new HaulJob(dwarf, seed, player.getStockManager(), farmPlot.getPosition());
             player.getJobManager().addJob(haulJob);
 
             state = State.HAUL;

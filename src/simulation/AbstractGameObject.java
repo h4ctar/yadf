@@ -36,7 +36,7 @@ import java.io.Serializable;
 /**
  * The Class GameObject.
  */
-public class GameObject implements Serializable {
+public abstract class AbstractGameObject implements IGameObject, Serializable {
 
     /** The remove. */
     private boolean remove = false;
@@ -50,7 +50,7 @@ public class GameObject implements Serializable {
     /**
      * Instantiates a new game object.
      */
-    public GameObject() {
+    public AbstractGameObject() {
         id = count;
         count++;
     }

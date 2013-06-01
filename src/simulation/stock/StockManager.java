@@ -37,7 +37,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import logger.Logger;
+import simulation.AbstractGameObject;
 import simulation.Player;
+import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.map.MapArea;
@@ -46,7 +48,7 @@ import simulation.map.MapIndex;
 /**
  * The Class StockManager, manages items for a player including stockpiles.
  */
-public class StockManager implements Serializable {
+public class StockManager extends AbstractGameObject implements IContainer, Serializable {
 
     /** The stockpiles owned by this stock manager. */
     private final List<Stockpile> stockpiles = new ArrayList<>();
@@ -57,13 +59,12 @@ public class StockManager implements Serializable {
     /** Listeners to this stock manager. */
     private final List<IStockManagerListener> listeners = new ArrayList<>();
 
-    /**
-     * Add a new item to the stock manager.
-     * @param item The item to add
-     */
-    public void addItem(final Item item) {
+    @Override
+    public boolean addItem(final Item item) {
+        Logger.getInstance().log(this, "Adding item - itemType: " + item.getType());
         items.add(item);
         notifyListeners();
+        return true;
     }
 
     /**
@@ -106,13 +107,11 @@ public class StockManager implements Serializable {
      */
     public int getItemCount(final String category) {
         int count = 0;
-
         for (Item item : items) {
             if (item.getType().category.equals(category)) {
                 count++;
             }
         }
-
         return count;
     }
 
@@ -135,7 +134,6 @@ public class StockManager implements Serializable {
                 return stockpile;
             }
         }
-
         return null;
     }
 
@@ -164,26 +162,20 @@ public class StockManager implements Serializable {
     }
 
     /**
-     * Finds an item that is not in a stockpile, used by stockpile.update, also flags the item as "used".
+     * Finds an item that is not in a stockpile, used by stockpile.update
      * @param itemTypes the item types
      * @return A reference to the found item, will be null if none could be found
      */
     public Item getUnstoredItem(final List<ItemType> itemTypes) {
         for (Item item : items) {
             if (itemTypes.contains(item.getType()) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
-                item.setUsed(true);
                 return item;
             }
         }
         return null;
     }
 
-    /**
-     * Finds an item that is unused, flags the item as "used", and if it was in a stockpile, the item is removed from
-     * the stockpile.
-     * @param itemTypeName The type of item to find
-     * @return A reference to the found item, will be null if none could be found
-     */
+    @Override
     public Item getUnusedItem(final String itemTypeName) {
         for (Item item : items) {
             if (item.getType().equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
@@ -206,11 +198,7 @@ public class StockManager implements Serializable {
         return null;
     }
 
-    /**
-     * Gets the item from category.
-     * @param category the category name
-     * @return the item from category
-     */
+    @Override
     public Item getUnusedItemFromCategory(final String category) {
         for (Stockpile stockpile : stockpiles) {
             for (Item item : stockpile.getItems()) {
@@ -236,38 +224,28 @@ public class StockManager implements Serializable {
         return null;
     }
 
-    /**
-     * Removes the item from storage.
-     * @param item the item
-     */
-    public void removeItemFromStorage(final Item item) {
-        // TODO: change this to loop through all stockpiles and ask them to remove item until it finds the right one.
-        Stockpile stockpile = getStockpile(item.getPosition());
-        if (stockpile != null) {
-            stockpile.removeItemFromStorage(item);
-            return;
-        }
-        for (Item container : items) {
-            if (container.removeItemFromContainer(item)) {
-                return;
+    @Override
+    public boolean removeItem(final Item item) {
+        Logger.getInstance().log(this, "Removing item - itemType: " + item.getType());
+        boolean itemRemoved = false;
+        itemRemoved = items.remove(item);
+        if (!itemRemoved) {
+            // TODO: change this to loop through all stockpiles and ask them to remove item until it finds the right
+            // one.
+            Stockpile stockpile = getStockpile(item.getPosition());
+            if (stockpile != null) {
+                itemRemoved = stockpile.removeItem(item);
             }
         }
-    }
-
-    /**
-     * Store item in a stockpile if one exists.
-     * @param item the item
-     */
-    // TODO: remove this method
-    public void storeItemInStockpile(final Item item) {
-        items.remove(item);
-        Stockpile stockpile = getStockpile(item.getPosition());
-
-        if (stockpile != null) {
-            stockpile.addItem(item);
-        } else {
-            Logger.getInstance().log(this, "Warning: Can't store item, not in stockpile");
+        if (!itemRemoved) {
+            for (Item container : items) {
+                if (container.removeItem(item)) {
+                    itemRemoved = true;
+                    break;
+                }
+            }
         }
+        return itemRemoved;
     }
 
     /**
@@ -283,7 +261,6 @@ public class StockManager implements Serializable {
                 i--;
             }
         }
-
         // delete the items that need to be removed
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).getRemove()) {

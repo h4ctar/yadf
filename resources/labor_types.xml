@@ -1,5 +1,5 @@
 <laborTypes>
-    <laborType name="Mining" professionName="Miner" sprite="33" />
+    <laborType name="Mining" professionName="Miner" tool="Pick" sprite="33" />
     <laborType name="Carpentry" professionName="Carpenter" sprite="34" />
     <laborType name="Wood cutting" professionName="Wood cutter" tool="Axe" sprite="35" />
     <laborType name="Masonry" professionName="Mason" sprite="36" />

@@ -70,6 +70,6 @@ public class SetStockpileCommand extends AbstractCommand {
     @Override
     public void doCommand() {
         Stockpile stockpile = player.getStockManager().getStockpile(stockpileId);
-        stockpile.setItemType(itemTypeName, accept, player.getStockManager());
+        stockpile.setItemType(itemTypeName, accept);
     }
 }

@@ -36,7 +36,7 @@ import simulation.map.MapIndex;
 /**
  * The Class Entity.
  */
-public abstract class AbstractEntity extends GameObject {
+public abstract class AbstractEntity extends AbstractGameObject {
 
     /** The position of the entity. */
     protected MapIndex position;

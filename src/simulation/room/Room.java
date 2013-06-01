@@ -34,7 +34,7 @@ package simulation.room;
 import java.util.ArrayList;
 import java.util.List;
 
-import simulation.GameObject;
+import simulation.AbstractGameObject;
 import simulation.item.Item;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -42,7 +42,7 @@ import simulation.map.MapIndex;
 /**
  * The Class Room.
  */
-public class Room extends GameObject {
+public class Room extends AbstractGameObject {
 
     /** The items. */
     private final List<Item> items = new ArrayList<>();

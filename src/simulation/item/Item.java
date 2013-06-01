@@ -34,6 +34,8 @@ package simulation.item;
 import java.util.ArrayList;
 import java.util.List;
 
+import logger.Logger;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -44,7 +46,8 @@ import simulation.map.MapIndex;
 /**
  * The Class Item.
  */
-public class Item extends AbstractEntity {
+// TODO: container should be another class that extends this one.
+public class Item extends AbstractEntity implements IContainer {
 
     /** The type of the item. */
     private final ItemType itemType;
@@ -57,9 +60,6 @@ public class Item extends AbstractEntity {
 
     /** The contents of this item if it's a container. */
     private final List<Item> contents = new ArrayList<>();
-
-    /** If the item is stored in a barrel or stockpile. */
-    private boolean stored;
 
     /**
      * Create an item from a DOM element.
@@ -88,7 +88,6 @@ public class Item extends AbstractEntity {
                         int quantity = "".equals(tempString) ? 1 : Integer.parseInt(tempString);
                         for (int j = 0; j < quantity; j++) {
                             Item contentItem = new Item(contentItemElement);
-                            contentItem.setStored(true);
                             contents.add(contentItem);
                         }
                     }
@@ -125,11 +124,7 @@ public class Item extends AbstractEntity {
         return itemType;
     }
 
-    /**
-     * Returns an unused item if it exists in this items contents.
-     * @param itemTypeName the type of the item that you want
-     * @return the unused item
-     */
+    @Override
     public Item getUnusedItem(final String itemTypeName) {
         for (Item contentItem : contents) {
             if (contentItem.getType().equals(itemTypeName) && !contentItem.isUsed() && !contentItem.getRemove()
@@ -140,11 +135,7 @@ public class Item extends AbstractEntity {
         return null;
     }
 
-    /**
-     * Returns an unused item if it exists in this items contents.
-     * @param category the category of the item that you want
-     * @return the unused item
-     */
+    @Override
     public Item getUnusedItemFromCategory(final String category) {
         for (Item contentItem : contents) {
             if (contentItem.getType().category.equals(category) && !contentItem.isUsed() && !contentItem.getRemove()
@@ -164,14 +155,6 @@ public class Item extends AbstractEntity {
     }
 
     /**
-     * Gets if the item is stored in either a stockpile or a barrel.
-     * @return true if its stored
-     */
-    public boolean isStored() {
-        return stored;
-    }
-
-    /**
      * Is the item being used.
      * @return Boolean representing if it is used or not
      */
@@ -179,12 +162,8 @@ public class Item extends AbstractEntity {
         return used;
     }
 
-    /**
-     * Remove the item from the container.
-     * @param item the item to remove
-     * @return true if the item was removed
-     */
-    public boolean removeItemFromContainer(final Item item) {
+    @Override
+    public boolean removeItem(final Item item) {
         return contents.remove(item);
     }
 
@@ -205,14 +184,6 @@ public class Item extends AbstractEntity {
     }
 
     /**
-     * Set if the item is stored or not.
-     * @param storedTmp true if the item should be set to stored
-     */
-    public void setStored(final boolean storedTmp) {
-        stored = storedTmp;
-    }
-
-    /**
      * Sets the item as being used, this is to make sure no one will try claim it.
      * @param usedTmp Boolean representing if it is used or not
      */
@@ -223,5 +194,17 @@ public class Item extends AbstractEntity {
     @Override
     public String toString() {
         return itemType.toString();
+    }
+
+    @Override
+    public boolean addItem(final Item item) {
+        boolean itemAdded = false;
+        if (contents.size() < itemType.capacity) {
+            contents.add(item);
+            itemAdded = true;
+        } else {
+            Logger.getInstance().log(this, "Item could not be added to container as the container is full");
+        }
+        return itemAdded;
     }
 }

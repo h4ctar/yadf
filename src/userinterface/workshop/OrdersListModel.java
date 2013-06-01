@@ -76,14 +76,14 @@ public class OrdersListModel extends AbstractListModel<String> implements IWorks
     public void setWorkshop(final Workshop workshopTmp) {
         workshop = workshopTmp;
         workshop.addListener(this);
-        update();
+        workshopChanged();
     }
 
     /**
      * Update.
      */
     @Override
-    public void update() {
+    public void workshopChanged() {
         fireContentsChanged(this, 0, getSize() - 1);
     }
 }

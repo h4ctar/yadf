@@ -162,7 +162,8 @@ public class BuildWorkshopJob extends AbstractJob {
             for (Entry<ItemType, Integer> entry : workshopType.resources.entrySet()) {
                 ItemType itemType = entry.getKey();
                 for (int i = 0; i < entry.getValue().intValue(); i++) {
-                    HaulJob haulJob = new HaulJob(itemType, Workshop.getRandomPostition(position));
+                    HaulJob haulJob = new HaulJob(itemType, player.getStockManager(),
+                            Workshop.getRandomPostition(position));
                     haulJobs.add(haulJob);
                 }
             }

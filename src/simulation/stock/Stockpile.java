@@ -35,8 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import logger.Logger;
-import simulation.GameObject;
+import simulation.AbstractGameObject;
 import simulation.Player;
+import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
@@ -49,7 +50,7 @@ import simulation.map.MapIndex;
 /**
  * The Class Stockpile.
  */
-public class Stockpile extends GameObject implements IJobListener, IStockManagerListener {
+public class Stockpile extends AbstractGameObject implements IContainer, IJobListener, IStockManagerListener {
 
     /** Is the position in the stockpile used. */
     private final boolean[][] used;
@@ -61,9 +62,10 @@ public class Stockpile extends GameObject implements IJobListener, IStockManager
     private final MapArea area;
 
     /** What item type the stockpile accepts. */
-    private final List<ItemType> itemTypes = new ArrayList<>();
+    private final List<ItemType> acceptableItemTypes = new ArrayList<>();
 
-    private Player player;
+    /** The player that this stockpile belongs to. */
+    private final Player player;
 
     /**
      * An array of haul tasks that have been created for this stockpile, its remembered so they can be canceled if the
@@ -77,26 +79,30 @@ public class Stockpile extends GameObject implements IJobListener, IStockManager
     /**
      * Constructor for the stockpile.
      * @param areaTmp The area the stockpile will occupy
+     * @param playerTmp the player the stockpile belongs to
      */
     public Stockpile(final MapArea areaTmp, final Player playerTmp) {
         area = areaTmp;
         player = playerTmp;
         used = new boolean[area.width][area.height];
-        Logger.getInstance().log(this, "Stockpile id: " + getId());
+        Logger.getInstance().log(this, "New stockpile id: " + getId());
         player.getStockManager().addListener(this);
     }
 
-    /**
-     * Sets an item so that it belongs to this stockpile.
-     * @param item The item to be added
-     */
-    public void addItem(final Item item) {
-        if (itemTypes.contains(item.getType())) {
+    @Override
+    public boolean addItem(final Item item) {
+        Logger.getInstance().log(this, "Adding item - itemType: " + item.getType());
+        boolean itemAdded = false;
+        if (acceptableItemTypes.contains(item.getType())) {
             MapIndex pos = item.getPosition().sub(area.pos);
             used[pos.x][pos.y] = true;
             items.add(item);
             notifyListeners();
+            itemAdded = true;
+        } else {
+            Logger.getInstance().log(this, "Stockpile does not accept this item type");
         }
+        return itemAdded;
     }
 
     /**
@@ -122,7 +128,7 @@ public class Stockpile extends GameObject implements IJobListener, IStockManager
      * @return the accepts item type
      */
     public boolean getAcceptsItemType(final String itemTypeName) {
-        for (ItemType itemType : itemTypes) {
+        for (ItemType itemType : acceptableItemTypes) {
             if (itemType.equals(itemTypeName)) {
                 return true;
             }
@@ -145,13 +151,11 @@ public class Stockpile extends GameObject implements IJobListener, IStockManager
      */
     public int getItemCount(final String itemName) {
         int count = 0;
-
         for (Item item : items) {
             if (item.getType().equals(itemName)) {
                 count++;
             }
         }
-
         return count;
     }
 
@@ -183,17 +187,23 @@ public class Stockpile extends GameObject implements IJobListener, IStockManager
      * @return the types of item that this stockpile will accept
      */
     public List<ItemType> getItemTypes() {
-        return itemTypes;
+        return acceptableItemTypes;
     }
 
-    /**
-     * Gets the unused item.
-     * @param itemTypeName the item type name
-     * @return the unused item
-     */
+    @Override
     public Item getUnusedItem(final String itemTypeName) {
         for (Item item : items) {
             if (item.getType().equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Item getUnusedItemFromCategory(final String category) {
+        for (Item item : items) {
+            if (item.getType().category.equals(category) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
                 return item;
             }
         }
@@ -207,7 +217,7 @@ public class Stockpile extends GameObject implements IJobListener, IStockManager
      */
     public boolean hasAllItemTypesInCategory(final String categoryName) {
         int count = 0;
-        for (ItemType itemType : itemTypes) {
+        for (ItemType itemType : acceptableItemTypes) {
             if (itemType.category.equals(categoryName)) {
                 // assuming the same item type is not in there twice
                 count++;
@@ -219,54 +229,68 @@ public class Stockpile extends GameObject implements IJobListener, IStockManager
     @Override
     public void jobChanged(final IJob job) {
         if (job.isDone()) {
-            haulJobs.remove(job);
-            System.out.println("job removed");
+            HaulJob haulJob = (HaulJob) job;
+            Logger.getInstance().log(this,
+                    "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
+            haulJob.getItem().setUsed(false);
+            haulJobs.remove(haulJob);
         }
     }
 
-    /**
-     * Removes the item.
-     * @param item the item
-     */
-    public void removeItemFromStorage(final Item item) {
-        MapIndex pos = item.getPosition().sub(area.pos);
-        used[pos.x][pos.y] = false;
-
-        if (!items.remove(item)) {
-            Logger.getInstance().log(this, "Item removal failed(" + pos.x + ", " + pos.y + ") - " + items.size());
+    @Override
+    public boolean removeItem(final Item item) {
+        Logger.getInstance().log(this, "Removing item - itemType: " + item.getType());
+        boolean itemRemoved = false;
+        itemRemoved = items.remove(item);
+        if (itemRemoved) {
+            MapIndex pos = item.getPosition().sub(area.pos);
+            used[pos.x][pos.y] = false;
         }
-        notifyListeners();
+        for (Item container : items) {
+            if (container.removeItem(item)) {
+                itemRemoved = true;
+                break;
+            }
+        }
+        if (itemRemoved) {
+            notifyListeners();
+        }
+        return itemRemoved;
     }
 
     /**
      * Sets the type of item that this stockpile will collect.
      * @param itemTypeName the item type name
      * @param accept true to accept the item type
-     * @param stockManager the stock manager, used to add items that have been removed from the stockpile
      */
-    public void setItemType(final String itemTypeName, final boolean accept, final StockManager stockManager) {
+    public void setItemType(final String itemTypeName, final boolean accept) {
+        Logger.getInstance().log(this, "Set item type - itemTypeName: " + itemTypeName + " accept: " + accept);
         ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
         if (accept) {
-            if (!itemTypes.contains(itemType)) {
-                itemTypes.add(itemType);
+            if (!acceptableItemTypes.contains(itemType)) {
+                acceptableItemTypes.add(itemType);
+                createHaulJobs();
             }
         } else {
-            itemTypes.remove(itemType);
-            for (HaulJob haulTask : haulJobs) {
-                if (haulTask.getItem().getType().equals(itemTypeName)) {
-                    haulTask.interrupt("The stockpile was deleted or no longer accepts this item type");
-                    MapIndex pos = haulTask.getDropPosition().sub(area.pos);
+            acceptableItemTypes.remove(itemType);
+            // Interrupt and remove haul tasks that have been started
+            for (HaulJob haulJob : haulJobs) {
+                if (haulJob.getItem().getType().equals(itemTypeName)) {
+                    haulJob.interrupt("The stockpile was deleted or no longer accepts this item type");
+                    MapIndex pos = haulJob.getDropPosition().sub(area.pos);
                     used[pos.x][pos.y] = false;
                 }
             }
-        }
-        for (int i = 0; i < items.size(); i++) {
-            Item item = items.get(i);
-            if (!itemTypes.contains(item.getType())) {
-                stockManager.addItem(item);
-                MapIndex pos = item.getPosition().sub(area.pos);
-                used[pos.x][pos.y] = false;
-                i--;
+            // Remove items from this stockpile that are no longer accepted
+            for (int i = 0; i < items.size(); i++) {
+                Item item = items.get(i);
+                if (item.getType().equals(itemType)) {
+                    items.remove(i);
+                    player.getStockManager().addItem(item);
+                    MapIndex pos = item.getPosition().sub(area.pos);
+                    used[pos.x][pos.y] = false;
+                    i--;
+                }
             }
         }
     }
@@ -282,16 +306,24 @@ public class Stockpile extends GameObject implements IJobListener, IStockManager
 
     @Override
     public void stockManagerChanged() {
-        // TODO: should pass what has changed and only check if its something we care about
-        // Create haul tasks to fill up the stockpile
-        if (!itemTypes.isEmpty()) {
+        createHaulJobs();
+    }
+
+    /**
+     * Create haul tasks to fill up the stockpile.
+     */
+    private void createHaulJobs() {
+        Logger.getInstance().log(this, "Create haul jobs");
+        if (!acceptableItemTypes.isEmpty()) {
             for (int x = 0; x < area.width; x++) {
                 for (int y = 0; y < area.height; y++) {
                     if (!used[x][y]) {
-                        Item item = player.getStockManager().getUnstoredItem(itemTypes);
+                        Item item = player.getStockManager().getUnstoredItem(acceptableItemTypes);
                         if (item != null) {
+                            player.getStockManager().removeItem(item);
+                            item.setUsed(true);
                             used[x][y] = true;
-                            HaulJob haulJob = new HaulJob(item, true, area.pos.add(x, y, 0));
+                            HaulJob haulJob = new HaulJob(item, this, area.pos.add(x, y, 0));
                             haulJob.addListener(this);
                             player.getJobManager().addJob(haulJob);
                             haulJobs.add(haulJob);

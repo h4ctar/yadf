@@ -54,7 +54,7 @@ import simulation.workshop.Workshop;
 /**
  * The Class Player.
  */
-public class Player extends GameObject {
+public class Player extends AbstractGameObject {
 
     /** The name of the player. */
     private final String name;
@@ -414,7 +414,7 @@ public class Player extends GameObject {
         }
     }
 
-    private void notifyListeners(final GameObject gameObject, final boolean added) {
+    private void notifyListeners(final AbstractGameObject gameObject, final boolean added) {
         for (IPlayerListener listener : listeners) {
             listener.playerChanged(gameObject, added);
         }
