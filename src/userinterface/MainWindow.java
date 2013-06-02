@@ -32,6 +32,7 @@
 package userinterface;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -42,17 +43,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
+import javax.swing.border.Border;
 
 import logger.Logger;
 import settings.Settings;
@@ -80,6 +80,9 @@ import controller.SinglePlayerController;
  * The Class MainWindow.
  */
 public class MainWindow extends JFrame implements IMainWindow, IControllerListener {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -3847562580085069500L;
 
     /**
      * The Class ClientRunnable.
@@ -230,8 +233,12 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
             }
         }
 
-        setupMainMenu();
+        Font font = new Font("Minecraftia", Font.PLAIN, 14);
+        UIManager.getLookAndFeelDefaults().put("defaultFont", font);
+        font = new Font("Tahoma", Font.PLAIN, 11);
+        UIManager.put("InternalFrame.titleFont", font);
 
+        setupMainMenu();
         setVisible(true);
         setBounds(WINDOW_BOUNDS);
         setExtendedState(getExtendedState() | Frame.MAXIMIZED_BOTH);
@@ -500,24 +507,21 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         contentPane.add(tabbedPane, BorderLayout.CENTER);
 
         // Create the status bar
+        Border paddingBorder = BorderFactory.createEmptyBorder(2, 10, 2, 10);
         statusPanel = new JPanel();
-        statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         contentPane.add(statusPanel, BorderLayout.SOUTH);
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 
         fpsLabel = new JLabel("FPS");
-        fpsLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        fpsLabel.setBorder(new EtchedBorder());
+        fpsLabel.setBorder(paddingBorder);
         statusPanel.add(fpsLabel);
 
         dateLabel = new JLabel("Date");
-        dateLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        dateLabel.setBorder(new EtchedBorder());
+        dateLabel.setBorder(paddingBorder);
         statusPanel.add(dateLabel);
 
         stateLabel = new JLabel("State");
-        stateLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        stateLabel.setBorder(new EtchedBorder());
+        stateLabel.setBorder(paddingBorder);
         statusPanel.add(stateLabel);
 
         // The world pane contains the main game canvas
@@ -536,6 +540,13 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         stocksPane = new StocksPane();
         tabbedPane.addTab("Stocks", null, stocksPane, null);
 
+        setContentPane(contentPane);
+        revalidate();
+    }
+
+    @Override
+    public void showHowToPlay() {
+        contentPane = new HowToPlayPanel(this);
         setContentPane(contentPane);
         revalidate();
     }

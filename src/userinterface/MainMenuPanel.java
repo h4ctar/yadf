@@ -53,14 +53,14 @@ import userinterface.lobby.IMainWindow;
  */
 public class MainMenuPanel extends ImagePanel {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 2916881211506400113L;
+
     /**
      * Action listener for the host multiplayer game button.
      */
     private class HostMultiplayerGameActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             mainWindow.setupHostMultiplayerGame();
@@ -72,9 +72,6 @@ public class MainMenuPanel extends ImagePanel {
      */
     private class JoinMultiplayerGameActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             mainWindow.setupJoinMultiplayerGame();
@@ -86,9 +83,6 @@ public class MainMenuPanel extends ImagePanel {
      */
     private class LoadSinglePlayerGameActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             mainWindow.loadSinglePlayerGame();
@@ -100,14 +94,17 @@ public class MainMenuPanel extends ImagePanel {
      */
     private class QuitActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             mainWindow.quit();
         }
+    }
 
+    public class HowToPlayActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mainWindow.showHowToPlay();
+        }
     }
 
     /**
@@ -129,13 +126,10 @@ public class MainMenuPanel extends ImagePanel {
 
     /**
      * Instantiates a new main menu panel.
-     * 
      * @param mainWindowTmp the main window
      */
     public MainMenuPanel(final IMainWindow mainWindowTmp) {
-
         mainWindow = mainWindowTmp;
-
         setupLayout();
     }
 
@@ -159,7 +153,7 @@ public class MainMenuPanel extends ImagePanel {
         OutlineLabel titleLabel = new OutlineLabel("Ben's Burrows");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 60));
+        titleLabel.setFont(new Font("Minecraftia", Font.PLAIN, 40));
         GridBagConstraints titleLabelConstraints = new GridBagConstraints();
         titleLabelConstraints.gridwidth = 3;
         titleLabelConstraints.insets = new Insets(5, 5, 5, 0);
@@ -168,7 +162,6 @@ public class MainMenuPanel extends ImagePanel {
         panel.add(titleLabel, titleLabelConstraints);
 
         JButton newSinglePlayerGameButton = new JButton("New Single Player Game");
-        newSinglePlayerGameButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         GridBagConstraints newSinglePlayerGameButtonConstraints = new GridBagConstraints();
         newSinglePlayerGameButtonConstraints.fill = GridBagConstraints.VERTICAL;
         newSinglePlayerGameButtonConstraints.insets = new Insets(5, 5, 5, 5);
@@ -178,7 +171,6 @@ public class MainMenuPanel extends ImagePanel {
         newSinglePlayerGameButton.addActionListener(new SinglePlayerGameActionListener());
 
         JButton joinMultiplayerGameButton = new JButton("Join Multiplayer Game");
-        joinMultiplayerGameButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         GridBagConstraints joinMultiplayerGameButtonConstraints = new GridBagConstraints();
         joinMultiplayerGameButtonConstraints.fill = GridBagConstraints.VERTICAL;
         joinMultiplayerGameButtonConstraints.insets = new Insets(5, 5, 5, 5);
@@ -188,7 +180,6 @@ public class MainMenuPanel extends ImagePanel {
         joinMultiplayerGameButton.addActionListener(new JoinMultiplayerGameActionListener());
 
         JButton hostMultiplayerGameButton = new JButton("Host Multiplayer Game");
-        hostMultiplayerGameButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         GridBagConstraints hostMultiplayerGameButtonConstraints = new GridBagConstraints();
         hostMultiplayerGameButtonConstraints.fill = GridBagConstraints.VERTICAL;
         hostMultiplayerGameButtonConstraints.insets = new Insets(5, 5, 5, 5);
@@ -198,7 +189,6 @@ public class MainMenuPanel extends ImagePanel {
         hostMultiplayerGameButton.addActionListener(new HostMultiplayerGameActionListener());
 
         JButton loadSinglePlayerGameButton = new JButton("Load Single Player Game");
-        loadSinglePlayerGameButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         GridBagConstraints loadSinglePlayerGameButtonConstraints = new GridBagConstraints();
         loadSinglePlayerGameButtonConstraints.fill = GridBagConstraints.VERTICAL;
         loadSinglePlayerGameButtonConstraints.insets = new Insets(5, 5, 5, 5);
@@ -208,15 +198,14 @@ public class MainMenuPanel extends ImagePanel {
         loadSinglePlayerGameButton.addActionListener(new LoadSinglePlayerGameActionListener());
 
         JButton howToPlayButton = new JButton("How to play");
-        howToPlayButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         GridBagConstraints howToPlayButtonConstraints = new GridBagConstraints();
         howToPlayButtonConstraints.insets = new Insets(5, 5, 5, 5);
         howToPlayButtonConstraints.gridx = 1;
         howToPlayButtonConstraints.gridy = 5;
+        howToPlayButton.addActionListener(new HowToPlayActionListener());
         panel.add(howToPlayButton, howToPlayButtonConstraints);
 
         JButton quitButton = new JButton("Quit");
-        quitButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         GridBagConstraints quitButtonConstraints = new GridBagConstraints();
         quitButtonConstraints.fill = GridBagConstraints.VERTICAL;
         quitButtonConstraints.insets = new Insets(5, 5, 5, 5);

@@ -38,6 +38,8 @@ import simulation.character.Dwarf;
 import simulation.character.component.WalkMoveComponent;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;
+import simulation.item.ItemType;
+import simulation.item.ItemTypeManager;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 
@@ -46,8 +48,11 @@ import simulation.labor.LaborTypeManager;
  */
 public class HarvestJob extends AbstractJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 220791158826975417L;
+
     /**
-     * The Enum State.
+     * All the possible states that the job can be in.
      */
     enum State {
         /** The waiting for dwarf state. */
@@ -115,7 +120,7 @@ public class HarvestJob extends AbstractJob {
      */
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
 
         // Drop the item
         if (dwarf != null) {
@@ -186,8 +191,13 @@ public class HarvestJob extends AbstractJob {
             if (simulationSteps > HARVEST_DURATION) {
                 dwarf.beIdleMovement();
 
-                player.getStockManager().addItem(new Item(farmPlot.getPosition(), "Wheat"));
-                player.getStockManager().addItem(new Item(farmPlot.getPosition(), "Seed"));
+                // TODO: move the names of the item types into constants
+                ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
+                Item newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, player);
+                player.getStockManager().addItem(newItem);
+                itemType = ItemTypeManager.getInstance().getItemType("Seed");
+                newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, player);
+                player.getStockManager().addItem(newItem);
 
                 if (needToReleaseLock) {
                     dwarf.releaseLock();

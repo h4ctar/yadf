@@ -43,8 +43,11 @@ import simulation.item.Item;
  */
 public class PickupToolJob extends AbstractJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -8533807757453770766L;
+
     /**
-     * The Enum State.
+     * All the possible states that the job can be in.
      */
     enum State {
         /** The waiting for dwarf. */
@@ -101,7 +104,7 @@ public class PickupToolJob extends AbstractJob {
      */
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
 
         tool.setUsed(false);
 

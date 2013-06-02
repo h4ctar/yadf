@@ -5,9 +5,8 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: yadf Checks
-    Description: 
-Checkstyle configuration that checks the yadf coding conventions.
+    Checkstyle-Configuration: yadf checks
+    Description: none
 -->
 <module name="Checker">
   <property name="severity" value="warning"/>
@@ -65,7 +64,9 @@ Checkstyle configuration that checks the yadf coding conventions.
     <module name="HiddenField"/>
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
-    <module name="MagicNumber"/>
+    <module name="MagicNumber">
+      <property name="ignoreNumbers" value="-1, 0, 1, 2, 100, 1000"/>
+    </module>
     <module name="MissingSwitchDefault"/>
     <module name="RedundantThrows">
       <property name="suppressLoadErrors" value="true"/>

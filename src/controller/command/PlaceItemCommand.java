@@ -40,6 +40,9 @@ import simulation.map.MapIndex;
  */
 public class PlaceItemCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1255642354574304393L;
+
     /** The item type name. */
     private final String itemTypeName;
 

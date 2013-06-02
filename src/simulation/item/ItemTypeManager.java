@@ -50,6 +50,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import simulation.Player;
+import simulation.map.MapIndex;
+
 /**
  * The Class ItemTypeManager.
  */
@@ -60,7 +63,6 @@ public final class ItemTypeManager {
 
     /**
      * Gets the single instance of ItemTypeManager.
-     * 
      * @return single instance of ItemTypeManager
      */
     public static ItemTypeManager getInstance() {
@@ -84,7 +86,6 @@ public final class ItemTypeManager {
 
     /**
      * Gets the category names.
-     * 
      * @return the category names
      */
     public Set<String> getCategoryNames() {
@@ -93,16 +94,21 @@ public final class ItemTypeManager {
 
     /**
      * Returns a set of embark items.
+     * @param player the player that the items need to belong to
      * @return the embark items
      */
-    public List<Item> getEmbarkItems() {
+    public List<Item> getEmbarkItems(final Player player) {
         // TODO: this needs to return clones of the list
-        return embarkItems;
+        List<Item> copyOfEmbarkItems = new ArrayList<>();
+        for (Item item : embarkItems) {
+            Item copyItem = createItem(item, player);
+            copyOfEmbarkItems.add(copyItem);
+        }
+        return copyOfEmbarkItems;
     }
 
     /**
      * Gets the item type.
-     * 
      * @param itemTypeName the item type name
      * @return the item type
      */
@@ -112,15 +118,12 @@ public final class ItemTypeManager {
                 return category.get(itemTypeName);
             }
         }
-
         Logger.getInstance().log(null, "Item type does not exist: " + itemTypeName);
-
         return null;
     }
 
     /**
      * Gets the item types from category.
-     * 
      * @param category the category
      * @return the item types from category
      */
@@ -130,7 +133,6 @@ public final class ItemTypeManager {
 
     /**
      * Gets the number of item types in category.
-     * 
      * @param categoryName the category name
      * @return the number of item types in category
      */
@@ -140,7 +142,6 @@ public final class ItemTypeManager {
 
     /**
      * Gets the placeable items.
-     * 
      * @return the placeable items
      */
     public Set<ItemType> getPlaceableItems() {
@@ -157,7 +158,6 @@ public final class ItemTypeManager {
 
     /**
      * Load.
-     * 
      * @throws Exception the exception
      */
     public void load() throws Exception {
@@ -175,17 +175,15 @@ public final class ItemTypeManager {
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document document = documentBuilder.parse(inputStream);
         Element root = document.getDocumentElement();
-        NodeList itemNodes = root.getChildNodes();
+        NodeList itemNodes = root.getElementsByTagName("item");
         for (int i = 0; i < itemNodes.getLength(); i++) {
             Node itemNode = itemNodes.item(i);
-            if (itemNode instanceof Element) {
-                Element itemElement = (Element) itemNode;
-                String tempString = itemElement.getAttribute("quantity");
-                int quantity = "".equals(tempString) ? 1 : Integer.parseInt(tempString);
-                for (int j = 0; j < quantity; j++) {
-                    Item item = new Item(itemElement);
-                    embarkItems.add(item);
-                }
+            Element itemElement = (Element) itemNode;
+            String tempString = itemElement.getAttribute("quantity");
+            int quantity = "".equals(tempString) ? 1 : Integer.parseInt(tempString);
+            for (int j = 0; j < quantity; j++) {
+                Item item = createItem(itemElement);
+                embarkItems.add(item);
             }
         }
     }
@@ -196,7 +194,6 @@ public final class ItemTypeManager {
      */
     private void loadItemTypes() throws Exception {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("item_types.xml");
-
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document document = documentBuilder.parse(inputStream);
@@ -215,5 +212,56 @@ public final class ItemTypeManager {
                 categories.put(itemType.name, itemType);
             }
         }
+    }
+
+    /**
+     * Factory method to create the correct item.
+     * @param itemElement The DOM element to get attributes from
+     * @return the new item
+     * @throws Exception something went wrong
+     */
+    public Item createItem(final Element itemElement) throws Exception {
+        Item item;
+        String itemTypeName = itemElement.getAttribute("type");
+        ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
+        if (itemType.capacity > 0) {
+            item = new ContainerItem(itemElement);
+        } else {
+            item = new Item(itemElement);
+        }
+        return item;
+    }
+
+    /**
+     * Create an item from an item type.
+     * @param position the position of the new item
+     * @param itemType the type of the new item
+     * @param player the player that the new item will belong to
+     * @return the new item
+     */
+    public Item createItem(final MapIndex position, final ItemType itemType, final Player player) {
+        Item item;
+        if (itemType.capacity > 0) {
+            item = new ContainerItem(position, itemType, player);
+        } else {
+            item = new Item(position, itemType, player);
+        }
+        return item;
+    }
+
+    /**
+     * Create an item from another item.
+     * @param item the item to clone
+     * @param player the player that the new item will belong to
+     * @return the new item
+     */
+    private Item createItem(final Item item, final Player player) {
+        Item newItem;
+        if (item.itemType.capacity > 0) {
+            newItem = new ContainerItem((ContainerItem) item, player);
+        } else {
+            newItem = new Item(item, player);
+        }
+        return newItem;
     }
 }

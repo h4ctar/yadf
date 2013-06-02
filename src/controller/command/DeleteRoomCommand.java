@@ -39,6 +39,9 @@ import simulation.room.Room;
  */
 public class DeleteRoomCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 6706293486524959536L;
+
     /** The room id. */
     private final int roomId;
 

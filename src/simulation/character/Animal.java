@@ -38,6 +38,9 @@ import simulation.map.MapIndex;
  */
 public class Animal extends GameCharacter {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 1564386020978583713L;
+
     /**
      * Instantiates a new animal.
      * 

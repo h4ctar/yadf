@@ -59,14 +59,14 @@ import userinterface.lobby.IMainWindow;
  */
 public class SetupSinglePlayerGamePanel extends ImagePanel {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 8023188031117400114L;
+
     /**
      * Action listener for the cancel game button.
      */
     private class CancelActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             mainWindow.setupMainMenu();
@@ -78,9 +78,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
      */
     private class StartGameActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             String playerName = playerNameTextField.getText();
@@ -124,18 +121,17 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
 
         JPanel panel = new JPanel();
         panel.setOpaque(false);
+        GridBagLayout panelLayout = new GridBagLayout();
+        panelLayout.columnWidths = new int[] { 0, 0, 0, 0, 0 };
+        panelLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+        panelLayout.columnWeights = new double[] { 1.0, 0.0, 1.0, 1.0, Double.MIN_VALUE };
+        panelLayout.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
+        panel.setLayout(panelLayout);
         add(panel, BorderLayout.CENTER);
-        GridBagLayout panelConstraints = new GridBagLayout();
-        panelConstraints.columnWidths = new int[] { 0, 0, 0, 0, 0 };
-        panelConstraints.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-        panelConstraints.columnWeights = new double[] { 1.0, 0.0, 1.0, 1.0, Double.MIN_VALUE };
-        panelConstraints.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
-        panel.setLayout(panelConstraints);
 
         JLabel titleLabel = new OutlineLabel("Single Player Game");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 60));
+        titleLabel.setFont(new Font("Minecraftia", Font.PLAIN, 40));
         GridBagConstraints titleLabelConstraints = new GridBagConstraints();
         titleLabelConstraints.gridwidth = 4;
         titleLabelConstraints.insets = new Insets(0, 0, 5, 0);
@@ -144,8 +140,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         panel.add(titleLabel, titleLabelConstraints);
 
         nameLabel = new OutlineLabel("Name");
-        nameLabel.setForeground(Color.WHITE);
-        nameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         GridBagConstraints nameLableConstraints = new GridBagConstraints();
         nameLableConstraints.insets = new Insets(5, 5, 5, 5);
         nameLableConstraints.anchor = GridBagConstraints.EAST;
@@ -155,7 +149,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
 
         playerNameTextField = new JTextField();
         playerNameTextField.setText("Ben");
-        playerNameTextField.setFont(new Font("Tahoma", Font.PLAIN, 16));
         GridBagConstraints playerNameTextFieldConstraints = new GridBagConstraints();
         playerNameTextFieldConstraints.insets = new Insets(5, 5, 5, 5);
         playerNameTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -165,8 +158,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         playerNameTextField.setColumns(10);
 
         JLabel regionSizeLabel = new OutlineLabel("Region Size");
-        regionSizeLabel.setForeground(Color.WHITE);
-        regionSizeLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         GridBagConstraints regionSizeLabelConstraints = new GridBagConstraints();
         regionSizeLabelConstraints.insets = new Insets(5, 5, 5, 5);
         regionSizeLabelConstraints.anchor = GridBagConstraints.EAST;
@@ -175,7 +166,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         panel.add(regionSizeLabel, regionSizeLabelConstraints);
 
         regionSizeComboBox = new JComboBox<>();
-        regionSizeComboBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
         regionSizeComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Small", "Medium", "Large" }));
         regionSizeComboBox.setSelectedIndex(1);
         GridBagConstraints regionSizeComboBoxConstraints = new GridBagConstraints();
@@ -186,8 +176,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         panel.add(regionSizeComboBox, regionSizeComboBoxConstraints);
 
         JLabel resourcesLabel = new OutlineLabel("Resources");
-        resourcesLabel.setForeground(Color.WHITE);
-        resourcesLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         GridBagConstraints resourcesLabelConstraints = new GridBagConstraints();
         resourcesLabelConstraints.anchor = GridBagConstraints.EAST;
         resourcesLabelConstraints.insets = new Insets(5, 5, 5, 5);
@@ -196,7 +184,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         panel.add(resourcesLabel, resourcesLabelConstraints);
 
         resourcesComboBox = new JComboBox<>();
-        resourcesComboBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
         resourcesComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Minimal", "Standard", "Plenty" }));
         GridBagConstraints resourcesComboBoxConstraints = new GridBagConstraints();
         resourcesComboBoxConstraints.insets = new Insets(5, 5, 5, 5);
@@ -212,7 +199,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         startGameButtonConstraints.gridx = 1;
         startGameButtonConstraints.gridy = 4;
         panel.add(startGameButton, startGameButtonConstraints);
-        startGameButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         startGameButton.addActionListener(new StartGameActionListener());
 
         JButton cancelButton = new JButton("Cancel");
@@ -222,7 +208,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         cancelButtonConstraints.gridx = 1;
         cancelButtonConstraints.gridy = 5;
         panel.add(cancelButton, cancelButtonConstraints);
-        cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         cancelButton.addActionListener(new CancelActionListener());
         // CHECKSTYLE:ON
     }

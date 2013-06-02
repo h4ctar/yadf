@@ -67,9 +67,10 @@ public final class Logger {
      * 
      * @param object the object
      * @param text the text
+     * @param err true if its an error message
      */
     @SuppressWarnings("static-method")
-    public void log(final Object object, final String text) {
+    public void log(final Object object, final String text, final boolean err) {
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SS");
         String dateString = dateFormat.format(date);
@@ -80,7 +81,22 @@ public final class Logger {
         } else {
             className = "[" + object.getClass().getSimpleName() + "]";
         }
+        String message = dateString + " " + threadName + " " + className + " " + text;
+        if (err) {
+            System.err.println(message);
+        } else {
+            System.out.println(message);
+        }
+    }
 
-        System.out.println(dateString + " " + threadName + " " + className + " " + text);
+    /**
+     * Log.
+     * 
+     * @param object the object
+     * @param text the text
+     */
+    @SuppressWarnings("static-method")
+    public void log(final Object object, final String text) {
+        log(object, text, false);
     }
 }

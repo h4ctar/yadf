@@ -41,8 +41,12 @@ import simulation.item.Item;
  * The Class EatDrinkJob.
  */
 public class EatDrinkJob extends AbstractJob {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -559977291069519592L;
+
     /**
-     * The Enum State.
+     * All the possible states that the job can be in.
      */
     enum State {
         /** The look for food. */
@@ -122,7 +126,7 @@ public class EatDrinkJob extends AbstractJob {
      */
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
 
         if (wasteTimeJob != null) {
             wasteTimeJob.interrupt("Eat/drink job was interrupted");

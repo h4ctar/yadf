@@ -38,6 +38,9 @@ import java.io.Serializable;
  */
 public abstract class AbstractGameObject implements IGameObject, Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5321662116462424488L;
+
     /** The remove. */
     private boolean remove = false;
 
@@ -60,6 +63,7 @@ public abstract class AbstractGameObject implements IGameObject, Serializable {
      * 
      * @return The id of the entity
      */
+    @Override
     public int getId() {
         return id;
     }
@@ -69,6 +73,7 @@ public abstract class AbstractGameObject implements IGameObject, Serializable {
      * 
      * @return the removes the
      */
+    @Override
     public boolean getRemove() {
         return remove;
     }
@@ -76,6 +81,7 @@ public abstract class AbstractGameObject implements IGameObject, Serializable {
     /**
      * Sets the remove.
      */
+    @Override
     public void setRemove() {
         this.remove = true;
     }

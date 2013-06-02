@@ -73,7 +73,11 @@ import java.util.ArrayList;
  * 
  * 
  */
+// CHECKSTYLE:OFF
 public class NameGenerator implements Serializable {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5303569956306407988L;
 
     /**
      * Allow cons.
@@ -476,3 +480,4 @@ public class NameGenerator implements Serializable {
         bufRead.close();
     }
 }
+// CHECKSTYLE:ON

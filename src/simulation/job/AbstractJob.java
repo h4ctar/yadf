@@ -8,6 +8,9 @@ import java.util.List;
  */
 public abstract class AbstractJob implements IJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -2079523360053269856L;
+
     /** The listeners to this job. */
     private final List<IJobListener> listeners = new ArrayList<>();
 

@@ -52,6 +52,9 @@ import simulation.recipe.RecipeManager;
  */
 public class Workshop extends AbstractGameObject implements IContainer {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 6679458068681849511L;
+
     public static MapIndex getRandomPostition(final MapIndex position) {
         Random random = MyRandom.getInstance();
         return position.add(random.nextInt(WORKSHOP_SIZE), random.nextInt(WORKSHOP_SIZE), 0);
@@ -225,25 +228,25 @@ public class Workshop extends AbstractGameObject implements IContainer {
 
     @Override
     public boolean addItem(final Item item) {
-        Logger.getInstance().log(this, "Not implemented yet");
+        Logger.getInstance().log(this, "Not implemented yet", true);
         return false;
     }
 
     @Override
     public boolean removeItem(final Item item) {
-        Logger.getInstance().log(this, "Not implemented yet");
+        Logger.getInstance().log(this, "Not implemented yet", true);
         return false;
     }
 
     @Override
     public Item getUnusedItem(final String itemTypeName) {
-        Logger.getInstance().log(this, "Not implemented yet");
+        Logger.getInstance().log(this, "Not implemented yet", true);
         return null;
     }
 
     @Override
     public Item getUnusedItemFromCategory(final String category) {
-        Logger.getInstance().log(this, "Not implemented yet");
+        Logger.getInstance().log(this, "Not implemented yet", true);
         return null;
     }
 }

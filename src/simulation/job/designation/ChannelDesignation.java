@@ -42,6 +42,9 @@ import simulation.map.RegionMap;
  */
 public class ChannelDesignation extends AbstractDesignation {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 6420960356264271866L;
+
     /** The block type. */
     private final BlockType blockType;
 

@@ -45,8 +45,11 @@ import simulation.labor.LaborTypeManager;
  */
 public class TillJob extends AbstractJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -8463713853261562676L;
+
     /**
-     * The Enum State.
+     * All the possible states that the job can be in.
      */
     enum State {
 
@@ -115,7 +118,7 @@ public class TillJob extends AbstractJob {
      */
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
 
         // Drop the item
         if (dwarf != null) {

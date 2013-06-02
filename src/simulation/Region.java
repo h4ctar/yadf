@@ -55,16 +55,26 @@ import simulation.stock.Stockpile;
  */
 public class Region implements Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -5907933435638776825L;
+
     /** The number of starting animals. */
     private static final int NUMBER_OF_ANIMALS = 10;
 
     /** The probability that a tile will have a tree. */
     private static final double TREE_PROBABILITY = 0.1;
 
-    /** The number of simulation steps in one hour. */
-    public static final long SIMULATION_STEPS_PER_HOUR = 60;
+    /** How many hours in one day. */
+    private static final int HOURS_IN_A_DAY = 24;
 
-    public static final long SIMULATION_STEPS_PER_MINUTE = SIMULATION_STEPS_PER_HOUR / 60;
+    /** How many days in one year. */
+    private static final double DAYS_IN_A_YEAR = 365.242;
+
+    /** The number of simulation steps in one minute. */
+    public static final long SIMULATION_STEPS_PER_MINUTE = 2;
+
+    /** The number of simulation steps in one hour. */
+    public static final long SIMULATION_STEPS_PER_HOUR = SIMULATION_STEPS_PER_MINUTE * 60;
 
     /** The number of simulation steps in one day. */
     public static final long SIMULATION_STEPS_PER_DAY = SIMULATION_STEPS_PER_HOUR * 24;
@@ -79,7 +89,7 @@ public class Region implements Serializable {
     public static final long SIMULATION_STEPS_PER_SEASON = (long) (SIMULATION_STEPS_PER_DAY * 91.3105);
 
     /** The number of simulation steps in one year. */
-    public static final long SIMULATION_STEPS_PER_YEAR = (long) (SIMULATION_STEPS_PER_DAY * 365.242);
+    public static final long SIMULATION_STEPS_PER_YEAR = (long) (SIMULATION_STEPS_PER_DAY * DAYS_IN_A_YEAR);
 
     /** The Map of this region. */
     private final RegionMap map = new RegionMap();
@@ -101,7 +111,6 @@ public class Region implements Serializable {
 
     /**
      * Adds the player.
-     * 
      * @param player the player
      */
     public void addPlayer(final Player player) {
@@ -132,7 +141,6 @@ public class Region implements Serializable {
     /**
      * Checks if the location is valid for a new stockpile or building or similar thing that needs a flat area without
      * trees or items.
-     * 
      * @param area The area that the new stockpile will occupy
      * @return True if the area is a valid location else false
      */
@@ -176,7 +184,6 @@ public class Region implements Serializable {
 
     /**
      * Check index valid.
-     * 
      * @param mapIndex the map index
      * @return true, if successful
      */
@@ -192,7 +199,6 @@ public class Region implements Serializable {
                 }
             }
         }
-
         // Check that area is free of trees
         for (Tree tree : trees) {
             if (tree.getPosition().x == mapIndex.x && tree.getPosition().y == mapIndex.y
@@ -200,40 +206,34 @@ public class Region implements Serializable {
                 return false;
             }
         }
-
         // Must be able to stand on the block below
         if (!map.isWalkable(mapIndex)) {
             return false;
         }
-
         // Can't build on a ramp or top of stair case
         if (map.getBlock(mapIndex.add(0, 0, -1)).isClimb) {
             return false;
         }
-
         // Check that the area is free from other buildings
         // TODO: check if overlap with room
-
         return true;
     }
 
     /**
      * Gets the animals.
-     * 
      * @return the animals
      */
     public List<Animal> getAnimals() {
         return animals;
     }
 
-    // TODO: make this actually return the closest dwarf, also move into player
     /**
      * Gets the closest dwarf.
-     * 
      * @param position the position
      * @return the closest dwarf
      */
     public Dwarf getClosestDwarf(final MapIndex position) {
+        // TODO: make this actually return the closest dwarf, also move into player
         int minDistance = Integer.MAX_VALUE;
         Dwarf minDwarf = null;
 
@@ -255,7 +255,6 @@ public class Region implements Serializable {
 
     /**
      * Gets a reference to a dwarf at a particular location.
-     * 
      * @param mouseIndex the mouse index
      * @return the dwarf
      */
@@ -273,7 +272,6 @@ public class Region implements Serializable {
 
     /**
      * Gets the game character.
-     * 
      * @param position the position
      * @return the game character
      */
@@ -286,19 +284,16 @@ public class Region implements Serializable {
                 }
             }
         }
-
         for (GameCharacter goblin : goblins) {
             if (goblin.getPosition().equals(position)) {
                 return goblin;
             }
         }
-
         return null;
     }
 
     /**
      * Gets the goblins.
-     * 
      * @return the goblins
      */
     public List<Goblin> getGoblins() {
@@ -307,7 +302,6 @@ public class Region implements Serializable {
 
     /**
      * Gets a reference to an item at a particular location.
-     * 
      * @param mouseIndex the mouse index
      * @return the item
      */
@@ -319,13 +313,11 @@ public class Region implements Serializable {
                 }
             }
         }
-
         return null;
     }
 
     /**
      * Gets the map.
-     * 
      * @return the map
      */
     public RegionMap getMap() {
@@ -333,8 +325,7 @@ public class Region implements Serializable {
     }
 
     /**
-     * Gets the player.
-     * 
+     * Gets the player with passed id.
      * @param playerId the player id
      * @return the player
      */
@@ -344,13 +335,11 @@ public class Region implements Serializable {
                 return player;
             }
         }
-
         return null;
     }
 
     /**
-     * Gets the players.
-     * 
+     * Gets all the players.
      * @return the players
      */
     public List<Player> getPlayers() {
@@ -359,7 +348,6 @@ public class Region implements Serializable {
 
     /**
      * Find if a position has a stockpile on it.
-     * 
      * @param mapIndex The location you want to see if has a stockpile
      * @return A reference to a stockpile
      */
@@ -379,20 +367,18 @@ public class Region implements Serializable {
     }
 
     /**
-     * Gets the time string.
-     * 
+     * Gets a string representing the current time.
      * @return the time string
      */
     public String getTimeString() {
         long hour = time / SIMULATION_STEPS_PER_HOUR;
-        long day = hour / 24;
-        long year = (long) (day / 365.242);
-        return "Year " + year + " Day " + (long) (day % 365.242) + " Hour " + hour % 24;
+        long day = time / SIMULATION_STEPS_PER_DAY;
+        long year = time / SIMULATION_STEPS_PER_YEAR;
+        return "Year " + year + " Day " + (long) (day % DAYS_IN_A_YEAR) + " Hour " + hour % HOURS_IN_A_DAY;
     }
 
     /**
      * Returns a tree at a specific location if it exists.
-     * 
      * @param mapIndex The location you want to get a tree from
      * @return A reference to the tree at the location
      */
@@ -407,8 +393,7 @@ public class Region implements Serializable {
     }
 
     /**
-     * Gets the trees.
-     * 
+     * Gets all the trees.
      * @return the trees
      */
     public List<Tree> getTrees() {
@@ -417,7 +402,6 @@ public class Region implements Serializable {
 
     /**
      * Setup the region.
-     * 
      * @param regionSize the size of the region
      */
     public void setup(final MapIndex regionSize) {
@@ -432,7 +416,6 @@ public class Region implements Serializable {
      */
     public void update() {
         time++;
-
         // delete the trees that have been marked for deletion
         for (int i = 0; i < trees.size(); i++) {
             if (trees.get(i).getRemove()) {
@@ -440,19 +423,15 @@ public class Region implements Serializable {
                 i--;
             }
         }
-
         for (Player player : players) {
             player.update(this);
         }
-
         for (GameCharacter animal : animals) {
             animal.update(null, this);
         }
-
         for (GameCharacter goblin : goblins) {
             goblin.update(null, this);
         }
-
         // spawnGoblins();
     }
 
@@ -466,7 +445,6 @@ public class Region implements Serializable {
             position.x = random.nextInt(map.getMapSize().x);
             position.y = random.nextInt(map.getMapSize().y);
             position.z = map.getHeight(position.x, position.y);
-
             animals.add(new Animal("Animal", position));
         }
     }
@@ -480,11 +458,9 @@ public class Region implements Serializable {
             Logger.getInstance().log(this, "Goblin seige!");
             for (int i = 0; i < 4; i++) {
                 MapIndex position = new MapIndex();
-
                 position.x = random.nextInt(map.getMapSize().x);
                 position.y = random.nextInt(map.getMapSize().y);
                 position.z = map.getHeight(position.x, position.y);
-
                 goblins.add(new Goblin("Goblin", position));
             }
         }

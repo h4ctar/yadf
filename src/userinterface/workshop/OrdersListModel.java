@@ -41,6 +41,9 @@ import simulation.workshop.Workshop;
  */
 public class OrdersListModel extends AbstractListModel<String> implements IWorkshopListener {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -221041635977890239L;
+
     /** The workshop. */
     private Workshop workshop;
 

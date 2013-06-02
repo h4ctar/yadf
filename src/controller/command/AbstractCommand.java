@@ -43,6 +43,9 @@ import simulation.Region;
  */
 public abstract class AbstractCommand implements Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 8258888197341045332L;
+
     /** The player id. */
     protected int playerId;
 

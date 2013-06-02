@@ -40,6 +40,9 @@ import simulation.map.MapArea;
  */
 public class DesignationCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -4253892526416311874L;
+
     /** The selection. */
     private MapArea area = new MapArea();
 

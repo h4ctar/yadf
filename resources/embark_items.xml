@@ -1,19 +1,12 @@
 <items>
-    <item type="Barrel" quantity="2">
-        <items>
-            <item type="Bread" quantity="10" />
-        </items>
-    </item>
-    <item type="Barrel" quantity="2">
-        <items>
-            <item type="Beer" quantity="10" />
-        </items>
-    </item>
-    <item type="Sack" quantity="1">
-        <items>
-            <item type="Seed" quantity="20" />
-        </items>
-    </item>
+    <item type="Barrel" quantity="2" contentType="Bread" contentQuantity="10" />
+    <item type="Barrel" quantity="2" contentType="Beer" contentQuantity="10" />
+    <item type="Barrel" quantity="1" />
+    <item type="Barrel" quantity="1" />
+    <item type="Barrel" quantity="1" />
+    <item type="Sack" quantity="1" contentType="Seed" contentQuantity="20" />
+    <item type="Bread" quantity="10" />
+    <item type="Beer" quantity="10" />
     <item type="Oven" />
     <item type="Anvil" />
     <item type="Pick" />

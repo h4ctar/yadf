@@ -1,5 +1,8 @@
 package simulation;
 
+/**
+ * Interface all game objects need to implement.
+ */
 public interface IGameObject {
     /**
      * Returns the id of this game object.

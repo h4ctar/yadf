@@ -40,6 +40,9 @@ import simulation.map.MapArea;
  */
 public class CreateFarmCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1874694142393608510L;
+
     /** The area. */
     private final MapArea area;
 

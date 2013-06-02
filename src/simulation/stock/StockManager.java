@@ -39,6 +39,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import logger.Logger;
 import simulation.AbstractGameObject;
 import simulation.Player;
+import simulation.item.ContainerItem;
 import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -49,6 +50,9 @@ import simulation.map.MapIndex;
  * The Class StockManager, manages items for a player including stockpiles.
  */
 public class StockManager extends AbstractGameObject implements IContainer, Serializable {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 2947690954735554619L;
 
     /** The stockpiles owned by this stock manager. */
     private final List<Stockpile> stockpiles = new ArrayList<>();
@@ -88,15 +92,13 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
      * @param itemType the item type
      * @return the item count
      */
-    public int getItemCount(final ItemType itemType) {
+    public int getItemQuantity(final ItemType itemType) {
         int count = 0;
-
         for (Item item : items) {
             if (item.getType().equals(itemType)) {
                 count++;
             }
         }
-
         return count;
     }
 
@@ -116,8 +118,8 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
     }
 
     /**
-     * Gets all the items.
-     * @return A vector of references to all the items
+     * Gets all the unstored items.
+     * @return A list of references to all the unstored items
      */
     public List<Item> getItems() {
         return items;
@@ -154,6 +156,26 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
     }
 
     /**
+     * Get an item located at a specific map position.
+     * @param index the map position
+     * @return the item, null if no item found
+     */
+    public Item getItem(MapIndex index) {
+        for (Item item : items) {
+            if (index.equals(item.getPosition())) {
+                return item;
+            }
+        }
+        for (Stockpile stockpile : stockpiles) {
+            Item item = stockpile.getItem(index);
+            if (item != null) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Gets references to all the stockpiles.
      * @return A vector of references to all the stockpiles
      */
@@ -162,13 +184,30 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
     }
 
     /**
-     * Finds an item that is not in a stockpile, used by stockpile.update
-     * @param itemTypes the item types
+     * Finds an item that is not stored, including containers.
+     * @param itemTypes the item types to find
      * @return A reference to the found item, will be null if none could be found
      */
     public Item getUnstoredItem(final List<ItemType> itemTypes) {
+        Item foundItem = null;
         for (Item item : items) {
-            if (itemTypes.contains(item.getType()) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+            if (item.canBeStored(itemTypes) && !item.isUsed()) {
+                foundItem = item;
+                break;
+            }
+        }
+        return foundItem;
+    }
+
+    /**
+     * Finds an item that is not stored, not including containers.
+     * @param itemType the item type to find
+     * @return A reference to the found item, will be null if none could be found
+     */
+    public Item getUnstoredItem(final ItemType itemType) {
+        for (Item item : items) {
+            // TODO: move this into item
+            if (itemType.equals(item.getType()) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
                 return item;
             }
         }
@@ -177,22 +216,22 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
 
     @Override
     public Item getUnusedItem(final String itemTypeName) {
-        for (Item item : items) {
-            if (item.getType().equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
-                return item;
-            }
-            Item contentItem = item.getUnusedItem(itemTypeName);
-            if (contentItem != null) {
-                // TODO: is this the right time to add the item to the stock manager? maybe it should just mark it as
-                // used and wait for the dwarf to take it out of the container, same for stockpile.
-                addItem(contentItem);
-                return contentItem;
-            }
-        }
         for (Stockpile stockpile : stockpiles) {
             Item item = stockpile.getUnusedItem(itemTypeName);
             if (item != null) {
                 return item;
+            }
+        }
+        for (Item item : items) {
+            if (item.getType().equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+                return item;
+            }
+            // TODO: can this be done neatly without using instance of?
+            if (item instanceof ContainerItem) {
+                Item contentItem = ((ContainerItem) item).getUnusedItem(itemTypeName);
+                if (contentItem != null) {
+                    return contentItem;
+                }
             }
         }
         return null;
@@ -201,23 +240,21 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
     @Override
     public Item getUnusedItemFromCategory(final String category) {
         for (Stockpile stockpile : stockpiles) {
-            for (Item item : stockpile.getItems()) {
-                if (item.getType().category.equals(category) && !item.isUsed() && !item.getRemove()
-                        && !item.isPlaced()) {
-                    item.setUsed(true);
-                    return item;
-                }
+            Item item = stockpile.getUnusedItemFromCategory(category);
+            if (item != null) {
+                return item;
             }
         }
         for (Item item : this.items) {
             if (item.getType().category.equals(category) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
-                item.setUsed(true);
                 return item;
             }
-            Item contentItem = item.getUnusedItemFromCategory(category);
-            if (contentItem != null) {
-                contentItem.setUsed(true);
-                return contentItem;
+            // TODO: can this be done neatly without using instance of?
+            if (item instanceof ContainerItem) {
+                Item contentItem = ((ContainerItem) item).getUnusedItemFromCategory(category);
+                if (contentItem != null) {
+                    return contentItem;
+                }
             }
         }
 
@@ -239,11 +276,16 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
         }
         if (!itemRemoved) {
             for (Item container : items) {
-                if (container.removeItem(item)) {
-                    itemRemoved = true;
-                    break;
+                if (container instanceof ContainerItem) {
+                    if (((ContainerItem) container).removeItem(item)) {
+                        itemRemoved = true;
+                        break;
+                    }
                 }
             }
+        }
+        if (itemRemoved) {
+            notifyListeners();
         }
         return itemRemoved;
     }
@@ -256,7 +298,7 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
         // delete the stockpiles that need to be removed
         for (int i = 0; i < stockpiles.size(); i++) {
             if (stockpiles.get(i).getRemove()) {
-                items.addAll(stockpiles.get(i).getItems());
+                stockpiles.get(i).remove();
                 stockpiles.remove(i);
                 i--;
             }
@@ -266,7 +308,6 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
             if (items.get(i).getRemove()) {
                 items.remove(i);
                 i--;
-                notifyListeners();
             }
         }
     }
@@ -278,5 +319,13 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
         for (IStockManagerListener listener : listeners) {
             listener.stockManagerChanged();
         }
+    }
+
+    /**
+     * Stop a listener from listening.
+     * @param listener the listener
+     */
+    public void removeListener(final IStockManagerListener listener) {
+        listeners.remove(listener);
     }
 }

@@ -38,12 +38,14 @@ import simulation.Player;
  */
 public class DeleteStockpileCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -2538751699111031126L;
+
     /** The stockpile id. */
     private final int stockpileId;
 
     /**
      * Instantiates a new delete stockpile command.
-     * 
      * @param player the player
      * @param stockpileIdTmp the stockpile id
      */
@@ -52,9 +54,6 @@ public class DeleteStockpileCommand extends AbstractCommand {
         stockpileId = stockpileIdTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doCommand() {
         player.getStockManager().getStockpile(stockpileId).setRemove();

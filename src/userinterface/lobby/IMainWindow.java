@@ -100,4 +100,6 @@ public interface IMainWindow {
      * @param regionSize the region size
      */
     void startSinglePlayerGame(String playerName, MapIndex regionSize);
+
+    void showHowToPlay();
 }

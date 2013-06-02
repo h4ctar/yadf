@@ -38,6 +38,9 @@ import simulation.map.MapIndex;
  */
 public class Tree extends AbstractEntity {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -2672289842428964769L;
+
     /**
      * Instantiates a new tree.
      * @param position the position

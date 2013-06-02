@@ -34,6 +34,7 @@ package simulation.job.designation;
 import java.util.ArrayList;
 import java.util.List;
 
+import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.job.AbstractJob;
@@ -44,10 +45,11 @@ import simulation.map.MapIndex;
 /**
  * abstract class Abstractfor a designation Designations are groups or areas of jobs to do that can be added to or
  * subtracted from and spawn jobs.
- * 
- * @author Ben Smith (bensmith87@gmail.com)
  */
 public abstract class AbstractDesignation extends AbstractJob {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -7914906499210843383L;
 
     /** The jobs. */
     protected List<AbstractDesignationJob> jobs = new ArrayList<>();
@@ -60,7 +62,6 @@ public abstract class AbstractDesignation extends AbstractJob {
 
     /**
      * Add an area to the designation.
-     * 
      * @param area An area to add to the designation
      */
     public void addToDesignation(final MapArea area) {
@@ -73,16 +74,12 @@ public abstract class AbstractDesignation extends AbstractJob {
 
     /**
      * Gets all the map indicies that are in the designation, used by the GUI to display the designation.
-     * 
      * @return A vector of map indicies
      */
     public List<MapIndex> getMapIndicies() {
         return mapIndicies;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         if (mapIndicies.isEmpty()) {
@@ -92,17 +89,12 @@ public abstract class AbstractDesignation extends AbstractJob {
         return mapIndicies.size() + " locations";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         /* This should never be interrupted */
+        Logger.getInstance().log(this, "Error: Designations should never be interrupted", true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return false;
@@ -110,7 +102,6 @@ public abstract class AbstractDesignation extends AbstractJob {
 
     /**
      * Removes an area from the designation, and removes the job.
-     * 
      * @param area The area to be removed
      */
     public void removeFromDesignation(final MapArea area) {
@@ -131,7 +122,6 @@ public abstract class AbstractDesignation extends AbstractJob {
 
     /**
      * Removes a location from the designation.
-     * 
      * @param mapIndex2 The location to be removed
      */
     public void removeFromDesignation(final MapIndex mapIndex2) {
@@ -143,9 +133,6 @@ public abstract class AbstractDesignation extends AbstractJob {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         addNewJobs(region);
@@ -159,7 +146,6 @@ public abstract class AbstractDesignation extends AbstractJob {
 
     /**
      * Adds the new jobs.
-     * 
      * @param region the region
      */
     private void addNewJobs(final Region region) {
@@ -167,7 +153,6 @@ public abstract class AbstractDesignation extends AbstractJob {
             if (!valid(mapIndex, region)) {
                 continue;
             }
-
             boolean alreadyAdded = false;
             for (MapIndex existingMapIndex : mapIndicies) {
                 if (existingMapIndex.equals(mapIndex)) {
@@ -175,13 +160,11 @@ public abstract class AbstractDesignation extends AbstractJob {
                     break;
                 }
             }
-
             if (!alreadyAdded) {
                 jobs.add(createJob(mapIndex, region));
                 mapIndicies.add(mapIndex);
             }
         }
-
         newMapIndicies.clear();
     }
 
@@ -201,7 +184,6 @@ public abstract class AbstractDesignation extends AbstractJob {
     /**
      * Method to remove a job created by this designation, this will be called when an area is removed from the
      * designation.
-     * 
      * @param index The location of the job to be removed
      */
     private void removeJob(final MapIndex index) {
@@ -216,7 +198,6 @@ public abstract class AbstractDesignation extends AbstractJob {
     /**
      * Template method to be filled out by concrete sub classes that adds a job to a job manager for this particular
      * designation.
-     * 
      * @param mapIndex The location of the job
      * @param region the region
      * @return the i designation job
@@ -226,7 +207,6 @@ public abstract class AbstractDesignation extends AbstractJob {
     /**
      * Template method that should return if a particular location(map index) is valid for the particular designation
      * type.
-     * 
      * @param mapIndex The location to check
      * @param region the region
      * @return True if location is valid otherwise false

@@ -38,6 +38,9 @@ import simulation.map.MapIndex;
  */
 public abstract class AbstractEntity extends AbstractGameObject {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1522869275256512642L;
+
     /** The position of the entity. */
     protected MapIndex position;
 

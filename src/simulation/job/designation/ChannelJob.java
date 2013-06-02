@@ -37,6 +37,8 @@ import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.component.WalkMoveComponent;
 import simulation.item.Item;
+import simulation.item.ItemType;
+import simulation.item.ItemTypeManager;
 import simulation.job.WasteTimeJob;
 import simulation.labor.LaborTypeManager;
 import simulation.map.BlockType;
@@ -47,6 +49,9 @@ import simulation.map.RegionMap;
  * The Class ChannelJob.
  */
 public class ChannelJob extends AbstractDesignationJob {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 117706611556221325L;
 
     /**
      * The different states that this job can be in.
@@ -122,7 +127,7 @@ public class ChannelJob extends AbstractDesignationJob {
      */
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
 
         designation.removeFromDesignation(position);
 
@@ -205,7 +210,8 @@ public class ChannelJob extends AbstractDesignationJob {
                 String itemTypeName = map.getBlock(position.add(0, 0, -1)).itemMined;
 
                 if (itemTypeName != null) {
-                    Item blockItem = new Item(position, itemTypeName);
+                    ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
+                    Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, player);
                     player.getStockManager().addItem(blockItem);
                 }
             }

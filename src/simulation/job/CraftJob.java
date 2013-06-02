@@ -42,6 +42,7 @@ import simulation.character.Dwarf;
 import simulation.character.component.WalkMoveComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
+import simulation.item.ItemTypeManager;
 import simulation.labor.LaborTypeManager;
 import simulation.recipe.Recipe;
 import simulation.workshop.Workshop;
@@ -50,6 +51,9 @@ import simulation.workshop.Workshop;
  * The Class CraftJob.
  */
 public class CraftJob extends AbstractJob {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 8969989694678543875L;
 
     /**
      * The different states that this job can be in.
@@ -133,7 +137,7 @@ public class CraftJob extends AbstractJob {
      */
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
 
         workshop.setOccupied(false);
 
@@ -174,7 +178,7 @@ public class CraftJob extends AbstractJob {
             for (Entry<ItemType, Integer> entry : recipe.resources.entrySet()) {
                 ItemType itemType = entry.getKey();
                 for (int i = 0; i < entry.getValue().intValue(); i++) {
-                    HaulJob haulJob = new HaulJob(itemType, workshop, workshop.getRandomPosition());
+                    HaulJob haulJob = new HaulJob(itemType, player.getStockManager(), workshop.getRandomPosition());
                     haulJobs.add(haulJob);
                 }
             }
@@ -227,7 +231,9 @@ public class CraftJob extends AbstractJob {
                 }
 
                 for (int i = 0; i < recipe.quantity; i++) {
-                    player.getStockManager().addItem(new Item(workshop.getPosition(), recipe.itemType));
+                    Item newItem = ItemTypeManager.getInstance().createItem(workshop.getPosition(), recipe.itemType,
+                            player);
+                    player.getStockManager().addItem(newItem);
                 }
 
                 workshop.setOccupied(false);

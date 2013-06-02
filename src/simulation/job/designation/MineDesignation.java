@@ -40,17 +40,14 @@ import simulation.map.RegionMap;
  */
 public class MineDesignation extends AbstractDesignation {
 
-    /**
-     * {@inheritDoc}
-     */
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5078985398861947613L;
+
     @Override
     public String toString() {
         return "Mine Designation";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean valid(final MapIndex mapIndex, final Region region) {
         RegionMap map = region.getMap();
@@ -58,9 +55,6 @@ public class MineDesignation extends AbstractDesignation {
         return map.getBlock(mapIndex).isMineable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected AbstractDesignationJob createJob(final MapIndex mapIndex, final Region region) {
         return new MineJob(mapIndex, this);

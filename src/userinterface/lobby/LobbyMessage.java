@@ -39,6 +39,9 @@ import java.util.List;
  */
 public class LobbyMessage implements Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -8777477139231963446L;
+
     /** The type. */
     public LobbyMessageType type;
 

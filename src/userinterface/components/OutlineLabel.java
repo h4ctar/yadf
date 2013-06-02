@@ -45,18 +45,18 @@ import javax.swing.JLabel;
  */
 public class OutlineLabel extends JLabel {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1428120249631315501L;
+
     /**
      * Instantiates a new outline label.
-     * 
      * @param text the text
      */
     public OutlineLabel(final String text) {
         super(text);
+        setForeground(Color.WHITE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void paintComponent(final Graphics g) {
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -67,16 +67,14 @@ public class OutlineLabel extends JLabel {
 
         int h = fm.getAscent();
         int x = 0;
+        int shadowOffset = getFont().getSize() / 10;
         for (char ch : chars) {
             int w = fm.charWidth(ch);
 
-            g.setColor(Color.BLACK);
-            g.drawString("" + ch, x - 1, h - 1);
-            g.drawString("" + ch, x + 1, h - 1);
-            g.drawString("" + ch, x - 1, h + 1);
-            g.drawString("" + ch, x + 1, h + 1);
+            g.setColor(Color.GRAY);
+            g.drawString("" + ch, x + shadowOffset, h + shadowOffset);
 
-            g.setColor(getForeground());
+            g.setColor(Color.WHITE);
             g.drawString("" + ch, x, h);
 
             x += w;

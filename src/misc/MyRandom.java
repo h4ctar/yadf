@@ -38,6 +38,9 @@ import java.util.Random;
  */
 public final class MyRandom extends Random {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 2416662980899311719L;
+
     /** The instance. */
     private static MyRandom instance;
 

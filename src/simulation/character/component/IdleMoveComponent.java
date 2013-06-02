@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Random;
 
 import misc.MyRandom;
-
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
@@ -50,33 +49,28 @@ public class IdleMoveComponent extends AbstractMoveComponent {
     /** How many simulation steps since last walking step taken. */
     private int simulationSteps = 0;
 
-    /** How many simulation steps between walking steps. */
-    private final long walkSpeed = Region.SIMULATION_STEPS_PER_MINUTE * 8;
+    /** Minimum number of simulation steps between walking steps. */
+    private static final long MIN_WALK_DURATION = Region.SIMULATION_STEPS_PER_MINUTE * 8;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** Maximum number of simulation steps between walking steps. */
+    private static final long MAX_WALK_DURATION = Region.SIMULATION_STEPS_PER_MINUTE * 16;
+
     @Override
     public void kill() {
         /* do nothing. */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         RegionMap map = region.getMap();
         Random random = MyRandom.getInstance();
 
         fallDown(character, map);
-
         checkBlocked(character, map);
 
         simulationSteps++;
-        if (simulationSteps > walkSpeed * 2 + random.nextInt((int) (walkSpeed * 4))) {
+        if (simulationSteps > MIN_WALK_DURATION + random.nextInt((int) (MAX_WALK_DURATION - MIN_WALK_DURATION))) {
             List<WalkableNode> adjacencies = map.getAdjacencies(character.getPosition());
-
             if (!adjacencies.isEmpty()) {
                 WalkableNode node = adjacencies.get(random.nextInt(adjacencies.size()));
 

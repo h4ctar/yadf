@@ -56,6 +56,9 @@ import simulation.workshop.Workshop;
  */
 public class Player extends AbstractGameObject {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -6334725429593228897L;
+
     /** The name of the player. */
     private final String name;
 
@@ -80,6 +83,7 @@ public class Player extends AbstractGameObject {
     /** The name generator. */
     private NameGenerator nameGenerator;
 
+    /** All the listeners to this player. */
     private final List<IPlayerListener> listeners = new ArrayList<>();
 
     /** The size of the embark area. */
@@ -109,6 +113,10 @@ public class Player extends AbstractGameObject {
         notifyListeners(farm, true);
     }
 
+    /**
+     * Add a new listener to this player.
+     * @param listener the listener to add
+     */
     public void addListener(final IPlayerListener listener) {
         listeners.add(listener);
     }
@@ -328,7 +336,6 @@ public class Player extends AbstractGameObject {
      * 
      * @param embarkPosition the embark position
      * @param numberOfStartingDwarfs the number of starting dwarfs
-     * @param embarkResources the resources to embark with
      * @param map the map to embark on
      */
     public void setup(final MapIndex embarkPosition, final int numberOfStartingDwarfs, final RegionMap map) {
@@ -403,7 +410,7 @@ public class Player extends AbstractGameObject {
      */
     private void addEmbarkResources(final MapIndex embarkPosition, final RegionMap map) {
         Random random = MyRandom.getInstance();
-        List<Item> embarkItems = ItemTypeManager.getInstance().getEmbarkItems();
+        List<Item> embarkItems = ItemTypeManager.getInstance().getEmbarkItems(this);
         for (Item item : embarkItems) {
             MapIndex position = new MapIndex(embarkPosition);
             position.x -= random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
@@ -414,6 +421,11 @@ public class Player extends AbstractGameObject {
         }
     }
 
+    /**
+     * Notify all the listeners that something has changed.
+     * @param gameObject the object that has changed
+     * @param added true if the object has been added
+     */
     private void notifyListeners(final AbstractGameObject gameObject, final boolean added) {
         for (IPlayerListener listener : listeners) {
             listener.playerChanged(gameObject, added);

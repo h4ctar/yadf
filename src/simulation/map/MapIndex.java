@@ -38,6 +38,9 @@ import java.io.Serializable;
  */
 public class MapIndex implements Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -8302537732545902448L;
+
     /** The z. */
     public int x, y, z;
 

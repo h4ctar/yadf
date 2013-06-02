@@ -39,6 +39,9 @@ import simulation.workshop.Workshop;
  */
 public class CancelOrderCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5263381483866100428L;
+
     /** The workshop id. */
     private final int workshopId;
 

@@ -44,6 +44,9 @@ import simulation.map.MapIndex;
  */
 public class Room extends AbstractGameObject {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -4517865861465305417L;
+
     /** The items. */
     private final List<Item> items = new ArrayList<>();
 

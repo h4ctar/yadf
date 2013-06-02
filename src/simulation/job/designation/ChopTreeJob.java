@@ -38,6 +38,8 @@ import simulation.Tree;
 import simulation.character.Dwarf;
 import simulation.character.component.WalkMoveComponent;
 import simulation.item.Item;
+import simulation.item.ItemType;
+import simulation.item.ItemTypeManager;
 import simulation.job.WasteTimeJob;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
@@ -47,8 +49,11 @@ import simulation.map.MapIndex;
  */
 public class ChopTreeJob extends AbstractDesignationJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -7689577169283098909L;
+
     /**
-     * The Enum State.
+     * All the possible states that the job can be in.
      */
     enum State {
         /** The waiting for dwarf. */
@@ -105,7 +110,7 @@ public class ChopTreeJob extends AbstractDesignationJob {
 
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
         designation.removeFromDesignation(tree.getPosition());
 
         if (wasteTimeJob != null) {
@@ -141,7 +146,6 @@ public class ChopTreeJob extends AbstractDesignationJob {
             dwarf = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType("Wood cutting"));
             if (dwarf != null) {
                 moveComponent = dwarf.walkToPosition(tree.getPosition(), false);
-
                 state = State.GOTO;
             }
             break;
@@ -151,12 +155,10 @@ public class ChopTreeJob extends AbstractDesignationJob {
                 interrupt("Tree missing");
                 return;
             }
-
             if (moveComponent.isNoPath()) {
                 interrupt("No path to tree");
                 return;
             }
-
             if (moveComponent.isArrived()) {
                 state = State.CHOP_TREE;
                 wasteTimeJob = new WasteTimeJob(dwarf, DURATION);
@@ -165,23 +167,19 @@ public class ChopTreeJob extends AbstractDesignationJob {
 
         case CHOP_TREE:
             wasteTimeJob.update(player, region);
-
             if (wasteTimeJob.isDone()) {
                 designation.removeFromDesignation(tree.getPosition());
-
                 if (tree == null || tree.getRemove()) {
                     interrupt("Tree missing");
                     return;
                 }
-
-                Item log = new Item(tree.getPosition(), "Log");
+                ItemType itemType = ItemTypeManager.getInstance().getItemType("Log");
+                Item log = ItemTypeManager.getInstance().createItem(tree.getPosition(), itemType, player);
                 player.getStockManager().addItem(log);
                 tree.setRemove();
-
                 dwarf.getSkill().increaseSkillLevel(LaborTypeManager.getInstance().getLaborType("Wood cutting"));
                 dwarf.beIdleMovement();
                 dwarf.releaseLock();
-
                 done = true;
             }
             break;

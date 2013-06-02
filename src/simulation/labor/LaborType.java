@@ -43,6 +43,9 @@ import simulation.item.ItemTypeManager;
  */
 public class LaborType implements Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 1205819995595594739L;
+
     /** The name. */
     public final String name;
 

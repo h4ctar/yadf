@@ -43,11 +43,13 @@ import simulation.room.Room;
  */
 public class PlaceItemJob extends AbstractJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -7795181197544909062L;
+
     /**
      * The different states that this job can be in.
      */
     enum State {
-
         /** The start. */
         START,
         /** The haul item. */
@@ -102,7 +104,7 @@ public class PlaceItemJob extends AbstractJob {
      */
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
 
         if (haulJob != null) {
             haulJob.interrupt("Place item job has been interrupted");

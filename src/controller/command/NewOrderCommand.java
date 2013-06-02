@@ -39,6 +39,9 @@ import simulation.workshop.Workshop;
  */
 public class NewOrderCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 2253882846226485375L;
+
     /** The workshop id. */
     private final int workshopId;
 

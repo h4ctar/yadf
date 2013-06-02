@@ -38,6 +38,9 @@ import java.io.Serializable;
  */
 public class MapArea implements Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 8733787812832562888L;
+
     /** The pos. */
     public MapIndex pos;
 

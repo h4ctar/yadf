@@ -38,10 +38,10 @@ import java.util.List;
 import logger.Logger;
 import simulation.Player;
 import simulation.Region;
+import simulation.job.designation.AbstractDesignation;
 import simulation.job.designation.ChannelDesignation;
 import simulation.job.designation.ChopTreeDesignation;
 import simulation.job.designation.ConstructionDesignation;
-import simulation.job.designation.AbstractDesignation;
 import simulation.job.designation.DesignationType;
 import simulation.job.designation.MineDesignation;
 import simulation.map.BlockType;
@@ -51,10 +51,11 @@ import simulation.map.BlockType;
  * 
  * This class is responsible for holding all the jobs, telling them to update and removing them when they are done, it
  * also contains the designations and launches jobs for them when required.
- * 
- * @author Ben Smith (bensmith87@gmail.com)
  */
 public class JobManager implements Serializable {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -3697576654461518146L;
 
     /** The jobs. */
     private final List<IJob> jobs = new ArrayList<>();

@@ -40,6 +40,9 @@ import simulation.room.Room;
  */
 public class ItemListModel extends AbstractListModel<String> {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1108175675511497032L;
+
     /** The room. */
     private Room room;
 

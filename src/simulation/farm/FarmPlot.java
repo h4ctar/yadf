@@ -46,10 +46,19 @@ import simulation.map.MapIndex;
 public class FarmPlot {
 
     /**
-     * The Enum State.
+     * The State of the job.
      */
     public enum State {
-        START, TILL, PLANT, GROW, HARVEST
+        /** The start state. */
+        START,
+        /** The till state. */
+        TILL,
+        /** The plant state. */
+        PLANT,
+        /** The grow state. */
+        GROW,
+        /** The harvest state. */
+        HARVEST
     }
 
     /** The state. */
@@ -62,7 +71,7 @@ public class FarmPlot {
     private IJob job;
 
     /** The Constant growDuration. */
-    private final static long GROW_DURATION = Region.SIMULATION_STEPS_PER_WEEK;
+    private static final long GROW_DURATION = Region.SIMULATION_STEPS_PER_WEEK;
 
     /** The simulation steps. */
     private int simulationSteps;
@@ -70,10 +79,10 @@ public class FarmPlot {
     /**
      * Instantiates a new farm plot.
      * 
-     * @param position the position
+     * @param positionTmp the position
      */
-    public FarmPlot(final MapIndex position) {
-        this.position = position;
+    public FarmPlot(final MapIndex positionTmp) {
+        position = positionTmp;
     }
 
     /**
@@ -143,6 +152,9 @@ public class FarmPlot {
                 job = null;
                 state = State.START;
             }
+            break;
+
+        default:
             break;
         }
     }

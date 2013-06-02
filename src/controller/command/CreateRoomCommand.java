@@ -37,10 +37,11 @@ import simulation.room.Room;
 
 /**
  * Command to create a room.
- * 
- * @author Ben Smith (bensmith87@gmail.com)
  */
 public class CreateRoomCommand extends AbstractCommand {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5855557917342874913L;
 
     /** The area that the room should occupy. */
     private final MapArea area;

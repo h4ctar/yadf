@@ -39,6 +39,9 @@ import simulation.character.Dwarf;
  */
 public class EnableLaborCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -5638692578411718862L;
+
     /** The dwarf id. */
     private final int dwarfId;
 

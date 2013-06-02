@@ -40,20 +40,17 @@ import simulation.character.GameCharacter;
  */
 public class KillEveryoneComponent extends AbstractCharacterComponent {
 
+    /** How far can he see. */
+    private static final int VIEW_DISTANCE = 20;
+
     /** The dwarf. */
     private GameCharacter dwarf;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void kill() {
         /* do nothing */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         if (dwarf != null) {
@@ -71,7 +68,6 @@ public class KillEveryoneComponent extends AbstractCharacterComponent {
 
     /**
      * Look for dwarf.
-     * 
      * @param character the character
      * @param region the region
      */
@@ -81,7 +77,7 @@ public class KillEveryoneComponent extends AbstractCharacterComponent {
         if (dwarf != null) {
             int distance = dwarf.getPosition().distance(character.getPosition());
 
-            if (distance < 20) {
+            if (distance < VIEW_DISTANCE) {
                 // character.move = new ChaseMoveComponent(dwarf);
                 // character.attack = new AttackComponent(dwarf);
             } else {

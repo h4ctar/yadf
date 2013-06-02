@@ -2,6 +2,9 @@ package simulation.item;
 
 import simulation.IGameObject;
 
+/**
+ * Interface for a container.
+ */
 public interface IContainer extends IGameObject {
     /**
      * Add an item to this container.
@@ -30,5 +33,4 @@ public interface IContainer extends IGameObject {
      * @return the item from category
      */
     Item getUnusedItemFromCategory(String category);
-
 }

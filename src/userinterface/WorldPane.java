@@ -48,6 +48,7 @@ import javax.swing.KeyStroke;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
+import simulation.item.Item;
 import simulation.job.designation.DesignationType;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -55,6 +56,7 @@ import simulation.room.Room;
 import simulation.stock.Stockpile;
 import simulation.workshop.Workshop;
 import userinterface.dwarf.DwarfInterface;
+import userinterface.item.ItemInterface;
 import userinterface.room.RoomInterface;
 import userinterface.stockpile.StockpileInterface;
 import userinterface.workshop.WorkshopInterface;
@@ -70,6 +72,9 @@ import controller.command.PlaceItemCommand;
  * The Class WorldPane.
  */
 public class WorldPane extends JDesktopPane implements ComponentListener, MouseListener, MouseMotionListener {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5495536352766170664L;
 
     /** The world canvas. */
     private final WorldCanvas worldCanvas;
@@ -95,6 +100,9 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
 
     /** The dwarf interface. */
     private DwarfInterface dwarfInterface;
+
+    /** The item interface. */
+    private ItemInterface itemInterface;
 
     /** The main popup menu. */
     private MainPopupMenu mainPopupMenu;
@@ -194,31 +202,19 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         add(worldCanvas, BorderLayout.CENTER);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void componentHidden(final ComponentEvent e) { /* do nothing */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void componentMoved(final ComponentEvent e) { /* do nothing */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void componentResized(final ComponentEvent e) {
         worldCanvas.setSize(getSize());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void componentShown(final ComponentEvent e) { /* do nothing */
     }
@@ -248,9 +244,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mouseClicked(final MouseEvent e) {
         switch (guiState) {
@@ -263,6 +256,14 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
                 if (dwarf != null) {
                     dwarfInterface.setDwarf(dwarf, worldCanvas);
                     dwarfInterface.setVisible(true);
+                    return;
+                }
+
+                // If left click on a item, show the item interface
+                Item item = player.getStockManager().getItem(mouseIndex);
+                if (item != null) {
+                    itemInterface.setItem(item);
+                    itemInterface.setVisible(true);
                     return;
                 }
 
@@ -339,9 +340,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mouseDragged(final MouseEvent e) {
         mouseIndex = worldCanvas.getMouseIndex(e.getX(), e.getY());
@@ -362,23 +360,14 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mouseEntered(final MouseEvent e) { /* nothing to do */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mouseExited(final MouseEvent e) { /* nothing to do */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mouseMoved(final MouseEvent e) {
         MapIndex oldMouseIndex = new MapIndex(mouseIndex);
@@ -402,9 +391,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mousePressed(final MouseEvent e) {
         selection.pos = mouseIndex;
@@ -420,9 +406,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         drawSelection = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mouseReleased(final MouseEvent e) {
         switch (guiState) {
@@ -473,7 +456,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
 
     /**
      * Sets the designation type.
-     * 
      * @param designationTypeTmp the new designation type
      */
     public void setDesignationType(final DesignationType designationTypeTmp) {
@@ -482,7 +464,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
 
     /**
      * Sets the item type.
-     * 
      * @param string the new item type
      */
     public void setItemType(final String string) {
@@ -491,7 +472,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
 
     /**
      * Sets the room type.
-     * 
      * @param roomTypeTmp the new room type
      */
     public void setRoomType(final String roomTypeTmp) {
@@ -500,7 +480,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
 
     /**
      * Sets the state.
-     * 
      * @param guiStateTmp the new state
      */
     public void setState(final GuiState guiStateTmp) {
@@ -512,7 +491,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
 
     /**
      * Setup.
-     * 
      * @param regionTmp the region
      * @param playerTmp the player
      * @param controllerTmp the controller
@@ -530,17 +508,18 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         workshopInterface = new WorkshopInterface(player, controller);
         stockpileInterface = new StockpileInterface(player, controller);
         dwarfInterface = new DwarfInterface();
+        itemInterface = new ItemInterface();
 
         add(mainPopupMenu);
         add(roomInterface);
         add(workshopInterface);
         add(stockpileInterface);
         add(dwarfInterface);
+        add(itemInterface);
     }
 
     /**
      * Sets the workshop type.
-     * 
      * @param workshopTypeTmp the new workshop type
      */
     public void setWorkshopType(final String workshopTypeTmp) {

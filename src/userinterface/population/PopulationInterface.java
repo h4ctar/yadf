@@ -38,6 +38,9 @@ import javax.swing.JInternalFrame;
  */
 public class PopulationInterface extends JInternalFrame {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5587204438239458180L;
+
     /**
      * Create the frame.
      */

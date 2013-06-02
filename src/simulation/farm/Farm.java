@@ -44,6 +44,9 @@ import simulation.map.MapIndex;
  */
 public class Farm extends AbstractGameObject {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 1L;
+
     /** The area. */
     private final MapArea area;
 
@@ -52,12 +55,10 @@ public class Farm extends AbstractGameObject {
 
     /**
      * Instantiates a new farm.
-     * 
-     * @param area the area
+     * @param areaTmp the area
      */
-    public Farm(final MapArea area) {
-        this.area = area;
-
+    public Farm(final MapArea areaTmp) {
+        area = areaTmp;
         for (int x = 0; x < area.width; x++) {
             for (int y = 0; y < area.height; y++) {
                 farmPlots.add(new FarmPlot(new MapIndex(x + area.pos.x, y + area.pos.y, area.pos.z)));
@@ -67,7 +68,6 @@ public class Farm extends AbstractGameObject {
 
     /**
      * Gets the area.
-     * 
      * @return the area
      */
     public MapArea getArea() {
@@ -76,7 +76,6 @@ public class Farm extends AbstractGameObject {
 
     /**
      * Gets the plots.
-     * 
      * @return the plots
      */
     public List<FarmPlot> getPlots() {
@@ -85,7 +84,6 @@ public class Farm extends AbstractGameObject {
 
     /**
      * Update.
-     * 
      * @param player the player
      */
     public void update(final Player player) {

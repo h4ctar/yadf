@@ -40,6 +40,9 @@ import simulation.map.MapIndex;
  */
 public class ChopTreeDesignation extends AbstractDesignation {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 498334310762797158L;
+
     @Override
     public String toString() {
         return "Chop Tree Designation";

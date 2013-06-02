@@ -36,7 +36,7 @@ import java.util.Properties;
 /**
  * The Class Settings.
  */
-public class Settings {
+public final class Settings {
 
     /** The instance. */
     private static Settings instance;

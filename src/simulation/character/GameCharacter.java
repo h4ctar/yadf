@@ -53,6 +53,9 @@ import simulation.map.MapIndex;
  */
 public class GameCharacter extends AbstractEntity {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -6938089593424613235L;
+
     /** The health. */
     private final HealthComponent health;
 

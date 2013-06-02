@@ -40,6 +40,9 @@ import simulation.stock.Stockpile;
  */
 public class CreateStockpileCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1188848994174468357L;
+
     /** The selection. */
     private final MapArea area;
 

@@ -31,6 +31,7 @@
  */
 package userinterface.stockpile;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -39,6 +40,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
@@ -46,6 +48,7 @@ import org.jdesktop.swingx.JXTreeTable;
 
 import simulation.Player;
 import simulation.stock.Stockpile;
+import userinterface.components.ImagePanel;
 import controller.AbstractController;
 import controller.command.DeleteStockpileCommand;
 
@@ -53,6 +56,9 @@ import controller.command.DeleteStockpileCommand;
  * The Class StockpileInterface.
  */
 public class StockpileInterface extends JInternalFrame implements ActionListener {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -7914475811407054901L;
 
     /** The stockpile. */
     private Stockpile stockpile;
@@ -114,14 +120,17 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
         setTitle("Stockpile interface");
         setResizable(true);
         setClosable(true);
-
         setBounds(100, 100, 450, 300);
+        getContentPane().setLayout(new BorderLayout(5, 5));
+
+        JPanel panel = new ImagePanel();
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0 };
         gridBagLayout.rowHeights = new int[] { 0, 0 };
         gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
         gridBagLayout.rowWeights = new double[] { 1.0, 0.0 };
-        getContentPane().setLayout(gridBagLayout);
+        panel.setLayout(gridBagLayout);
+        add(panel);
 
         scrollPane = new JScrollPane();
         GridBagConstraints scrollPaneConstraints = new GridBagConstraints();
@@ -129,17 +138,16 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
         scrollPaneConstraints.fill = GridBagConstraints.BOTH;
         scrollPaneConstraints.gridx = 0;
         scrollPaneConstraints.gridy = 0;
-        getContentPane().add(scrollPane, scrollPaneConstraints);
+        panel.add(scrollPane, scrollPaneConstraints);
 
         treeTable = new JXTreeTable();
         scrollPane.setViewportView(treeTable);
 
         deleteButton = new JButton("Delete");
         GridBagConstraints deleteButtonConstraints = new GridBagConstraints();
-        deleteButtonConstraints.fill = GridBagConstraints.HORIZONTAL;
         deleteButtonConstraints.gridx = 0;
         deleteButtonConstraints.gridy = 1;
-        getContentPane().add(deleteButton, deleteButtonConstraints);
+        panel.add(deleteButton, deleteButtonConstraints);
         deleteButton.addActionListener(this);
         // CHECKSTYLE:ON
     }

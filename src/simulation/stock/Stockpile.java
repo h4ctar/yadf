@@ -37,6 +37,7 @@ import java.util.List;
 import logger.Logger;
 import simulation.AbstractGameObject;
 import simulation.Player;
+import simulation.item.ContainerItem;
 import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -51,6 +52,9 @@ import simulation.map.MapIndex;
  * The Class Stockpile.
  */
 public class Stockpile extends AbstractGameObject implements IContainer, IJobListener, IStockManagerListener {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 4376721656018948647L;
 
     /** Is the position in the stockpile used. */
     private final boolean[][] used;
@@ -93,14 +97,14 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item - itemType: " + item.getType());
         boolean itemAdded = false;
-        if (acceptableItemTypes.contains(item.getType())) {
+        if (item.canBeStored(acceptableItemTypes)) {
             MapIndex pos = item.getPosition().sub(area.pos);
             used[pos.x][pos.y] = true;
             items.add(item);
             notifyListeners();
             itemAdded = true;
         } else {
-            Logger.getInstance().log(this, "Stockpile does not accept this item type");
+            Logger.getInstance().log(this, "Stockpile does not accept this item type", true);
         }
         return itemAdded;
     }
@@ -111,15 +115,6 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      */
     public void addListener(final IStockpileListener listener) {
         listeners.add(listener);
-    }
-
-    /**
-     * Cancel haul tasks.
-     */
-    public void cancelHaulTasks() {
-        for (HaulJob haulTask : haulJobs) {
-            haulTask.interrupt("The stockpile was deleted or no longer accepts this item type");
-        }
     }
 
     /**
@@ -196,6 +191,12 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
             if (item.getType().equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
                 return item;
             }
+            if (item instanceof ContainerItem) {
+                Item contentItem = ((ContainerItem) item).getUnusedItem(itemTypeName);
+                if (contentItem != null) {
+                    return contentItem;
+                }
+            }
         }
         return null;
     }
@@ -205,6 +206,12 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         for (Item item : items) {
             if (item.getType().category.equals(category) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
                 return item;
+            }
+            if (item instanceof ContainerItem) {
+                Item contentItem = ((ContainerItem) item).getUnusedItemFromCategory(category);
+                if (contentItem != null) {
+                    return contentItem;
+                }
             }
         }
         return null;
@@ -247,7 +254,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
             used[pos.x][pos.y] = false;
         }
         for (Item container : items) {
-            if (container.removeItem(item)) {
+            if (container instanceof ContainerItem && ((ContainerItem) container).removeItem(item)) {
                 itemRemoved = true;
                 break;
             }
@@ -276,7 +283,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
             // Interrupt and remove haul tasks that have been started
             for (HaulJob haulJob : haulJobs) {
                 if (haulJob.getItem().getType().equals(itemTypeName)) {
-                    haulJob.interrupt("The stockpile was deleted or no longer accepts this item type");
+                    haulJob.interrupt("The stockpile no longer accepts this item type");
                     MapIndex pos = haulJob.getDropPosition().sub(area.pos);
                     used[pos.x][pos.y] = false;
                 }
@@ -320,7 +327,6 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
                     if (!used[x][y]) {
                         Item item = player.getStockManager().getUnstoredItem(acceptableItemTypes);
                         if (item != null) {
-                            player.getStockManager().removeItem(item);
                             item.setUsed(true);
                             used[x][y] = true;
                             HaulJob haulJob = new HaulJob(item, this, area.pos.add(x, y, 0));
@@ -331,6 +337,33 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Gets an item from the stockpile that is at a specific map position.
+     * @param index the map position
+     * @return the item, null if no item found
+     */
+    public Item getItem(final MapIndex index) {
+        for (Item item : items) {
+            if (index.equals(item.getPosition())) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The stockpile has been deleted, clean up everything.
+     */
+    public void remove() {
+        player.getStockManager().removeListener(this);
+        for (Item item : items) {
+            player.getStockManager().addItem(item);
+        }
+        for (HaulJob haulJob : haulJobs) {
+            haulJob.interrupt("Stockpile deleted");
         }
     }
 }

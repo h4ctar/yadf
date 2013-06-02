@@ -44,12 +44,15 @@ import simulation.map.MapIndex;
 
 /**
  * The Class HaulJob.
+ * 
+ * A job which hauls an item to some place.
  */
 public class HaulJob extends AbstractJob {
 
-    /**
-     * The Enum State.
-     */
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1705328544980248473L;
+
+    /** All the possible job states. */
     enum State {
         /** The looking for item. */
         LOOKING_FOR_ITEM,
@@ -61,10 +64,10 @@ public class HaulJob extends AbstractJob {
         GOTO_DROP
     }
 
-    /** The state. */
-    private State state = State.LOOKING_FOR_ITEM;
+    /** The current state of the job. */
+    private State state;
 
-    /** The character. */
+    /** The character that will haul the item. */
     private GameCharacter character;
 
     /** The item. */
@@ -99,6 +102,7 @@ public class HaulJob extends AbstractJob {
             final MapIndex dropPositionTmp) {
         this(itemTmp, containerTmp, dropPositionTmp);
         character = characterTmp;
+        state = State.LOOKING_FOR_ITEM;
     }
 
     /**
@@ -112,6 +116,7 @@ public class HaulJob extends AbstractJob {
         container = containerTmp;
         dropPosition = dropPositionTmp;
         itemType = item.getType();
+        state = State.WAITING_FOR_DWARF;
     }
 
     /**
@@ -124,6 +129,7 @@ public class HaulJob extends AbstractJob {
         container = containerTmp;
         dropPosition = dropPositionTmp;
         itemType = itemTypeTmp;
+        state = State.LOOKING_FOR_ITEM;
     }
 
     /**
@@ -163,7 +169,7 @@ public class HaulJob extends AbstractJob {
 
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
         // Drop the item
         if (character != null) {
             character.getInventory().dropHaulItem(true);
@@ -173,7 +179,9 @@ public class HaulJob extends AbstractJob {
                 character.releaseLock();
             }
         }
-        item.setUsed(false);
+        if (item != null) {
+            item.setUsed(false);
+        }
         done = true;
     }
 
@@ -198,6 +206,7 @@ public class HaulJob extends AbstractJob {
                 item = player.getStockManager().getUnusedItem(itemType.name);
             }
             if (item != null) {
+                Logger.getInstance().log(this, "Item found, should now look for dwarf");
                 item.setUsed(true);
                 state = State.WAITING_FOR_DWARF;
             }
@@ -209,6 +218,7 @@ public class HaulJob extends AbstractJob {
                 needToReleaseLock = true;
             }
             if (character != null) {
+                Logger.getInstance().log(this, "Dwarf found, should now go to item");
                 walkComponent = character.walkToPosition(item.getPosition(), false);
                 state = State.GOTO_ITEM;
             }
@@ -219,12 +229,11 @@ public class HaulJob extends AbstractJob {
                 interrupt("No path to item");
                 return;
             }
-
             if (walkComponent.isArrived()) {
+                Logger.getInstance().log(this, "Arrived at item, should now take it to drop");
                 player.getStockManager().removeItem(item);
                 walkComponent = character.walkToPosition(dropPosition, false);
                 character.getInventory().pickupHaulItem(item);
-                player.getStockManager().removeItem(item);
                 state = State.GOTO_DROP;
             }
             break;
@@ -234,25 +243,24 @@ public class HaulJob extends AbstractJob {
                 interrupt("No path to drop");
                 return;
             }
-
             if (walkComponent.isArrived()) {
+                Logger.getInstance().log(this, "Arrived at drop, should now drop item; job done");
                 character.getInventory().dropHaulItem(false);
-
                 if (needToReleaseLock) {
                     character.releaseLock();
                 }
-
                 character.beIdleMovement();
-
                 if (container != null) {
                     if (container.getRemove()) {
-                        Logger.getInstance().log(this, "Can't store item, container has been removed");
+                        Logger.getInstance().log(this, "Can't store item, container has been removed", true);
                         player.getStockManager().addItem(item);
                     } else {
-                        container.addItem(item);
+                        if (!container.addItem(item)) {
+                            Logger.getInstance().log(this, "Can't store item, container didn't accept it", true);
+                            player.getStockManager().addItem(item);
+                        }
                     }
                 }
-
                 done = true;
                 notifyListeners();
             }

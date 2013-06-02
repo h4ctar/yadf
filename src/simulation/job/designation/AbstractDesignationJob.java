@@ -39,9 +39,11 @@ import simulation.map.MapIndex;
  */
 public abstract class AbstractDesignationJob extends AbstractJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 3586077019664088418L;
+
     /**
      * Gets the position.
-     * 
      * @return the position
      */
     public abstract MapIndex getPosition();

@@ -33,8 +33,8 @@ package misc;
 
 import java.util.Random;
 
-
 // Copyright 2001 Ken Perlin
+// CHECKSTYLE:OFF
 
 /**
  * The Class Noise.
@@ -341,3 +341,4 @@ public final class Noise {
         return lerp(sz, c, d);
     }
 }
+// CHECKSTYLE:ON

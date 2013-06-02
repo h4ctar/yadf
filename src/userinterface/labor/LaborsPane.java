@@ -45,6 +45,9 @@ import controller.AbstractController;
  */
 public class LaborsPane extends JPanel {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 1708672090502816986L;
+
     /** The labors table. */
     private final JTable laborsTable;
 

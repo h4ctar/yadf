@@ -31,35 +31,33 @@
  */
 package simulation.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import logger.Logger;
-
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import simulation.AbstractEntity;
+import simulation.Player;
 import simulation.map.MapIndex;
 
 /**
  * The Class Item.
  */
-// TODO: container should be another class that extends this one.
-public class Item extends AbstractEntity implements IContainer {
+public class Item extends AbstractEntity {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -4986933611301536209L;
 
     /** The type of the item. */
-    private final ItemType itemType;
+    protected final ItemType itemType;
 
     /** Is the item being used by a dwarf. */
-    private boolean used = false;
+    protected boolean used = false;
 
     /** Is the item placed, i.e. a table, bed or door */
-    private boolean placed;
+    protected boolean placed = false;
 
-    /** The contents of this item if it's a container. */
-    private final List<Item> contents = new ArrayList<>();
+    /** The player that this item belongs to. */
+    protected final Player player;
 
     /**
      * Create an item from a DOM element.
@@ -68,52 +66,36 @@ public class Item extends AbstractEntity implements IContainer {
      */
     public Item(final Element itemElement) throws Exception {
         super(new MapIndex());
+        player = null;
         String itemTypeName = itemElement.getAttribute("type");
         itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
-        NodeList childNodes = itemElement.getChildNodes();
-        for (int k = 0; k < childNodes.getLength(); k++) {
-            Node itemsNode = childNodes.item(k);
-            if (itemsNode != null && itemsNode instanceof Element && itemsNode.getNodeName().equals("items")) {
-                Element itemsElement = (Element) itemsNode;
-                NodeList itemNodes = itemsElement.getChildNodes();
-                if (itemNodes.getLength() > itemType.capacity) {
-                    throw new Exception(itemType.name + " can't hold more than " + itemType.capacity
-                            + " you're trying to put " + itemNodes.getLength() + " contents into it!");
-                }
-                for (int i = 0; i < itemNodes.getLength(); i++) {
-                    Node contentItemNode = itemNodes.item(i);
-                    if (contentItemNode instanceof Element) {
-                        Element contentItemElement = (Element) contentItemNode;
-                        String tempString = contentItemElement.getAttribute("quantity");
-                        int quantity = "".equals(tempString) ? 1 : Integer.parseInt(tempString);
-                        for (int j = 0; j < quantity; j++) {
-                            Item contentItem = new Item(contentItemElement);
-                            contents.add(contentItem);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
      * The constructor for the item.
      * @param position The initial position of the item
      * @param itemTypeTmp the item type name
+     * @param playerTmp the player that this item belongs to
      */
-    public Item(final MapIndex position, final ItemType itemTypeTmp) {
+    public Item(final MapIndex position, final ItemType itemTypeTmp, final Player playerTmp) {
         super(position);
         itemType = itemTypeTmp;
+        player = playerTmp;
     }
 
     /**
-     * The constructor for the item.
-     * @param position The initial position of the item
-     * @param itemTypeName the item type name
+     * Copy constructor.
+     * @param item the item to clone
+     * @param playerTmp if null, will use original items player otherwise it will use the passed player
      */
-    public Item(final MapIndex position, final String itemTypeName) {
-        super(position);
-        itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
+    public Item(final Item item, final Player playerTmp) {
+        super(item.position);
+        itemType = item.getType();
+        if (playerTmp == null) {
+            player = item.player;
+        } else {
+            player = playerTmp;
+        }
     }
 
     /**
@@ -122,28 +104,6 @@ public class Item extends AbstractEntity implements IContainer {
      */
     public ItemType getType() {
         return itemType;
-    }
-
-    @Override
-    public Item getUnusedItem(final String itemTypeName) {
-        for (Item contentItem : contents) {
-            if (contentItem.getType().equals(itemTypeName) && !contentItem.isUsed() && !contentItem.getRemove()
-                    && !contentItem.isPlaced()) {
-                return contentItem;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Item getUnusedItemFromCategory(final String category) {
-        for (Item contentItem : contents) {
-            if (contentItem.getType().category.equals(category) && !contentItem.isUsed() && !contentItem.getRemove()
-                    && !contentItem.isPlaced()) {
-                return contentItem;
-            }
-        }
-        return null;
     }
 
     /**
@@ -162,25 +122,12 @@ public class Item extends AbstractEntity implements IContainer {
         return used;
     }
 
-    @Override
-    public boolean removeItem(final Item item) {
-        return contents.remove(item);
-    }
-
     /**
      * Sets the placed.
      * @param placedTmp the new placed
      */
     public void setPlaced(final boolean placedTmp) {
         placed = placedTmp;
-    }
-
-    @Override
-    public void setPosition(final MapIndex positionTmp) {
-        super.setPosition(positionTmp);
-        for (Item item : contents) {
-            item.setPosition(positionTmp);
-        }
     }
 
     /**
@@ -196,15 +143,16 @@ public class Item extends AbstractEntity implements IContainer {
         return itemType.toString();
     }
 
-    @Override
-    public boolean addItem(final Item item) {
-        boolean itemAdded = false;
-        if (contents.size() < itemType.capacity) {
-            contents.add(item);
-            itemAdded = true;
-        } else {
-            Logger.getInstance().log(this, "Item could not be added to container as the container is full");
+    /**
+     * Can this item be stored in a container that accepts certain item types.
+     * @param itemTypes the item types that this item must match
+     * @return true if it can be stored
+     */
+    public boolean canBeStored(final List<ItemType> itemTypes) {
+        boolean storable = false;
+        if (itemTypes.contains(itemType) && !getRemove() && !placed) {
+            storable = true;
         }
-        return itemAdded;
+        return storable;
     }
 }

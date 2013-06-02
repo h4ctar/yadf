@@ -39,6 +39,9 @@ import java.util.List;
  */
 public class WalkableNode extends MapIndex implements Comparable<WalkableNode> {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -2149106280540899825L;
+
     /** The adjacencies. */
     public List<WalkableNode> adjacencies = new ArrayList<>();
 

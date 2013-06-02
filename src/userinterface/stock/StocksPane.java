@@ -32,6 +32,7 @@
 package userinterface.stock;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -44,6 +45,9 @@ import simulation.Player;
  * The Class StocksPane.
  */
 public class StocksPane extends JPanel {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 3427702994977889616L;
 
     /** The stocks table. */
     private JXTreeTable stocksTable;
@@ -61,6 +65,8 @@ public class StocksPane extends JPanel {
         add(stocksScrollPane, BorderLayout.CENTER);
 
         stocksTable = new JXTreeTable();
+        Font font = new Font("Minecraftia", Font.PLAIN, 12);
+        stocksTable.setFont(font);
         stocksScrollPane.setViewportView(stocksTable);
     }
 

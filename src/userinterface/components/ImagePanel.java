@@ -41,9 +41,12 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 /**
- * The Class ImagePanel.
+ * A panel that has a nice background texture.
  */
 public class ImagePanel extends JPanel {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -5474129575219242704L;
 
     /** The image. */
     private Image image;
@@ -54,7 +57,7 @@ public class ImagePanel extends JPanel {
     public ImagePanel() {
         try {
             InputStream inputStream = new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(
-                    "rock.jpg"));
+                    "background.png"));
             image = ImageIO.read(inputStream);
             Dimension size = new Dimension(image.getWidth(null), image.getHeight(null));
             setPreferredSize(size);
@@ -67,16 +70,12 @@ public class ImagePanel extends JPanel {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void paintComponent(final Graphics g) {
         int width = getWidth();
         int height = getHeight();
         int imageW = image.getWidth(this);
         int imageH = image.getHeight(this);
-
         // Tile the image to fill our area.
         for (int x = 0; x < width; x += imageW) {
             for (int y = 0; y < height; y += imageH) {

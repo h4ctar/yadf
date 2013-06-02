@@ -31,7 +31,7 @@
  */
 package userinterface.workshop;
 
-import java.awt.Font;
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,6 +43,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
@@ -50,6 +51,8 @@ import simulation.Player;
 import simulation.recipe.Recipe;
 import simulation.recipe.RecipeManager;
 import simulation.workshop.Workshop;
+import userinterface.components.ImagePanel;
+import userinterface.components.OutlineLabel;
 import controller.AbstractController;
 import controller.command.CancelOrderCommand;
 import controller.command.DeleteRoomCommand;
@@ -60,14 +63,14 @@ import controller.command.NewOrderCommand;
  */
 public class WorkshopInterface extends JInternalFrame {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -4914056351593833868L;
+
     /**
      * Action listener for the cancel order button.
      */
     private class CancelOrderActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             int roomId = workshop.getId();
@@ -81,9 +84,6 @@ public class WorkshopInterface extends JInternalFrame {
      */
     private class DestroyWorkshopActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             int roomId = workshop.getId();
@@ -97,9 +97,6 @@ public class WorkshopInterface extends JInternalFrame {
      */
     private class NewOrderActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             int roomId = workshop.getId();
@@ -184,22 +181,25 @@ public class WorkshopInterface extends JInternalFrame {
         setClosable(true);
         setTitle("Workshop Interface");
         setBounds(100, 100, 450, 300);
+        getContentPane().setLayout(new BorderLayout(5, 5));
+
+        JPanel panel = new ImagePanel();
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0 };
         gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
         gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
         gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-        getContentPane().setLayout(gridBagLayout);
+        panel.setLayout(gridBagLayout);
+        getContentPane().add(panel, BorderLayout.CENTER);
 
-        typeLabel = new JLabel("Workshop Type");
-        typeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        typeLabel = new OutlineLabel("Workshop Type");
         typeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         GridBagConstraints typeLabeConstraints = new GridBagConstraints();
         typeLabeConstraints.fill = GridBagConstraints.HORIZONTAL;
         typeLabeConstraints.insets = new Insets(0, 0, 5, 0);
         typeLabeConstraints.gridx = 0;
         typeLabeConstraints.gridy = 0;
-        getContentPane().add(typeLabel, typeLabeConstraints);
+        panel.add(typeLabel, typeLabeConstraints);
 
         ordersListModel = new OrdersListModel();
         ordersList = new JList<>(ordersListModel);
@@ -208,32 +208,29 @@ public class WorkshopInterface extends JInternalFrame {
         ordersLisConstraints.fill = GridBagConstraints.BOTH;
         ordersLisConstraints.gridx = 0;
         ordersLisConstraints.gridy = 1;
-        getContentPane().add(ordersList, ordersLisConstraints);
+        panel.add(ordersList, ordersLisConstraints);
 
         newOrderButton = new JButton("New Order");
         GridBagConstraints newOrderButtoConstraints = new GridBagConstraints();
         newOrderButtoConstraints.insets = new Insets(0, 0, 5, 0);
-        newOrderButtoConstraints.fill = GridBagConstraints.HORIZONTAL;
         newOrderButtoConstraints.gridx = 0;
         newOrderButtoConstraints.gridy = 2;
-        getContentPane().add(newOrderButton, newOrderButtoConstraints);
+        panel.add(newOrderButton, newOrderButtoConstraints);
         newOrderButton.addActionListener(new NewOrderActionListener());
 
         cancelOrderButton = new JButton("Cancel Order");
         GridBagConstraints cancelOrderButtoConstraints = new GridBagConstraints();
         cancelOrderButtoConstraints.insets = new Insets(0, 0, 5, 0);
-        cancelOrderButtoConstraints.fill = GridBagConstraints.HORIZONTAL;
         cancelOrderButtoConstraints.gridx = 0;
         cancelOrderButtoConstraints.gridy = 3;
-        getContentPane().add(cancelOrderButton, cancelOrderButtoConstraints);
+        panel.add(cancelOrderButton, cancelOrderButtoConstraints);
         cancelOrderButton.addActionListener(new CancelOrderActionListener());
 
         destroyWorkshopButton = new JButton("Destroy Workshop");
         GridBagConstraints destroyWorkshopButtoConstraints = new GridBagConstraints();
-        destroyWorkshopButtoConstraints.fill = GridBagConstraints.HORIZONTAL;
         destroyWorkshopButtoConstraints.gridx = 0;
         destroyWorkshopButtoConstraints.gridy = 4;
-        getContentPane().add(destroyWorkshopButton, destroyWorkshopButtoConstraints);
+        panel.add(destroyWorkshopButton, destroyWorkshopButtoConstraints);
         destroyWorkshopButton.addActionListener(new DestroyWorkshopActionListener());
         // CHECKSTYLE:ON
     }

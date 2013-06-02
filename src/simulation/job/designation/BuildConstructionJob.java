@@ -52,6 +52,9 @@ import simulation.map.WalkableNode;
  */
 public class BuildConstructionJob extends AbstractDesignationJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -6711242158871047234L;
+
     /**
      * The different states that this job can be in.
      */

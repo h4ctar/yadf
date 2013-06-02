@@ -47,9 +47,11 @@ import misc.Noise;
  */
 public class RegionMap implements Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -7703563679963601586L;
+
     /**
      * Gets the neighbours.
-     * 
      * @param b the b
      * @param neighbours the neighbours
      */
@@ -347,7 +349,7 @@ public class RegionMap implements Serializable {
             setBlock(index, BlockType.valueOf("MINE_" + blockType));
             removeRampsAroundBlock(index);
         } catch (Exception e) {
-            Logger.getInstance().log(this, blockType.toString() + " can't be mined");
+            Logger.getInstance().log(this, blockType.toString() + " can't be mined", true);
         }
     }
 

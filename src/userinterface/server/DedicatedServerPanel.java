@@ -50,6 +50,9 @@ import controller.command.AbstractCommand;
  */
 public class DedicatedServerPanel extends JPanel {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 524066898610482697L;
+
     /**
      * The Class ServerThread.
      */

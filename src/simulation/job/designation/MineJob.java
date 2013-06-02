@@ -37,6 +37,8 @@ import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.component.WalkMoveComponent;
 import simulation.item.Item;
+import simulation.item.ItemType;
+import simulation.item.ItemTypeManager;
 import simulation.job.WasteTimeJob;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
@@ -46,6 +48,9 @@ import simulation.map.RegionMap;
  * Task to do some mining.
  */
 public class MineJob extends AbstractDesignationJob {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -43625505095983333L;
 
     /**
      * The different states that this job can be in.
@@ -115,7 +120,7 @@ public class MineJob extends AbstractDesignationJob {
      */
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
 
         designation.removeFromDesignation(position);
 
@@ -196,20 +201,17 @@ public class MineJob extends AbstractDesignationJob {
 
             String itemTypeName = map.getBlock(position).itemMined;
             if (itemTypeName != null) {
-                Item blockItem = new Item(position, itemTypeName);
+                ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
+                Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, player);
                 player.getStockManager().addItem(blockItem);
             }
-
             map.mineBlock(position);
-
             designation.removeFromDesignation(position);
-
+            // TODO: move this into static attribute
             dwarf.getSkill().increaseSkillLevel(LaborTypeManager.getInstance().getLaborType("Mining"));
-
+            // TODO: move this to dwarf to fix when dead bug
             dwarf.beIdleMovement();
-
             dwarf.releaseLock();
-
             done = true;
             break;
         }

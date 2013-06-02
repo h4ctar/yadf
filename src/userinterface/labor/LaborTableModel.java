@@ -50,6 +50,9 @@ import controller.command.EnableLaborCommand;
  */
 public class LaborTableModel extends AbstractTableModel implements IPlayerListener, IComponentListener {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -2428815575025895385L;
+
     /** The player. */
     private final Player player;
 

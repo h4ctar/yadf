@@ -31,7 +31,7 @@
  */
 package userinterface.room;
 
-import java.awt.Font;
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -42,11 +42,14 @@ import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import simulation.Player;
 import simulation.room.Room;
+import userinterface.components.ImagePanel;
+import userinterface.components.OutlineLabel;
 import controller.AbstractController;
 import controller.command.DeleteRoomCommand;
 
@@ -54,6 +57,9 @@ import controller.command.DeleteRoomCommand;
  * The Class RoomInterface.
  */
 public class RoomInterface extends JInternalFrame implements ActionListener {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -4042642581073625964L;
 
     /** The type label. */
     private JLabel typeLabel;
@@ -89,9 +95,7 @@ public class RoomInterface extends JInternalFrame implements ActionListener {
         setupLayout();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // TODO: move this into action listener internal class
     @Override
     public void actionPerformed(final ActionEvent e) {
         Object source = e.getSource();
@@ -105,7 +109,6 @@ public class RoomInterface extends JInternalFrame implements ActionListener {
 
     /**
      * Sets the room.
-     * 
      * @param roomTmp the new room
      */
     public void setRoom(final Room roomTmp) {
@@ -131,22 +134,25 @@ public class RoomInterface extends JInternalFrame implements ActionListener {
         setClosable(true);
         setTitle("Room Interface");
         setBounds(100, 100, 450, 300);
+        getContentPane().setLayout(new BorderLayout(5, 5));
+
+        JPanel panel = new ImagePanel();
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0 };
         gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
         gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
         gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
-        getContentPane().setLayout(gridBagLayout);
+        panel.setLayout(gridBagLayout);
+        getContentPane().add(panel, BorderLayout.CENTER);
 
-        typeLabel = new JLabel("Room Type");
-        typeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        typeLabel = new OutlineLabel("Room Type");
         typeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         GridBagConstraints typeLabelConstraints = new GridBagConstraints();
         typeLabelConstraints.fill = GridBagConstraints.HORIZONTAL;
         typeLabelConstraints.insets = new Insets(0, 0, 5, 0);
         typeLabelConstraints.gridx = 0;
         typeLabelConstraints.gridy = 0;
-        getContentPane().add(typeLabel, typeLabelConstraints);
+        panel.add(typeLabel, typeLabelConstraints);
 
         itemsListModel = new ItemListModel();
         itemsList = new JList<>(itemsListModel);
@@ -155,14 +161,13 @@ public class RoomInterface extends JInternalFrame implements ActionListener {
         itemsListConstraints.fill = GridBagConstraints.BOTH;
         itemsListConstraints.gridx = 0;
         itemsListConstraints.gridy = 1;
-        getContentPane().add(itemsList, itemsListConstraints);
+        panel.add(itemsList, itemsListConstraints);
 
         destroyRoomButton = new JButton("Destroy Room");
         GridBagConstraints destroyRoomButtonConstraints = new GridBagConstraints();
-        destroyRoomButtonConstraints.fill = GridBagConstraints.HORIZONTAL;
         destroyRoomButtonConstraints.gridx = 0;
         destroyRoomButtonConstraints.gridy = 2;
-        getContentPane().add(destroyRoomButton, destroyRoomButtonConstraints);
+        panel.add(destroyRoomButton, destroyRoomButtonConstraints);
         destroyRoomButton.addActionListener(this);
         // CHECKSTYLE:ON
     }

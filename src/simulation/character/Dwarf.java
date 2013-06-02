@@ -42,6 +42,9 @@ import simulation.map.MapIndex;
  */
 public class Dwarf extends GameCharacter {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5472142489726028220L;
+
     /** The skill. */
     private final SkillComponent skill;
 

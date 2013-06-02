@@ -41,6 +41,9 @@ import javax.swing.table.AbstractTableModel;
  */
 public class PlayerTableModel extends AbstractTableModel {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -3374765986710593510L;
+
     /** The player names. */
     private List<String> playerNames = new ArrayList<>();
 

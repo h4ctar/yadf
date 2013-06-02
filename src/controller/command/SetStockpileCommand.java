@@ -39,6 +39,9 @@ import simulation.stock.Stockpile;
  */
 public class SetStockpileCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 4663011796429573553L;
+
     /** The stockpile id. */
     private final int stockpileId;
 

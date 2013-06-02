@@ -52,6 +52,9 @@ import simulation.workshop.WorkshopTypeManager;
  */
 public class BuildWorkshopJob extends AbstractJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 6619232211299027703L;
+
     /**
      * The different states that this job can be in.
      */
@@ -132,7 +135,7 @@ public class BuildWorkshopJob extends AbstractJob {
      */
     @Override
     public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
+        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
         done = true;
     }
 

@@ -43,6 +43,9 @@ import logger.Logger;
  */
 class PathPlanner implements Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 1549796322950588203L;
+
     /**
      * A simple sorted list.
      * 

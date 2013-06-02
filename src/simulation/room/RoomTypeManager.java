@@ -52,7 +52,7 @@ public class RoomTypeManager {
     }
 
     /** The room types. */
-    private final String[] roomTypes = { "Bedroom" };
+    private final String[] roomTypes = { "Bedroom", "Dining room" };
 
     /**
      * Instantiates a new room type manager.

@@ -68,17 +68,15 @@ import userinterface.lobby.server.LobbyServer;
  * @author Ben
  */
 public class LobbyPanel extends ImagePanel implements ILobbyPanel {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -5926430872507395857L;
+
     /**
      * Cancel the session, could be called if client or server.
-     * 
-     * @author Ben
-     * 
      */
     private class CancelActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             lobby.stop();
@@ -89,15 +87,9 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
     /**
      * Sends a chat test.
-     * 
-     * @author Ben
-     * 
      */
     private class ChatActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             sendChat();
@@ -106,24 +98,16 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
     /**
      * Start game action, this action will only ever be called by a server lobby.
-     * 
-     * @author Ben
-     * 
      */
     private class StartGameActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             ((LobbyServer) lobby).startGame();
         }
     }
 
-    /**
-     * The type of the lobby.
-     */
+    /** The type of the lobby. */
     private final LobbyType lobbyType;
 
     /** The lobby. */
@@ -158,7 +142,6 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
     /**
      * Instantiates a new lobby panel.
-     * 
      * @param lobbyTypeTmp the lobby type
      * @param listenerTmp the listener
      */
@@ -186,8 +169,7 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
     }
 
     /**
-     * Inits the.
-     * 
+     * Inits the lobby.
      * @param ip the ip
      * @param port the port
      * @return true, if successful
@@ -268,11 +250,15 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         setBackground(Color.BLACK);
         setLayout(new BorderLayout(5, 5));
 
+        JPanel panel_1 = new JPanel();
+        panel_1.setOpaque(false);
+        add(panel_1, BorderLayout.NORTH);
+
         JLabel multiplayerGameLabel = new OutlineLabel("Multiplayer Game");
+        panel_1.add(multiplayerGameLabel);
         multiplayerGameLabel.setForeground(Color.WHITE);
-        multiplayerGameLabel.setFont(new Font("Tahoma", Font.PLAIN, 24));
+        multiplayerGameLabel.setFont(new Font("Minecraftia", Font.PLAIN, 24));
         multiplayerGameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        add(multiplayerGameLabel, BorderLayout.NORTH);
 
         JPanel panel = new JPanel();
         panel.setOpaque(false);
@@ -286,7 +272,6 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
         JLabel regionSizeLabel = new OutlineLabel("Region Size");
         regionSizeLabel.setForeground(Color.WHITE);
-        regionSizeLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         GridBagConstraints regionSizeLabelConstraints = new GridBagConstraints();
         regionSizeLabelConstraints.anchor = GridBagConstraints.EAST;
         regionSizeLabelConstraints.insets = new Insets(5, 5, 5, 5);
@@ -295,7 +280,6 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         panel.add(regionSizeLabel, regionSizeLabelConstraints);
 
         regionSizeComboBox = new JComboBox<>();
-        regionSizeComboBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
         regionSizeComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Small", "Medium", "Large" }));
         regionSizeComboBox.setSelectedIndex(1);
         GridBagConstraints regionSizeComboBoxConstraints = new GridBagConstraints();
@@ -307,7 +291,6 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
         JLabel resourcesLabel = new OutlineLabel("Resources");
         resourcesLabel.setForeground(Color.WHITE);
-        resourcesLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         GridBagConstraints resourcesLabelConstraints = new GridBagConstraints();
         resourcesLabelConstraints.anchor = GridBagConstraints.EAST;
         resourcesLabelConstraints.insets = new Insets(5, 5, 5, 5);
@@ -316,7 +299,6 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         panel.add(resourcesLabel, resourcesLabelConstraints);
 
         resourcesComboBox = new JComboBox<>();
-        resourcesComboBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
         resourcesComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Minimal", "Standard", "Plenty" }));
         resourcesComboBox.setSelectedIndex(0);
         GridBagConstraints resourcesComboBoxConstraints = new GridBagConstraints();
@@ -336,13 +318,11 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
         if (lobbyType == LobbyType.SERVER) {
             startGameButton = new JButton("Start Game");
-            startGameButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
             panel2.add(startGameButton);
             startGameButton.addActionListener(new StartGameActionListener());
         }
 
         cancelButton = new JButton("Cancel");
-        cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         panel2.add(cancelButton);
         cancelButton.addActionListener(new CancelActionListener());
 
@@ -358,7 +338,6 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
         JLabel playersLabel = new OutlineLabel("Players");
         playersLabel.setForeground(Color.WHITE);
-        playersLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         GridBagConstraints playersLabelConstraints = new GridBagConstraints();
         playersLabelConstraints.insets = new Insets(5, 5, 5, 0);
         playersLabelConstraints.anchor = GridBagConstraints.WEST;
@@ -380,7 +359,6 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
         JLabel chatLabel = new OutlineLabel("Chat");
         chatLabel.setForeground(Color.WHITE);
-        chatLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         GridBagConstraints chatLabelConstraints = new GridBagConstraints();
         chatLabelConstraints.anchor = GridBagConstraints.WEST;
         chatLabelConstraints.insets = new Insets(5, 5, 5, 0);
@@ -398,13 +376,11 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
         chatTextArea = new JTextArea();
         chatTextArea.setEditable(false);
-        chatTextArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
         chatTextArea.setTabSize(0);
         chatTextArea.setLineWrap(true);
         scrollPane.setViewportView(chatTextArea);
 
         chatTextField = new JTextField();
-        chatTextField.setFont(new Font("Tahoma", Font.PLAIN, 11));
         GridBagConstraints chatTextFielConstraints = new GridBagConstraints();
         chatTextFielConstraints.insets = new Insets(0, 5, 0, 0);
         chatTextFielConstraints.fill = GridBagConstraints.HORIZONTAL;

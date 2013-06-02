@@ -40,6 +40,9 @@ import simulation.map.MapIndex;
  */
 public class Goblin extends GameCharacter {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5661614090710336119L;
+
     /** The kill everyone. */
     public KillEveryoneComponent killEveryone;
 

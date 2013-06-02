@@ -40,6 +40,9 @@ import simulation.character.GameCharacter;
  */
 public class WasteTimeJob extends AbstractJob {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5295138993750863295L;
+
     /** The dwarf that is wasting time. */
     private final GameCharacter character;
 

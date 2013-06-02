@@ -49,6 +49,9 @@ import simulation.workshop.WorkshopTypeManager;
  */
 public class Recipe implements Serializable {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 1857760478240172942L;
+
     /** The item. */
     public final ItemType itemType;
 

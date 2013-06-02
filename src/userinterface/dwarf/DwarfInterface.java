@@ -31,6 +31,7 @@
  */
 package userinterface.dwarf;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -39,6 +40,7 @@ import java.awt.Insets;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
@@ -49,11 +51,16 @@ import simulation.item.Item;
 import simulation.labor.LaborType;
 import userinterface.SpriteManager;
 import userinterface.WorldCanvas;
+import userinterface.components.ImagePanel;
+import userinterface.components.OutlineLabel;
 
 /**
  * The Class DwarfInterface.
  */
 public class DwarfInterface extends JInternalFrame implements ICharacterListener, IComponentListener {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 6213975713592520095L;
 
     /** The name text field. */
     private JTextField nameTextField;
@@ -113,8 +120,6 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
 
     /**
      * Sets the dwarf.
-     * 
-     * @param dwarfTmp the new dwarf
      * @param worldCanvas the world canvas
      */
     public void setDwarf(final Dwarf dwarfTmp, final WorldCanvas worldCanvas) {
@@ -157,16 +162,19 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
     private void setupLayout() {
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         setClosable(true);
-        setClosable(true);
         setTitle("Dwarf interface");
-        setBounds(100, 100, 608, 329);
+        setBounds(100, 100, 608, 433);
+        setResizable(true);
+        getContentPane().setLayout(new BorderLayout(5, 5));
 
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 252, 0, 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-        getContentPane().setLayout(gridBagLayout);
+        JPanel panel = new ImagePanel();
+        GridBagLayout panelLayout = new GridBagLayout();
+        panelLayout.columnWidths = new int[] { 252, 0, 0, 0 };
+        panelLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        panelLayout.columnWeights = new double[] { 0.0, 0.0, 1.0, Double.MIN_VALUE };
+        panelLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
+        panel.setLayout(panelLayout);
+        getContentPane().add(panel, BorderLayout.CENTER);
 
         imageLabel = new JLabel("");
         GridBagConstraints imageLabelConstraints = new GridBagConstraints();
@@ -174,15 +182,15 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         imageLabelConstraints.insets = new Insets(0, 0, 5, 5);
         imageLabelConstraints.gridx = 0;
         imageLabelConstraints.gridy = 0;
-        getContentPane().add(imageLabel, imageLabelConstraints);
+        panel.add(imageLabel, imageLabelConstraints);
 
-        JLabel nameLabel = new JLabel("Name:");
+        JLabel nameLabel = new OutlineLabel("Name:");
         GridBagConstraints nameLabeConstraints = new GridBagConstraints();
         nameLabeConstraints.insets = new Insets(0, 0, 5, 5);
         nameLabeConstraints.anchor = GridBagConstraints.EAST;
         nameLabeConstraints.gridx = 1;
         nameLabeConstraints.gridy = 0;
-        getContentPane().add(nameLabel, nameLabeConstraints);
+        panel.add(nameLabel, nameLabeConstraints);
 
         nameTextField = new JTextField();
         nameTextField.setEditable(false);
@@ -191,16 +199,16 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         nameTextFielConstraints.fill = GridBagConstraints.HORIZONTAL;
         nameTextFielConstraints.gridx = 2;
         nameTextFielConstraints.gridy = 0;
-        getContentPane().add(nameTextField, nameTextFielConstraints);
         nameTextField.setColumns(10);
+        panel.add(nameTextField, nameTextFielConstraints);
 
-        JLabel professionLabel = new JLabel("Profession:");
+        JLabel professionLabel = new OutlineLabel("Profession:");
         GridBagConstraints professionLabelGridBagConstrints = new GridBagConstraints();
         professionLabelGridBagConstrints.anchor = GridBagConstraints.EAST;
         professionLabelGridBagConstrints.insets = new Insets(0, 0, 5, 5);
         professionLabelGridBagConstrints.gridx = 1;
         professionLabelGridBagConstrints.gridy = 1;
-        getContentPane().add(professionLabel, professionLabelGridBagConstrints);
+        panel.add(professionLabel, professionLabelGridBagConstrints);
 
         professionTextField = new JTextField();
         professionTextField.setEditable(false);
@@ -209,16 +217,16 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         professionTextFielConstraints.fill = GridBagConstraints.HORIZONTAL;
         professionTextFielConstraints.gridx = 2;
         professionTextFielConstraints.gridy = 1;
-        getContentPane().add(professionTextField, professionTextFielConstraints);
         professionTextField.setColumns(10);
+        panel.add(professionTextField, professionTextFielConstraints);
 
-        JLabel deadLabel = new JLabel("Dead:");
+        JLabel deadLabel = new OutlineLabel("Dead:");
         GridBagConstraints deadLabeConstraints = new GridBagConstraints();
         deadLabeConstraints.anchor = GridBagConstraints.EAST;
         deadLabeConstraints.insets = new Insets(0, 0, 5, 5);
         deadLabeConstraints.gridx = 1;
         deadLabeConstraints.gridy = 2;
-        getContentPane().add(deadLabel, deadLabeConstraints);
+        panel.add(deadLabel, deadLabeConstraints);
 
         deadTextField = new JTextField();
         deadTextField.setEditable(false);
@@ -227,16 +235,16 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         deadTextFielConstraints.fill = GridBagConstraints.HORIZONTAL;
         deadTextFielConstraints.gridx = 2;
         deadTextFielConstraints.gridy = 2;
-        getContentPane().add(deadTextField, deadTextFielConstraints);
+        panel.add(deadTextField, deadTextFielConstraints);
         deadTextField.setColumns(10);
 
-        JLabel itemHaulingLabel = new JLabel("Item Hauling:");
+        JLabel itemHaulingLabel = new OutlineLabel("Item Hauling:");
         GridBagConstraints itemHaulingLabeConstraints = new GridBagConstraints();
         itemHaulingLabeConstraints.anchor = GridBagConstraints.EAST;
         itemHaulingLabeConstraints.insets = new Insets(0, 0, 5, 5);
         itemHaulingLabeConstraints.gridx = 1;
         itemHaulingLabeConstraints.gridy = 3;
-        getContentPane().add(itemHaulingLabel, itemHaulingLabeConstraints);
+        panel.add(itemHaulingLabel, itemHaulingLabeConstraints);
 
         itemHaulingTextField = new JTextField();
         itemHaulingTextField.setEditable(false);
@@ -245,16 +253,16 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         itemHaulingTextFielConstraints.fill = GridBagConstraints.HORIZONTAL;
         itemHaulingTextFielConstraints.gridx = 2;
         itemHaulingTextFielConstraints.gridy = 3;
-        getContentPane().add(itemHaulingTextField, itemHaulingTextFielConstraints);
+        panel.add(itemHaulingTextField, itemHaulingTextFielConstraints);
         itemHaulingTextField.setColumns(10);
 
-        JLabel toolHoldingLabel = new JLabel("Tool holding:");
+        JLabel toolHoldingLabel = new OutlineLabel("Tool holding:");
         GridBagConstraints toolHoldingConstraints = new GridBagConstraints();
         toolHoldingConstraints.anchor = GridBagConstraints.EAST;
         toolHoldingConstraints.insets = new Insets(0, 0, 5, 5);
         toolHoldingConstraints.gridx = 1;
         toolHoldingConstraints.gridy = 4;
-        getContentPane().add(toolHoldingLabel, toolHoldingConstraints);
+        panel.add(toolHoldingLabel, toolHoldingConstraints);
 
         toolHoldingTextField = new JTextField();
         toolHoldingTextField.setEditable(false);
@@ -263,16 +271,16 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         toolHoldingTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
         toolHoldingTextFieldConstraints.gridx = 2;
         toolHoldingTextFieldConstraints.gridy = 4;
-        getContentPane().add(toolHoldingTextField, toolHoldingTextFieldConstraints);
+        panel.add(toolHoldingTextField, toolHoldingTextFieldConstraints);
         toolHoldingTextField.setColumns(10);
 
-        JLabel healthLabel = new JLabel("Health:");
+        JLabel healthLabel = new OutlineLabel("Health:");
         GridBagConstraints healthLabelConstraints = new GridBagConstraints();
         healthLabelConstraints.anchor = GridBagConstraints.EAST;
         healthLabelConstraints.insets = new Insets(0, 0, 5, 5);
         healthLabelConstraints.gridx = 1;
         healthLabelConstraints.gridy = 5;
-        getContentPane().add(healthLabel, healthLabelConstraints);
+        panel.add(healthLabel, healthLabelConstraints);
 
         healthTextField = new JTextField();
         healthTextField.setEditable(false);
@@ -281,16 +289,16 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         healthTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
         healthTextFieldConstraints.gridx = 2;
         healthTextFieldConstraints.gridy = 5;
-        getContentPane().add(healthTextField, healthTextFieldConstraints);
+        panel.add(healthTextField, healthTextFieldConstraints);
         healthTextField.setColumns(10);
 
-        JLabel hungerLabel = new JLabel("Hunger:");
+        JLabel hungerLabel = new OutlineLabel("Hunger:");
         GridBagConstraints hungerLabelConstraints = new GridBagConstraints();
         hungerLabelConstraints.anchor = GridBagConstraints.EAST;
         hungerLabelConstraints.insets = new Insets(0, 0, 5, 5);
         hungerLabelConstraints.gridx = 1;
         hungerLabelConstraints.gridy = 6;
-        getContentPane().add(hungerLabel, hungerLabelConstraints);
+        panel.add(hungerLabel, hungerLabelConstraints);
 
         hungerTextField = new JTextField();
         hungerTextField.setEditable(false);
@@ -299,16 +307,16 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         hungerTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
         hungerTextFieldConstraints.gridx = 2;
         hungerTextFieldConstraints.gridy = 6;
-        getContentPane().add(hungerTextField, hungerTextFieldConstraints);
+        panel.add(hungerTextField, hungerTextFieldConstraints);
         hungerTextField.setColumns(10);
 
-        JLabel thirstLabel = new JLabel("Thirst:");
+        JLabel thirstLabel = new OutlineLabel("Thirst:");
         GridBagConstraints thirstLabelConstraints = new GridBagConstraints();
         thirstLabelConstraints.anchor = GridBagConstraints.EAST;
         thirstLabelConstraints.insets = new Insets(0, 0, 5, 5);
         thirstLabelConstraints.gridx = 1;
         thirstLabelConstraints.gridy = 7;
-        getContentPane().add(thirstLabel, thirstLabelConstraints);
+        panel.add(thirstLabel, thirstLabelConstraints);
 
         thirstTextField = new JTextField();
         thirstTextField.setEditable(false);
@@ -317,24 +325,25 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         thirstTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
         thirstTextFieldConstraints.gridx = 2;
         thirstTextFieldConstraints.gridy = 7;
-        getContentPane().add(thirstTextField, thirstTextFieldConstraints);
+        panel.add(thirstTextField, thirstTextFieldConstraints);
         thirstTextField.setColumns(10);
 
-        lockLabel = new JLabel("Lock:");
+        lockLabel = new OutlineLabel("Lock:");
         GridBagConstraints lockLabelConstraints = new GridBagConstraints();
         lockLabelConstraints.anchor = GridBagConstraints.EAST;
-        lockLabelConstraints.insets = new Insets(0, 0, 0, 5);
+        lockLabelConstraints.insets = new Insets(0, 0, 5, 5);
         lockLabelConstraints.gridx = 1;
         lockLabelConstraints.gridy = 8;
-        getContentPane().add(lockLabel, lockLabelConstraints);
+        panel.add(lockLabel, lockLabelConstraints);
 
         lockTextField = new JTextField();
         lockTextField.setEditable(false);
         GridBagConstraints lockTextFieldConstraints = new GridBagConstraints();
+        lockTextFieldConstraints.insets = new Insets(0, 0, 5, 0);
         lockTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
         lockTextFieldConstraints.gridx = 2;
         lockTextFieldConstraints.gridy = 8;
-        getContentPane().add(lockTextField, lockTextFieldConstraints);
+        panel.add(lockTextField, lockTextFieldConstraints);
         lockTextField.setColumns(10);
         // CHECKSTYLE:ON
     }

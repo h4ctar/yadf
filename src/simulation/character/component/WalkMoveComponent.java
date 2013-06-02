@@ -54,7 +54,7 @@ public class WalkMoveComponent extends AbstractMoveComponent {
     private boolean nextTo = false;
 
     /** The path that the dwarf is walking along. */
-    transient private List<MapIndex> path = null;
+    private transient List<MapIndex> path = null;
 
     /** How far along the path the dwarf is. */
     private int pathIndex = 0;
@@ -74,12 +74,12 @@ public class WalkMoveComponent extends AbstractMoveComponent {
     /**
      * Instantiates a new walk move component.
      * 
-     * @param target the target
-     * @param nextTo the next to
+     * @param targetTmp the target
+     * @param nextToTmp the next to
      */
-    public WalkMoveComponent(final MapIndex target, final boolean nextTo) {
-        this.target = target;
-        this.nextTo = nextTo;
+    public WalkMoveComponent(final MapIndex targetTmp, final boolean nextToTmp) {
+        target = new MapIndex(targetTmp);
+        nextTo = nextToTmp;
     }
 
     /**

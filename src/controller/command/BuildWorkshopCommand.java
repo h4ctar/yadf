@@ -40,6 +40,9 @@ import simulation.map.MapIndex;
  */
 public class BuildWorkshopCommand extends AbstractCommand {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 5483294380986462194L;
+
     /** The workshop type. */
     private final String workshopType;
 

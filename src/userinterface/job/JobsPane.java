@@ -44,6 +44,9 @@ import simulation.job.JobManager;
  */
 public class JobsPane extends JPanel {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 3204746204349555430L;
+
     /** The jobs table. */
     private final JTable jobsTable;
 
