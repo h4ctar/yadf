@@ -11,12 +11,44 @@ import javax.imageio.ImageIO;
 
 import simulation.workshop.Workshop;
 
-public class SpriteManager {
+/**
+ * The sprite manager is a singleton that contains all the sprites.
+ */
+public final class SpriteManager {
+    /** The instance of the singleton. */
     private static SpriteManager instance;
 
     /** The size of a sprite. */
     public static final int SPRITE_SIZE = 18;
 
+    /** The animal sprite. */
+    public static final int ANIMAL_SPRITE = 48;
+
+    /** The dead dwarf sprite. */
+    public static final int DEAD_DWARF_SPRITE = 44;
+
+    /** The farm till sprite. */
+    public static final int TILL_SPRITE = 64;
+
+    /** The farm plant sprite. */
+    public static final int PLANT_SPRITE = 65;
+
+    /** The farm grow sprite. */
+    public static final int GROW_SPRITE = 66;
+
+    /** The farm harvest sprite. */
+    public static final int HARVEST_SPRITE = 67;
+
+    /** The goblin sprite. */
+    public static final int GOBLIN_SPRITE = 80;
+
+    /** The tree sprite. */
+    public static final int TREE_SPRITE = 255;
+
+    /**
+     * Get an instance of the sprite manager singleton.
+     * @return the sprite manager singleton
+     */
     public static SpriteManager getInstance() {
         if (instance == null) {
             instance = new SpriteManager();
@@ -33,6 +65,9 @@ public class SpriteManager {
     /** The workshop sprites. */
     private Sprite[] workshopSprites;
 
+    /**
+     * Private constructor, loads the sprites when the instance is created.
+     */
     private SpriteManager() {
         try {
             blockSprites = loadTileSheet("block_sprites.png", 1);
@@ -43,21 +78,35 @@ public class SpriteManager {
         }
     }
 
+    /**
+     * Gets a block sprite.
+     * @param i the index of the sprite to get
+     * @return the sprite
+     */
     public Sprite getBlockSprite(final int i) {
         return blockSprites[i];
     }
 
+    /**
+     * Gets an item sprite.
+     * @param i the index of the sprite to get
+     * @return the sprite
+     */
     public Sprite getItemSprite(final int i) {
         return itemSprites[i];
     }
 
+    /**
+     * Gets a workshop sprite.
+     * @param i the index of the sprite to get
+     * @return the sprite
+     */
     public Sprite getWorkshopSprite(final int i) {
         return workshopSprites[i];
     }
 
     /**
      * Load tile sheet.
-     * 
      * @param file the file
      * @param multiplier the multiplier
      * @return the sprite[]

@@ -107,6 +107,15 @@ public class WorldCanvas extends JComponent implements IMapListener {
     /** The colour of an invalid selection. */
     private static final Color INVALID_SELECTION_COLOUR = new Color(0.8f, 0.5f, 0.5f, 0.8f);
 
+    /** The colour of a room. */
+    private static final Color ROOM_COLOUR = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+
+    /** The colour of a stockpile. */
+    private static final Color STOCKPILE_COLOUR = new Color(0.7f, 0.6f, 0.5f, 0.8f);
+
+    /** The colour of the atmosphere. */
+    private static final Color ATMOSPHERE_COLOUR = new Color(0.5f, 0.5f, 0.7f, 0.5f);
+
     /** The background image. */
     private BufferedImage backgroundImage = null;
 
@@ -297,20 +306,20 @@ public class WorldCanvas extends JComponent implements IMapListener {
      */
     // TODO: what the hell is this?
     private Sprite blockSprite(final BlockType block) {
-        if (block.toString().startsWith("MINE_")) {
+        String prefix = "MINE_";
+        if (block.toString().startsWith(prefix)) {
             return SpriteManager.getInstance().getBlockSprite(
-                    BlockType.valueOf(block.toString().substring(5)).ordinal());
+                    BlockType.valueOf(block.toString().substring(prefix.length())).ordinal());
         }
-
         return SpriteManager.getInstance().getBlockSprite(block.ordinal());
     }
 
     /**
      * Draw animals.
-     * @param g the g
+     * @param g the graphics to draw on
      */
     private void drawAnimals(final Graphics g) {
-        Sprite animalSprite = SpriteManager.getInstance().getItemSprite(48);
+        Sprite animalSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.ANIMAL_SPRITE);
         for (Animal animal : region.getAnimals()) {
             MapIndex position = animal.getPosition();
             if (position.z == viewPosition.z) {
@@ -336,7 +345,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
         RegionMap map = region.getMap();
         Sprite tile;
         Graphics g = backgroundImage.getGraphics();
-
+        g.setColor(ATMOSPHERE_COLOUR);
         for (int x = 0; x < viewSize.x; x++) {
             for (int y = 0; y < viewSize.y; y++) {
                 BlockType block = map.getBlock(viewPosition.add(x, y, -1));
@@ -348,7 +357,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
                     tile.draw(g, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
                 }
                 if (block != BlockType.RAMP && block != BlockType.STAIR) {
-                    g.setColor(new Color(0.5f, 0.5f, 0.7f, 0.5f));
                     g.fillRect(x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE,
                             SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE);
                 }
@@ -356,7 +364,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
                 tile = blockSprite(block);
                 tile.draw(g, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
                 if (block == BlockType.RAMP || block == BlockType.STAIR) {
-                    g.setColor(new Color(0.5f, 0.5f, 0.7f, 0.5f));
                     g.fillRect(x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE,
                             SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE);
                 }
@@ -365,7 +372,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
                     tile = blockSprite(blockAbove);
                     tile.draw(g, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
                 } else if (!blockAbove.isStandIn) {
-                    g.setColor(new Color(0.0f, 0.0f, 0.0f, 0.8f));
                     g.fillRect(x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE,
                             SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE);
                 }
@@ -376,7 +382,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw dwarfs.
-     * @param g the graphic to draw onto
+     * @param g the graphics to draw on
      */
     private void drawDwarfs(final Graphics g) {
         List<Player> players = region.getPlayers();
@@ -390,7 +396,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
                     if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
                         Sprite dwarfSprite;
                         if (dwarf.isDead()) {
-                            dwarfSprite = SpriteManager.getInstance().getItemSprite(44);
+                            dwarfSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.DEAD_DWARF_SPRITE);
                         } else {
                             LaborType profession = dwarf.getSkill().getProfession();
 
@@ -409,14 +415,13 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw farms.
-     * @param g the g
+     * @param g the graphics to draw on
      */
     private void drawFarms(final Graphics g) {
-        Sprite tillSprite = SpriteManager.getInstance().getItemSprite(64);
-        Sprite plantSprite = SpriteManager.getInstance().getItemSprite(65);
-        Sprite growSprite = SpriteManager.getInstance().getItemSprite(66);
-        Sprite harvestSprite = SpriteManager.getInstance().getItemSprite(67);
-        g.setColor(new Color(0.4f, 0.1f, 0.0f, 0.8f));
+        Sprite tillSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.TILL_SPRITE);
+        Sprite plantSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.PLANT_SPRITE);
+        Sprite growSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.GROW_SPRITE);
+        Sprite harvestSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.HARVEST_SPRITE);
         List<Player> players = region.getPlayers();
         for (Player thisPlayer : players) {
             List<Farm> farms = thisPlayer.getFarms();
@@ -449,10 +454,10 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw goblins.
-     * @param g the g
+     * @param g the graphics to draw on
      */
     private void drawGoblins(final Graphics g) {
-        Sprite goblinSprite = SpriteManager.getInstance().getItemSprite(80);
+        Sprite goblinSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.GOBLIN_SPRITE);
         List<Goblin> goblins = region.getGoblins();
         for (Goblin goblin : goblins) {
             MapIndex position = goblin.getPosition();
@@ -468,7 +473,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw items.
-     * @param g the g
+     * @param g the graphics to draw on
      */
     private void drawItems(final Graphics g) {
         List<Player> players = region.getPlayers();
@@ -490,12 +495,12 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw rooms.
-     * @param g the g
+     * @param g the graphics to draw on
      */
     private void drawRooms(final Graphics g) {
         List<Player> players = region.getPlayers();
-        for (Player player : players) {
-            List<Room> rooms = player.getRooms();
+        for (Player thisPlayer : players) {
+            List<Room> rooms = thisPlayer.getRooms();
             for (Room room : rooms) {
                 MapArea area = room.getArea();
                 if (viewPosition.z != area.pos.z) {
@@ -503,7 +508,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
                 }
                 int x = (area.pos.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
                 int y = (area.pos.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
-                g.setColor(new Color(0.7f, 0.7f, 0.7f, 0.8f));
+                g.setColor(ROOM_COLOUR);
                 g.fillRect(x, y, area.width * SpriteManager.SPRITE_SIZE, area.height * SpriteManager.SPRITE_SIZE);
             }
         }
@@ -511,12 +516,12 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw stockpiles.
-     * @param g the g
+     * @param g the graphics to draw on
      */
     private void drawStockpiles(final Graphics g) {
         List<Player> players = region.getPlayers();
-        for (Player player : players) {
-            List<Stockpile> stockpiles = player.getStockManager().getStockpiles();
+        for (Player thisPlayer : players) {
+            List<Stockpile> stockpiles = thisPlayer.getStockManager().getStockpiles();
             for (Stockpile stockpile : stockpiles) {
                 MapArea area = stockpile.getArea();
 
@@ -527,7 +532,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
                 int x = (area.pos.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
                 int y = (area.pos.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
 
-                g.setColor(new Color(0.7f, 0.6f, 0.5f, 0.8f));
+                g.setColor(STOCKPILE_COLOUR);
                 g.fillRect(x, y, area.width * SpriteManager.SPRITE_SIZE, area.height * SpriteManager.SPRITE_SIZE);
 
                 List<Item> items = stockpile.getItems();
@@ -548,10 +553,10 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw the trees.
-     * @param g
+     * @param g the graphics to draw on
      */
     private void drawTrees(final Graphics g) {
-        Sprite treeSprite = SpriteManager.getInstance().getItemSprite(255);
+        Sprite treeSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.TREE_SPRITE);
         List<Tree> trees = region.getTrees();
         for (Tree tree : trees) {
             MapIndex position = tree.getPosition();
@@ -567,14 +572,14 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw workshops.
-     * @param g the g
+     * @param g the graphics to draw on
      */
     private void drawWorkshops(final Graphics g) {
         List<Player> players = region.getPlayers();
-        for (Player player : players) {
-            List<Workshop> workshops = player.getWorkshops();
+        for (Player thisPlayer : players) {
+            List<Workshop> workshops = thisPlayer.getWorkshops();
             for (Workshop workshop : workshops) {
-                MapArea area = new MapArea(workshop.getPosition(), 3, 3);
+                MapArea area = new MapArea(workshop.getPosition(), Workshop.WORKSHOP_SIZE, Workshop.WORKSHOP_SIZE);
                 if (viewPosition.z != area.pos.z) {
                     continue;
                 }
