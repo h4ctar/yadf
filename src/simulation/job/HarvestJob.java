@@ -63,6 +63,7 @@ public class HarvestJob extends AbstractJob {
         HARVEST
     }
 
+    /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
 
     /** The state. */
@@ -91,16 +92,12 @@ public class HarvestJob extends AbstractJob {
 
     /**
      * Instantiates a new harvest job.
-     * 
      * @param farmPlotTmp the farm plot
      */
     public HarvestJob(final FarmPlot farmPlotTmp) {
         farmPlot = farmPlotTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         switch (state) {
@@ -115,9 +112,6 @@ public class HarvestJob extends AbstractJob {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
@@ -134,25 +128,16 @@ public class HarvestJob extends AbstractJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Harvest crop";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {

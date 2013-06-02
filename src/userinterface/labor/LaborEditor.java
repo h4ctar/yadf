@@ -57,17 +57,11 @@ public class LaborEditor extends AbstractCellEditor implements TableCellEditor, 
         renderer.addItemListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getCellEditorValue() {
         return new Boolean(renderer.isSelected());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
             final int row, final int column) {
@@ -77,9 +71,6 @@ public class LaborEditor extends AbstractCellEditor implements TableCellEditor, 
         return renderer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void itemStateChanged(final ItemEvent e) {
         this.fireEditingStopped();

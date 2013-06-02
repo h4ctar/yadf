@@ -46,51 +46,41 @@ public class WalkableNode extends MapIndex implements Comparable<WalkableNode> {
     public List<WalkableNode> adjacencies = new ArrayList<>();
 
     /** The g. */
-    public int G;
+    public int g;
 
     /** The h. */
-    public int H;
+    public int h;
 
     /** The f. */
-    public int F;
+    public int f;
 
     /** The parent. */
     public WalkableNode parent = null;
 
     /**
      * Instantiates a new walkable node.
-     * 
      * @param mapIndex the map index
      */
     public WalkableNode(final MapIndex mapIndex) {
         super(mapIndex);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compareTo(final WalkableNode o) {
-        if (F < o.F) {
+        if (f < o.f) {
             return -1;
-        } else if (F > o.F) {
+        } else if (f > o.f) {
             return 1;
         } else {
             return 0;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(final Object obj) {
         return super.equals(obj);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return super.hashCode();

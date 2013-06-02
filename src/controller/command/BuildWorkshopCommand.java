@@ -62,9 +62,6 @@ public class BuildWorkshopCommand extends AbstractCommand {
         position = positionTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doCommand() {
         player.getJobManager().addJob(new BuildWorkshopJob(position, workshopType));

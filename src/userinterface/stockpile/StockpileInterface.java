@@ -80,7 +80,6 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
 
     /**
      * Create the frame.
-     * 
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
@@ -90,9 +89,6 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
         setupLayout();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         controller.addCommand(new DeleteStockpileCommand(player, stockpile.getId()));
@@ -101,7 +97,6 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
 
     /**
      * Sets the stockpile.
-     * 
      * @param stockpileTmp the new stockpile
      */
     public void setStockpile(final Stockpile stockpileTmp) {

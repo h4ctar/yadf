@@ -61,9 +61,6 @@ public class CancelOrderCommand extends AbstractCommand {
         orderIndex = orderIndexTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doCommand() {
         Workshop workshop = player.getWorkshop(workshopId);

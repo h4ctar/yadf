@@ -109,9 +109,6 @@ public class BuildWorkshopJob extends AbstractJob {
         workshopType = WorkshopTypeManager.getInstance().getWorkshopType(workshopTypeTmp);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         switch (state) {
@@ -130,34 +127,22 @@ public class BuildWorkshopJob extends AbstractJob {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Building " + workshopType.name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         switch (state) {

@@ -41,17 +41,11 @@ import simulation.map.RegionMap;
  */
 public class StillMoveComponent extends AbstractMoveComponent {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void kill() {
         /* do nothing */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         RegionMap map = region.getMap();

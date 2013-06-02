@@ -62,17 +62,11 @@ public class ChaseMoveComponent extends AbstractMoveComponent {
         pursuee = pursueeTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void kill() {
         pursuee = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         RegionMap map = region.getMap();

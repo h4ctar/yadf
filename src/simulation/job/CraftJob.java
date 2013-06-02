@@ -100,7 +100,6 @@ public class CraftJob extends AbstractJob {
 
     /**
      * Instantiates a new craft job.
-     * 
      * @param workshopTmp the workshop
      * @param recipeTmp the recipe
      */
@@ -111,9 +110,6 @@ public class CraftJob extends AbstractJob {
         workshop.setOccupied(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         switch (state) {
@@ -132,9 +128,6 @@ public class CraftJob extends AbstractJob {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
@@ -148,25 +141,16 @@ public class CraftJob extends AbstractJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Craft " + recipe.itemType.name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {

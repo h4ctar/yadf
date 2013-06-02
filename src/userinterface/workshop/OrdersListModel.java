@@ -47,9 +47,6 @@ public class OrdersListModel extends AbstractListModel<String> implements IWorks
     /** The workshop. */
     private Workshop workshop;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getElementAt(final int row) {
         if (workshop == null) {
@@ -59,9 +56,6 @@ public class OrdersListModel extends AbstractListModel<String> implements IWorks
         return workshop.getOrders().get(row).toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getSize() {
         if (workshop == null) {
@@ -73,7 +67,6 @@ public class OrdersListModel extends AbstractListModel<String> implements IWorks
 
     /**
      * Sets the workshop.
-     * 
      * @param workshopTmp the new workshop
      */
     public void setWorkshop(final Workshop workshopTmp) {

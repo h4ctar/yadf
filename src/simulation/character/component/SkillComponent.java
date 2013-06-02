@@ -75,7 +75,6 @@ public class SkillComponent extends AbstractCharacterComponent {
 
     /**
      * Can do job.
-     * 
      * @param requiredLabor the required labor
      * @param character the character
      * @return true, if successful
@@ -111,7 +110,6 @@ public class SkillComponent extends AbstractCharacterComponent {
 
     /**
      * Gets the labor skill.
-     * 
      * @param laborType the labor type
      * @return the labor skill
      */
@@ -125,7 +123,6 @@ public class SkillComponent extends AbstractCharacterComponent {
 
     /**
      * Gets the profession.
-     * 
      * @return the profession
      */
     public LaborType getProfession() {
@@ -134,7 +131,6 @@ public class SkillComponent extends AbstractCharacterComponent {
 
     /**
      * Increase skill level.
-     * 
      * @param laborType the labor type
      */
     public void increaseSkillLevel(final LaborType laborType) {
@@ -152,7 +148,6 @@ public class SkillComponent extends AbstractCharacterComponent {
 
     /**
      * Checks if is labor enabled.
-     * 
      * @param requiredLabor the required labor
      * @return true, if is labor enabled
      */
@@ -160,9 +155,6 @@ public class SkillComponent extends AbstractCharacterComponent {
         return enabledLabors.contains(requiredLabor);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void kill() {
         pickupToolJob = null;
@@ -170,7 +162,6 @@ public class SkillComponent extends AbstractCharacterComponent {
 
     /**
      * Sets the labor enabled.
-     * 
      * @param laborTypeName the labor type name
      * @param enabled the enabled
      */
@@ -189,9 +180,6 @@ public class SkillComponent extends AbstractCharacterComponent {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         assert (player != null);

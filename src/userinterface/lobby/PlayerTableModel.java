@@ -52,7 +52,6 @@ public class PlayerTableModel extends AbstractTableModel {
 
     /**
      * Adds the player.
-     * 
      * @param string the string
      */
     public void addPlayer(final String string) {
@@ -60,17 +59,11 @@ public class PlayerTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getColumnCount() {
         return 2;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getColumnName(final int columnIndex) {
         if (columnIndex == 0) {
@@ -82,7 +75,6 @@ public class PlayerTableModel extends AbstractTableModel {
 
     /**
      * Gets the player index.
-     * 
      * @return the player index
      */
     public int getPlayerIndex() {
@@ -91,7 +83,6 @@ public class PlayerTableModel extends AbstractTableModel {
 
     /**
      * Gets the player name.
-     * 
      * @return the player name
      */
     public String getPlayerName() {
@@ -100,24 +91,17 @@ public class PlayerTableModel extends AbstractTableModel {
 
     /**
      * Gets the player names.
-     * 
      * @return the player names
      */
     public List<String> getPlayerNames() {
         return playerNames;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getRowCount() {
         return playerNames.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
         if (columnIndex == 0) {
@@ -129,7 +113,6 @@ public class PlayerTableModel extends AbstractTableModel {
 
     /**
      * Sets the player index.
-     * 
      * @param index the new player index
      */
     public void setPlayerIndex(final int index) {
@@ -138,7 +121,6 @@ public class PlayerTableModel extends AbstractTableModel {
 
     /**
      * Sets the player name.
-     * 
      * @param playerName the player name
      * @param playerIndexTmp the player index
      */
@@ -149,7 +131,6 @@ public class PlayerTableModel extends AbstractTableModel {
 
     /**
      * Sets the player names.
-     * 
      * @param playerNamesTmp the new player names
      */
     public void setPlayerNames(final List<String> playerNamesTmp) {

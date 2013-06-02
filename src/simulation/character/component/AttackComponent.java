@@ -45,7 +45,6 @@ public class AttackComponent extends AbstractCharacterComponent {
 
     /**
      * Instantiates a new attack component.
-     * 
      * @param enemyTmp the enemy
      */
     public AttackComponent(final GameCharacter enemyTmp) {
@@ -54,24 +53,17 @@ public class AttackComponent extends AbstractCharacterComponent {
 
     /**
      * Checks if is done.
-     * 
      * @return true, if is done
      */
     public boolean isDone() {
         return enemy.isDead();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void kill() {
         enemy = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         int distance = character.getPosition().distance(enemy.getPosition());

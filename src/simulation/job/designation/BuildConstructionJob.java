@@ -115,17 +115,11 @@ public class BuildConstructionJob extends AbstractDesignationJob {
         designation = designationTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MapIndex getPosition() {
         return position;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         switch (state) {
@@ -144,9 +138,6 @@ public class BuildConstructionJob extends AbstractDesignationJob {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message);
@@ -165,25 +156,16 @@ public class BuildConstructionJob extends AbstractDesignationJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Build " + constructionType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {

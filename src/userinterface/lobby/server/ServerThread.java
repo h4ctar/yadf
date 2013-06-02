@@ -59,7 +59,6 @@ public class ServerThread implements Runnable {
 
     /**
      * Instantiates a new server thread.
-     * 
      * @param lobbyServerTmp the lobby server
      */
     public ServerThread(final ILobbyServer lobbyServerTmp) {
@@ -74,16 +73,12 @@ public class ServerThread implements Runnable {
         connection.close();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void disconnect() {
         lobbyServer.disconnect();
     }
 
     /**
      * Gets the connection.
-     * 
      * @return the connection
      */
     public Connection getConnection() {
@@ -92,7 +87,6 @@ public class ServerThread implements Runnable {
 
     /**
      * Inits the.
-     * 
      * @param socket the socket
      * @return true, if successful
      */
@@ -108,9 +102,6 @@ public class ServerThread implements Runnable {
         return ok;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         try {
@@ -144,7 +135,6 @@ public class ServerThread implements Runnable {
 
     /**
      * Send chat.
-     * 
      * @param playerName the player name
      * @param text the text
      */
@@ -165,7 +155,6 @@ public class ServerThread implements Runnable {
 
     /**
      * Send player index.
-     * 
      * @param playerIndex the player index
      */
     public void sendPlayerIndex(final int playerIndex) {
@@ -184,7 +173,6 @@ public class ServerThread implements Runnable {
 
     /**
      * Send player names.
-     * 
      * @param playerNames the player names
      */
     public void sendPlayerNames(final List<String> playerNames) {
@@ -235,7 +223,6 @@ public class ServerThread implements Runnable {
 
     /**
      * Receive my name is.
-     * 
      * @param playerIndex the player index
      * @param playerName the player name
      */
@@ -246,7 +233,6 @@ public class ServerThread implements Runnable {
 
     /**
      * Running.
-     * 
      * @return true, if successful
      */
     private boolean running() {

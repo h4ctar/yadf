@@ -56,9 +56,6 @@ public class DeleteRoomCommand extends AbstractCommand {
         roomId = roomIdTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doCommand() {
         Room room = player.getRoom(roomId);

@@ -41,9 +41,6 @@ import userinterface.lobby.ILobbyPanel;
 
 /**
  * The lobby server class.
- * 
- * @author Ben
- * 
  */
 public class LobbyServer implements ILobbyServer {
 
@@ -67,7 +64,6 @@ public class LobbyServer implements ILobbyServer {
 
     /**
      * Instantiates a new lobby server.
-     * 
      * @param lobbyPanelTmp the lobby panel
      */
     public LobbyServer(final ILobbyPanel lobbyPanelTmp) {
@@ -79,9 +75,6 @@ public class LobbyServer implements ILobbyServer {
         startGamesReceived = 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addNewClient(final Socket socket) {
         Logger.getInstance().log(this, "addNewClient()");
@@ -100,9 +93,6 @@ public class LobbyServer implements ILobbyServer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void close() {
         Logger.getInstance().log(this, "close()");
@@ -113,9 +103,6 @@ public class LobbyServer implements ILobbyServer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void disconnect() {
         Logger.getInstance().log(this, "disconnect()");
@@ -126,7 +113,6 @@ public class LobbyServer implements ILobbyServer {
 
     /**
      * Gets the connections.
-     * 
      * @return the connections
      */
     public List<Connection> getConnections() {
@@ -139,17 +125,11 @@ public class LobbyServer implements ILobbyServer {
         return connections;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean init(final String ip, final int port) {
         return newClientAcceptorThread.init(port);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void receiveChat(final String playerName, final String text) {
         Logger.getInstance().log(this, "receiveChat(" + playerName + ", " + text + ")");
@@ -157,9 +137,6 @@ public class LobbyServer implements ILobbyServer {
         sendChat(playerName, text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void receiveStartGame() {
         Logger.getInstance().log(this, "receiveStartGame()");
@@ -171,9 +148,6 @@ public class LobbyServer implements ILobbyServer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void sendChat(final String playerName, final String text) {
         Logger.getInstance().log(this, "sendChat(" + playerName + ", " + text + ")");
@@ -182,9 +156,6 @@ public class LobbyServer implements ILobbyServer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setPlayerName(final int playerIndex, final String playerName) {
         Logger.getInstance().log(this, "setPlayerName(" + playerIndex + ", " + playerName + ")");
@@ -196,9 +167,6 @@ public class LobbyServer implements ILobbyServer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() {
         Logger.getInstance().log(this, "start()");
@@ -215,9 +183,6 @@ public class LobbyServer implements ILobbyServer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void stop() {
         Logger.getInstance().log(this, "stop()");

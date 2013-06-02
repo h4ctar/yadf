@@ -52,7 +52,6 @@ public class ClientController extends AbstractController {
 
     /**
      * Instantiates a new client controller.
-     * 
      * @param connectionTmp the connection
      * @param listenerTmp the listener
      */
@@ -61,17 +60,11 @@ public class ClientController extends AbstractController {
         listener = listenerTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void close() {
         connection.close();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public synchronized void doCommands(final Region region) {
         try {

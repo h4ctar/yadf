@@ -40,9 +40,6 @@ import userinterface.lobby.LobbyMessageType;
 
 /**
  * A thread of a client that is listening to messages from the server.
- * 
- * @author Ben
- * 
  */
 public class ClientThread implements Runnable {
 
@@ -60,7 +57,6 @@ public class ClientThread implements Runnable {
 
     /**
      * Instantiates a new client thread.
-     * 
      * @param lobbyClientTmp the lobby client
      */
     public ClientThread(final ILobbyClient lobbyClientTmp) {
@@ -77,7 +73,6 @@ public class ClientThread implements Runnable {
 
     /**
      * Gets the connection.
-     * 
      * @return the connection
      */
     public Connection getConnection() {
@@ -86,7 +81,6 @@ public class ClientThread implements Runnable {
 
     /**
      * Inits the.
-     * 
      * @param ip the ip
      * @param port the port
      * @return true, if successful
@@ -103,9 +97,6 @@ public class ClientThread implements Runnable {
         return ok;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         try {
@@ -141,7 +132,6 @@ public class ClientThread implements Runnable {
 
     /**
      * Send chat.
-     * 
      * @param playerName the player name
      * @param text the text
      */
@@ -180,19 +170,11 @@ public class ClientThread implements Runnable {
 
     /**
      * Receive player index.
-     * 
      * @param playerIndex the player index
      */
     private void receivePlayerIndex(final int playerIndex) {
         Logger.getInstance().log(this, "receivePlayerIndex(" + playerIndex + ")");
         lobbyClient.setPlayerIndex(playerIndex);
-        /*
-         * LobbyMessage message = new LobbyMessage(LobbyMessageType.MY_NAME_IS); message.playerName = playerName;
-         * message.playerIndex = playerIndex;
-         * 
-         * try { connection.writeObject(message); } catch (Exception e) { e.printStackTrace(); close();
-         * listener.disconnect(); }
-         */
     }
 
     /**

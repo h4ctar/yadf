@@ -90,7 +90,6 @@ public class MineJob extends AbstractDesignationJob {
 
     /**
      * Constructor for the mine task.
-     * 
      * @param position the position
      * @param designation the designation
      */
@@ -99,25 +98,16 @@ public class MineJob extends AbstractDesignationJob {
         this.designation = designation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MapIndex getPosition() {
         return position;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         return "Mining";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
@@ -136,25 +126,16 @@ public class MineJob extends AbstractDesignationJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Mine";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {

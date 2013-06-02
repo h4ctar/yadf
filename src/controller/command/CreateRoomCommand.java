@@ -51,7 +51,6 @@ public class CreateRoomCommand extends AbstractCommand {
 
     /**
      * Instantiates a new creates the room command.
-     * 
      * @param areaTmp the area to build the room
      * @param player the player
      * @param roomTypeTmp the room type
@@ -62,9 +61,6 @@ public class CreateRoomCommand extends AbstractCommand {
         roomType = roomTypeTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doCommand() {
         player.addRoom(new Room(area, roomType));

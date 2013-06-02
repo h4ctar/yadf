@@ -48,7 +48,6 @@ public class CreateStockpileCommand extends AbstractCommand {
 
     /**
      * Instantiates a new creates the stockpile command.
-     * 
      * @param areaTmp the area to use as the stockpile
      * @param player the player
      */
@@ -57,9 +56,6 @@ public class CreateStockpileCommand extends AbstractCommand {
         area = areaTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doCommand() {
         player.getStockManager().addStockpile(new Stockpile(area, player));

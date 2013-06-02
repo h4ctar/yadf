@@ -66,7 +66,6 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
 
     /**
      * Instantiates a new stockpile tree table model.
-     * 
      * @param stockpileTmp the stockpile
      * @param controllerTmp the controller
      * @param playerTmp the player
@@ -91,27 +90,18 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
         stockpile.addListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getChild(final Object parent, final int index) {
         DefaultMutableTreeNode stockNode = (DefaultMutableTreeNode) parent;
         return stockNode.getChildAt(index);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getChildCount(final Object parent) {
         DefaultMutableTreeNode stockNode = (DefaultMutableTreeNode) parent;
         return stockNode.getChildCount();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Class<?> getColumnClass(final int columnIndex) {
         if (columnIndex == 0) {
@@ -125,17 +115,11 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
         return LaborNode.class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getColumnCount() {
         return 3;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getColumnName(final int columnIndex) {
         switch (columnIndex) {
@@ -150,9 +134,6 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getIndexOfChild(final Object parent, final Object child) {
         DefaultMutableTreeNode stockParentNode = (DefaultMutableTreeNode) parent;
@@ -160,17 +141,11 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
         return stockParentNode.getIndex(stockChildNode);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getRoot() {
         return root;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValueAt(final Object node, final int columnIndex) {
         String name = ((DefaultMutableTreeNode) node).toString();
@@ -201,9 +176,6 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isCellEditable(final Object node, final int columnIndex) {
         if (columnIndex == 1) {
@@ -212,9 +184,6 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValueAt(final Object value, final Object node, final int columnIndex) {
         String name = ((DefaultMutableTreeNode) node).toString();

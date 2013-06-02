@@ -100,9 +100,6 @@ public class PlantJob extends AbstractJob {
         farmPlot = farmPlotTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         switch (state) {
@@ -117,9 +114,6 @@ public class PlantJob extends AbstractJob {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
@@ -136,25 +130,16 @@ public class PlantJob extends AbstractJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Plant crop";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {

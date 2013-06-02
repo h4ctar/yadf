@@ -44,7 +44,6 @@ public class LaborNode implements Comparable<LaborNode> {
 
     /**
      * Instantiates a new labor node.
-     * 
      * @param skillTmp the skill
      * @param enabledTmp the enabled
      */
@@ -53,25 +52,16 @@ public class LaborNode implements Comparable<LaborNode> {
         enabled = enabledTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compareTo(final LaborNode o) {
         return this.skill.compareTo(o.skill);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(final Object v) {
         return v instanceof LaborNode && this.skill.equals(((LaborNode) v).skill);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return this.skill.hashCode();

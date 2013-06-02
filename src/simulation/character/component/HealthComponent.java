@@ -56,24 +56,17 @@ public class HealthComponent extends AbstractCharacterComponent {
 
     /**
      * Gets the health.
-     * 
      * @return the health
      */
     public int getHealth() {
         return health * 100 / MAX_HEALTH;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void kill() {
         /* do nothing */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         if (health <= 0 && !character.isDead()) {

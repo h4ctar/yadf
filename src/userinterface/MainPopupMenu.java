@@ -59,9 +59,6 @@ public class MainPopupMenu extends JPopupMenu {
      */
     private class BuildFarmActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
             worldPane.setState(GuiState.BUILD_FARM);
@@ -73,9 +70,6 @@ public class MainPopupMenu extends JPopupMenu {
      */
     private class BuildWorkshopActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
             worldPane.setState(GuiState.BUILD_WORKSHOP);
@@ -88,9 +82,6 @@ public class MainPopupMenu extends JPopupMenu {
      */
     private class CreateRoomActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
             worldPane.setState(GuiState.CREATE_ROOM);
@@ -103,9 +94,6 @@ public class MainPopupMenu extends JPopupMenu {
      */
     private class CreateStockpileActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
             worldPane.setState(GuiState.BUILD_STOCKPILE);
@@ -117,9 +105,6 @@ public class MainPopupMenu extends JPopupMenu {
      */
     private class DesignationActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
             worldPane.setState(GuiState.DESIGNATION);
@@ -132,9 +117,6 @@ public class MainPopupMenu extends JPopupMenu {
      */
     private class PlaceItemActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
             worldPane.setState(GuiState.PLACE_ITEM);
@@ -150,7 +132,6 @@ public class MainPopupMenu extends JPopupMenu {
 
     /**
      * Instantiates a new main popup menu.
-     * 
      * @param worldPaneTmp the world pane
      */
     public MainPopupMenu(final WorldPane worldPaneTmp) {
@@ -179,7 +160,6 @@ public class MainPopupMenu extends JPopupMenu {
 
     /**
      * Setup build workshop item menu.
-     * 
      * @return the j menu
      */
     private JMenu setupBuildWorkshopItemMenu() {
@@ -196,7 +176,6 @@ public class MainPopupMenu extends JPopupMenu {
 
     /**
      * Setup create room menu.
-     * 
      * @return the j menu
      */
     private JMenu setupCreateRoomMenu() {
@@ -213,7 +192,6 @@ public class MainPopupMenu extends JPopupMenu {
 
     /**
      * Setup designate menu.
-     * 
      * @return the j menu
      */
     private JMenu setupDesignateMenu() {
@@ -230,7 +208,6 @@ public class MainPopupMenu extends JPopupMenu {
 
     /**
      * Setup place item menu.
-     * 
      * @return the j menu
      */
     private JMenu setupPlaceItemMenu() {

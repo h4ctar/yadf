@@ -73,20 +73,15 @@ public class PickupToolJob extends AbstractJob {
 
     /**
      * Instantiates a new pickup tool job.
-     * 
-     * @param character the character
-     * @param tool the tool
+     * @param characterTmp the character
+     * @param toolTmp the tool
      */
-    public PickupToolJob(final GameCharacter character, final Item tool) {
+    public PickupToolJob(final GameCharacter characterTmp, final Item toolTmp) {
+        character = characterTmp;
+        tool = toolTmp;
         tool.setUsed(true);
-
-        this.character = character;
-        this.tool = tool;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         switch (state) {
@@ -94,14 +89,11 @@ public class PickupToolJob extends AbstractJob {
             return "Waiting for dwarf to become free";
         case WALK_TO_TOOL:
             return "Walking to tool";
+        default:
+            return null;
         }
-
-        return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
@@ -113,25 +105,16 @@ public class PickupToolJob extends AbstractJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Pickup tool";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {
@@ -155,6 +138,9 @@ public class PickupToolJob extends AbstractJob {
 
                 done = true;
             }
+            break;
+
+        default:
             break;
         }
     }

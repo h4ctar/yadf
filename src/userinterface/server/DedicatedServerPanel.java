@@ -69,7 +69,6 @@ public class DedicatedServerPanel extends JPanel {
 
         /**
          * Instantiates a new server thread.
-         * 
          * @param connectionsTmp the connections
          */
         public ServerThread(final List<Connection> connectionsTmp) {
@@ -88,9 +87,6 @@ public class DedicatedServerPanel extends JPanel {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run() {
             try {
@@ -122,7 +118,6 @@ public class DedicatedServerPanel extends JPanel {
 
         /**
          * Running.
-         * 
          * @return true, if successful
          */
         public synchronized boolean running() {
@@ -148,16 +143,12 @@ public class DedicatedServerPanel extends JPanel {
 
     /**
      * Create the panel.
-     * 
      * @param connections the connections
      * @param mainWindowTmp the main window
      */
     public DedicatedServerPanel(final List<Connection> connections, final IMainWindow mainWindowTmp) {
-
         mainWindow = mainWindowTmp;
-
         serverThread = new ServerThread(connections);
-
         setupLayout();
     }
 
@@ -168,9 +159,6 @@ public class DedicatedServerPanel extends JPanel {
         serverThread.close();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void disconnect() {
         stop();
         close();

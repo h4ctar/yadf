@@ -56,7 +56,6 @@ public class StockTreeTableModel extends AbstractTreeTableModel implements IStoc
 
     /**
      * Instantiates a new stock tree table model.
-     * 
      * @param stockManagerTmp the stock manager
      */
     public StockTreeTableModel(final StockManager stockManagerTmp) {
@@ -75,35 +74,23 @@ public class StockTreeTableModel extends AbstractTreeTableModel implements IStoc
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getChild(final Object parent, final int index) {
         DefaultMutableTreeNode stockNode = (DefaultMutableTreeNode) parent;
         return stockNode.getChildAt(index);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getChildCount(final Object parent) {
         DefaultMutableTreeNode stockNode = (DefaultMutableTreeNode) parent;
         return stockNode.getChildCount();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getColumnCount() {
         return 2;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getColumnName(final int columnIndex) {
         switch (columnIndex) {
@@ -116,9 +103,6 @@ public class StockTreeTableModel extends AbstractTreeTableModel implements IStoc
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getIndexOfChild(final Object parent, final Object child) {
         DefaultMutableTreeNode stockParentNode = (DefaultMutableTreeNode) parent;
@@ -126,17 +110,11 @@ public class StockTreeTableModel extends AbstractTreeTableModel implements IStoc
         return stockParentNode.getIndex(stockChildNode);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getRoot() {
         return root;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValueAt(final Object node, final int columnIndex) {
         DefaultMutableTreeNode stockNode = (DefaultMutableTreeNode) node;

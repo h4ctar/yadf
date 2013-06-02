@@ -42,8 +42,6 @@ import simulation.map.WalkableNode;
 
 /**
  * The Class WalkMoveComponent.
- * 
- * @author Ben Smith (bensmith87@gmail.com)
  */
 public class WalkMoveComponent extends AbstractMoveComponent {
 
@@ -84,7 +82,6 @@ public class WalkMoveComponent extends AbstractMoveComponent {
 
     /**
      * Checks if is arrived.
-     * 
      * @return true, if is arrived
      */
     public boolean isArrived() {
@@ -93,7 +90,6 @@ public class WalkMoveComponent extends AbstractMoveComponent {
 
     /**
      * Checks if is done.
-     * 
      * @return true, if is done
      */
     public boolean isDone() {
@@ -102,24 +98,17 @@ public class WalkMoveComponent extends AbstractMoveComponent {
 
     /**
      * Checks if is no path.
-     * 
      * @return true, if is no path
      */
     public boolean isNoPath() {
         return noPath;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void kill() {
         /* do nothing */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         RegionMap map = region.getMap();
@@ -143,7 +132,6 @@ public class WalkMoveComponent extends AbstractMoveComponent {
 
     /**
      * Check arrived.
-     * 
      * @param character the character
      * @return true, if successful
      */
@@ -175,7 +163,6 @@ public class WalkMoveComponent extends AbstractMoveComponent {
 
     /**
      * Gets the path.
-     * 
      * @param character the character
      * @param map the map
      * @return the path
@@ -211,7 +198,6 @@ public class WalkMoveComponent extends AbstractMoveComponent {
 
     /**
      * Walk along path.
-     * 
      * @param character the character
      * @param map the map
      */

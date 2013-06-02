@@ -76,7 +76,6 @@ public class PlaceItemJob extends AbstractJob {
 
     /**
      * Instantiates a new place item job.
-     * 
      * @param position the position
      * @param itemTypeName the item type name
      */
@@ -85,9 +84,6 @@ public class PlaceItemJob extends AbstractJob {
         this.position = position;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         switch (state) {
@@ -95,13 +91,11 @@ public class PlaceItemJob extends AbstractJob {
             return "Hauling item";
         case START:
             return "Waiting for item";
+        default:
+            return null;
         }
-        return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
@@ -117,25 +111,16 @@ public class PlaceItemJob extends AbstractJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Place " + itemTypeName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {
@@ -175,6 +160,9 @@ public class PlaceItemJob extends AbstractJob {
 
                 done = true;
             }
+            break;
+
+        default:
             break;
         }
     }

@@ -57,7 +57,6 @@ public class WorkshopType {
 
     /**
      * Instantiates a new workshop type.
-     * 
      * @param workshopTypeElement the workshop type element
      */
     public WorkshopType(final Element workshopTypeElement) throws Exception {
@@ -78,9 +77,6 @@ public class WorkshopType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(final Object other) {
         if (other instanceof WorkshopType) {
@@ -94,9 +90,6 @@ public class WorkshopType {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return name.hashCode();

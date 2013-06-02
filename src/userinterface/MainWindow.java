@@ -114,9 +114,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
             thread.start();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run() {
             try {
@@ -160,7 +157,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
 
         /**
          * Running.
-         * 
          * @return true, if successful
          */
         public synchronized boolean running() {
@@ -219,7 +215,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
 
     /**
      * Instantiates a new main window.
-     * 
      * @throws Exception the exception
      */
     public MainWindow() throws Exception {
@@ -244,9 +239,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         setExtendedState(getExtendedState() | Frame.MAXIMIZED_BOTH);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void disconnect() {
         JOptionPane.showMessageDialog(this, "Connection lost");
@@ -254,9 +246,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         setupMainMenu();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void loadSinglePlayerGame() {
         Logger.getInstance().log(this, "Loading game");
@@ -287,9 +276,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void quit() {
         WindowEvent wev = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
@@ -312,9 +298,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setupHostMultiplayerGame() {
         String portString = Settings.getInstance().getSetting("default_port");
@@ -340,9 +323,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setupJoinMultiplayerGame() {
         String ip = JOptionPane.showInputDialog(this, "Host IP address?",
@@ -375,9 +355,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setupMainMenu() {
         contentPane = new MainMenuPanel(this);
@@ -385,9 +362,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         revalidate();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setupSinglePlayerGame() {
         contentPane = new SetupSinglePlayerGamePanel(this);
@@ -395,9 +369,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         revalidate();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void startMultiplayerGame(final Connection connection, final List<String> playerNames,
             final int playerIndex, final MapIndex regionSize) {
@@ -437,9 +408,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void startServer(final List<Connection> connections) {
         contentPane = new DedicatedServerPanel(connections, this);
@@ -447,9 +415,6 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         revalidate();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void startSinglePlayerGame(final String playerName, final MapIndex regionSize) {
         try {

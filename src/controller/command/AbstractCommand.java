@@ -54,7 +54,6 @@ public abstract class AbstractCommand implements Serializable {
 
     /**
      * The default constructor.
-     * 
      * @param playerTmp The player that this command is applied to
      */
     public AbstractCommand(final Player playerTmp) {
@@ -69,7 +68,6 @@ public abstract class AbstractCommand implements Serializable {
 
     /**
      * Update player.
-     * 
      * @param region the region
      */
     public void updatePlayer(final Region region) {

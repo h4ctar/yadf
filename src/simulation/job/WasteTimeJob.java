@@ -67,42 +67,27 @@ public class WasteTimeJob extends AbstractJob {
         character.beStillMovement();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         return "Wasting time";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         character.beIdleMovement();
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Wasting time";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {

@@ -58,17 +58,11 @@ public class JobsTableModel extends AbstractTableModel implements IJobManagerLis
         jobManager.addListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getColumnCount() {
         return 2;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getColumnName(final int columnIndex) {
         if (columnIndex == 0) {
@@ -78,17 +72,11 @@ public class JobsTableModel extends AbstractTableModel implements IJobManagerLis
         return "Status";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getRowCount() {
         return jobManager.getJobs().size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
         try {
@@ -103,9 +91,6 @@ public class JobsTableModel extends AbstractTableModel implements IJobManagerLis
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void jobsAdded(final int firstIndex, final int lastIndex) {
         this.fireTableRowsInserted(firstIndex, lastIndex);

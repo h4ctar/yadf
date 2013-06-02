@@ -53,7 +53,6 @@ public class NewClientAcceptorThread implements Runnable {
 
     /**
      * Instantiates a new new client acceptor thread.
-     * 
      * @param lobbyServerTmp the lobby server
      */
     public NewClientAcceptorThread(final ILobbyServer lobbyServerTmp) {
@@ -72,8 +71,7 @@ public class NewClientAcceptorThread implements Runnable {
     }
 
     /**
-     * Inits the.
-     * 
+     * Inits the thread.
      * @param port the port
      * @return true, if successful
      */
@@ -90,9 +88,6 @@ public class NewClientAcceptorThread implements Runnable {
         return ok;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         try {
@@ -116,7 +111,6 @@ public class NewClientAcceptorThread implements Runnable {
 
     /**
      * Running.
-     * 
      * @return true, if successful
      */
     public synchronized boolean running() {

@@ -61,7 +61,6 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
 
     /**
      * Instantiates a new labor table model.
-     * 
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
@@ -79,9 +78,6 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
         fireTableRowsUpdated(0, getRowCount() - 1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Class<?> getColumnClass(final int columnIndex) {
         if (columnIndex == 0) {
@@ -91,17 +87,11 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
         return LaborNode.class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getColumnCount() {
         return 1 + LaborTypeManager.getInstance().getLaborTypes().size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getColumnName(final int columnIndex) {
         if (columnIndex == 0) {
@@ -111,9 +101,6 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
         return laborType.name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getRowCount() {
         if (player == null) {
@@ -123,9 +110,6 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
         return player.getDwarfs().size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
         Dwarf dwarf = player.getDwarfs().get(rowIndex);
@@ -149,9 +133,6 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
         return new LaborNode(skill, enabled);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isCellEditable(final int row, final int col) {
         if (col == 0) {
@@ -171,9 +152,6 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
         if (columnIndex != 0) {

@@ -94,7 +94,6 @@ public class ChannelJob extends AbstractDesignationJob {
 
     /**
      * Instantiates a new channel job.
-     * 
      * @param positionTmp the position
      * @param blockTypeTmp the block type
      * @param designationTmp the designation
@@ -106,25 +105,16 @@ public class ChannelJob extends AbstractDesignationJob {
         designation = designationTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MapIndex getPosition() {
         return position;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         return "Channeling";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
@@ -143,25 +133,16 @@ public class ChannelJob extends AbstractDesignationJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Channel";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {

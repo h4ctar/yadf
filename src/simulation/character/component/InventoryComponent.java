@@ -49,7 +49,6 @@ public class InventoryComponent extends AbstractCharacterComponent {
 
     /**
      * Drop haul item.
-     * 
      * @param freeItem the free item
      */
     public void dropHaulItem(final boolean freeItem) {
@@ -75,7 +74,6 @@ public class InventoryComponent extends AbstractCharacterComponent {
 
     /**
      * Gets the haul item.
-     * 
      * @return the haul item
      */
     public Item getHaulItem() {
@@ -84,16 +82,12 @@ public class InventoryComponent extends AbstractCharacterComponent {
 
     /**
      * Gets the tool holding.
-     * 
      * @return the tool holding
      */
     public Item getToolHolding() {
         return toolHolding;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void kill() {
         dropHaulItem(true);
@@ -102,7 +96,6 @@ public class InventoryComponent extends AbstractCharacterComponent {
 
     /**
      * Pickup haul item.
-     * 
      * @param item the item
      */
     public void pickupHaulItem(final Item item) {
@@ -117,7 +110,6 @@ public class InventoryComponent extends AbstractCharacterComponent {
 
     /**
      * Pickup tool.
-     * 
      * @param tool the tool
      */
     public void pickupTool(final Item tool) {
@@ -130,9 +122,6 @@ public class InventoryComponent extends AbstractCharacterComponent {
         notifyListeners();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         if (itemHauling != null) {

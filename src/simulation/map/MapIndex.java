@@ -41,60 +41,57 @@ public class MapIndex implements Serializable {
     /** The serial version UID. */
     private static final long serialVersionUID = -8302537732545902448L;
 
-    /** The z. */
+    /** The coordinates. */
     public int x, y, z;
 
     /**
-     * Instantiates a new map index.
+     * Instantiates a new map index, (0, 0, 0).
      */
-    public MapIndex() { /* nothing to do */
+    public MapIndex() {
+        /* do nothing. */
     }
 
     /**
      * Instantiates a new map index.
-     * 
-     * @param x the x
-     * @param y the y
-     * @param z the z
+     * @param xTmp the x coordinate
+     * @param yTmp the y coordinate
+     * @param zTmp the z coordinate
      */
-    public MapIndex(final int x, final int y, final int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public MapIndex(final int xTmp, final int yTmp, final int zTmp) {
+        x = xTmp;
+        y = yTmp;
+        z = zTmp;
     }
 
     /**
-     * Instantiates a new map index.
-     * 
-     * @param old the old
+     * Instantiates a new map index as a copy of another map index.
+     * @param old the map index to clone
      */
     public MapIndex(final MapIndex old) {
-        this.x = old.x;
-        this.y = old.y;
-        this.z = old.z;
+        x = old.x;
+        y = old.y;
+        z = old.z;
     }
 
     /**
-     * Adds the.
-     * 
-     * @param x the x
-     * @param y the y
-     * @param z the z
-     * @return the map index
+     * Adds an offset to the map index and returns the result.
+     * @param xTmp the x
+     * @param yTmp the y
+     * @param zTmp the z
+     * @return the result
      */
-    public MapIndex add(final int x, final int y, final int z) {
+    public MapIndex add(final int xTmp, final int yTmp, final int zTmp) {
         MapIndex a = new MapIndex();
-        a.x = this.x + x;
-        a.y = this.y + y;
-        a.z = this.z + z;
+        a.x = x + xTmp;
+        a.y = y + yTmp;
+        a.z = z + zTmp;
         return a;
     }
 
     /**
-     * Adds the.
-     * 
+     * Adds two map indicies together and returns the result.
      * @param b the b
-     * @return the map index
+     * @return the result
      */
     public MapIndex add(final MapIndex b) {
         MapIndex a = new MapIndex();
@@ -105,18 +102,14 @@ public class MapIndex implements Serializable {
     }
 
     /**
-     * Distance.
-     * 
-     * @param pos the pos
-     * @return the int
+     * Calculates the Manhattan distance between this map index and another.
+     * @param pos the second position
+     * @return the distance
      */
     public int distance(final MapIndex pos) {
         return Math.abs(x - pos.x) + Math.abs(y - pos.y) + Math.abs(z - pos.z);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -141,9 +134,6 @@ public class MapIndex implements Serializable {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -155,10 +145,9 @@ public class MapIndex implements Serializable {
     }
 
     /**
-     * Sub.
-     * 
-     * @param b the b
-     * @return the map index
+     * Subtract a map index from this map index and returns the result.
+     * @param b the map index to subtract
+     * @return the result
      */
     public MapIndex sub(final MapIndex b) {
         MapIndex a = new MapIndex();

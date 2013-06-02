@@ -112,9 +112,6 @@ public class MainMenuPanel extends ImagePanel {
      */
     private class SinglePlayerGameActionListener implements ActionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             mainWindow.setupSinglePlayerGame();

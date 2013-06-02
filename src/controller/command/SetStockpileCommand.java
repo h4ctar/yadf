@@ -53,7 +53,6 @@ public class SetStockpileCommand extends AbstractCommand {
 
     /**
      * Instantiates a new sets the stockpile command.
-     * 
      * @param player the player
      * @param stockpileIdTmp the stockpile id
      * @param itemTypeNameTmp the item type name
@@ -67,9 +66,6 @@ public class SetStockpileCommand extends AbstractCommand {
         accept = acceptTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doCommand() {
         Stockpile stockpile = player.getStockManager().getStockpile(stockpileId);

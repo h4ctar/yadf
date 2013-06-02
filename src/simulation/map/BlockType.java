@@ -107,19 +107,19 @@ public enum BlockType {
     /**
      * Instantiates a new block type.
      * 
-     * @param isStandIn the is stand in
-     * @param isStandOn the is stand on
-     * @param isClimb the is climb
-     * @param isMineable the is mineable
-     * @param itemMined the item mined
+     * @param isStandInTmp the is stand in
+     * @param isStandOnTmp the is stand on
+     * @param isClimbTmp the is climb
+     * @param isMineableTmp the is mineable
+     * @param itemMinedTmp the item mined
      */
-    BlockType(final boolean isStandIn, final boolean isStandOn, final boolean isClimb, final boolean isMineable,
-            final String itemMined) {
-        this.isStandIn = isStandIn;
-        this.isStandOn = isStandOn;
-        this.isClimb = isClimb;
-        this.isMineable = isMineable;
-        this.itemMined = itemMined;
+    BlockType(final boolean isStandInTmp, final boolean isStandOnTmp, final boolean isClimbTmp,
+            final boolean isMineableTmp, final String itemMinedTmp) {
+        isStandIn = isStandInTmp;
+        isStandOn = isStandOnTmp;
+        isClimb = isClimbTmp;
+        isMineable = isMineableTmp;
+        itemMined = itemMinedTmp;
         isSolid = isStandOn && !isStandIn;
     }
 }

@@ -56,17 +56,11 @@ public class ChannelDesignation extends AbstractDesignation {
         blockType = blockTypeTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Channel Designation";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean valid(final MapIndex mapIndex, final Region region) {
         RegionMap map = region.getMap();
@@ -74,9 +68,6 @@ public class ChannelDesignation extends AbstractDesignation {
         return region.checkAreaValid(new MapArea(mapIndex, 1, 1)) && map.getBlock(mapIndex.add(0, 0, -1)).isMineable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected AbstractDesignationJob createJob(final MapIndex mapIndex, final Region region) {
         return new ChannelJob(mapIndex, blockType, this);

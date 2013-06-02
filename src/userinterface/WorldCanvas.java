@@ -123,7 +123,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draws a designation.
-     * 
      * @param g the g
      */
     public void drawDesignations(final Graphics g) {
@@ -145,7 +144,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw mouse.
-     * 
      * @param g the g
      */
     public void drawMouse(final Graphics g) {
@@ -161,7 +159,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw selection.
-     * 
      * @param g the g
      */
     public void drawSelection(final Graphics g) {
@@ -178,7 +175,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Gets the mouse index.
-     * 
      * @param x the x
      * @param y the y
      * @return the mouse index
@@ -187,9 +183,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
         return viewPosition.add(x / SpriteManager.SPRITE_SIZE, y / SpriteManager.SPRITE_SIZE, 0);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isFocusTraversable() {
         return true;
@@ -202,7 +195,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Move view.
-     * 
      * @param x the x
      * @param y the y
      * @param z the z
@@ -212,9 +204,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
         drawBackgroundRequired = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void paint(final Graphics g) {
         if (region == null) {
@@ -248,7 +237,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Sets the player.
-     * 
      * @param playerTmp the player
      */
     public void setPlayer(final Player playerTmp) {
@@ -257,7 +245,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Sets the region.
-     * 
      * @param regionTmp the new region
      */
     public void setRegion(final Region regionTmp) {
@@ -268,7 +255,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Sets the selection.
-     * 
      * @param selectionTmp the selection
      * @param selectionValidTmp the selection valid
      */
@@ -277,9 +263,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
         selectionValid = selectionValidTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setSize(final Dimension d) {
         canvasWidth = d.width;
@@ -309,7 +292,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Block sprite.
-     * 
      * @param block the block
      * @return the sprite
      */
@@ -325,7 +307,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw animals.
-     * 
      * @param g the g
      */
     private void drawAnimals(final Graphics g) {
@@ -395,8 +376,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw dwarfs.
-     * 
-     * @param g the g
+     * @param g the graphic to draw onto
      */
     private void drawDwarfs(final Graphics g) {
         List<Player> players = region.getPlayers();
@@ -429,7 +409,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw farms.
-     * 
      * @param g the g
      */
     private void drawFarms(final Graphics g) {
@@ -439,8 +418,8 @@ public class WorldCanvas extends JComponent implements IMapListener {
         Sprite harvestSprite = SpriteManager.getInstance().getItemSprite(67);
         g.setColor(new Color(0.4f, 0.1f, 0.0f, 0.8f));
         List<Player> players = region.getPlayers();
-        for (Player player : players) {
-            List<Farm> farms = player.getFarms();
+        for (Player thisPlayer : players) {
+            List<Farm> farms = thisPlayer.getFarms();
             for (Farm farm : farms) {
                 MapArea area = farm.getArea();
 
@@ -470,7 +449,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw goblins.
-     * 
      * @param g the g
      */
     private void drawGoblins(final Graphics g) {
@@ -490,13 +468,12 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw items.
-     * 
      * @param g the g
      */
     private void drawItems(final Graphics g) {
         List<Player> players = region.getPlayers();
-        for (Player player : players) {
-            List<Item> items = player.getStockManager().getItems();
+        for (Player thisPlayer : players) {
+            List<Item> items = thisPlayer.getStockManager().getItems();
             for (Item item : items) {
                 MapIndex position = item.getPosition();
                 if (position.z == viewPosition.z) {
@@ -513,7 +490,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw rooms.
-     * 
      * @param g the g
      */
     private void drawRooms(final Graphics g) {
@@ -535,7 +511,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw stockpiles.
-     * 
      * @param g the g
      */
     private void drawStockpiles(final Graphics g) {
@@ -592,7 +567,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     /**
      * Draw workshops.
-     * 
      * @param g the g
      */
     private void drawWorkshops(final Graphics g) {

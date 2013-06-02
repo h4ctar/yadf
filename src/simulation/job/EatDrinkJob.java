@@ -85,7 +85,6 @@ public class EatDrinkJob extends AbstractJob {
 
     /**
      * Instantiates a new eat drink job.
-     * 
      * @param characterTmp the character
      * @param eatTmp the eat
      */
@@ -95,9 +94,6 @@ public class EatDrinkJob extends AbstractJob {
         character = characterTmp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStatus() {
         String str;
@@ -121,9 +117,6 @@ public class EatDrinkJob extends AbstractJob {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
@@ -137,9 +130,6 @@ public class EatDrinkJob extends AbstractJob {
         done = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDone() {
         return done;
@@ -147,16 +137,12 @@ public class EatDrinkJob extends AbstractJob {
 
     /**
      * Checks if is looking.
-     * 
      * @return true, if is looking
      */
     public boolean isLooking() {
         return state == State.LOOK_FOR_FOOD;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         if (eat) {
@@ -166,9 +152,6 @@ public class EatDrinkJob extends AbstractJob {
         return "Drink";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         if (isDone()) {

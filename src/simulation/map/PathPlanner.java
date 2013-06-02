@@ -125,9 +125,9 @@ class PathPlanner implements Serializable {
         List<WalkableNode> closedList = new ArrayList<>();
         WalkableNode current;
 
-        start.G = 0;
-        start.H = (Math.abs(goal.x - start.x) + Math.abs(goal.y - start.y) + Math.abs(goal.z - start.z)) * 10;
-        start.F = start.G + start.H;
+        start.g = 0;
+        start.h = (Math.abs(goal.x - start.x) + Math.abs(goal.y - start.y) + Math.abs(goal.z - start.z)) * 10;
+        start.f = start.g + start.h;
 
         // 1) Add the starting square (or node) to the open list.
         openList.add(start);
@@ -159,13 +159,13 @@ class PathPlanner implements Serializable {
                     adjacent.parent = current;
 
                     if (adjacent.x == current.x || adjacent.y == current.y) {
-                        adjacent.G = current.G + 10;
+                        adjacent.g = current.g + 10;
                     } else {
-                        adjacent.G = current.G + 14;
+                        adjacent.g = current.g + 14;
                     }
-                    adjacent.H = (Math.abs(goal.x - adjacent.x) + Math.abs(goal.y - adjacent.y) + Math.abs(goal.z
+                    adjacent.h = (Math.abs(goal.x - adjacent.x) + Math.abs(goal.y - adjacent.y) + Math.abs(goal.z
                             - adjacent.z)) * 10;
-                    adjacent.F = adjacent.G + adjacent.H;
+                    adjacent.f = adjacent.g + adjacent.h;
                 } else {
                     // If it is on the open list already, check to see if this
                     // path to that square is better, using G
@@ -179,15 +179,15 @@ class PathPlanner implements Serializable {
                     int newG;
 
                     if (adjacent.x == current.x || adjacent.y == current.y) {
-                        newG = current.G + 10;
+                        newG = current.g + 10;
                     } else {
-                        newG = current.G + 14;
+                        newG = current.g + 14;
                     }
 
-                    if (newG < adjacent.G) {
+                    if (newG < adjacent.g) {
                         adjacent.parent = current;
-                        adjacent.G = newG;
-                        adjacent.F = adjacent.G + adjacent.H;
+                        adjacent.g = newG;
+                        adjacent.f = adjacent.g + adjacent.h;
                         openList.sort();
                     }
                 }

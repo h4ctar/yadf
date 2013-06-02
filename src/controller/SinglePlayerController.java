@@ -42,16 +42,10 @@ import controller.command.AbstractCommand;
  */
 public class SinglePlayerController extends AbstractController {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void close() throws IOException { /* nothing to do */
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public synchronized void doCommands(final Region region) throws IOException {
         for (AbstractCommand command : localCommands) {

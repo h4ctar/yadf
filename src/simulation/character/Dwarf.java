@@ -53,7 +53,6 @@ public class Dwarf extends GameCharacter {
 
     /**
      * Instantiates a new dwarf.
-     * 
      * @param name the name
      * @param position the position
      */
@@ -66,21 +65,16 @@ public class Dwarf extends GameCharacter {
 
     /**
      * Gets the skill.
-     * 
      * @return the skill
      */
     public SkillComponent getSkill() {
         return skill;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final Player player, final Region region) {
         skill.update(this, player, region);
         work.update(this, player, region);
-
         super.update(player, region);
     }
 }

@@ -106,9 +106,6 @@ public class Recipe implements Serializable {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return name;

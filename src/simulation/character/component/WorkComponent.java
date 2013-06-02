@@ -44,9 +44,6 @@ public class WorkComponent extends AbstractCharacterComponent {
     /** The job. */
     private IJob job;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void kill() {
         if (job != null) {
@@ -54,9 +51,6 @@ public class WorkComponent extends AbstractCharacterComponent {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
         if (character.isDead() && job != null) {
