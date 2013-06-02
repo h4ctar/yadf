@@ -50,7 +50,7 @@ class PathPlanner implements Serializable {
     private static final int COST_OF_SQUARE_MOVEMENT = 10;
 
     /** How much it consts to walk diagonally. */
-    private static final int COST_OF_DIAGONAL_MOVEMENT = (int) (COST_OF_SQUARE_MOVEMENT * 2 * Math.sqrt(2));
+    private static final int COST_OF_DIAGONAL_MOVEMENT = (int) (COST_OF_SQUARE_MOVEMENT * Math.sqrt(2));
 
     /**
      * Plan a path.

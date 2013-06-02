@@ -116,6 +116,9 @@ public class WorldCanvas extends JComponent implements IMapListener {
     /** The colour of the atmosphere. */
     private static final Color ATMOSPHERE_COLOUR = new Color(0.5f, 0.5f, 0.7f, 0.5f);
 
+    /** The colour of a block that is under ground. */
+    private static final Color UNDER_GROUND_COLOUR = new Color(0.0f, 0.0f, 0.0f, 0.8f);
+
     /** The background image. */
     private BufferedImage backgroundImage = null;
 
@@ -345,7 +348,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
         RegionMap map = region.getMap();
         Sprite tile;
         Graphics g = backgroundImage.getGraphics();
-        g.setColor(ATMOSPHERE_COLOUR);
         for (int x = 0; x < viewSize.x; x++) {
             for (int y = 0; y < viewSize.y; y++) {
                 BlockType block = map.getBlock(viewPosition.add(x, y, -1));
@@ -357,6 +359,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
                     tile.draw(g, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
                 }
                 if (block != BlockType.RAMP && block != BlockType.STAIR) {
+                    g.setColor(ATMOSPHERE_COLOUR);
                     g.fillRect(x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE,
                             SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE);
                 }
@@ -364,6 +367,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
                 tile = blockSprite(block);
                 tile.draw(g, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
                 if (block == BlockType.RAMP || block == BlockType.STAIR) {
+                    g.setColor(ATMOSPHERE_COLOUR);
                     g.fillRect(x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE,
                             SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE);
                 }
@@ -372,6 +376,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
                     tile = blockSprite(blockAbove);
                     tile.draw(g, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
                 } else if (!blockAbove.isStandIn) {
+                    g.setColor(UNDER_GROUND_COLOUR);
                     g.fillRect(x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE,
                             SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE);
                 }
@@ -399,12 +404,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
                             dwarfSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.DEAD_DWARF_SPRITE);
                         } else {
                             LaborType profession = dwarf.getSkill().getProfession();
-
-                            if (profession == null) {
-                                dwarfSprite = SpriteManager.getInstance().getItemSprite(32);
-                            } else {
-                                dwarfSprite = SpriteManager.getInstance().getItemSprite(profession.sprite);
-                            }
+                            dwarfSprite = SpriteManager.getInstance().getItemSprite(profession.sprite);
                         }
                         dwarfSprite.draw(g, x, y);
                     }

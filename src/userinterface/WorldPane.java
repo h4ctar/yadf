@@ -88,7 +88,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
     /** The controller. */
     private AbstractController controller;
 
-    /* Internal frame interfaces */
     /** The stockpile interface. */
     private StockpileInterface stockpileInterface;
 
@@ -157,42 +156,70 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "DOWN_Z");
 
         getActionMap().put("SHIFT_UP", new AbstractAction() {
+
+            /** The serial version UID. */
+            private static final long serialVersionUID = -5686631134770314337L;
+
             @Override
             public void actionPerformed(final ActionEvent e) {
                 setState(GuiState.NORMAL);
             }
         });
         getActionMap().put("UP", new AbstractAction() {
+
+            /** The serial version UID. */
+            private static final long serialVersionUID = 276268899627961583L;
+
             @Override
             public void actionPerformed(final ActionEvent e) {
                 worldCanvas.moveView(0, -1, 0);
             }
         });
         getActionMap().put("DOWN", new AbstractAction() {
+
+            /** The serial version UID. */
+            private static final long serialVersionUID = -8957876323188992119L;
+
             @Override
             public void actionPerformed(final ActionEvent e) {
                 worldCanvas.moveView(0, 1, 0);
             }
         });
         getActionMap().put("LEFT", new AbstractAction() {
+
+            /** The serial version UID. */
+            private static final long serialVersionUID = 3496221372222013523L;
+
             @Override
             public void actionPerformed(final ActionEvent e) {
                 worldCanvas.moveView(-1, 0, 0);
             }
         });
         getActionMap().put("RIGHT", new AbstractAction() {
+
+            /** The serial version UID. */
+            private static final long serialVersionUID = 4473344779001256351L;
+
             @Override
             public void actionPerformed(final ActionEvent e) {
                 worldCanvas.moveView(1, 0, 0);
             }
         });
         getActionMap().put("UP_Z", new AbstractAction() {
+
+            /** The serial version UID. */
+            private static final long serialVersionUID = -7971410086577923706L;
+
             @Override
             public void actionPerformed(final ActionEvent e) {
                 worldCanvas.moveView(0, 0, 1);
             }
         });
         getActionMap().put("DOWN_Z", new AbstractAction() {
+
+            /** The serial version UID. */
+            private static final long serialVersionUID = 3537426839175986086L;
+
             @Override
             public void actionPerformed(final ActionEvent e) {
                 worldCanvas.moveView(0, 0, -1);
@@ -355,7 +382,8 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
             absSelection.height = -selection.height + 2;
         }
 
-        if (guiState == GuiState.BUILD_STOCKPILE || guiState == GuiState.BUILD_FARM) {
+        if (guiState == GuiState.BUILD_STOCKPILE || guiState == GuiState.BUILD_FARM
+                || guiState == GuiState.CREATE_ROOM) {
             selectionValid = region.checkAreaValid(absSelection);
         }
     }

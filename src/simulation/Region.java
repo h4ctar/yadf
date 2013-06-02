@@ -49,6 +49,7 @@ import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.stock.Stockpile;
+import simulation.workshop.Workshop;
 
 /**
  * Region Contains all the data for a region, including the map, players and trees.
@@ -145,40 +146,40 @@ public class Region implements Serializable {
      * @return True if the area is a valid location else false
      */
     public boolean checkAreaValid(final MapArea area) {
-        // Check if overlap with stockpile
         for (Player player : players) {
+            // Check if overlap with stockpile
             for (Stockpile stockpile : player.getStockManager().getStockpiles()) {
-                MapArea stockpileArea = stockpile.getArea();
-                if (area.pos.x < stockpileArea.pos.x + stockpileArea.width
-                        && area.pos.x + area.width > stockpileArea.pos.x
-                        && area.pos.y < stockpileArea.pos.y + stockpileArea.height
-                        && area.pos.y + area.height > stockpileArea.pos.y && area.pos.z == stockpileArea.pos.z) {
+                if (area.operlapsArea(stockpile.getArea())) {
+                    return false;
+                }
+            }
+            // Check that the area is free from workshops
+            for (Workshop workshop : player.getWorkshops()) {
+                MapArea workshopArea = new MapArea(workshop.getPosition(), Workshop.WORKSHOP_SIZE,
+                        Workshop.WORKSHOP_SIZE);
+                if (area.operlapsArea(workshopArea)) {
                     return false;
                 }
             }
         }
-
         // Check that area is free of trees
         for (Tree tree : trees) {
-            if (tree.getPosition().x >= area.pos.x && tree.getPosition().x < area.pos.x + area.width
-                    && tree.getPosition().y >= area.pos.y && tree.getPosition().y < area.pos.y + area.height
-                    && tree.getPosition().z == area.pos.z) {
+            if (area.containesIndex(tree.getPosition())) {
                 return false;
             }
         }
-
-        // Check that the area is free from other buildings
-        // TODO: check if overlap with room
-
-        // Check that area is flat
         for (int x = area.pos.x; x < area.pos.x + area.width; x++) {
             for (int y = area.pos.y; y < area.pos.y + area.height; y++) {
+                // Check that area is flat
                 if (!map.isWalkable(new MapIndex(x, y, area.pos.z))) {
+                    return false;
+                }
+                // Can't build on a ramp or top of stair case
+                if (map.getBlock(x, y, area.pos.z - 1).isClimb) {
                     return false;
                 }
             }
         }
-
         return true;
     }
 
@@ -188,21 +189,25 @@ public class Region implements Serializable {
      * @return true, if successful
      */
     public boolean checkIndexValid(final MapIndex mapIndex) {
-        // Check if overlap with stockpile
         for (Player player : players) {
+            // Check if overlap with stockpile
             for (Stockpile stockpile : player.getStockManager().getStockpiles()) {
-                MapArea area = stockpile.getArea();
-                if (mapIndex.x < area.pos.x + area.width && mapIndex.x >= area.pos.x
-                        && mapIndex.y < area.pos.y + area.height && mapIndex.y >= area.pos.y
-                        && mapIndex.z == area.pos.z) {
+                if (stockpile.getArea().containesIndex(mapIndex)) {
+                    return false;
+                }
+            }
+            // Check that the area is free from workshops
+            for (Workshop workshop : player.getWorkshops()) {
+                MapArea workshopArea = new MapArea(workshop.getPosition(), Workshop.WORKSHOP_SIZE,
+                        Workshop.WORKSHOP_SIZE);
+                if (workshopArea.containesIndex(mapIndex)) {
                     return false;
                 }
             }
         }
         // Check that area is free of trees
         for (Tree tree : trees) {
-            if (tree.getPosition().x == mapIndex.x && tree.getPosition().y == mapIndex.y
-                    && tree.getPosition().z == mapIndex.z) {
+            if (tree.getPosition().equals(mapIndex)) {
                 return false;
             }
         }
@@ -214,8 +219,6 @@ public class Region implements Serializable {
         if (map.getBlock(mapIndex.add(0, 0, -1)).isClimb) {
             return false;
         }
-        // Check that the area is free from other buildings
-        // TODO: check if overlap with room
         return true;
     }
 

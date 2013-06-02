@@ -56,7 +56,7 @@ public class SkillComponent extends AbstractCharacterComponent {
     private final Set<LaborType> enabledLabors;
 
     /** What the dwarf is best at. */
-    private LaborType profession = null;
+    private LaborType profession = LaborTypeManager.getInstance().getLaborType("No profession");
 
     /** The pickup tool job. */
     private PickupToolJob pickupToolJob;
@@ -71,6 +71,7 @@ public class SkillComponent extends AbstractCharacterComponent {
         for (LaborType laborType : LaborTypeManager.getInstance().getLaborTypes()) {
             enabledLabors.add(laborType);
         }
+        laborSkills.put(profession, Integer.valueOf(0));
     }
 
     /**
@@ -137,10 +138,8 @@ public class SkillComponent extends AbstractCharacterComponent {
         if (!laborSkills.containsKey(laborType)) {
             laborSkills.put(laborType, Integer.valueOf(0));
         }
-
         laborSkills.put(laborType, Integer.valueOf(laborSkills.get(laborType).intValue() + 1));
-
-        if (profession == null || laborSkills.get(laborType).intValue() > laborSkills.get(profession).intValue()) {
+        if (laborSkills.get(laborType).intValue() > laborSkills.get(profession).intValue()) {
             profession = laborType;
         }
         notifyListeners();

@@ -61,7 +61,6 @@ public class MapArea implements Serializable {
 
     /**
      * Instantiates a new map area.
-     * 
      * @param old the old
      */
     public MapArea(final MapArea old) {
@@ -72,14 +71,23 @@ public class MapArea implements Serializable {
 
     /**
      * Instantiates a new map area.
-     * 
-     * @param pos the pos
-     * @param width the width
-     * @param height the height
+     * @param posTmp the pos
+     * @param widthTmp the width
+     * @param heightTmp the height
      */
-    public MapArea(final MapIndex pos, final int width, final int height) {
-        this.pos = pos;
-        this.width = width;
-        this.height = height;
+    public MapArea(final MapIndex posTmp, final int widthTmp, final int heightTmp) {
+        pos = posTmp;
+        width = widthTmp;
+        height = heightTmp;
+    }
+
+    public boolean containesIndex(MapIndex index) {
+        return (index.x < pos.x + width) && (index.x >= pos.x) && (index.y < pos.y + height) && (index.y >= pos.y)
+                && (index.z == pos.z);
+    }
+
+    public boolean operlapsArea(MapArea area) {
+        return (area.pos.x < pos.x + width) && (area.pos.x + area.width > pos.x) && (area.pos.y < pos.y + height)
+                && (area.pos.y + area.height > pos.y) && (area.pos.z == pos.z);
     }
 }

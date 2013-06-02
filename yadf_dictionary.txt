@@ -3,3 +3,4 @@ sprites
 yadf
 ben
 stockpiles
+stockpile
