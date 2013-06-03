@@ -116,10 +116,7 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
 
         if (columnIndex == 0) {
             LaborType profession = dwarf.getSkill().getProfession();
-            String professionString = "";
-            if (profession != null) {
-                professionString = " (" + profession.professionName + ")";
-            }
+            String professionString = " (" + profession.professionName + ")";
             return dwarf.getName() + professionString;
         }
 

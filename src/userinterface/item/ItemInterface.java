@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -18,6 +20,7 @@ import javax.swing.WindowConstants;
 
 import simulation.item.ContainerItem;
 import simulation.item.Item;
+import userinterface.SpriteManager;
 import userinterface.components.ImagePanel;
 import userinterface.components.OutlineLabel;
 
@@ -28,6 +31,9 @@ public class ItemInterface extends JInternalFrame {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -5779376341490166019L;
+
+    /** The size in pixels of the item image. */
+    private static final int IMAGE_SIZE = 200;
 
     /** The type text field. */
     private JTextField typeTextField;
@@ -50,6 +56,9 @@ public class ItemInterface extends JInternalFrame {
     /** The contents scroll pane. */
     private JScrollPane scrollPane;
 
+    /** The image of the item. */
+    private JLabel imageLabel;
+
     /**
      * Constructor.
      */
@@ -65,7 +74,6 @@ public class ItemInterface extends JInternalFrame {
         typeTextField.setText(item.getType().toString());
         usedTextField.setText(Boolean.toString(item.isUsed()));
         placedTextField.setText(Boolean.toString(item.isPlaced()));
-
         if (item instanceof ContainerItem) {
             contentsLabel.setVisible(true);
             scrollPane.setVisible(true);
@@ -79,6 +87,9 @@ public class ItemInterface extends JInternalFrame {
             contentsLabel.setVisible(false);
             scrollPane.setVisible(false);
         }
+        Image itemImage = SpriteManager.getInstance().getItemSprite(item.getType().sprite).getImage();
+        itemImage = itemImage.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_FAST);
+        imageLabel.setIcon(new ImageIcon(itemImage));
     }
 
     /**
@@ -102,7 +113,7 @@ public class ItemInterface extends JInternalFrame {
         panel.setLayout(panelLayout);
         getContentPane().add(panel, BorderLayout.CENTER);
 
-        JLabel imageLabel = new JLabel("");
+        imageLabel = new JLabel("");
         GridBagConstraints gbc_imageLabel = new GridBagConstraints();
         gbc_imageLabel.gridheight = 4;
         gbc_imageLabel.insets = new Insets(0, 0, 0, 5);
@@ -120,6 +131,7 @@ public class ItemInterface extends JInternalFrame {
         panel.add(typeLabel, gbc_typeLabel);
 
         typeTextField = new JTextField();
+        typeTextField.setEditable(false);
         GridBagConstraints gbc_typeTextField = new GridBagConstraints();
         gbc_typeTextField.insets = new Insets(0, 0, 5, 0);
         gbc_typeTextField.fill = GridBagConstraints.HORIZONTAL;
@@ -138,6 +150,7 @@ public class ItemInterface extends JInternalFrame {
         panel.add(usedLabel, gbc_usedLabel);
 
         usedTextField = new JTextField();
+        usedTextField.setEditable(false);
         GridBagConstraints gbc_usedTextField = new GridBagConstraints();
         gbc_usedTextField.insets = new Insets(0, 0, 5, 0);
         gbc_usedTextField.fill = GridBagConstraints.HORIZONTAL;
@@ -156,6 +169,7 @@ public class ItemInterface extends JInternalFrame {
         panel.add(placedLabel, gbc_placedLabel);
 
         placedTextField = new JTextField();
+        placedTextField.setEditable(false);
         GridBagConstraints gbc_placedTextField = new GridBagConstraints();
         gbc_placedTextField.insets = new Insets(0, 0, 5, 0);
         gbc_placedTextField.fill = GridBagConstraints.HORIZONTAL;

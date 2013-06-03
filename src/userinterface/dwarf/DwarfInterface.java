@@ -142,7 +142,7 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
     public void update() {
         nameTextField.setText(dwarf.getName());
         LaborType profession = dwarf.getSkill().getProfession();
-        professionTextField.setText(profession == null ? "No profession" : profession.professionName);
+        professionTextField.setText(profession.professionName);
         deadTextField.setText(Boolean.toString(dwarf.isDead()));
         Item haulItem = dwarf.getInventory().getHaulItem();
         itemHaulingTextField.setText(haulItem == null ? "Not hauling" : haulItem.getType().name);
@@ -152,11 +152,9 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         hungerTextField.setText(Integer.toString(dwarf.getEatDrink().getHunger()));
         thirstTextField.setText(Integer.toString(dwarf.getEatDrink().getThirst()));
         lockTextField.setText(Boolean.toString(dwarf.isLock()));
-        if (profession != null) {
-            Image dwarfImage = SpriteManager.getInstance().getItemSprite(profession.sprite).getImage();
-            dwarfImage = dwarfImage.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_FAST);
-            imageLabel.setIcon(new ImageIcon(dwarfImage));
-        }
+        Image dwarfImage = SpriteManager.getInstance().getItemSprite(profession.sprite).getImage();
+        dwarfImage = dwarfImage.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_FAST);
+        imageLabel.setIcon(new ImageIcon(dwarfImage));
     }
 
     /**
