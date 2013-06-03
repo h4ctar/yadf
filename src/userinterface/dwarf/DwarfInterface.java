@@ -62,6 +62,9 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
     /** The serial version UID. */
     private static final long serialVersionUID = 6213975713592520095L;
 
+    /** The size in pixels of the dwarf image. */
+    private static final int IMAGE_SIZE = 200;
+
     /** The name text field. */
     private JTextField nameTextField;
 
@@ -120,6 +123,7 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
 
     /**
      * Sets the dwarf.
+     * @param dwarfTmp the dwarf
      * @param worldCanvas the world canvas
      */
     public void setDwarf(final Dwarf dwarfTmp, final WorldCanvas worldCanvas) {
@@ -150,7 +154,7 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         lockTextField.setText(Boolean.toString(dwarf.isLock()));
         if (profession != null) {
             Image dwarfImage = SpriteManager.getInstance().getItemSprite(profession.sprite).getImage();
-            dwarfImage = dwarfImage.getScaledInstance(200, 200, Image.SCALE_FAST);
+            dwarfImage = dwarfImage.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_FAST);
             imageLabel.setIcon(new ImageIcon(dwarfImage));
         }
     }

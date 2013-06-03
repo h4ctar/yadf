@@ -130,13 +130,10 @@ public class PlaceItemJob extends AbstractJob {
         switch (state) {
         case START:
             item = player.getStockManager().getUnusedItem(itemTypeName);
-
             if (item == null) {
                 return;
             }
-
             item.setUsed(true);
-
             haulJob = new HaulJob(item, player.getStockManager(), position);
             state = State.HAUL_ITEM;
             break;

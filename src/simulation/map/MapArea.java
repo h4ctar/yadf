@@ -81,12 +81,22 @@ public class MapArea implements Serializable {
         height = heightTmp;
     }
 
-    public boolean containesIndex(MapIndex index) {
+    /**
+     * Check if this area contains an index.
+     * @param index the index
+     * @return true if the index is within the area
+     */
+    public boolean containesIndex(final MapIndex index) {
         return (index.x < pos.x + width) && (index.x >= pos.x) && (index.y < pos.y + height) && (index.y >= pos.y)
                 && (index.z == pos.z);
     }
 
-    public boolean operlapsArea(MapArea area) {
+    /**
+     * Check if two areas overlap.
+     * @param area the second area
+     * @return true if they overlap
+     */
+    public boolean operlapsArea(final MapArea area) {
         return (area.pos.x < pos.x + width) && (area.pos.x + area.width > pos.x) && (area.pos.y < pos.y + height)
                 && (area.pos.y + area.height > pos.y) && (area.pos.z == pos.z);
     }

@@ -60,6 +60,7 @@ public class PlantJob extends AbstractJob {
         PLANT
     }
 
+    /** The labor type required to plant a crop. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
 
     /** The state. */
@@ -91,7 +92,6 @@ public class PlantJob extends AbstractJob {
 
     /**
      * Instantiates a new plant job.
-     * 
      * @param seedTmp the seed
      * @param farmPlotTmp the farm plot
      */
@@ -117,7 +117,6 @@ public class PlantJob extends AbstractJob {
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-
         // Drop the item
         if (dwarf != null) {
             dwarf.beIdleMovement();
@@ -126,7 +125,6 @@ public class PlantJob extends AbstractJob {
                 dwarf.releaseLock();
             }
         }
-
         done = true;
     }
 
@@ -152,14 +150,11 @@ public class PlantJob extends AbstractJob {
                 dwarf = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType("Farming"));
                 needToReleaseLock = true;
             }
-
             if (dwarf == null) {
                 return;
             }
-
             haulJob = new HaulJob(dwarf, seed, player.getStockManager(), farmPlot.getPosition());
             player.getJobManager().addJob(haulJob);
-
             state = State.HAUL;
             break;
 

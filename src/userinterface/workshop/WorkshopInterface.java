@@ -146,6 +146,7 @@ public class WorkshopInterface extends JInternalFrame {
 
     /** The workshop. */
     private Workshop workshop;
+    private JPanel panel_1;
 
     /**
      * Create the frame.
@@ -186,9 +187,9 @@ public class WorkshopInterface extends JInternalFrame {
         JPanel panel = new ImagePanel();
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
         gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+        gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
         panel.setLayout(gridBagLayout);
         getContentPane().add(panel, BorderLayout.CENTER);
 
@@ -210,28 +211,25 @@ public class WorkshopInterface extends JInternalFrame {
         ordersLisConstraints.gridy = 1;
         panel.add(ordersList, ordersLisConstraints);
 
+        panel_1 = new JPanel();
+        panel_1.setOpaque(false);
+        GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+        gbc_panel_1.fill = GridBagConstraints.BOTH;
+        gbc_panel_1.gridx = 0;
+        gbc_panel_1.gridy = 2;
+        panel.add(panel_1, gbc_panel_1);
+
         newOrderButton = new JButton("New Order");
-        GridBagConstraints newOrderButtoConstraints = new GridBagConstraints();
-        newOrderButtoConstraints.insets = new Insets(0, 0, 5, 0);
-        newOrderButtoConstraints.gridx = 0;
-        newOrderButtoConstraints.gridy = 2;
-        panel.add(newOrderButton, newOrderButtoConstraints);
-        newOrderButton.addActionListener(new NewOrderActionListener());
+        panel_1.add(newOrderButton);
 
         cancelOrderButton = new JButton("Cancel Order");
-        GridBagConstraints cancelOrderButtoConstraints = new GridBagConstraints();
-        cancelOrderButtoConstraints.insets = new Insets(0, 0, 5, 0);
-        cancelOrderButtoConstraints.gridx = 0;
-        cancelOrderButtoConstraints.gridy = 3;
-        panel.add(cancelOrderButton, cancelOrderButtoConstraints);
-        cancelOrderButton.addActionListener(new CancelOrderActionListener());
+        panel_1.add(cancelOrderButton);
 
         destroyWorkshopButton = new JButton("Destroy Workshop");
-        GridBagConstraints destroyWorkshopButtoConstraints = new GridBagConstraints();
-        destroyWorkshopButtoConstraints.gridx = 0;
-        destroyWorkshopButtoConstraints.gridy = 4;
-        panel.add(destroyWorkshopButton, destroyWorkshopButtoConstraints);
+        panel_1.add(destroyWorkshopButton);
         destroyWorkshopButton.addActionListener(new DestroyWorkshopActionListener());
+        cancelOrderButton.addActionListener(new CancelOrderActionListener());
+        newOrderButton.addActionListener(new NewOrderActionListener());
         // CHECKSTYLE:ON
     }
 }

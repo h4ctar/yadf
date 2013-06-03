@@ -43,6 +43,7 @@ import simulation.character.Animal;
 import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
 import simulation.character.Goblin;
+import simulation.farm.Farm;
 import simulation.item.Item;
 import simulation.map.BlockType;
 import simulation.map.MapArea;
@@ -155,9 +156,13 @@ public class Region implements Serializable {
             }
             // Check that the area is free from workshops
             for (Workshop workshop : player.getWorkshops()) {
-                MapArea workshopArea = new MapArea(workshop.getPosition(), Workshop.WORKSHOP_SIZE,
-                        Workshop.WORKSHOP_SIZE);
-                if (area.operlapsArea(workshopArea)) {
+                if (area.operlapsArea(workshop.getArea())) {
+                    return false;
+                }
+            }
+            // Check that the area is free from farms
+            for (Farm farm : player.getFarms()) {
+                if (area.operlapsArea(farm.getArea())) {
                     return false;
                 }
             }
@@ -198,9 +203,13 @@ public class Region implements Serializable {
             }
             // Check that the area is free from workshops
             for (Workshop workshop : player.getWorkshops()) {
-                MapArea workshopArea = new MapArea(workshop.getPosition(), Workshop.WORKSHOP_SIZE,
-                        Workshop.WORKSHOP_SIZE);
-                if (workshopArea.containesIndex(mapIndex)) {
+                if (workshop.getArea().containesIndex(mapIndex)) {
+                    return false;
+                }
+            }
+            // Check that the area is free from farms
+            for (Farm farm : player.getFarms()) {
+                if (farm.getArea().containesIndex(mapIndex)) {
                     return false;
                 }
             }

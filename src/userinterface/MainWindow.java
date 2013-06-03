@@ -32,6 +32,7 @@
 package userinterface;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Rectangle;
@@ -474,19 +475,23 @@ public class MainWindow extends JFrame implements IMainWindow, IControllerListen
         // Create the status bar
         Border paddingBorder = BorderFactory.createEmptyBorder(2, 10, 2, 10);
         statusPanel = new JPanel();
-        contentPane.add(statusPanel, BorderLayout.SOUTH);
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+        statusPanel.setOpaque(false);
+        contentPane.add(statusPanel, BorderLayout.SOUTH);
 
         fpsLabel = new JLabel("FPS");
         fpsLabel.setBorder(paddingBorder);
+        fpsLabel.setForeground(Color.WHITE);
         statusPanel.add(fpsLabel);
 
         dateLabel = new JLabel("Date");
         dateLabel.setBorder(paddingBorder);
+        dateLabel.setForeground(Color.WHITE);
         statusPanel.add(dateLabel);
 
         stateLabel = new JLabel("State");
         stateLabel.setBorder(paddingBorder);
+        stateLabel.setForeground(Color.WHITE);
         statusPanel.add(stateLabel);
 
         // The world pane contains the main game canvas

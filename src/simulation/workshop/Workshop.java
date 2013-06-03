@@ -43,6 +43,7 @@ import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.job.CraftJob;
 import simulation.job.IJob;
+import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.recipe.Recipe;
 import simulation.recipe.RecipeManager;
@@ -248,5 +249,13 @@ public class Workshop extends AbstractGameObject implements IContainer {
     public Item getUnusedItemFromCategory(final String category) {
         Logger.getInstance().log(this, "Not implemented yet", true);
         return null;
+    }
+
+    /**
+     * Get the area of the workshop.
+     * @return the area
+     */
+    public MapArea getArea() {
+        return new MapArea(position, WORKSHOP_SIZE, WORKSHOP_SIZE);
     }
 }
