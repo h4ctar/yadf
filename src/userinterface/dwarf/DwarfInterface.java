@@ -42,6 +42,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import simulation.character.Dwarf;
@@ -179,6 +180,7 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         getContentPane().add(panel, BorderLayout.CENTER);
 
         imageLabel = new JLabel("");
+        imageLabel.setVerticalAlignment(SwingConstants.TOP);
         GridBagConstraints imageLabelConstraints = new GridBagConstraints();
         imageLabelConstraints.gridheight = 9;
         imageLabelConstraints.insets = new Insets(0, 0, 5, 5);

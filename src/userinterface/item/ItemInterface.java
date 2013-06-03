@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import simulation.item.ContainerItem;
@@ -114,6 +115,7 @@ public class ItemInterface extends JInternalFrame {
         getContentPane().add(panel, BorderLayout.CENTER);
 
         imageLabel = new JLabel("");
+        imageLabel.setVerticalAlignment(SwingConstants.TOP);
         GridBagConstraints gbc_imageLabel = new GridBagConstraints();
         gbc_imageLabel.gridheight = 4;
         gbc_imageLabel.insets = new Insets(0, 0, 0, 5);
