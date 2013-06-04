@@ -3,7 +3,7 @@
         <itemTypes>
             <itemType name="Seed" weight="1" sprite="17" />
             <itemType name="Wheat" weight="1" sprite="18" />
-            <itemType name="Flour" weight="1" sprite="0" />
+            <itemType name="Flour" weight="1" sprite="49" />
         </itemTypes>
     </category>
     <category name="Food">

@@ -23,7 +23,6 @@ import simulation.item.ContainerItem;
 import simulation.item.Item;
 import userinterface.SpriteManager;
 import userinterface.components.ImagePanel;
-import userinterface.components.OutlineLabel;
 
 /**
  * Interface for an item.
@@ -123,7 +122,7 @@ public class ItemInterface extends JInternalFrame {
         gbc_imageLabel.gridy = 0;
         panel.add(imageLabel, gbc_imageLabel);
 
-        JLabel typeLabel = new OutlineLabel("Type:");
+        JLabel typeLabel = new JLabel("Type:");
         typeLabel.setForeground(Color.WHITE);
         GridBagConstraints gbc_typeLabel = new GridBagConstraints();
         gbc_typeLabel.anchor = GridBagConstraints.EAST;
@@ -142,7 +141,7 @@ public class ItemInterface extends JInternalFrame {
         panel.add(typeTextField, gbc_typeTextField);
         typeTextField.setColumns(10);
 
-        JLabel usedLabel = new OutlineLabel("Used:");
+        JLabel usedLabel = new JLabel("Used:");
         usedLabel.setForeground(Color.WHITE);
         GridBagConstraints gbc_usedLabel = new GridBagConstraints();
         gbc_usedLabel.anchor = GridBagConstraints.EAST;
@@ -161,7 +160,7 @@ public class ItemInterface extends JInternalFrame {
         panel.add(usedTextField, gbc_usedTextField);
         usedTextField.setColumns(10);
 
-        JLabel placedLabel = new OutlineLabel("Placed:");
+        JLabel placedLabel = new JLabel("Placed:");
         placedLabel.setForeground(Color.WHITE);
         GridBagConstraints gbc_placedLabel = new GridBagConstraints();
         gbc_placedLabel.anchor = GridBagConstraints.EAST;
@@ -180,7 +179,7 @@ public class ItemInterface extends JInternalFrame {
         panel.add(placedTextField, gbc_placedTextField);
         placedTextField.setColumns(10);
 
-        contentsLabel = new OutlineLabel("Contents:");
+        contentsLabel = new JLabel("Contents:");
         GridBagConstraints gbc_lblContents = new GridBagConstraints();
         gbc_lblContents.fill = GridBagConstraints.VERTICAL;
         gbc_lblContents.insets = new Insets(0, 0, 0, 5);

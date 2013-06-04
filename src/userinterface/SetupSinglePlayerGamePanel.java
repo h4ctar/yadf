@@ -51,7 +51,6 @@ import javax.swing.SwingConstants;
 import misc.Utility;
 import simulation.map.MapIndex;
 import userinterface.components.ImagePanel;
-import userinterface.components.OutlineLabel;
 import userinterface.lobby.IMainWindow;
 
 /**
@@ -116,7 +115,6 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
      */
     private void setupLayout() {
         // CHECKSTYLE:OFF
-        setBackground(Color.BLACK);
         setLayout(new BorderLayout(5, 5));
 
         JPanel panel = new JPanel();
@@ -129,7 +127,8 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         panel.setLayout(panelLayout);
         add(panel, BorderLayout.CENTER);
 
-        JLabel titleLabel = new OutlineLabel("Single Player Game");
+        JLabel titleLabel = new JLabel("Single Player Game");
+        titleLabel.setForeground(Color.WHITE);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setFont(new Font("Minecraftia", Font.PLAIN, 40));
         GridBagConstraints titleLabelConstraints = new GridBagConstraints();
@@ -139,7 +138,8 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         titleLabelConstraints.gridy = 0;
         panel.add(titleLabel, titleLabelConstraints);
 
-        nameLabel = new OutlineLabel("Name");
+        nameLabel = new JLabel("Name");
+        nameLabel.setForeground(Color.WHITE);
         GridBagConstraints nameLableConstraints = new GridBagConstraints();
         nameLableConstraints.insets = new Insets(5, 5, 5, 5);
         nameLableConstraints.anchor = GridBagConstraints.EAST;
@@ -157,7 +157,8 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         panel.add(playerNameTextField, playerNameTextFieldConstraints);
         playerNameTextField.setColumns(10);
 
-        JLabel regionSizeLabel = new OutlineLabel("Region Size");
+        JLabel regionSizeLabel = new JLabel("Region Size");
+        regionSizeLabel.setForeground(Color.WHITE);
         GridBagConstraints regionSizeLabelConstraints = new GridBagConstraints();
         regionSizeLabelConstraints.insets = new Insets(5, 5, 5, 5);
         regionSizeLabelConstraints.anchor = GridBagConstraints.EAST;
@@ -175,7 +176,8 @@ public class SetupSinglePlayerGamePanel extends ImagePanel {
         regionSizeComboBoxConstraints.gridy = 2;
         panel.add(regionSizeComboBox, regionSizeComboBoxConstraints);
 
-        JLabel resourcesLabel = new OutlineLabel("Resources");
+        JLabel resourcesLabel = new JLabel("Resources");
+        resourcesLabel.setForeground(Color.WHITE);
         GridBagConstraints resourcesLabelConstraints = new GridBagConstraints();
         resourcesLabelConstraints.anchor = GridBagConstraints.EAST;
         resourcesLabelConstraints.insets = new Insets(5, 5, 5, 5);

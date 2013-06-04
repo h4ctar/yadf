@@ -19,7 +19,7 @@ public final class SpriteManager {
     private static SpriteManager instance;
 
     /** The size of a sprite. */
-    public static final int SPRITE_SIZE = 18;
+    public static final int SPRITE_SIZE = 32;
 
     /** The animal sprite. */
     public static final int ANIMAL_SPRITE = 48;
@@ -65,6 +65,9 @@ public final class SpriteManager {
     /** The workshop sprites. */
     private Sprite[] workshopSprites;
 
+    /** The unit sprites. */
+    private Sprite[] unitSprites;
+
     /**
      * Private constructor, loads the sprites when the instance is created.
      */
@@ -73,6 +76,7 @@ public final class SpriteManager {
             blockSprites = loadTileSheet("block_sprites.png", 1);
             itemSprites = loadTileSheet("item_sprites.png", 1);
             workshopSprites = loadTileSheet("workshop_sprites.png", Workshop.WORKSHOP_SIZE);
+            unitSprites = loadTileSheet("unit_sprites.png", 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -106,6 +110,15 @@ public final class SpriteManager {
     }
 
     /**
+     * Gets a workshop sprite.
+     * @param i the index of the sprite to get
+     * @return the sprite
+     */
+    public Sprite getUnitSprite(final int i) {
+        return unitSprites[i];
+    }
+
+    /**
      * Load tile sheet.
      * @param file the file
      * @param multiplier the multiplier
@@ -129,7 +142,7 @@ public final class SpriteManager {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < rows; j++) {
                 BufferedImage spriteImage = sourceImage.getSubimage(i * size, j * size, size, size);
-                Image image = gc.createCompatibleImage(size, size, Transparency.BITMASK);
+                Image image = gc.createCompatibleImage(size, size, Transparency.TRANSLUCENT);
                 image.getGraphics().drawImage(spriteImage, 0, 0, null);
                 sprites[i + j * rows] = new Sprite(image);
             }

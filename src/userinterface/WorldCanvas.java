@@ -96,28 +96,28 @@ public class WorldCanvas extends JComponent implements IMapListener {
     private Region region;
 
     /** The colour of designations. */
-    private static final Color DESIGNATION_COLOUR = new Color(0.8f, 0.5f, 0.5f, 0.8f);
+    private static final Color DESIGNATION_COLOUR = new Color(0.8f, 0.5f, 0.5f, 0.4f);
 
     /** The colour of the mouse. */
     private static final Color MOUSE_COLOUR = new Color(0.5f, 0.5f, 0.8f, 0.8f);
 
     /** The colour of a valid selection. */
-    private static final Color VALID_SELECTION_COLOUR = new Color(0.5f, 0.8f, 0.5f, 0.8f);
+    private static final Color VALID_SELECTION_COLOUR = new Color(0.5f, 0.8f, 0.5f, 0.6f);
 
     /** The colour of an invalid selection. */
-    private static final Color INVALID_SELECTION_COLOUR = new Color(0.8f, 0.5f, 0.5f, 0.8f);
+    private static final Color INVALID_SELECTION_COLOUR = new Color(0.8f, 0.5f, 0.5f, 0.6f);
 
     /** The colour of a room. */
-    private static final Color ROOM_COLOUR = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+    private static final Color ROOM_COLOUR = new Color(0.7f, 0.7f, 0.7f, 0.4f);
 
     /** The colour of a stockpile. */
-    private static final Color STOCKPILE_COLOUR = new Color(0.7f, 0.6f, 0.5f, 0.8f);
+    private static final Color STOCKPILE_COLOUR = new Color(0.7f, 0.6f, 0.5f, 0.4f);
 
     /** The colour of the atmosphere. */
     private static final Color ATMOSPHERE_COLOUR = new Color(0.5f, 0.5f, 0.7f, 0.5f);
 
     /** The colour of a block that is under ground. */
-    private static final Color UNDER_GROUND_COLOUR = new Color(0.0f, 0.0f, 0.0f, 0.8f);
+    private static final Color UNDER_GROUND_COLOUR = new Color(0.0f, 0.0f, 0.0f, 0.9f);
 
     /** The background image. */
     private BufferedImage backgroundImage = null;
@@ -307,14 +307,8 @@ public class WorldCanvas extends JComponent implements IMapListener {
      * @param block the block
      * @return the sprite
      */
-    // TODO: what the hell is this?
     private Sprite blockSprite(final BlockType block) {
-        String prefix = "MINE_";
-        if (block.toString().startsWith(prefix)) {
-            return SpriteManager.getInstance().getBlockSprite(
-                    BlockType.valueOf(block.toString().substring(prefix.length())).ordinal());
-        }
-        return SpriteManager.getInstance().getBlockSprite(block.ordinal());
+        return SpriteManager.getInstance().getBlockSprite(block.sprite);
     }
 
     /**

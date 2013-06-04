@@ -49,7 +49,6 @@ import javax.swing.WindowConstants;
 import simulation.Player;
 import simulation.room.Room;
 import userinterface.components.ImagePanel;
-import userinterface.components.OutlineLabel;
 import controller.AbstractController;
 import controller.command.DeleteRoomCommand;
 
@@ -145,7 +144,7 @@ public class RoomInterface extends JInternalFrame implements ActionListener {
         panel.setLayout(gridBagLayout);
         getContentPane().add(panel, BorderLayout.CENTER);
 
-        typeLabel = new OutlineLabel("Room Type");
+        typeLabel = new JLabel("Room Type");
         typeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         GridBagConstraints typeLabelConstraints = new GridBagConstraints();
         typeLabelConstraints.fill = GridBagConstraints.HORIZONTAL;

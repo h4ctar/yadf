@@ -58,7 +58,6 @@ import misc.Utility;
 import simulation.map.MapIndex;
 import userinterface.Connection;
 import userinterface.components.ImagePanel;
-import userinterface.components.OutlineLabel;
 import userinterface.lobby.client.LobbyClient;
 import userinterface.lobby.server.LobbyServer;
 
@@ -254,7 +253,7 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         panel_1.setOpaque(false);
         add(panel_1, BorderLayout.NORTH);
 
-        JLabel multiplayerGameLabel = new OutlineLabel("Multiplayer Game");
+        JLabel multiplayerGameLabel = new JLabel("Multiplayer Game");
         panel_1.add(multiplayerGameLabel);
         multiplayerGameLabel.setForeground(Color.WHITE);
         multiplayerGameLabel.setFont(new Font("Minecraftia", Font.PLAIN, 24));
@@ -270,7 +269,7 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         panelConstraints.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
         panel.setLayout(panelConstraints);
 
-        JLabel regionSizeLabel = new OutlineLabel("Region Size");
+        JLabel regionSizeLabel = new JLabel("Region Size");
         regionSizeLabel.setForeground(Color.WHITE);
         GridBagConstraints regionSizeLabelConstraints = new GridBagConstraints();
         regionSizeLabelConstraints.anchor = GridBagConstraints.EAST;
@@ -289,7 +288,7 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         regionSizeComboBoxConstraints.gridy = 0;
         panel.add(regionSizeComboBox, regionSizeComboBoxConstraints);
 
-        JLabel resourcesLabel = new OutlineLabel("Resources");
+        JLabel resourcesLabel = new JLabel("Resources");
         resourcesLabel.setForeground(Color.WHITE);
         GridBagConstraints resourcesLabelConstraints = new GridBagConstraints();
         resourcesLabelConstraints.anchor = GridBagConstraints.EAST;
@@ -336,7 +335,7 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         panel3Constraints.rowWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
         panel3.setLayout(panel3Constraints);
 
-        JLabel playersLabel = new OutlineLabel("Players");
+        JLabel playersLabel = new JLabel("Players");
         playersLabel.setForeground(Color.WHITE);
         GridBagConstraints playersLabelConstraints = new GridBagConstraints();
         playersLabelConstraints.insets = new Insets(5, 5, 5, 0);
@@ -357,7 +356,7 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         playersTable = new JTable(playerTableModel);
         playersScrollPane.setViewportView(playersTable);
 
-        JLabel chatLabel = new OutlineLabel("Chat");
+        JLabel chatLabel = new JLabel("Chat");
         chatLabel.setForeground(Color.WHITE);
         GridBagConstraints chatLabelConstraints = new GridBagConstraints();
         chatLabelConstraints.anchor = GridBagConstraints.WEST;

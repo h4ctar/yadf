@@ -73,7 +73,7 @@ public class Region implements Serializable {
     private static final double DAYS_IN_A_YEAR = 365.242;
 
     /** The number of simulation steps in one minute. */
-    public static final long SIMULATION_STEPS_PER_MINUTE = 2;
+    public static final long SIMULATION_STEPS_PER_MINUTE = 1;
 
     /** The number of simulation steps in one hour. */
     public static final long SIMULATION_STEPS_PER_HOUR = SIMULATION_STEPS_PER_MINUTE * 60;

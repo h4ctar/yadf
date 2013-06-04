@@ -41,11 +41,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import userinterface.components.ImagePanel;
-import userinterface.components.OutlineLabel;
 import userinterface.lobby.IMainWindow;
 
 /**
@@ -147,7 +147,7 @@ public class MainMenuPanel extends ImagePanel {
         panelConstraints.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
         panel.setLayout(panelConstraints);
 
-        OutlineLabel titleLabel = new OutlineLabel("Ben's Burrows");
+        JLabel titleLabel = new JLabel("Ben's Burrows");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setFont(new Font("Minecraftia", Font.PLAIN, 40));

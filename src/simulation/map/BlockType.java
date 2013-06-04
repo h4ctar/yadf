@@ -37,54 +37,54 @@ package simulation.map;
  * @author Ben Smith (bensmith87@gmail.com)
  */
 public enum BlockType {
-    /* isStandIn isStandOn isClimb isMineable itemMined */
+    /* isStandIn isStandOn isClimb isMineable itemMined sprite */
     /** The empty. */
-    EMPTY(true, false, false, false, null),
+    EMPTY(true, false, false, false, null, 1),
 
     /** The grass. */
-    GRASS(false, true, false, true, null),
+    GRASS(false, true, false, true, null, 22),
 
     /** The dirt. */
-    DIRT(false, true, false, true, null),
+    DIRT(false, true, false, true, null, 29),
 
     /** The rock. */
-    ROCK(false, true, false, true, "Rock"),
+    ROCK(false, true, false, true, "Rock", 28),
 
     /** The gold. */
-    GOLD(false, true, false, true, "Gold ore"),
+    GOLD(false, true, false, true, "Gold ore", 30),
 
     /** The iron. */
-    IRON(false, true, false, true, "Iron ore"),
+    IRON(false, true, false, true, "Iron ore", 32),
 
     /** The coal. */
-    COAL(false, true, false, true, "Coal ore"),
+    COAL(false, true, false, true, "Coal ore", 33),
 
     /** The ramp. */
-    RAMP(true, true, true, false, null),
+    RAMP(true, true, true, false, null, 26),
 
     /** The stair. */
-    STAIR(true, true, true, false, null),
+    STAIR(true, true, true, false, null, 27),
 
     /** The wall. */
-    WALL(false, true, false, false, null),
+    WALL(false, true, false, false, null, 0),
 
     /** The mine grass. */
-    MINE_GRASS(true, true, false, false, null),
+    MINE_GRASS(true, true, false, false, null, GRASS.sprite),
 
     /** The mine dirt. */
-    MINE_DIRT(true, true, false, false, null),
+    MINE_DIRT(true, true, false, false, null, DIRT.sprite),
 
     /** The mine rock. */
-    MINE_ROCK(true, true, false, false, null),
+    MINE_ROCK(true, true, false, false, null, ROCK.sprite),
 
     /** The mine gold. */
-    MINE_GOLD(true, true, false, false, null),
+    MINE_GOLD(true, true, false, false, null, GOLD.sprite),
 
     /** The mine iron. */
-    MINE_IRON(true, true, false, false, null),
+    MINE_IRON(true, true, false, false, null, IRON.sprite),
 
     /** The mine coal. */
-    MINE_COAL(true, true, false, false, null);
+    MINE_COAL(true, true, false, false, null, COAL.sprite);
 
     /** The is stand in. */
     public final boolean isStandIn;
@@ -104,6 +104,8 @@ public enum BlockType {
     /** What item is produced when mined. */
     public final String itemMined;
 
+    public final int sprite;
+
     /**
      * Instantiates a new block type.
      * 
@@ -114,11 +116,12 @@ public enum BlockType {
      * @param itemMinedTmp the item mined
      */
     BlockType(final boolean isStandInTmp, final boolean isStandOnTmp, final boolean isClimbTmp,
-            final boolean isMineableTmp, final String itemMinedTmp) {
+            final boolean isMineableTmp, final String itemMinedTmp, final int spriteTmp) {
         isStandIn = isStandInTmp;
         isStandOn = isStandOnTmp;
         isClimb = isClimbTmp;
         isMineable = isMineableTmp;
+        sprite = spriteTmp;
         itemMined = itemMinedTmp;
         isSolid = isStandOn && !isStandIn;
     }

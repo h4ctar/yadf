@@ -9,11 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import userinterface.components.ImagePanel;
-import userinterface.components.OutlineLabel;
 import userinterface.lobby.IMainWindow;
 
 /**
@@ -48,7 +48,7 @@ public class HowToPlayPanel extends ImagePanel {
         gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
         setLayout(gridBagLayout);
 
-        OutlineLabel howToPlayLabel = new OutlineLabel("Single Player Game");
+        JLabel howToPlayLabel = new JLabel("Single Player Game");
         howToPlayLabel.setText("How to Play");
         howToPlayLabel.setHorizontalAlignment(SwingConstants.CENTER);
         howToPlayLabel.setForeground(Color.WHITE);

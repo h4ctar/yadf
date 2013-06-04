@@ -32,6 +32,7 @@
 package userinterface.workshop;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -52,7 +53,6 @@ import simulation.recipe.Recipe;
 import simulation.recipe.RecipeManager;
 import simulation.workshop.Workshop;
 import userinterface.components.ImagePanel;
-import userinterface.components.OutlineLabel;
 import controller.AbstractController;
 import controller.command.CancelOrderCommand;
 import controller.command.DeleteRoomCommand;
@@ -146,7 +146,9 @@ public class WorkshopInterface extends JInternalFrame {
 
     /** The workshop. */
     private Workshop workshop;
-    private JPanel panel_1;
+
+    /** The button panel. */
+    private JPanel buttonPanel;
 
     /**
      * Create the frame.
@@ -193,7 +195,7 @@ public class WorkshopInterface extends JInternalFrame {
         panel.setLayout(gridBagLayout);
         getContentPane().add(panel, BorderLayout.CENTER);
 
-        typeLabel = new OutlineLabel("Workshop Type");
+        typeLabel = new JLabel("Workshop Type");
         typeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         GridBagConstraints typeLabeConstraints = new GridBagConstraints();
         typeLabeConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -211,22 +213,23 @@ public class WorkshopInterface extends JInternalFrame {
         ordersLisConstraints.gridy = 1;
         panel.add(ordersList, ordersLisConstraints);
 
-        panel_1 = new JPanel();
-        panel_1.setOpaque(false);
-        GridBagConstraints gbc_panel_1 = new GridBagConstraints();
-        gbc_panel_1.fill = GridBagConstraints.BOTH;
-        gbc_panel_1.gridx = 0;
-        gbc_panel_1.gridy = 2;
-        panel.add(panel_1, gbc_panel_1);
+        buttonPanel = new JPanel();
+        FlowLayout flowLayout = (FlowLayout) buttonPanel.getLayout();
+        buttonPanel.setOpaque(false);
+        GridBagConstraints buttonPanelConstraints = new GridBagConstraints();
+        buttonPanelConstraints.fill = GridBagConstraints.BOTH;
+        buttonPanelConstraints.gridx = 0;
+        buttonPanelConstraints.gridy = 2;
+        panel.add(buttonPanel, buttonPanelConstraints);
 
         newOrderButton = new JButton("New Order");
-        panel_1.add(newOrderButton);
+        buttonPanel.add(newOrderButton);
 
         cancelOrderButton = new JButton("Cancel Order");
-        panel_1.add(cancelOrderButton);
+        buttonPanel.add(cancelOrderButton);
 
         destroyWorkshopButton = new JButton("Destroy Workshop");
-        panel_1.add(destroyWorkshopButton);
+        buttonPanel.add(destroyWorkshopButton);
         destroyWorkshopButton.addActionListener(new DestroyWorkshopActionListener());
         cancelOrderButton.addActionListener(new CancelOrderActionListener());
         newOrderButton.addActionListener(new NewOrderActionListener());
