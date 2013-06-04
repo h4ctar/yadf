@@ -29,61 +29,75 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.game.job;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.table.AbstractTableModel;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import simulation.job.IJob;
+import simulation.job.IJobManagerListener;
+import simulation.job.JobManager;
 
 /**
- * The Class ClientController.
+ * The Class JobsTableModel.
  */
-public class ClientController extends AbstractController {
+public class JobsTableModel extends AbstractTableModel implements IJobManagerListener {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The serial version UID. */
+    private static final long serialVersionUID = 4018365907743267846L;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The job manager. */
+    private final JobManager jobManager;
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new jobs table model.
+     * 
+     * @param jobManagerTmp the job manager
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public JobsTableModel(final JobManager jobManagerTmp) {
+        jobManager = jobManagerTmp;
+        jobManager.addListener(this);
     }
 
     @Override
-    public void close() {
-        connection.close();
+    public int getColumnCount() {
+        return 2;
     }
 
     @Override
-    public synchronized void doCommands(final Region region) {
+    public String getColumnName(final int columnIndex) {
+        if (columnIndex == 0) {
+            return "Job";
+        }
+
+        return "Status";
+    }
+
+    @Override
+    public int getRowCount() {
+        return jobManager.getJobs().size();
+    }
+
+    @Override
+    public Object getValueAt(final int rowIndex, final int columnIndex) {
         try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
+            IJob job = jobManager.getJobs().get(rowIndex);
+            if (columnIndex == 0) {
+                return job.toString();
             }
 
-            localCommands = new ArrayList<>();
+            return job.getStatus();
         } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
+            return null;
         }
+    }
+
+    @Override
+    public void jobsAdded(final int firstIndex, final int lastIndex) {
+        this.fireTableRowsInserted(firstIndex, lastIndex);
+    }
+
+    @Override
+    public void jobRemoved(final int index) {
+        this.fireTableRowsDeleted(index, index);
     }
 }

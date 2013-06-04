@@ -29,61 +29,44 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.misc;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import java.awt.Graphics;
+import java.awt.Image;
 
 /**
- * The Class ClientController.
+ * The Class Sprite.
  */
-public class ClientController extends AbstractController {
+public class Sprite {
 
-    /** The connection. */
-    private final Connection connection;
-
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The image. */
+    private final Image image;
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new sprite.
+     * 
+     * @param imageTmp the image
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public Sprite(final Image imageTmp) {
+        image = imageTmp;
     }
 
-    @Override
-    public void close() {
-        connection.close();
+    /**
+     * Draw the sprite.
+     * 
+     * @param g the graphics to draw onto
+     * @param x the x position
+     * @param y the y position
+     */
+    public void draw(final Graphics g, final int x, final int y) {
+        g.drawImage(image, x, y, null);
     }
 
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
+    /**
+     * Get the image.
+     * @return the image
+     */
+    public Image getImage() {
+        return image;
     }
 }

@@ -29,61 +29,57 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.game.labor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.BorderLayout;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+import simulation.Player;
+import controller.AbstractController;
 
 /**
- * The Class ClientController.
+ * The Class LaborsPane.
  */
-public class ClientController extends AbstractController {
+public class LaborsPane extends JPanel {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The serial version UID. */
+    private static final long serialVersionUID = 1708672090502816986L;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The labors table. */
+    private final JTable laborsTable;
+
+    /** The labor table model. */
+    private LaborTableModel laborTableModel;
+
+    /** The labours scroll pane. */
+    private final JScrollPane laboursScrollPane;
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new labors pane.
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public LaborsPane() {
+        super(new BorderLayout());
+
+        laboursScrollPane = new JScrollPane();
+        add(laboursScrollPane, BorderLayout.CENTER);
+
+        laborsTable = new JTable();
+        laborsTable.setDefaultRenderer(LaborNode.class, new LaborRenderer());
+        laborsTable.setDefaultEditor(LaborNode.class, new LaborEditor());
+        laboursScrollPane.setViewportView(laborsTable);
     }
 
-    @Override
-    public void close() {
-        connection.close();
-    }
-
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
+    /**
+     * Setup.
+     * 
+     * @param player the player
+     * @param controller the controller
+     */
+    public void setup(final Player player, final AbstractController controller) {
+        laborTableModel = new LaborTableModel(player, controller);
+        laborsTable.setModel(laborTableModel);
     }
 }

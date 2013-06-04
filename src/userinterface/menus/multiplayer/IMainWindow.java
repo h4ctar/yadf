@@ -29,61 +29,72 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.menus.multiplayer;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import simulation.map.MapIndex;
+import controller.Connection;
 
 /**
- * The Class ClientController.
+ * Listener to the lobby panel.
  */
-public class ClientController extends AbstractController {
-
-    /** The connection. */
-    private final Connection connection;
-
-    /** The listener. */
-    private final IGamePanel gamePanel;
+public interface IMainWindow {
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Load single player game.
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
-    }
+    void loadSinglePlayerGame();
 
-    @Override
-    public void close() {
-        connection.close();
-    }
+    /**
+     * Quit.
+     */
+    void quit();
 
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
+    /**
+     * Setup host multiplayer game.
+     */
+    void setupHostMultiplayerGame();
 
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
+    /**
+     * Setup join multiplayer game.
+     */
+    void setupJoinMultiplayerGame();
 
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
+    /**
+     * Setup main menu.
+     */
+    void setupMainMenu();
 
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
-    }
+    /**
+     * Setup single player game.
+     */
+    void setupSinglePlayerGame();
+
+    /**
+     * Start multiplayer game.
+     * @param connection the connection
+     * @param playerNames the player names
+     * @param playerIndex the player index
+     * @param regionSize the region size
+     */
+    void startMultiplayerGame(Connection connection, List<String> playerNames, int playerIndex, MapIndex regionSize);
+
+    /**
+     * Start server.
+     * @param connections the connections
+     */
+    void startServer(List<Connection> connections);
+
+    /**
+     * Start single player game.
+     * @param playerName the player name
+     * @param regionSize the region size
+     */
+    void startSinglePlayerGame(String playerName, MapIndex regionSize);
+
+    /**
+     * Show the how to play panel.
+     */
+    void showHowToPlay();
 }

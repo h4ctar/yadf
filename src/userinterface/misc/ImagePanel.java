@@ -29,61 +29,58 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.misc;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 /**
- * The Class ClientController.
+ * A panel that has a nice background texture.
  */
-public class ClientController extends AbstractController {
+public class ImagePanel extends JPanel {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -5474129575219242704L;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The image. */
+    private Image image;
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new image panel.
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
-    }
-
-    @Override
-    public void close() {
-        connection.close();
-    }
-
-    @Override
-    public synchronized void doCommands(final Region region) {
+    public ImagePanel() {
         try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
+            InputStream inputStream = new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(
+                    "background.png"));
+            image = ImageIO.read(inputStream);
+            Dimension size = new Dimension(image.getWidth(null), image.getHeight(null));
+            setPreferredSize(size);
+            setMinimumSize(size);
+            setMaximumSize(size);
+            setSize(size);
+            setLayout(null);
         } catch (Exception e) {
             e.printStackTrace();
-            close();
-            gamePanel.disconnect();
+        }
+    }
+
+    @Override
+    public void paintComponent(final Graphics g) {
+        int width = getWidth();
+        int height = getHeight();
+        int imageW = image.getWidth(this);
+        int imageH = image.getHeight(this);
+        // Tile the image to fill our area.
+        for (int x = 0; x < width; x += imageW) {
+            for (int y = 0; y < height; y += imageH) {
+                g.drawImage(image, x, y, this);
+            }
         }
     }
 }

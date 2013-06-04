@@ -29,61 +29,54 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.game.stock;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.BorderLayout;
+import java.awt.Font;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import org.jdesktop.swingx.JXTreeTable;
+
+import simulation.Player;
 
 /**
- * The Class ClientController.
+ * The Class StocksPane.
  */
-public class ClientController extends AbstractController {
+public class StocksPane extends JPanel {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The serial version UID. */
+    private static final long serialVersionUID = 3427702994977889616L;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The stocks table. */
+    private JXTreeTable stocksTable;
+
+    /** The stocks scroll pane. */
+    private final JScrollPane stocksScrollPane;
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new stocks pane.
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public StocksPane() {
+        super(new BorderLayout());
+
+        stocksScrollPane = new JScrollPane();
+        add(stocksScrollPane, BorderLayout.CENTER);
+
+        stocksTable = new JXTreeTable();
+        Font font = new Font("Minecraftia", Font.PLAIN, 12);
+        stocksTable.setFont(font);
+        stocksScrollPane.setViewportView(stocksTable);
     }
 
-    @Override
-    public void close() {
-        connection.close();
-    }
-
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
+    /**
+     * Sets the up.
+     * 
+     * @param player the new up
+     */
+    public void setup(final Player player) {
+        stocksTable = new JXTreeTable(new StockTreeTableModel(player.getStockManager()));
+        stocksScrollPane.setViewportView(stocksTable);
     }
 }

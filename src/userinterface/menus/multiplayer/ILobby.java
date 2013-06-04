@@ -29,61 +29,42 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+package userinterface.menus.multiplayer;
 
 /**
- * The Class ClientController.
+ * The Interface ILobby.
  */
-public class ClientController extends AbstractController {
-
-    /** The connection. */
-    private final Connection connection;
-
-    /** The listener. */
-    private final IGamePanel gamePanel;
+public interface ILobby {
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Close.
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
-    }
+    void close();
 
-    @Override
-    public void close() {
-        connection.close();
-    }
+    /**
+     * Inits the.
+     * 
+     * @param ip the ip
+     * @param port the port
+     * @return true, if successful
+     */
+    boolean init(String ip, int port);
 
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
+    /**
+     * Send chat.
+     * 
+     * @param playerName the player name
+     * @param text the text
+     */
+    void sendChat(String playerName, String text);
 
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
+    /**
+     * Start.
+     */
+    void start();
 
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
-    }
+    /**
+     * Stop.
+     */
+    void stop();
 }

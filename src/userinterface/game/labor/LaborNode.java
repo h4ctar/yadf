@@ -29,61 +29,41 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+package userinterface.game.labor;
 
 /**
- * The Class ClientController.
+ * The Class LaborNode.
  */
-public class ClientController extends AbstractController {
+public class LaborNode implements Comparable<LaborNode> {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The enabled. */
+    public Boolean enabled;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The skill. */
+    public Integer skill;
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new labor node.
+     * @param skillTmp the skill
+     * @param enabledTmp the enabled
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public LaborNode(final Integer skillTmp, final Boolean enabledTmp) {
+        skill = skillTmp;
+        enabled = enabledTmp;
     }
 
     @Override
-    public void close() {
-        connection.close();
+    public int compareTo(final LaborNode o) {
+        return this.skill.compareTo(o.skill);
     }
 
     @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
+    public boolean equals(final Object v) {
+        return v instanceof LaborNode && this.skill.equals(((LaborNode) v).skill);
+    }
 
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
+    @Override
+    public int hashCode() {
+        return this.skill.hashCode();
     }
 }

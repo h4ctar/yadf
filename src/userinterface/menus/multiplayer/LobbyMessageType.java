@@ -29,61 +29,28 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+package userinterface.menus.multiplayer;
 
 /**
- * The Class ClientController.
+ * The Enum LobbyMessageType.
  */
-public class ClientController extends AbstractController {
+public enum LobbyMessageType {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The my name is. */
+    MY_NAME_IS,
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The all player names. */
+    ALL_PLAYER_NAMES,
 
-    /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
-     */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
-    }
+    /** The this is your index. */
+    THIS_IS_YOUR_INDEX,
 
-    @Override
-    public void close() {
-        connection.close();
-    }
+    /** The chat. */
+    CHAT,
 
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
+    /** The disconnect. */
+    DISCONNECT,
 
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
-    }
+    /** The start game. */
+    START_GAME
 }

@@ -29,61 +29,47 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.menus.lobby.server;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.Socket;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import userinterface.menus.multiplayer.ILobby;
 
 /**
- * The Class ClientController.
+ * The lobby server.
  */
-public class ClientController extends AbstractController {
-
-    /** The connection. */
-    private final Connection connection;
-
-    /** The listener. */
-    private final IGamePanel gamePanel;
+public interface ILobbyServer extends ILobby {
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Adds the new client.
+     * 
+     * @param socket the socket
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
-    }
+    void addNewClient(Socket socket);
 
-    @Override
-    public void close() {
-        connection.close();
-    }
+    /**
+     * Disconnect.
+     */
+    void disconnect();
 
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
+    /**
+     * Receive chat.
+     * 
+     * @param playerName the player name
+     * @param text the text
+     */
+    void receiveChat(String playerName, String text);
 
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
+    /**
+     * Receive start game.
+     */
+    void receiveStartGame();
 
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
-    }
+    /**
+     * Sets the player name.
+     * 
+     * @param playerIndex the player index
+     * @param playerName the player name
+     */
+    void setPlayerName(int playerIndex, String playerName);
 }

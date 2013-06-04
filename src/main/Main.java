@@ -29,61 +29,35 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package main;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import userinterface.MainWindow;
 
 /**
- * The Class ClientController.
+ * The main class, launches the main window.
  */
-public class ClientController extends AbstractController {
-
-    /** The connection. */
-    private final Connection connection;
-
-    /** The listener. */
-    private final IGamePanel gamePanel;
-
+public final class Main {
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * The entry for the program.
+     * 
+     * @param args the arguments
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
-    }
-
-    @Override
-    public void close() {
-        connection.close();
-    }
-
-    @Override
-    public synchronized void doCommands(final Region region) {
+    public static void main(final String[] args) {
+        MainWindow mainWindow = null;
         try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
+            mainWindow = new MainWindow();
         } catch (Exception e) {
             e.printStackTrace();
-            close();
-            gamePanel.disconnect();
+            if (mainWindow != null) {
+                mainWindow.dispose();
+            }
         }
+    }
+
+    /**
+     * Instantiates a new main.
+     */
+    private Main() {
+
     }
 }

@@ -29,61 +29,50 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.game.labor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Color;
+import java.awt.Component;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import javax.swing.JCheckBox;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
 
 /**
- * The Class ClientController.
+ * The Class LaborRenderer.
  */
-public class ClientController extends AbstractController {
+public class LaborRenderer extends JCheckBox implements TableCellRenderer {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -2029038227766583757L;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The Constant hilite. */
+    private static final Color HILIGHT_COLOUR = new Color(0xE8E8E8);
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new labor renderer.
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public LaborRenderer() {
+        this.setOpaque(true);
     }
 
     @Override
-    public void close() {
-        connection.close();
-    }
-
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
+    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+            final boolean hasFocus, final int row, final int col) {
+        if (value == null) {
+            return null;
         }
+
+        LaborNode v = (LaborNode) value;
+        this.setSelected(v.enabled.booleanValue());
+        this.setText(v.skill.toString());
+
+        if (isSelected) {
+            this.setBackground(HILIGHT_COLOUR);
+        } else {
+            this.setBackground(Color.white);
+        }
+
+        return this;
     }
 }

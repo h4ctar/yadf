@@ -29,61 +29,51 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.game.labor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Component;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
 
 /**
- * The Class ClientController.
+ * The Class LaborEditor.
  */
-public class ClientController extends AbstractController {
+public class LaborEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1762119570759441760L;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The renderer. */
+    private final LaborRenderer renderer = new LaborRenderer();
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new labor editor.
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public LaborEditor() {
+        renderer.addItemListener(this);
     }
 
     @Override
-    public void close() {
-        connection.close();
+    public Object getCellEditorValue() {
+        return new Boolean(renderer.isSelected());
     }
 
     @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
+    public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
+            final int row, final int column) {
+        LaborNode v = (LaborNode) value;
+        renderer.setSelected(v.enabled.booleanValue());
+        renderer.setText(v.skill.toString());
+        return renderer;
     }
+
+    @Override
+    public void itemStateChanged(final ItemEvent e) {
+        this.fireEditingStopped();
+    }
+
 }

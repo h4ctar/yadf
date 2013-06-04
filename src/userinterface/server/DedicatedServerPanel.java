@@ -41,8 +41,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import logger.Logger;
-import userinterface.Connection;
-import userinterface.lobby.IMainWindow;
+import userinterface.menus.multiplayer.IMainWindow;
+import controller.Connection;
 import controller.command.AbstractCommand;
 
 /**
@@ -162,7 +162,7 @@ public class DedicatedServerPanel extends JPanel {
     public void disconnect() {
         stop();
         close();
-        mainWindow.disconnect();
+        mainWindow.setupMainMenu();
     }
 
     /**

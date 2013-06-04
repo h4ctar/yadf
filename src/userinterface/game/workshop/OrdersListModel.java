@@ -29,61 +29,57 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.game.workshop;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.AbstractListModel;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import simulation.workshop.IWorkshopListener;
+import simulation.workshop.Workshop;
 
 /**
- * The Class ClientController.
+ * The Class OrdersListModel.
  */
-public class ClientController extends AbstractController {
+public class OrdersListModel extends AbstractListModel<String> implements IWorkshopListener {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -221041635977890239L;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The workshop. */
+    private Workshop workshop;
+
+    @Override
+    public String getElementAt(final int row) {
+        if (workshop == null) {
+            return null;
+        }
+
+        return workshop.getOrders().get(row).toString();
+    }
+
+    @Override
+    public int getSize() {
+        if (workshop == null) {
+            return 0;
+        }
+
+        return workshop.getOrders().size();
+    }
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Sets the workshop.
+     * @param workshopTmp the new workshop
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public void setWorkshop(final Workshop workshopTmp) {
+        workshop = workshopTmp;
+        workshop.addListener(this);
+        workshopChanged();
     }
 
+    /**
+     * Update.
+     */
     @Override
-    public void close() {
-        connection.close();
-    }
-
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
+    public void workshopChanged() {
+        fireContentsChanged(this, 0, getSize() - 1);
     }
 }

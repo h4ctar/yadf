@@ -31,59 +31,76 @@
  */
 package controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 /**
- * The Class ClientController.
+ * The Class Connection.
  */
-public class ClientController extends AbstractController {
+public class Connection {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The socket. */
+    private final Socket socket;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The output. */
+    private final ObjectOutputStream output;
+
+    /** The input. */
+    private final ObjectInputStream input;
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new connection.
+     * 
+     * @param socketTmp the socket
+     * @throws Exception the exception
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public Connection(final Socket socketTmp) throws Exception {
+        socket = socketTmp;
+
+        output = new ObjectOutputStream(socket.getOutputStream());
+        input = new ObjectInputStream(socket.getInputStream());
     }
 
-    @Override
+    /**
+     * Close.
+     */
     public void close() {
-        connection.close();
-    }
-
-    @Override
-    public synchronized void doCommands(final Region region) {
         try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
+            socket.close();
+            output.close();
+            input.close();
         } catch (Exception e) {
             e.printStackTrace();
-            close();
-            gamePanel.disconnect();
         }
+    }
+
+    /**
+     * Gets the address.
+     * 
+     * @return the address
+     */
+    public String getAddress() {
+        return socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
+    }
+
+    /**
+     * Read object.
+     * 
+     * @return the object
+     * @throws Exception the exception
+     */
+    public Object readObject() throws Exception {
+        return input.readObject();
+    }
+
+    /**
+     * Write object.
+     * 
+     * @param object the object
+     * @throws Exception the exception
+     */
+    public void writeObject(final Object object) throws Exception {
+        output.writeObject(object);
     }
 }

@@ -29,61 +29,51 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.game.room;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.AbstractListModel;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
+import simulation.room.Room;
 
 /**
- * The Class ClientController.
+ * The Class ItemListModel.
  */
-public class ClientController extends AbstractController {
+public class ItemListModel extends AbstractListModel<String> {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1108175675511497032L;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The room. */
+    private Room room;
+
+    @Override
+    public String getElementAt(final int index) {
+        return room.getItems().get(index).toString();
+    }
+
+    @Override
+    public int getSize() {
+        if (room == null) {
+            return 0;
+        }
+
+        return room.getItems().size();
+    }
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Sets the room.
+     * 
+     * @param roomTmp the new room
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
+    public void setRoom(final Room roomTmp) {
+        room = roomTmp;
+        update();
     }
 
-    @Override
-    public void close() {
-        connection.close();
-    }
-
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
+    /**
+     * Update.
+     */
+    public void update() {
+        fireContentsChanged(this, 0, getSize() - 1);
     }
 }

@@ -29,61 +29,40 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package controller;
+package userinterface.menus.multiplayer;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-import logger.Logger;
-import simulation.Region;
-import userinterface.game.IGamePanel;
-import controller.command.AbstractCommand;
-
 /**
- * The Class ClientController.
+ * The Class LobbyMessage.
  */
-public class ClientController extends AbstractController {
+public class LobbyMessage implements Serializable {
 
-    /** The connection. */
-    private final Connection connection;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -8777477139231963446L;
 
-    /** The listener. */
-    private final IGamePanel gamePanel;
+    /** The type. */
+    public LobbyMessageType type;
+
+    /** The player name. */
+    public String playerName;
+
+    /** The player index. */
+    public int playerIndex;
+
+    /** The text. */
+    public String text;
+
+    /** The player names. */
+    public List<String> playerNames;
 
     /**
-     * Instantiates a new client controller.
-     * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * Instantiates a new lobby message.
+     * 
+     * @param typeTmp the type
      */
-    public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
-        connection = connectionTmp;
-        gamePanel = gamePanelTmp;
-    }
-
-    @Override
-    public void close() {
-        connection.close();
-    }
-
-    @Override
-    public synchronized void doCommands(final Region region) {
-        try {
-            connection.writeObject(localCommands);
-
-            @SuppressWarnings("unchecked")
-            List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
-
-            for (AbstractCommand command : commands) {
-                Logger.getInstance().log(this, "Doing command " + command.getClass().getSimpleName());
-                command.updatePlayer(region);
-                command.doCommand();
-            }
-
-            localCommands = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
-            gamePanel.disconnect();
-        }
+    public LobbyMessage(final LobbyMessageType typeTmp) {
+        type = typeTmp;
     }
 }
