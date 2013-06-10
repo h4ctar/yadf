@@ -29,7 +29,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package userinterface.menus.main;
+package userinterface.mainmenu;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,8 +45,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import userinterface.menus.multiplayer.IMainWindow;
 import userinterface.misc.ImagePanel;
+import userinterface.multiplayer.IMainWindow;
 
 /**
  * The Class MainMenuPanel.

@@ -56,11 +56,6 @@ public class Workshop extends AbstractGameObject implements IContainer {
     /** The serial version UID. */
     private static final long serialVersionUID = 6679458068681849511L;
 
-    public static MapIndex getRandomPostition(final MapIndex position) {
-        Random random = MyRandom.getInstance();
-        return position.add(random.nextInt(WORKSHOP_SIZE), random.nextInt(WORKSHOP_SIZE), 0);
-    }
-
     /** The position. */
     private final MapIndex position;
 
@@ -84,7 +79,6 @@ public class Workshop extends AbstractGameObject implements IContainer {
 
     /**
      * Instantiates a new workshop.
-     * 
      * @param workshopTypeTmp the workshop type
      * @param positionTmp the position
      */
@@ -95,7 +89,6 @@ public class Workshop extends AbstractGameObject implements IContainer {
 
     /**
      * Add a listener to changes to the workshop.
-     * 
      * @param listener the listener to add
      */
     public void addListener(final IWorkshopListener listener) {
@@ -103,8 +96,7 @@ public class Workshop extends AbstractGameObject implements IContainer {
     }
 
     /**
-     * Cancel order.
-     * 
+     * Cancel an order.
      * @param orderIndex the order index
      */
     public void cancelOrder(final int orderIndex) {
@@ -116,8 +108,7 @@ public class Workshop extends AbstractGameObject implements IContainer {
     }
 
     /**
-     * Gets the occupied.
-     * 
+     * Gets if the workshop is occupied.
      * @return the occupied
      */
     public boolean getOccupied() {
@@ -126,7 +117,6 @@ public class Workshop extends AbstractGameObject implements IContainer {
 
     /**
      * Gets the orders.
-     * 
      * @return the orders
      */
     public List<Recipe> getOrders() {
@@ -134,12 +124,21 @@ public class Workshop extends AbstractGameObject implements IContainer {
     }
 
     /**
-     * Gets the position.
-     * 
+     * Gets the position of the workshop.
      * @return the position
      */
     public MapIndex getPosition() {
         return position;
+    }
+
+    /**
+     * Gets a random position inside a workshop.
+     * @param position the position of the workshop
+     * @return the random position
+     */
+    public static MapIndex getRandomPostition(final MapIndex position) {
+        Random random = MyRandom.getInstance();
+        return position.add(random.nextInt(WORKSHOP_SIZE), random.nextInt(WORKSHOP_SIZE), 0);
     }
 
     /**
@@ -152,8 +151,7 @@ public class Workshop extends AbstractGameObject implements IContainer {
     }
 
     /**
-     * Gets the type.
-     * 
+     * Gets the type of the workshop.
      * @return the type
      */
     public WorkshopType getType() {
@@ -161,8 +159,7 @@ public class Workshop extends AbstractGameObject implements IContainer {
     }
 
     /**
-     * Checks for index.
-     * 
+     * Checks if a map index is within the workshop.
      * @param index the index
      * @return true, if successful
      */
@@ -176,7 +173,6 @@ public class Workshop extends AbstractGameObject implements IContainer {
 
     /**
      * New order.
-     * 
      * @param recipeName the recipe name
      */
     public void newOrder(final String recipeName) {
@@ -187,7 +183,6 @@ public class Workshop extends AbstractGameObject implements IContainer {
 
     /**
      * Sets if the room is occupied.
-     * 
      * @param occupiedTmp the new occupied
      */
     public void setOccupied(final boolean occupiedTmp) {
@@ -199,7 +194,6 @@ public class Workshop extends AbstractGameObject implements IContainer {
 
     /**
      * Update.
-     * 
      * @param player the player
      */
     public void update(final Player player) {

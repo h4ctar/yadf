@@ -29,42 +29,47 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package userinterface.menus.multiplayer;
+package userinterface.multiplayer.server;
+
+import java.net.Socket;
+
+import userinterface.multiplayer.ILobby;
 
 /**
- * The Interface ILobby.
+ * The lobby server.
  */
-public interface ILobby {
+public interface ILobbyServer extends ILobby {
 
     /**
-     * Close.
-     */
-    void close();
-
-    /**
-     * Inits the.
+     * Adds the new client.
      * 
-     * @param ip the ip
-     * @param port the port
-     * @return true, if successful
+     * @param socket the socket
      */
-    boolean init(String ip, int port);
+    void addNewClient(Socket socket);
 
     /**
-     * Send chat.
+     * Disconnect.
+     */
+    void disconnect();
+
+    /**
+     * Receive chat.
      * 
      * @param playerName the player name
      * @param text the text
      */
-    void sendChat(String playerName, String text);
+    void receiveChat(String playerName, String text);
 
     /**
-     * Start.
+     * Receive start game.
      */
-    void start();
+    void receiveStartGame();
 
     /**
-     * Stop.
+     * Sets the player name.
+     * 
+     * @param playerIndex the player index
+     * @param playerName the player name
      */
-    void stop();
+    void setPlayerName(int playerIndex, String playerName);
 }

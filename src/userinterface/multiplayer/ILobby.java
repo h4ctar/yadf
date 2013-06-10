@@ -29,53 +29,42 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package userinterface.menus.multiplayer;
-
-import java.util.List;
+package userinterface.multiplayer;
 
 /**
- * Interface for the lobby panel.
+ * The Interface ILobby.
  */
-public interface ILobbyPanel {
-    /**
-     * Cancel the game.
-     */
-    void cancel();
+public interface ILobby {
 
     /**
-     * Disconnect.
+     * Close.
      */
-    void disconnect();
+    void close();
 
     /**
-     * Receive chat.
+     * Inits the.
+     * 
+     * @param ip the ip
+     * @param port the port
+     * @return true, if successful
+     */
+    boolean init(String ip, int port);
+
+    /**
+     * Send chat.
      * 
      * @param playerName the player name
      * @param text the text
      */
-    void receiveChat(String playerName, String text);
+    void sendChat(String playerName, String text);
 
     /**
-     * Sets the player index.
-     * 
-     * @param index the new player index
+     * Start.
      */
-    void setPlayerIndex(int index);
+    void start();
 
     /**
-     * Sets the player names.
-     * 
-     * @param playerNames the new player names
+     * Stop.
      */
-    void setPlayerNames(List<String> playerNames);
-
-    /**
-     * Start the game.
-     */
-    void startGame();
-
-    /**
-     * Start the server.
-     */
-    void startServer();
+    void stop();
 }

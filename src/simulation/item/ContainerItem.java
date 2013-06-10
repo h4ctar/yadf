@@ -190,13 +190,11 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
 
         int maxQuantity = 0;
         ItemType maxItemType = null;
-        for (String contentItemCategory : itemType.contentItemCategorys) {
-            for (ItemType thisItemType : ItemTypeManager.getInstance().getItemTypesFromCategory(contentItemCategory)) {
-                int quantity = player.getStockManager().getItemQuantity(thisItemType);
-                if (quantity > maxQuantity) {
-                    maxQuantity = quantity;
-                    maxItemType = thisItemType;
-                }
+        for (String contentItemTypeName : itemType.contentItemTypeNames) {
+            int quantity = player.getStockManager().getItemQuantity(contentItemTypeName);
+            if (quantity > maxQuantity) {
+                maxQuantity = quantity;
+                maxItemType = contentItemType;
             }
         }
         if (maxQuantity > 2) {

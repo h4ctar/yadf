@@ -46,13 +46,13 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import settings.Settings;
 import simulation.map.MapIndex;
 import userinterface.game.GamePanel;
-import userinterface.menus.howtoplay.HowToPlayPanel;
-import userinterface.menus.main.MainMenuPanel;
-import userinterface.menus.multiplayer.IMainWindow;
-import userinterface.menus.multiplayer.LobbyPanel;
-import userinterface.menus.multiplayer.LobbyType;
-import userinterface.menus.singleplayer.SinglePlayerMenuPanel;
+import userinterface.howtoplay.HowToPlayPanel;
+import userinterface.mainmenu.MainMenuPanel;
+import userinterface.multiplayer.IMainWindow;
+import userinterface.multiplayer.LobbyPanel;
+import userinterface.multiplayer.LobbyType;
 import userinterface.server.DedicatedServerPanel;
+import userinterface.singleplayer.SinglePlayerMenuPanel;
 import controller.Connection;
 
 /**

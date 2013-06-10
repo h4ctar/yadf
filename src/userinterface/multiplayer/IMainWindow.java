@@ -29,47 +29,72 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package userinterface.menus.lobby.server;
+package userinterface.multiplayer;
 
-import java.net.Socket;
+import java.util.List;
 
-import userinterface.menus.multiplayer.ILobby;
+import simulation.map.MapIndex;
+import controller.Connection;
 
 /**
- * The lobby server.
+ * Listener to the lobby panel.
  */
-public interface ILobbyServer extends ILobby {
+public interface IMainWindow {
 
     /**
-     * Adds the new client.
-     * 
-     * @param socket the socket
+     * Load single player game.
      */
-    void addNewClient(Socket socket);
+    void loadSinglePlayerGame();
 
     /**
-     * Disconnect.
+     * Quit.
      */
-    void disconnect();
+    void quit();
 
     /**
-     * Receive chat.
-     * 
-     * @param playerName the player name
-     * @param text the text
+     * Setup host multiplayer game.
      */
-    void receiveChat(String playerName, String text);
+    void setupHostMultiplayerGame();
 
     /**
-     * Receive start game.
+     * Setup join multiplayer game.
      */
-    void receiveStartGame();
+    void setupJoinMultiplayerGame();
 
     /**
-     * Sets the player name.
-     * 
+     * Setup main menu.
+     */
+    void setupMainMenu();
+
+    /**
+     * Setup single player game.
+     */
+    void setupSinglePlayerGame();
+
+    /**
+     * Start multiplayer game.
+     * @param connection the connection
+     * @param playerNames the player names
      * @param playerIndex the player index
-     * @param playerName the player name
+     * @param regionSize the region size
      */
-    void setPlayerName(int playerIndex, String playerName);
+    void startMultiplayerGame(Connection connection, List<String> playerNames, int playerIndex, MapIndex regionSize);
+
+    /**
+     * Start server.
+     * @param connections the connections
+     */
+    void startServer(List<Connection> connections);
+
+    /**
+     * Start single player game.
+     * @param playerName the player name
+     * @param regionSize the region size
+     */
+    void startSinglePlayerGame(String playerName, MapIndex regionSize);
+
+    /**
+     * Show the how to play panel.
+     */
+    void showHowToPlay();
 }

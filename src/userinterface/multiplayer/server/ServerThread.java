@@ -29,20 +29,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package userinterface.menus.lobby.client;
+package userinterface.multiplayer.server;
 
 import java.net.Socket;
-
-import controller.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import logger.Logger;
-import userinterface.menus.multiplayer.LobbyMessage;
-import userinterface.menus.multiplayer.LobbyMessageType;
+import userinterface.multiplayer.LobbyMessage;
+import userinterface.multiplayer.LobbyMessageType;
+import controller.Connection;
 
 /**
- * A thread of a client that is listening to messages from the server.
+ * A thread of a server that is listening to one of many clients.
  */
-public class ClientThread implements Runnable {
+public class ServerThread implements Runnable {
 
     /** The connection. */
     private Connection connection;
@@ -54,14 +55,14 @@ public class ClientThread implements Runnable {
     private boolean running;
 
     /** The listener. */
-    private final ILobbyClient lobbyClient;
+    private final ILobbyServer lobbyServer;
 
     /**
-     * Instantiates a new client thread.
-     * @param lobbyClientTmp the lobby client
+     * Instantiates a new server thread.
+     * @param lobbyServerTmp the lobby server
      */
-    public ClientThread(final ILobbyClient lobbyClientTmp) {
-        lobbyClient = lobbyClientTmp;
+    public ServerThread(final ILobbyServer lobbyServerTmp) {
+        lobbyServer = lobbyServerTmp;
     }
 
     /**
@@ -70,6 +71,13 @@ public class ClientThread implements Runnable {
     public void close() {
         Logger.getInstance().log(this, "close()");
         connection.close();
+    }
+
+    /**
+     * Disconnect the server thread.
+     */
+    public void disconnect() {
+        lobbyServer.disconnect();
     }
 
     /**
@@ -82,15 +90,14 @@ public class ClientThread implements Runnable {
 
     /**
      * Inits the.
-     * @param ip the ip
-     * @param port the port
+     * @param socket the socket
      * @return true, if successful
      */
-    public boolean init(final String ip, final int port) {
+    public boolean init(final Socket socket) {
         boolean ok = true;
 
         try {
-            connection = new Connection(new Socket(ip, port));
+            connection = new Connection(socket);
         } catch (Exception e) {
             ok = false;
         }
@@ -105,19 +112,17 @@ public class ClientThread implements Runnable {
                 LobbyMessage message = (LobbyMessage) connection.readObject();
 
                 switch (message.type) {
-                case ALL_PLAYER_NAMES:
-                    lobbyClient.setPlayerNames(message.playerNames);
-                    break;
                 case CHAT:
-                    lobbyClient.receiveChat(message.playerName, message.text);
+                    lobbyServer.receiveChat(message.playerName, message.text);
                     break;
                 case DISCONNECT:
                     break;
-                case START_GAME:
-                    receiveStartGame();
+                case MY_NAME_IS:
+                    receiveMyNameIs(message.playerIndex, message.playerName);
                     break;
-                case THIS_IS_YOUR_INDEX:
-                    receivePlayerIndex(message.playerIndex);
+                case START_GAME:
+                    lobbyServer.receiveStartGame();
+                    running = false;
                     break;
                 default:
                     break;
@@ -126,7 +131,7 @@ public class ClientThread implements Runnable {
         } catch (Exception e) {
             if (running) {
                 e.printStackTrace();
-                lobbyClient.disconnect();
+                lobbyServer.disconnect();
             }
         }
     }
@@ -147,7 +152,43 @@ public class ClientThread implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
             close();
-            lobbyClient.disconnect();
+            lobbyServer.disconnect();
+        }
+    }
+
+    /**
+     * Send player index.
+     * @param playerIndex the player index
+     */
+    public void sendPlayerIndex(final int playerIndex) {
+        Logger.getInstance().log(this, "tellIndex(" + playerIndex + ")");
+        LobbyMessage message = new LobbyMessage(LobbyMessageType.THIS_IS_YOUR_INDEX);
+        message.playerIndex = playerIndex;
+
+        try {
+            connection.writeObject(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            close();
+            lobbyServer.disconnect();
+        }
+    }
+
+    /**
+     * Send player names.
+     * @param playerNames the player names
+     */
+    public void sendPlayerNames(final List<String> playerNames) {
+        Logger.getInstance().log(this, "sendPlayerNames()");
+        LobbyMessage message = new LobbyMessage(LobbyMessageType.ALL_PLAYER_NAMES);
+        message.playerNames = new ArrayList<>(playerNames);
+
+        try {
+            connection.writeObject(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            close();
+            lobbyServer.disconnect();
         }
     }
 
@@ -155,36 +196,16 @@ public class ClientThread implements Runnable {
      * Start.
      */
     public synchronized void start() {
-        Logger.getInstance().log(this, "start()");
         running = true;
-        thread = new Thread(this, "ClientThread");
+        thread = new Thread(this, "ServerThread");
         thread.start();
     }
 
     /**
-     * Stop.
+     * Start game.
      */
-    public synchronized void stop() {
-        Logger.getInstance().log(this, "stop()");
-        running = false;
-    }
-
-    /**
-     * Receive player index.
-     * @param playerIndex the player index
-     */
-    private void receivePlayerIndex(final int playerIndex) {
-        Logger.getInstance().log(this, "receivePlayerIndex(" + playerIndex + ")");
-        lobbyClient.setPlayerIndex(playerIndex);
-    }
-
-    /**
-     * Receive start game.
-     */
-    private void receiveStartGame() {
-        Logger.getInstance().log(this, "receiveStartGame()");
-        lobbyClient.startGame();
-        stop();
+    public void startGame() {
+        Logger.getInstance().log(this, "startGame()");
         LobbyMessage message = new LobbyMessage(LobbyMessageType.START_GAME);
 
         try {
@@ -192,16 +213,32 @@ public class ClientThread implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
             close();
-            lobbyClient.disconnect();
+            lobbyServer.disconnect();
         }
     }
 
     /**
+     * Stop.
+     */
+    public synchronized void stop() {
+        running = false;
+    }
+
+    /**
+     * Receive my name is.
+     * @param playerIndex the player index
+     * @param playerName the player name
+     */
+    private void receiveMyNameIs(final int playerIndex, final String playerName) {
+        Logger.getInstance().log(this, "receiveMyNameIs(" + playerIndex + ", " + playerName + ")");
+        lobbyServer.setPlayerName(playerIndex, playerName);
+    }
+
+    /**
      * Running.
-     * 
      * @return true, if successful
      */
-    private synchronized boolean running() {
+    private boolean running() {
         return running;
     }
 }

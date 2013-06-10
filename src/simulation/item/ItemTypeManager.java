@@ -73,10 +73,10 @@ public final class ItemTypeManager {
     }
 
     /** The item types. */
-    private final Map<String, Map<String, ItemType>> itemTypes = new HashMap<>();
+    private Map<String, Map<String, ItemType>> itemTypes = new HashMap<>();
 
     /** The embark items. */
-    private final List<Item> embarkItems = new ArrayList<>();
+    private List<Item> embarkItems = new ArrayList<>();
 
     /**
      * Instantiates a new item type manager.
@@ -118,7 +118,7 @@ public final class ItemTypeManager {
                 return category.get(itemTypeName);
             }
         }
-        Logger.getInstance().log(null, "Item type does not exist: " + itemTypeName);
+        Logger.getInstance().log(null, "Item type does not exis - itemTypeName: " + itemTypeName, true);
         return null;
     }
 
@@ -157,47 +157,31 @@ public final class ItemTypeManager {
     }
 
     /**
-     * Load.
+     * Loads the item types and embark items.
      * @throws Exception the exception
      */
     public void load() throws Exception {
-        loadItemTypes();
-        loadEmbarkItems();
-    }
-
-    /**
-     * Load all the embark item configuration from the embark_items.xml.
-     * @throws Exception something went wrong
-     */
-    private void loadEmbarkItems() throws Exception {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("embark_items.xml");
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("item_types.xml");
         Document document = documentBuilder.parse(inputStream);
         Element root = document.getDocumentElement();
-        NodeList itemNodes = root.getElementsByTagName("item");
-        for (int i = 0; i < itemNodes.getLength(); i++) {
-            Node itemNode = itemNodes.item(i);
-            Element itemElement = (Element) itemNode;
-            String tempString = itemElement.getAttribute("quantity");
-            int quantity = "".equals(tempString) ? 1 : Integer.parseInt(tempString);
-            for (int j = 0; j < quantity; j++) {
-                Item item = createItem(itemElement);
-                embarkItems.add(item);
-            }
-        }
+        loadItemTypes(root);
+
+        inputStream = getClass().getClassLoader().getResourceAsStream("embark_items.xml");
+        document = documentBuilder.parse(inputStream);
+        root = document.getDocumentElement();
+        loadEmbarkItems(root);
     }
 
     /**
      * Load all the item types from the item_types.xml.
+     * @param root
      * @throws Exception something went wrong
      */
-    private void loadItemTypes() throws Exception {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("item_types.xml");
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse(inputStream);
-        NodeList categoryNodes = document.getElementsByTagName("category");
+    public void loadItemTypes(final Element root) throws Exception {
+        NodeList categoryNodes = root.getElementsByTagName("category");
         for (int i = 0; i < categoryNodes.getLength(); i++) {
             Node categoryeNode = categoryNodes.item(i);
             Element categoryElement = (Element) categoryeNode;
@@ -212,6 +196,30 @@ public final class ItemTypeManager {
                 categories.put(itemType.name, itemType);
             }
         }
+    }
+
+    /**
+     * Load all the embark item configuration from the embark_items.xml.
+     * @param root
+     * @throws Exception something went wrong
+     */
+    public void loadEmbarkItems(final Element root) throws Exception {
+        NodeList itemNodes = root.getElementsByTagName("item");
+        for (int i = 0; i < itemNodes.getLength(); i++) {
+            Node itemNode = itemNodes.item(i);
+            Element itemElement = (Element) itemNode;
+            String tempString = itemElement.getAttribute("quantity");
+            int quantity = "".equals(tempString) ? 1 : Integer.parseInt(tempString);
+            for (int j = 0; j < quantity; j++) {
+                Item item = createItem(itemElement);
+                embarkItems.add(item);
+            }
+        }
+    }
+
+    public void unload() {
+        itemTypes = new HashMap<>();
+        embarkItems = new ArrayList<>();
     }
 
     /**
@@ -255,7 +263,7 @@ public final class ItemTypeManager {
      * @param player the player that the new item will belong to
      * @return the new item
      */
-    private Item createItem(final Item item, final Player player) {
+    public Item createItem(final Item item, final Player player) {
         Item newItem;
         if (item.itemType.capacity > 0) {
             newItem = new ContainerItem((ContainerItem) item, player);

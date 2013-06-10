@@ -29,7 +29,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package userinterface.menus.multiplayer;
+package userinterface.multiplayer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -56,9 +56,9 @@ import javax.swing.SwingConstants;
 import logger.Logger;
 import misc.Utility;
 import simulation.map.MapIndex;
-import userinterface.menus.lobby.client.LobbyClient;
-import userinterface.menus.lobby.server.LobbyServer;
 import userinterface.misc.ImagePanel;
+import userinterface.multiplayer.client.LobbyClient;
+import userinterface.multiplayer.server.LobbyServer;
 import controller.Connection;
 
 /**

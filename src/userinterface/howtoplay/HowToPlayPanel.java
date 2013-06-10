@@ -1,4 +1,4 @@
-package userinterface.menus.howtoplay;
+package userinterface.howtoplay;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,8 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-import userinterface.menus.multiplayer.IMainWindow;
 import userinterface.misc.ImagePanel;
+import userinterface.multiplayer.IMainWindow;
 
 /**
  * A panel that describes how to play the game.

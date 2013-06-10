@@ -123,7 +123,7 @@ public class StockTreeTableModel extends AbstractTreeTableModel implements IStoc
             case 0:
                 return stockNode.toString();
             case 1:
-                return Integer.valueOf(stockManager.getItemCount(stockNode.toString()));
+                return Integer.valueOf(stockManager.getItemQuantity(stockNode.toString()));
             default:
                 return null;
             }

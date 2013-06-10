@@ -61,8 +61,8 @@ public class ItemType implements Serializable {
     /** How many content items this item can hold if it's a container, 0 if it's not a container. */
     public final int capacity;
 
-    /** The category of item that this item can store if it's a container. */
-    public final String[] contentItemCategorys;
+    /** The types of items that can be stored if it's a container. */
+    public final String[] contentItemTypeNames;
 
     /**
      * Instantiates a new item type.
@@ -79,7 +79,8 @@ public class ItemType implements Serializable {
         placeable = Boolean.parseBoolean(itemTypeElement.getAttribute("placeable"));
         tempString = itemTypeElement.getAttribute("capacity");
         capacity = "".equals(tempString) ? 0 : Integer.parseInt(tempString);
-        contentItemCategorys = itemTypeElement.getAttribute("contentCategory").split(",");
+        tempString = itemTypeElement.getAttribute("contentCategory");
+        contentItemTypeNames = tempString == "" ? null : tempString.split(",");
     }
 
     @Override

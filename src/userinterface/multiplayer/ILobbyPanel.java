@@ -29,16 +29,18 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package userinterface.menus.lobby.client;
+package userinterface.multiplayer;
 
 import java.util.List;
 
-import userinterface.menus.multiplayer.ILobby;
-
 /**
- * The lobby client.
+ * Interface for the lobby panel.
  */
-public interface ILobbyClient extends ILobby {
+public interface ILobbyPanel {
+    /**
+     * Cancel the game.
+     */
+    void cancel();
 
     /**
      * Disconnect.
@@ -68,7 +70,12 @@ public interface ILobbyClient extends ILobby {
     void setPlayerNames(List<String> playerNames);
 
     /**
-     * Start game.
+     * Start the game.
      */
     void startGame();
+
+    /**
+     * Start the server.
+     */
+    void startServer();
 }

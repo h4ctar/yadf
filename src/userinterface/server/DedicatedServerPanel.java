@@ -41,7 +41,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import logger.Logger;
-import userinterface.menus.multiplayer.IMainWindow;
+import userinterface.multiplayer.IMainWindow;
 import controller.Connection;
 import controller.command.AbstractCommand;
 

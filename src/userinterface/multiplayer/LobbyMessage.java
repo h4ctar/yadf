@@ -29,14 +29,40 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package userinterface.menus.multiplayer;
+package userinterface.multiplayer;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * The Enum LobbyType.
+ * The Class LobbyMessage.
  */
-public enum LobbyType {
-    /** The client. */
-    CLIENT,
-    /** The server. */
-    SERVER
+public class LobbyMessage implements Serializable {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -8777477139231963446L;
+
+    /** The type. */
+    public LobbyMessageType type;
+
+    /** The player name. */
+    public String playerName;
+
+    /** The player index. */
+    public int playerIndex;
+
+    /** The text. */
+    public String text;
+
+    /** The player names. */
+    public List<String> playerNames;
+
+    /**
+     * Instantiates a new lobby message.
+     * 
+     * @param typeTmp the type
+     */
+    public LobbyMessage(final LobbyMessageType typeTmp) {
+        type = typeTmp;
+    }
 }

@@ -29,72 +29,46 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package userinterface.menus.multiplayer;
+package userinterface.multiplayer.client;
 
 import java.util.List;
 
-import simulation.map.MapIndex;
-import controller.Connection;
+import userinterface.multiplayer.ILobby;
 
 /**
- * Listener to the lobby panel.
+ * The lobby client.
  */
-public interface IMainWindow {
+public interface ILobbyClient extends ILobby {
 
     /**
-     * Load single player game.
+     * Disconnect.
      */
-    void loadSinglePlayerGame();
+    void disconnect();
 
     /**
-     * Quit.
-     */
-    void quit();
-
-    /**
-     * Setup host multiplayer game.
-     */
-    void setupHostMultiplayerGame();
-
-    /**
-     * Setup join multiplayer game.
-     */
-    void setupJoinMultiplayerGame();
-
-    /**
-     * Setup main menu.
-     */
-    void setupMainMenu();
-
-    /**
-     * Setup single player game.
-     */
-    void setupSinglePlayerGame();
-
-    /**
-     * Start multiplayer game.
-     * @param connection the connection
-     * @param playerNames the player names
-     * @param playerIndex the player index
-     * @param regionSize the region size
-     */
-    void startMultiplayerGame(Connection connection, List<String> playerNames, int playerIndex, MapIndex regionSize);
-
-    /**
-     * Start server.
-     * @param connections the connections
-     */
-    void startServer(List<Connection> connections);
-
-    /**
-     * Start single player game.
+     * Receive chat.
+     * 
      * @param playerName the player name
-     * @param regionSize the region size
+     * @param text the text
      */
-    void startSinglePlayerGame(String playerName, MapIndex regionSize);
+    void receiveChat(String playerName, String text);
 
     /**
-     * Show the how to play panel.
+     * Sets the player index.
+     * 
+     * @param index the new player index
      */
-    void showHowToPlay();
+    void setPlayerIndex(int index);
+
+    /**
+     * Sets the player names.
+     * 
+     * @param playerNames the new player names
+     */
+    void setPlayerNames(List<String> playerNames);
+
+    /**
+     * Start game.
+     */
+    void startGame();
 }

@@ -107,7 +107,7 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
      * @param category the category
      * @return the number of items in the category
      */
-    public int getItemCount(final String category) {
+    public int getItemQuantity(final String category) {
         int count = 0;
         for (Item item : items) {
             if (item.getType().category.equals(category)) {
