@@ -31,11 +31,17 @@
  */
 package simulation.job;
 
+import java.util.List;
+import java.util.Set;
+
 import logger.Logger;
 import simulation.Player;
 import simulation.Region;
-import simulation.character.GameCharacter;
+import simulation.character.Dwarf;
+import simulation.character.component.WalkMoveComponent;
 import simulation.item.Item;
+import simulation.map.MapIndex;
+import simulation.room.Room;
 
 /**
  * The Class EatDrinkJob.
@@ -56,7 +62,7 @@ public class EatDrinkJob extends AbstractJob {
         /** The haul. */
         HAUL,
         /** The consume. */
-        CONSUME
+        CONSUME, WALK_TO_CHAIR
     }
 
     /** The state of this job. */
@@ -74,8 +80,8 @@ public class EatDrinkJob extends AbstractJob {
     /** True if the job is to eat, false if the job is to drink. */
     private final boolean eat;
 
-    /** The character that ordered this job. */
-    private final GameCharacter character;
+    /** The dwarf doing this job. */
+    private final Dwarf dwarf;
 
     /** Is this job done. */
     private boolean done = false;
@@ -83,15 +89,22 @@ public class EatDrinkJob extends AbstractJob {
     /** The food item. */
     private Item foodItem;
 
+    private Item chair;
+
+    private Item table;
+
+    /** The walk component. */
+    private WalkMoveComponent walkComponent;
+
     /**
      * Instantiates a new eat drink job.
-     * @param characterTmp the character
+     * @param dwarfTmp the dwarf
      * @param eatTmp the eat
      */
-    public EatDrinkJob(final GameCharacter characterTmp, final boolean eatTmp) {
+    public EatDrinkJob(final Dwarf dwarfTmp, final boolean eatTmp) {
         Logger.getInstance().log(this, "New eat drink job");
         eat = eatTmp;
-        character = characterTmp;
+        dwarf = dwarfTmp;
     }
 
     @Override
@@ -125,7 +138,7 @@ public class EatDrinkJob extends AbstractJob {
             wasteTimeJob.interrupt("Eat/drink job was interrupted");
         }
 
-        character.releaseLock();
+        dwarf.releaseLock();
 
         done = true;
     }
@@ -172,10 +185,42 @@ public class EatDrinkJob extends AbstractJob {
             break;
 
         case WAITING_FOR_DWARF:
-            if (character.acquireLock()) {
-                // TODO: this should find the position of a table and chair.
-                haulJob = new HaulJob(character, foodItem, player.getStockManager(), foodItem.getPosition());
-                state = State.HAUL;
+            if (dwarf.acquireLock()) {
+                List<Room> rooms = player.getRooms();
+                for (Room room : rooms) {
+                    if (room.getType().equals("Dining room")) {
+                        Set<Item> tables = room.getUnusedItems("Table");
+                        Set<Item> chairs = room.getUnusedItems("Chair");
+                        for (Item tableTmp : tables) {
+                            for (Item chairTmp : chairs) {
+                                MapIndex chairPos = chairTmp.getPosition();
+                                MapIndex tablePos = tableTmp.getPosition();
+                                if ((chairPos.x == tablePos.x && (chairPos.y == tablePos.y - 1 || chairPos.y == tablePos.y + 1))
+                                        || (chairPos.y == tablePos.y && (chairPos.x == tablePos.x - 1 || chairPos.x == tablePos.x + 1))) {
+                                    chair = chairTmp;
+                                    table = tableTmp;
+                                    chair.setUsed(true);
+                                    table.setUsed(true);
+                                    break;
+                                }
+                            }
+                            if (table != null) {
+                                break;
+                            }
+                        }
+                    }
+                    if (table != null) {
+                        break;
+                    }
+                }
+                if (table != null) {
+                    haulJob = new HaulJob(dwarf, foodItem, player.getStockManager(), table.getPosition());
+                    state = State.HAUL;
+                } else {
+                    // TODO: haul to random location, and become sad or eat under a tree, become less sad
+                    wasteTimeJob = new WasteTimeJob(dwarf, DURATION);
+                    state = State.CONSUME;
+                }
             }
             break;
 
@@ -183,7 +228,18 @@ public class EatDrinkJob extends AbstractJob {
             haulJob.update(player, region);
 
             if (haulJob.isDone()) {
-                wasteTimeJob = new WasteTimeJob(character, DURATION);
+                walkComponent = dwarf.walkToPosition(chair.getPosition(), false);
+                state = State.WALK_TO_CHAIR;
+            }
+            break;
+
+        case WALK_TO_CHAIR:
+            if (walkComponent.isNoPath()) {
+                interrupt("No path to item");
+                return;
+            }
+            if (walkComponent.isArrived()) {
+                wasteTimeJob = new WasteTimeJob(dwarf, DURATION);
                 state = State.CONSUME;
             }
             break;
@@ -194,12 +250,20 @@ public class EatDrinkJob extends AbstractJob {
             if (wasteTimeJob.isDone()) {
                 foodItem.setRemove();
 
-                character.releaseLock();
+                dwarf.releaseLock();
 
                 if (eat) {
-                    character.getEatDrink().eat();
+                    dwarf.getEatDrink().eat();
                 } else {
-                    character.getEatDrink().drink();
+                    dwarf.getEatDrink().drink();
+                }
+
+                if (chair != null) {
+                    chair.setUsed(false);
+                }
+
+                if (table != null) {
+                    table.setUsed(false);
                 }
 
                 done = true;

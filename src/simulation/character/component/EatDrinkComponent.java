@@ -33,6 +33,7 @@ package simulation.character.component;
 
 import simulation.Player;
 import simulation.Region;
+import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
 import simulation.job.EatDrinkJob;
 
@@ -124,12 +125,12 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
         thirst++;
 
         if (hunger > HUNGER_EAT_THRESHOLD && eatJob == null) {
-            eatJob = new EatDrinkJob(character, true);
+            eatJob = new EatDrinkJob((Dwarf) character, true);
             player.getJobManager().addJob(eatJob);
         }
 
         if (thirst > THIRST_DRINK_THRESHOLD && drinkJob == null) {
-            drinkJob = new EatDrinkJob(character, false);
+            drinkJob = new EatDrinkJob((Dwarf) character, false);
             player.getJobManager().addJob(drinkJob);
         }
 

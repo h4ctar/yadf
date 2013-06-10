@@ -32,7 +32,9 @@
 package simulation.room;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import simulation.AbstractGameObject;
 import simulation.item.Item;
@@ -124,5 +126,15 @@ public class Room extends AbstractGameObject {
             return true;
         }
         return false;
+    }
+
+    public Set<Item> getUnusedItems(String itemTypeName) {
+        Set<Item> foundItems = new HashSet<>();
+        for (Item item : items) {
+            if (item.getType().equals(itemTypeName) && !item.isUsed()) {
+                foundItems.add(item);
+            }
+        }
+        return foundItems;
     }
 }
