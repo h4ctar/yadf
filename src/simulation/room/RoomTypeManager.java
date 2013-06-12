@@ -34,7 +34,7 @@ package simulation.room;
 /**
  * The Class RoomTypeManager.
  */
-public class RoomTypeManager {
+public final class RoomTypeManager {
 
     /** The instance. */
     private static RoomTypeManager instance;
@@ -52,7 +52,7 @@ public class RoomTypeManager {
     }
 
     /** The room types. */
-    private final String[] roomTypes = { "Bedroom", "Dining room" };
+    private final String[] roomTypes = { "Bedroom", "Dining room", "Dormitory" };
 
     /**
      * Instantiates a new room type manager.

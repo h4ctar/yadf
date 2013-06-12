@@ -189,7 +189,8 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             region = (Region) objectInputStream.readObject();
             objectInputStream.close();
 
-            player = region.getPlayers().get(0);
+            // TODO: Which player, perhaps dialog
+            player = region.getPlayers().toArray(new Player[0])[0];
             controller = new SinglePlayerController();
 
             worldPane.setup(region, player, controller);

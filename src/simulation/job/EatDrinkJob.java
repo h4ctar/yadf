@@ -31,7 +31,6 @@
  */
 package simulation.job;
 
-import java.util.List;
 import java.util.Set;
 
 import logger.Logger;
@@ -69,7 +68,7 @@ public class EatDrinkJob extends AbstractJob {
     private State state = State.LOOK_FOR_FOOD;
 
     /** The haul job. */
-    private HaulJob haulJob = null;
+    private HaulJob haulJob;
 
     /** Reference to the waste time job. */
     private WasteTimeJob wasteTimeJob;
@@ -89,8 +88,10 @@ public class EatDrinkJob extends AbstractJob {
     /** The food item. */
     private Item foodItem;
 
+    /** The chair the dwarf will sit at while eating. */
     private Item chair;
 
+    /** The table the dwarf will eat at. */
     private Item table;
 
     /** The walk component. */
@@ -186,7 +187,7 @@ public class EatDrinkJob extends AbstractJob {
 
         case WAITING_FOR_DWARF:
             if (dwarf.acquireLock()) {
-                List<Room> rooms = player.getRooms();
+                Set<Room> rooms = player.getRooms();
                 for (Room room : rooms) {
                     if (room.getType().equals("Dining room")) {
                         Set<Item> tables = room.getUnusedItems("Table");
@@ -195,12 +196,15 @@ public class EatDrinkJob extends AbstractJob {
                             for (Item chairTmp : chairs) {
                                 MapIndex chairPos = chairTmp.getPosition();
                                 MapIndex tablePos = tableTmp.getPosition();
-                                if ((chairPos.x == tablePos.x && (chairPos.y == tablePos.y - 1 || chairPos.y == tablePos.y + 1))
-                                        || (chairPos.y == tablePos.y && (chairPos.x == tablePos.x - 1 || chairPos.x == tablePos.x + 1))) {
+                                boolean horizontal = chairPos.x == tablePos.x
+                                        && (chairPos.y == tablePos.y - 1 || chairPos.y == tablePos.y + 1);
+                                boolean vertical = chairPos.x == tablePos.x && chairPos.y == tablePos.y
+                                        && (chairPos.x == tablePos.x - 1 || chairPos.x == tablePos.x + 1);
+                                if (horizontal || vertical) {
                                     chair = chairTmp;
                                     table = tableTmp;
                                     chair.setUsed(true);
-                                    table.setUsed(true);
+                                    // They can share the table
                                     break;
                                 }
                             }
@@ -260,10 +264,6 @@ public class EatDrinkJob extends AbstractJob {
 
                 if (chair != null) {
                     chair.setUsed(false);
-                }
-
-                if (table != null) {
-                    table.setUsed(false);
                 }
 
                 done = true;

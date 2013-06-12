@@ -33,6 +33,7 @@ package userinterface.game.labor;
 
 import java.awt.BorderLayout;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -62,6 +63,7 @@ public class LaborsPane extends JPanel {
      */
     public LaborsPane() {
         super(new BorderLayout());
+        setOpaque(false);
 
         laboursScrollPane = new JScrollPane();
         add(laboursScrollPane, BorderLayout.CENTER);
@@ -70,6 +72,13 @@ public class LaborsPane extends JPanel {
         laborsTable.setDefaultRenderer(LaborNode.class, new LaborRenderer());
         laborsTable.setDefaultEditor(LaborNode.class, new LaborEditor());
         laboursScrollPane.setViewportView(laborsTable);
+
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        add(panel, BorderLayout.SOUTH);
+
+        JButton zoomButton = new JButton("Zoom to dwarf");
+        panel.add(zoomButton);
     }
 
     /**

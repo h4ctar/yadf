@@ -33,6 +33,7 @@ package userinterface.game.job;
 
 import java.awt.BorderLayout;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -61,12 +62,23 @@ public class JobsPane extends JPanel {
      */
     public JobsPane() {
         super(new BorderLayout());
+        setOpaque(false);
 
         jobsScrollPane = new JScrollPane();
         add(jobsScrollPane, BorderLayout.CENTER);
 
         jobsTable = new JTable();
         jobsScrollPane.setViewportView(jobsTable);
+
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        add(panel, BorderLayout.SOUTH);
+
+        JButton cancelJobButton = new JButton("Cancel job");
+        panel.add(cancelJobButton);
+
+        JButton zoomToJobButton = new JButton("Zoom to job");
+        panel.add(zoomToJobButton);
     }
 
     /**

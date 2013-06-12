@@ -119,20 +119,20 @@ public class ItemTypeManagerTest {
         // From element
         Item item = ItemTypeManager.getInstance().createItem(root);
         assertEquals("Item position should be 0", new MapIndex(), item.getPosition());
-        assertEquals("Item type should be Bread", "Bread", item.getType());
+        assertEquals("Item type should be Bread", "Bread", item.getType().name);
 
         // From item type
         MapIndex position = new MapIndex(1, 2, 3);
         item = ItemTypeManager.getInstance().createItem(position, ItemTypeManager.getInstance().getItemType("Bread"),
                 null);
         assertEquals("Item position should be position", position, item.getPosition());
-        assertEquals("Item type should be Bread", "Bread", item.getType());
+        assertEquals("Item type should be Bread", "Bread", item.getType().name);
 
         // From another item
         Item itemFrom = new Item(position, ItemTypeManager.getInstance().getItemType("Bread"), null);
         item = ItemTypeManager.getInstance().createItem(itemFrom, null);
         assertEquals("Item position should be position", position, item.getPosition());
-        assertEquals("Item type should be Bread", "Bread", item.getType());
+        assertEquals("Item type should be Bread", "Bread", item.getType().name);
         assertTrue("Item should not be the same", itemFrom != item);
     }
 }

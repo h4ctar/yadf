@@ -121,8 +121,8 @@ public class Room extends AbstractGameObject {
      * @return true, if successful
      */
     public boolean hasIndex(final MapIndex index) {
-        if (index.x >= area.pos.x && index.x <= area.pos.x + area.width && index.y >= area.pos.y
-                && index.y <= area.pos.y + area.height && area.pos.z == index.z) {
+        if (index.x >= area.pos.x && index.x <= area.pos.x + area.width - 1 && index.y >= area.pos.y
+                && index.y <= area.pos.y + area.height - 1 && area.pos.z == index.z) {
             return true;
         }
         return false;
@@ -136,5 +136,14 @@ public class Room extends AbstractGameObject {
             }
         }
         return foundItems;
+    }
+
+    public Item getUnusedItem(String itemTypeName) {
+        for (Item item : items) {
+            if (item.getType().equals(itemTypeName) && !item.isUsed()) {
+                return item;
+            }
+        }
+        return null;
     }
 }

@@ -31,10 +31,11 @@
  */
 package simulation;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
 import misc.MyRandom;
@@ -69,22 +70,22 @@ public class Player extends AbstractGameObject {
     private final StockManager stockManager = new StockManager();
 
     /** The dwarfs. */
-    private final List<Dwarf> dwarfs = new CopyOnWriteArrayList<>();
+    private final Set<Dwarf> dwarfs = new CopyOnWriteArraySet<>();
 
     /** The rooms. */
-    private final List<Room> rooms = new CopyOnWriteArrayList<>();
+    private final Set<Room> rooms = new CopyOnWriteArraySet<>();
 
     /** The workshops. */
-    private final List<Workshop> workshops = new CopyOnWriteArrayList<>();
+    private final Set<Workshop> workshops = new CopyOnWriteArraySet<>();
 
     /** The farms. */
-    private final List<Farm> farms = new CopyOnWriteArrayList<>();
+    private final Set<Farm> farms = new CopyOnWriteArraySet<>();
 
     /** The name generator. */
     private NameGenerator nameGenerator;
 
     /** All the listeners to this player. */
-    private final List<IPlayerListener> listeners = new ArrayList<>();
+    private final Set<IPlayerListener> listeners = new HashSet<>();
 
     /** The size of the embark area. */
     private static final int EMBARK_SIZE = 10;
@@ -169,8 +170,7 @@ public class Player extends AbstractGameObject {
     }
 
     /**
-     * Gets the dwarf.
-     * 
+     * Gets the dwarf at a specific position.
      * @param position the position
      * @return the dwarf
      */
@@ -185,26 +185,23 @@ public class Player extends AbstractGameObject {
     }
 
     /**
-     * Gets the dwarfs.
-     * 
+     * Gets all the dwarfs.
      * @return the dwarfs
      */
-    public List<Dwarf> getDwarfs() {
+    public Set<Dwarf> getDwarfs() {
         return dwarfs;
     }
 
     /**
-     * Gets the farms.
-     * 
+     * Gets all the farms.
      * @return the farms
      */
-    public List<Farm> getFarms() {
+    public Set<Farm> getFarms() {
         return farms;
     }
 
     /**
      * Also acquires a lock on the dwarf.
-     * 
      * @param requiredLabor the required labor
      * @return the idle dwarf
      */
@@ -225,7 +222,6 @@ public class Player extends AbstractGameObject {
 
     /**
      * Gets the job manager.
-     * 
      * @return the job manager
      */
     public JobManager getJobManager() {
@@ -234,7 +230,6 @@ public class Player extends AbstractGameObject {
 
     /**
      * Gets the name of the player.
-     * 
      * @return the name of the player
      */
     public String getName() {
@@ -243,7 +238,6 @@ public class Player extends AbstractGameObject {
 
     /**
      * Gets the room.
-     * 
      * @param roomId the room id
      * @return the room
      */
@@ -259,7 +253,6 @@ public class Player extends AbstractGameObject {
 
     /**
      * Gets the room.
-     * 
      * @param index the index
      * @return the room
      */
@@ -275,16 +268,14 @@ public class Player extends AbstractGameObject {
 
     /**
      * Gets the rooms.
-     * 
      * @return the rooms
      */
-    public List<Room> getRooms() {
+    public Set<Room> getRooms() {
         return rooms;
     }
 
     /**
      * Gets the stock manager.
-     * 
      * @return the stock manager
      */
     public StockManager getStockManager() {
@@ -293,7 +284,6 @@ public class Player extends AbstractGameObject {
 
     /**
      * Gets the workshop.
-     * 
      * @param workshopId the workshop id
      * @return the workshop
      */
@@ -309,7 +299,6 @@ public class Player extends AbstractGameObject {
 
     /**
      * Get a workshop at a specific index.
-     * 
      * @param index the index to look for a workshop
      * @return the workshop
      */
@@ -324,16 +313,14 @@ public class Player extends AbstractGameObject {
 
     /**
      * Gets the workshops.
-     * 
      * @return the workshops
      */
-    public List<Workshop> getWorkshops() {
+    public Set<Workshop> getWorkshops() {
         return workshops;
     }
 
     /**
      * Setup.
-     * 
      * @param embarkPosition the embark position
      * @param numberOfStartingDwarfs the number of starting dwarfs
      * @param map the map to embark on
@@ -346,7 +333,6 @@ public class Player extends AbstractGameObject {
 
     /**
      * Update.
-     * 
      * @param region the region
      */
     public void update(final Region region) {
@@ -356,30 +342,26 @@ public class Player extends AbstractGameObject {
         for (Dwarf dwarf : dwarfs) {
             dwarf.update(this, region);
         }
-
         for (Farm farm : farms) {
             farm.update(this);
         }
-
         for (Workshop workshop : workshops) {
             workshop.update(this);
         }
 
-        // remove dwarfs
-        for (int i = 0; i < dwarfs.size(); i++) {
-            if (dwarfs.get(i).getRemove()) {
-                Dwarf dwarf = dwarfs.remove(i);
-                notifyListeners(dwarf, false);
-                i--;
+        for (Dwarf dwarf : dwarfs.toArray(new Dwarf[0])) {
+            if (dwarf.getRemove()) {
+                dwarfs.remove(dwarf);
             }
         }
-
-        // remove rooms
-        for (int i = 0; i < rooms.size(); i++) {
-            if (rooms.get(i).getRemove()) {
-                Room room = rooms.remove(i);
-                notifyListeners(room, false);
-                i--;
+        for (Room room : rooms.toArray(new Room[0])) {
+            if (room.getRemove()) {
+                rooms.remove(room);
+            }
+        }
+        for (Workshop workshop : workshops.toArray(new Workshop[0])) {
+            if (workshop.getRemove()) {
+                workshops.remove(workshop);
             }
         }
     }

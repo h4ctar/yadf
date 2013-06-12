@@ -32,9 +32,9 @@
 package simulation.stock;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
@@ -55,13 +55,13 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
     private static final long serialVersionUID = 2947690954735554619L;
 
     /** The stockpiles owned by this stock manager. */
-    private final List<Stockpile> stockpiles = new ArrayList<>();
+    private final Set<Stockpile> stockpiles = new HashSet<>();
 
     /** All the items looked after by this stock manager. */
-    private final List<Item> items = new CopyOnWriteArrayList<>();
+    private final Set<Item> items = new HashSet<>();
 
     /** Listeners to this stock manager. */
-    private final List<IStockManagerListener> listeners = new ArrayList<>();
+    private final Set<IStockManagerListener> listeners = new HashSet<>();
 
     @Override
     public boolean addItem(final Item item) {
@@ -121,7 +121,7 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
      * Gets all the unstored items.
      * @return A list of references to all the unstored items
      */
-    public List<Item> getItems() {
+    public Set<Item> getItems() {
         return items;
     }
 
@@ -160,7 +160,7 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
      * @param index the map position
      * @return the item, null if no item found
      */
-    public Item getItem(MapIndex index) {
+    public Item getItem(final MapIndex index) {
         for (Item item : items) {
             if (index.equals(item.getPosition())) {
                 return item;
@@ -179,7 +179,7 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
      * Gets references to all the stockpiles.
      * @return A vector of references to all the stockpiles
      */
-    public List<Stockpile> getStockpiles() {
+    public Set<Stockpile> getStockpiles() {
         return stockpiles;
     }
 
@@ -295,19 +295,14 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
      * @param player the player
      */
     public void update(final Player player) {
-        // delete the stockpiles that need to be removed
-        for (int i = 0; i < stockpiles.size(); i++) {
-            if (stockpiles.get(i).getRemove()) {
-                stockpiles.get(i).remove();
-                stockpiles.remove(i);
-                i--;
+        for (Stockpile stockpile : stockpiles.toArray(new Stockpile[0])) {
+            if (stockpile.getRemove()) {
+                stockpiles.remove(stockpile);
             }
         }
-        // delete the items that need to be removed
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getRemove()) {
-                items.remove(i);
-                i--;
+        for (Item item : items.toArray(new Item[0])) {
+            if (item.getRemove()) {
+                items.remove(item);
             }
         }
     }

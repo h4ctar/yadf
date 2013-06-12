@@ -32,10 +32,9 @@
 package simulation;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
 
 import logger.Logger;
 import misc.MyRandom;
@@ -97,16 +96,16 @@ public class Region implements Serializable {
     private final RegionMap map = new RegionMap();
 
     /** A vector of the trees on the map. */
-    private final List<Tree> trees = new CopyOnWriteArrayList<>();
+    private final Set<Tree> trees = new HashSet<>();
 
     /** The animals. */
-    private final List<Animal> animals = new ArrayList<>();
+    private final Set<Animal> animals = new HashSet<>();
 
     /** The goblins. */
-    private final List<Goblin> goblins = new ArrayList<>();
+    private final Set<Goblin> goblins = new HashSet<>();
 
     /** A vector of all the players in this region. */
-    private final List<Player> players = new ArrayList<>();
+    private final Set<Player> players = new HashSet<>();
 
     /** The time. */
     private long time;
@@ -235,7 +234,7 @@ public class Region implements Serializable {
      * Gets the animals.
      * @return the animals
      */
-    public List<Animal> getAnimals() {
+    public Set<Animal> getAnimals() {
         return animals;
     }
 
@@ -250,7 +249,7 @@ public class Region implements Serializable {
         Dwarf minDwarf = null;
 
         for (Player player : players) {
-            List<Dwarf> dwarfs = player.getDwarfs();
+            Set<Dwarf> dwarfs = player.getDwarfs();
             for (Dwarf dwarf : dwarfs) {
                 if (!dwarf.isDead()) {
                     int distance = dwarf.getPosition().distance(position);
@@ -289,7 +288,7 @@ public class Region implements Serializable {
      */
     public GameCharacter getGameCharacter(final MapIndex position) {
         for (Player player : players) {
-            List<Dwarf> dwarfs = player.getDwarfs();
+            Set<Dwarf> dwarfs = player.getDwarfs();
             for (Dwarf dwarf : dwarfs) {
                 if (dwarf.getPosition().equals(position)) {
                     return dwarf;
@@ -308,7 +307,7 @@ public class Region implements Serializable {
      * Gets the goblins.
      * @return the goblins
      */
-    public List<Goblin> getGoblins() {
+    public Set<Goblin> getGoblins() {
         return goblins;
     }
 
@@ -354,7 +353,7 @@ public class Region implements Serializable {
      * Gets all the players.
      * @return the players
      */
-    public List<Player> getPlayers() {
+    public Set<Player> getPlayers() {
         return players;
     }
 
@@ -408,7 +407,7 @@ public class Region implements Serializable {
      * Gets all the trees.
      * @return the trees
      */
-    public List<Tree> getTrees() {
+    public Set<Tree> getTrees() {
         return trees;
     }
 
@@ -428,13 +427,6 @@ public class Region implements Serializable {
      */
     public void update() {
         time++;
-        // delete the trees that have been marked for deletion
-        for (int i = 0; i < trees.size(); i++) {
-            if (trees.get(i).getRemove()) {
-                trees.remove(i);
-                i--;
-            }
-        }
         for (Player player : players) {
             player.update(this);
         }
@@ -443,6 +435,11 @@ public class Region implements Serializable {
         }
         for (GameCharacter goblin : goblins) {
             goblin.update(null, this);
+        }
+        for (Tree tree : trees.toArray(new Tree[0])) {
+            if (tree.getRemove()) {
+                trees.remove(tree);
+            }
         }
         // spawnGoblins();
     }

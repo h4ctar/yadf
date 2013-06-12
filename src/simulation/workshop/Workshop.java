@@ -164,8 +164,8 @@ public class Workshop extends AbstractGameObject implements IContainer {
      * @return true, if successful
      */
     public boolean hasIndex(final MapIndex index) {
-        if (index.x >= position.x && index.x <= position.x + WORKSHOP_SIZE && index.y >= position.y
-                && index.y <= position.y + WORKSHOP_SIZE && position.z == index.z) {
+        if (index.x >= position.x && index.x <= position.x + WORKSHOP_SIZE - 1 && index.y >= position.y
+                && index.y <= position.y + WORKSHOP_SIZE - 1 && position.z == index.z) {
             return true;
         }
         return false;

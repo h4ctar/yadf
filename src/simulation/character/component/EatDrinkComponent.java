@@ -42,9 +42,6 @@ import simulation.job.EatDrinkJob;
  */
 public class EatDrinkComponent extends AbstractCharacterComponent {
 
-    /** How many simulation steps since the dwarf last ate. */
-    private int hunger = 0;
-
     /** How many simulation steps before the dwarf will want to eat. */
     private static final long HUNGER_EAT_THRESHOLD = Region.SIMULATION_STEPS_PER_DAY;
 
@@ -60,6 +57,9 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
     /** How many simulation steps before the dwarf will start getting sick. */
     private static final long THIRST_SICK_THRESHOLD = Region.SIMULATION_STEPS_PER_WEEK;
 
+    /** How many simulation steps since the dwarf last ate. */
+    private int hunger = 0;
+
     /** A reference to the eat job. */
     private EatDrinkJob eatJob;
 
@@ -68,7 +68,6 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
 
     /**
      * Can work.
-     * 
      * @return true, if successful
      */
     public boolean canWork() {
@@ -92,7 +91,6 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
 
     /**
      * Gets the hunger.
-     * 
      * @return the hunger
      */
     public int getHunger() {
@@ -101,7 +99,6 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
 
     /**
      * Gets the thirst.
-     * 
      * @return the thirst
      */
     public int getThirst() {
@@ -119,8 +116,6 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
 
     @Override
     public void update(final GameCharacter character, final Player player, final Region region) {
-        assert (player != null);
-
         hunger++;
         thirst++;
 

@@ -214,6 +214,7 @@ public class GameCharacter extends AbstractEntity {
     public void releaseLock() {
         lock = false;
         notifyListeners();
+        beIdleMovement();
     }
 
     /**

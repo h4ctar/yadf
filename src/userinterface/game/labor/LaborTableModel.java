@@ -38,7 +38,6 @@ import simulation.AbstractGameObject;
 import simulation.IPlayerListener;
 import simulation.Player;
 import simulation.character.Dwarf;
-import simulation.character.GameCharacter;
 import simulation.character.component.IComponentListener;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
@@ -112,7 +111,7 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
 
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
-        Dwarf dwarf = player.getDwarfs().get(rowIndex);
+        Dwarf dwarf = player.getDwarfs().toArray(new Dwarf[0])[rowIndex];
 
         if (columnIndex == 0) {
             LaborType profession = dwarf.getSkill().getProfession();
@@ -152,7 +151,7 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
     @Override
     public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
         if (columnIndex != 0) {
-            GameCharacter dwarf = player.getDwarfs().get(rowIndex);
+            Dwarf dwarf = player.getDwarfs().toArray(new Dwarf[0])[rowIndex];
             LaborType laborType = (LaborType) LaborTypeManager.getInstance().getLaborTypes().toArray()[columnIndex - 1];
             boolean enabled = ((Boolean) aValue).booleanValue();
             controller.addCommand(new EnableLaborCommand(player, dwarf.getId(), laborType.name, enabled));

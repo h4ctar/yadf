@@ -38,6 +38,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JComponent;
 
@@ -386,9 +387,9 @@ public class WorldCanvas extends JComponent implements IMapListener {
      * @param g the graphics to draw on
      */
     private void drawDwarfs(final Graphics g) {
-        List<Player> players = region.getPlayers();
+        Set<Player> players = region.getPlayers();
         for (Player playerTmp : players) {
-            List<Dwarf> dwarfs = playerTmp.getDwarfs();
+            Set<Dwarf> dwarfs = playerTmp.getDwarfs();
             for (Dwarf dwarf : dwarfs) {
                 MapIndex position = dwarf.getPosition();
                 if (position.z == viewPosition.z) {
@@ -418,9 +419,9 @@ public class WorldCanvas extends JComponent implements IMapListener {
         Sprite plantSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.PLANT_SPRITE);
         Sprite growSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.GROW_SPRITE);
         Sprite harvestSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.HARVEST_SPRITE);
-        List<Player> players = region.getPlayers();
+        Set<Player> players = region.getPlayers();
         for (Player thisPlayer : players) {
-            List<Farm> farms = thisPlayer.getFarms();
+            Set<Farm> farms = thisPlayer.getFarms();
             for (Farm farm : farms) {
                 MapArea area = farm.getArea();
 
@@ -454,7 +455,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
      */
     private void drawGoblins(final Graphics g) {
         Sprite goblinSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.GOBLIN_SPRITE);
-        List<Goblin> goblins = region.getGoblins();
+        Set<Goblin> goblins = region.getGoblins();
         for (Goblin goblin : goblins) {
             MapIndex position = goblin.getPosition();
             if (position.z == viewPosition.z) {
@@ -472,9 +473,9 @@ public class WorldCanvas extends JComponent implements IMapListener {
      * @param g the graphics to draw on
      */
     private void drawItems(final Graphics g) {
-        List<Player> players = region.getPlayers();
+        Set<Player> players = region.getPlayers();
         for (Player thisPlayer : players) {
-            List<Item> items = thisPlayer.getStockManager().getItems();
+            Set<Item> items = thisPlayer.getStockManager().getItems();
             for (Item item : items) {
                 MapIndex position = item.getPosition();
                 if (position.z == viewPosition.z) {
@@ -494,9 +495,9 @@ public class WorldCanvas extends JComponent implements IMapListener {
      * @param g the graphics to draw on
      */
     private void drawRooms(final Graphics g) {
-        List<Player> players = region.getPlayers();
+        Set<Player> players = region.getPlayers();
         for (Player thisPlayer : players) {
-            List<Room> rooms = thisPlayer.getRooms();
+            Set<Room> rooms = thisPlayer.getRooms();
             for (Room room : rooms) {
                 MapArea area = room.getArea();
                 if (viewPosition.z != area.pos.z) {
@@ -515,9 +516,9 @@ public class WorldCanvas extends JComponent implements IMapListener {
      * @param g the graphics to draw on
      */
     private void drawStockpiles(final Graphics g) {
-        List<Player> players = region.getPlayers();
+        Set<Player> players = region.getPlayers();
         for (Player thisPlayer : players) {
-            List<Stockpile> stockpiles = thisPlayer.getStockManager().getStockpiles();
+            Set<Stockpile> stockpiles = thisPlayer.getStockManager().getStockpiles();
             for (Stockpile stockpile : stockpiles) {
                 MapArea area = stockpile.getArea();
 
@@ -553,7 +554,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
      */
     private void drawTrees(final Graphics g) {
         Sprite treeSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.TREE_SPRITE);
-        List<Tree> trees = region.getTrees();
+        Set<Tree> trees = region.getTrees();
         for (Tree tree : trees) {
             MapIndex position = tree.getPosition();
             if (position.z == viewPosition.z) {
@@ -571,9 +572,9 @@ public class WorldCanvas extends JComponent implements IMapListener {
      * @param g the graphics to draw on
      */
     private void drawWorkshops(final Graphics g) {
-        List<Player> players = region.getPlayers();
+        Set<Player> players = region.getPlayers();
         for (Player thisPlayer : players) {
-            List<Workshop> workshops = thisPlayer.getWorkshops();
+            Set<Workshop> workshops = thisPlayer.getWorkshops();
             for (Workshop workshop : workshops) {
                 MapArea area = new MapArea(workshop.getPosition(), Workshop.WORKSHOP_SIZE, Workshop.WORKSHOP_SIZE);
                 if (viewPosition.z != area.pos.z) {

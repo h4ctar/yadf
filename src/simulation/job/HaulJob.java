@@ -56,11 +56,11 @@ public class HaulJob extends AbstractJob {
     enum State {
         /** The looking for item. */
         LOOKING_FOR_ITEM,
-        /** The waiting for dwarf. */
+        /** The waiting for the/a dwarf to become free to haul the item. */
         WAITING_FOR_DWARF,
-        /** The goto item. */
+        /** The dwarf is walking to the item. */
         GOTO_ITEM,
-        /** The goto drop. */
+        /** The dwarf is hauling the item to the drop location. */
         GOTO_DROP
     }
 
@@ -82,10 +82,10 @@ public class HaulJob extends AbstractJob {
     /** The walk component. */
     private WalkMoveComponent walkComponent;
 
-    /** The done. */
+    /** The job is done. */
     private boolean done = false;
 
-    /** The need to release lock. */
+    /** The lock on the dwarf needs to be released. */
     private boolean needToReleaseLock = false;
 
     /** The item type. */
@@ -173,8 +173,6 @@ public class HaulJob extends AbstractJob {
         // Drop the item
         if (character != null) {
             character.getInventory().dropHaulItem(true);
-            // TODO: should not directly set the idle movement, incase the job was interrupted because the dwarf died.
-            character.beIdleMovement();
             if (needToReleaseLock) {
                 character.releaseLock();
             }
@@ -249,7 +247,6 @@ public class HaulJob extends AbstractJob {
                 if (needToReleaseLock) {
                     character.releaseLock();
                 }
-                character.beIdleMovement();
                 if (container != null) {
                     if (container.getRemove()) {
                         Logger.getInstance().log(this, "Can't store item, container has been removed", true);

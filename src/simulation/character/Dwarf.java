@@ -34,6 +34,7 @@ package simulation.character;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.component.SkillComponent;
+import simulation.character.component.SleepComponent;
 import simulation.character.component.WorkComponent;
 import simulation.map.MapIndex;
 
@@ -48,8 +49,11 @@ public class Dwarf extends GameCharacter {
     /** The skill. */
     private final SkillComponent skill;
 
-    /** The work. */
+    /** The work component. */
     private final WorkComponent work;
+
+    /** The sleep component. */
+    private final SleepComponent sleep;
 
     /**
      * Instantiates a new dwarf.
@@ -61,6 +65,7 @@ public class Dwarf extends GameCharacter {
 
         skill = new SkillComponent();
         work = new WorkComponent();
+        sleep = new SleepComponent();
     }
 
     /**
@@ -75,6 +80,11 @@ public class Dwarf extends GameCharacter {
     public void update(final Player player, final Region region) {
         skill.update(this, player, region);
         work.update(this, player, region);
+        sleep.update(this, player, region);
         super.update(player, region);
+    }
+
+    public SleepComponent getSleep() {
+        return sleep;
     }
 }
