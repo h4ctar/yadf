@@ -34,11 +34,12 @@ package simulation.character.component;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IHealthComponent;
 
 /**
  * The Class HealthComponent.
  */
-public class HealthComponent extends AbstractCharacterComponent {
+public class HealthComponent extends AbstractCharacterComponent implements IHealthComponent {
 
     /** The maximum amount of health a dwarf can have. */
     private static final int MAX_HEALTH = 10000;
@@ -49,6 +50,7 @@ public class HealthComponent extends AbstractCharacterComponent {
     /**
      * Decrement health.
      */
+    @Override
     public void decrementHealth() {
         health--;
         notifyListeners();
@@ -58,6 +60,7 @@ public class HealthComponent extends AbstractCharacterComponent {
      * Gets the health.
      * @return the health
      */
+    @Override
     public int getHealth() {
         return health * 100 / MAX_HEALTH;
     }

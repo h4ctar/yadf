@@ -39,8 +39,11 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.ISkillComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.ItemType;
+import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
 import simulation.workshop.Workshop;
@@ -51,9 +54,6 @@ import simulation.workshop.WorkshopTypeManager;
  * The Class BuildWorkshopJob.
  */
 public class BuildWorkshopJob extends AbstractJob {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = 6619232211299027703L;
 
     /**
      * The different states that this job can be in.
@@ -71,8 +71,14 @@ public class BuildWorkshopJob extends AbstractJob {
         BUILD
     }
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 6619232211299027703L;
+
     /** How long it takes to build the workshop. */
     private static final long BUILD_TIME = Region.SIMULATION_STEPS_PER_DAY;
+
+    /** The labor type required for this job. */
+    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Building");
 
     /** The state. */
     private State state = State.WAITING_FOR_RESOURCES;
@@ -96,7 +102,7 @@ public class BuildWorkshopJob extends AbstractJob {
     private boolean done;
 
     /** The walk component. */
-    private WalkMoveComponent walkComponent;
+    private WalkMovementComponent walkComponent;
 
     /**
      * Instantiates a new builds the workshop job.
@@ -174,11 +180,12 @@ public class BuildWorkshopJob extends AbstractJob {
 
         case WAITING_FOR_DWARF:
             if (dwarf == null) {
-                dwarf = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType("Building"));
+                dwarf = player.getIdleDwarf(REQUIRED_LABOR);
             }
 
             if (dwarf != null) {
-                walkComponent = dwarf.walkToPosition(Workshop.getRandomPostition(position), false);
+                walkComponent = new WalkMovementComponent(position, false);
+                dwarf.setComponent(IMovementComponent.class, walkComponent);
                 state = State.GOTO_WORKSHOP;
             }
             break;
@@ -203,9 +210,8 @@ public class BuildWorkshopJob extends AbstractJob {
                     haulJob.getItem().setRemove();
                 }
                 player.addWorkshop(new Workshop(workshopType, position));
+                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
                 dwarf.releaseLock();
-                dwarf.beIdleMovement();
-
                 done = true;
             }
             break;

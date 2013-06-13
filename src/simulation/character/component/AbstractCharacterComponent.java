@@ -44,14 +44,14 @@ import simulation.character.GameCharacter;
 public abstract class AbstractCharacterComponent {
 
     /** The listeners to be notified of changes to this component. */
-    private final List<IComponentListener> listeners = new ArrayList<>();
+    private final List<ICharacterComponentListener> listeners = new ArrayList<>();
 
     /**
      * Add a listener to this component.
      * 
      * @param listener the listener to add
      */
-    public void addListener(final IComponentListener listener) {
+    public void addListener(final ICharacterComponentListener listener) {
         listeners.add(listener);
     }
 
@@ -68,7 +68,7 @@ public abstract class AbstractCharacterComponent {
      * Notify all of the listeners.
      */
     protected void notifyListeners() {
-        for (IComponentListener listener : listeners) {
+        for (ICharacterComponentListener listener : listeners) {
             listener.componentChanged();
         }
     }

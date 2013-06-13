@@ -43,9 +43,8 @@ public class Animal extends GameCharacter {
 
     /**
      * Instantiates a new animal.
-     * 
-     * @param name the name
-     * @param position the position
+     * @param name the name of the animal
+     * @param position the position of the animal
      */
     public Animal(final String name, final MapIndex position) {
         super(name, position);

@@ -38,7 +38,6 @@ import java.util.Set;
 
 import logger.Logger;
 import misc.MyRandom;
-import simulation.character.Animal;
 import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
 import simulation.character.Goblin;
@@ -99,7 +98,7 @@ public class Region implements Serializable {
     private final Set<Tree> trees = new HashSet<>();
 
     /** The animals. */
-    private final Set<Animal> animals = new HashSet<>();
+    private final Set<GameCharacter> animals = new HashSet<>();
 
     /** The goblins. */
     private final Set<Goblin> goblins = new HashSet<>();
@@ -234,7 +233,7 @@ public class Region implements Serializable {
      * Gets the animals.
      * @return the animals
      */
-    public Set<Animal> getAnimals() {
+    public Set<GameCharacter> getAnimals() {
         return animals;
     }
 
@@ -454,7 +453,7 @@ public class Region implements Serializable {
             position.x = random.nextInt(map.getMapSize().x);
             position.y = random.nextInt(map.getMapSize().y);
             position.z = map.getHeight(position.x, position.y);
-            animals.add(new Animal("Animal", position));
+            animals.add(new GameCharacter("Animal", position));
         }
     }
 

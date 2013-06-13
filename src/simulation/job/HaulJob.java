@@ -35,10 +35,13 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IInventoryComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
+import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
 
@@ -80,7 +83,7 @@ public class HaulJob extends AbstractJob {
     private final MapIndex dropPosition;
 
     /** The walk component. */
-    private WalkMoveComponent walkComponent;
+    private WalkMovementComponent walkComponent;
 
     /** The job is done. */
     private boolean done = false;
@@ -172,7 +175,7 @@ public class HaulJob extends AbstractJob {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
         // Drop the item
         if (character != null) {
-            character.getInventory().dropHaulItem(true);
+            character.getComponent(IInventoryComponent.class).dropHaulItem(true);
             if (needToReleaseLock) {
                 character.releaseLock();
             }
@@ -212,12 +215,14 @@ public class HaulJob extends AbstractJob {
 
         case WAITING_FOR_DWARF:
             if (character == null) {
-                character = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType("Hauling"));
+                LaborType requiredLabor = LaborTypeManager.getInstance().getLaborType("Hauling");
+                character = player.getIdleDwarf(requiredLabor);
                 needToReleaseLock = true;
             }
             if (character != null) {
                 Logger.getInstance().log(this, "Dwarf found, should now go to item");
-                walkComponent = character.walkToPosition(item.getPosition(), false);
+                walkComponent = new WalkMovementComponent(item.getPosition(), false);
+                character.setComponent(IMovementComponent.class, walkComponent);
                 state = State.GOTO_ITEM;
             }
             break;
@@ -230,8 +235,9 @@ public class HaulJob extends AbstractJob {
             if (walkComponent.isArrived()) {
                 Logger.getInstance().log(this, "Arrived at item, should now take it to drop");
                 player.getStockManager().removeItem(item);
-                walkComponent = character.walkToPosition(dropPosition, false);
-                character.getInventory().pickupHaulItem(item);
+                walkComponent = new WalkMovementComponent(dropPosition, false);
+                character.setComponent(IMovementComponent.class, walkComponent);
+                character.getComponent(IInventoryComponent.class).pickupHaulItem(item);
                 state = State.GOTO_DROP;
             }
             break;
@@ -243,7 +249,7 @@ public class HaulJob extends AbstractJob {
             }
             if (walkComponent.isArrived()) {
                 Logger.getInstance().log(this, "Arrived at drop, should now drop item; job done");
-                character.getInventory().dropHaulItem(false);
+                character.getComponent(IInventoryComponent.class).dropHaulItem(false);
                 if (needToReleaseLock) {
                     character.releaseLock();
                 }

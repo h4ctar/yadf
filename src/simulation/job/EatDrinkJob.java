@@ -37,7 +37,10 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.GameCharacter;
+import simulation.character.IEatDrinkComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.map.MapIndex;
 import simulation.room.Room;
@@ -95,7 +98,7 @@ public class EatDrinkJob extends AbstractJob {
     private Item table;
 
     /** The walk component. */
-    private WalkMoveComponent walkComponent;
+    private WalkMovementComponent walkComponent;
 
     /**
      * Instantiates a new eat drink job.
@@ -134,13 +137,10 @@ public class EatDrinkJob extends AbstractJob {
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-
         if (wasteTimeJob != null) {
             wasteTimeJob.interrupt("Eat/drink job was interrupted");
         }
-
         dwarf.releaseLock();
-
         done = true;
     }
 
@@ -232,7 +232,8 @@ public class EatDrinkJob extends AbstractJob {
             haulJob.update(player, region);
 
             if (haulJob.isDone()) {
-                walkComponent = dwarf.walkToPosition(chair.getPosition(), false);
+                walkComponent = new WalkMovementComponent(chair.getPosition(), false);
+                dwarf.setComponent(IMovementComponent.class, walkComponent);
                 state = State.WALK_TO_CHAIR;
             }
             break;
@@ -257,9 +258,9 @@ public class EatDrinkJob extends AbstractJob {
                 dwarf.releaseLock();
 
                 if (eat) {
-                    dwarf.getEatDrink().eat();
+                    dwarf.getComponent(IEatDrinkComponent.class).eat();
                 } else {
-                    dwarf.getEatDrink().drink();
+                    dwarf.getComponent(IEatDrinkComponent.class).drink();
                 }
 
                 if (chair != null) {

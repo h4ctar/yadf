@@ -34,11 +34,12 @@ package simulation.character.component;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IKillEveryoneComponent;
 
 /**
  * The Class KillEveryoneComponent.
  */
-public class KillEveryoneComponent extends AbstractCharacterComponent {
+public class KillEveryoneComponent extends AbstractCharacterComponent implements IKillEveryoneComponent {
 
     /** How far can he see. */
     private static final int VIEW_DISTANCE = 20;

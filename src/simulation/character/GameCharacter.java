@@ -32,20 +32,18 @@
 package simulation.character;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import logger.Logger;
 import simulation.AbstractEntity;
 import simulation.Player;
 import simulation.Region;
-import simulation.character.component.AbstractMoveComponent;
-import simulation.character.component.AttackComponent;
-import simulation.character.component.EatDrinkComponent;
 import simulation.character.component.HealthComponent;
-import simulation.character.component.IdleMoveComponent;
-import simulation.character.component.InventoryComponent;
-import simulation.character.component.StillMoveComponent;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.component.ICharacterComponent;
+import simulation.character.component.IdleMovementComponent;
+import simulation.character.component.StillMovementComponent;
 import simulation.map.MapIndex;
 
 /**
@@ -56,23 +54,11 @@ public class GameCharacter extends AbstractEntity {
     /** The serial version UID. */
     private static final long serialVersionUID = -6938089593424613235L;
 
-    /** The health. */
-    private final HealthComponent health;
+    /** All the components. */
+    private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new HashMap<>();
 
     /** The list of listeners. */
     private final List<ICharacterListener> listeners;
-
-    /** The move. */
-    private AbstractMoveComponent move;
-
-    /** The eat drink. */
-    private final EatDrinkComponent eatDrink;
-
-    /** The attack. */
-    private AttackComponent attack;
-
-    /** The inventory. */
-    private final InventoryComponent inventory;
 
     /** The dead. */
     protected boolean dead;
@@ -81,7 +67,7 @@ public class GameCharacter extends AbstractEntity {
     protected String name;
 
     /** The lock. */
-    private boolean lock;
+    private boolean locked;
 
     /**
      * Instantiates a new game character.
@@ -92,11 +78,9 @@ public class GameCharacter extends AbstractEntity {
     public GameCharacter(final String nameTmp, final MapIndex position) {
         super(position);
         name = nameTmp;
-        health = new HealthComponent();
-        move = new IdleMoveComponent();
-        inventory = new InventoryComponent();
+        setComponent(IHealthComponent.class, new HealthComponent());
+        setComponent(IMovementComponent.class, new IdleMovementComponent());
         listeners = new ArrayList<>();
-        eatDrink = new EatDrinkComponent();
     }
 
     /**
@@ -106,8 +90,8 @@ public class GameCharacter extends AbstractEntity {
      */
     public boolean acquireLock() {
         boolean lockAcquired = false;
-        if (!lock) {
-            lock = true;
+        if (!locked) {
+            locked = true;
             lockAcquired = true;
             notifyListeners();
         }
@@ -117,7 +101,6 @@ public class GameCharacter extends AbstractEntity {
 
     /**
      * Add a listener to this character.
-     * 
      * @param listener the listener to add
      */
     public void addListener(final ICharacterListener listener) {
@@ -125,55 +108,28 @@ public class GameCharacter extends AbstractEntity {
     }
 
     /**
-     * Be idle movement.
-     * 
-     * @return the idle move component
+     * Get a character component.
+     * @param <T> the interface that the component extends
+     * @param componentInterface the interface that the component extends
+     * @return the component
      */
-    public IdleMoveComponent beIdleMovement() {
-        move = new IdleMoveComponent();
-        return (IdleMoveComponent) move;
+    @SuppressWarnings("unchecked")
+    public <T extends ICharacterComponent> T getComponent(final Class<T> componentInterface) {
+        return (T) components.get(componentInterface);
     }
 
     /**
-     * Be still movement.
-     * 
-     * @return the still move component
+     * Set a character component.
+     * @param <T> the interface that the component extends
+     * @param componentInterface the interface that the component extends
+     * @param component the component
      */
-    public StillMoveComponent beStillMovement() {
-        move = new StillMoveComponent();
-        return (StillMoveComponent) move;
+    public <T extends ICharacterComponent> void setComponent(final Class<T> componentInterface, final T component) {
+        components.put(componentInterface, component);
     }
 
     /**
-     * Gets the eat drink.
-     * 
-     * @return the eat drink
-     */
-    public final EatDrinkComponent getEatDrink() {
-        return eatDrink;
-    }
-
-    /**
-     * Get the health component for this character.
-     * 
-     * @return the health component
-     */
-    public HealthComponent getHealth() {
-        return health;
-    }
-
-    /**
-     * Gets the inventory.
-     * 
-     * @return the inventory
-     */
-    public InventoryComponent getInventory() {
-        return inventory;
-    }
-
-    /**
-     * Gets the name.
-     * 
+     * Gets the name of the character.
      * @return the name
      */
     public String getName() {
@@ -194,8 +150,8 @@ public class GameCharacter extends AbstractEntity {
      * 
      * @return true, if is lock
      */
-    public boolean isLock() {
-        return lock;
+    public boolean isLocked() {
+        return locked;
     }
 
     /**
@@ -203,7 +159,7 @@ public class GameCharacter extends AbstractEntity {
      */
     public void kill() {
         Logger.getInstance().log(this, "Character died");
-        beStillMovement();
+        setComponent(IMovementComponent.class, new StillMovementComponent());
         dead = true;
         notifyListeners();
     }
@@ -212,40 +168,20 @@ public class GameCharacter extends AbstractEntity {
      * Release lock.
      */
     public void releaseLock() {
-        lock = false;
+        locked = false;
         notifyListeners();
-        beIdleMovement();
+        setComponent(IMovementComponent.class, new IdleMovementComponent());
     }
 
     /**
-     * Update.
-     * 
+     * Update all the components.
      * @param player the player
      * @param region the region
      */
     public void update(final Player player, final Region region) {
-        health.update(this, player, region);
-        move.update(this, player, region);
-        if (attack != null) {
-            attack.update(this, player, region);
+        for (ICharacterComponent component : components.values()) {
+            component.update(this, player, region);
         }
-        inventory.update(this, player, region);
-        // TODO: animals and goblins should have a player or something
-        if (player != null) {
-            eatDrink.update(this, player, region);
-        }
-    }
-
-    /**
-     * Walk to position.
-     * 
-     * @param target the target
-     * @param nextTo the next to
-     * @return the walk move component
-     */
-    public WalkMoveComponent walkToPosition(final MapIndex target, final boolean nextTo) {
-        move = new WalkMoveComponent(target, nextTo);
-        return (WalkMoveComponent) move;
     }
 
     /**

@@ -34,12 +34,13 @@ package simulation.character.component;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IWorkComponent;
 import simulation.job.IJob;
 
 /**
  * The Class WorkComponent.
  */
-public class WorkComponent extends AbstractCharacterComponent {
+public class WorkComponent extends AbstractCharacterComponent implements IWorkComponent {
 
     /** The job. */
     private IJob job;

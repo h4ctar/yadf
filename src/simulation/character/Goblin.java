@@ -31,7 +31,6 @@
  */
 package simulation.character;
 
-import simulation.Region;
 import simulation.character.component.KillEveryoneComponent;
 import simulation.map.MapIndex;
 
@@ -43,28 +42,13 @@ public class Goblin extends GameCharacter {
     /** The serial version UID. */
     private static final long serialVersionUID = 5661614090710336119L;
 
-    /** The kill everyone. */
-    public KillEveryoneComponent killEveryone;
-
     /**
      * Instantiates a new goblin.
-     * 
      * @param name the name
      * @param position the position
      */
     public Goblin(final String name, final MapIndex position) {
         super(name, position);
-
-        killEveryone = new KillEveryoneComponent();
-    }
-
-    /**
-     * Update.
-     * 
-     * @param region the region
-     */
-    public void update(final Region region) {
-        killEveryone.update(this, null, region);
-        super.update(null, region);
+        setComponent(IKillEveryoneComponent.class, new KillEveryoneComponent());
     }
 }

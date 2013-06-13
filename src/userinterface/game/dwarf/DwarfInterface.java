@@ -49,7 +49,11 @@ import javax.swing.WindowConstants;
 
 import simulation.character.Dwarf;
 import simulation.character.ICharacterListener;
-import simulation.character.component.IComponentListener;
+import simulation.character.IEatDrinkComponent;
+import simulation.character.IHealthComponent;
+import simulation.character.IInventoryComponent;
+import simulation.character.ISkillComponent;
+import simulation.character.component.ICharacterComponentListener;
 import simulation.item.Item;
 import simulation.labor.LaborType;
 import userinterface.game.WorldCanvas;
@@ -59,7 +63,7 @@ import userinterface.misc.SpriteManager;
 /**
  * The Class DwarfInterface.
  */
-public class DwarfInterface extends JInternalFrame implements ICharacterListener, IComponentListener {
+public class DwarfInterface extends JInternalFrame implements ICharacterListener, ICharacterComponentListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 6213975713592520095L;
@@ -134,10 +138,10 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
     public void setDwarf(final Dwarf dwarfTmp, final WorldCanvas worldCanvas) {
         dwarf = dwarfTmp;
         dwarf.addListener(this);
-        dwarf.getSkill().addListener(this);
-        dwarf.getHealth().addListener(this);
-        dwarf.getInventory().addListener(this);
-        dwarf.getEatDrink().addListener(this);
+        dwarf.getComponent(ISkillComponent.class).addListener(this);
+        dwarf.getComponent(IHealthComponent.class).addListener(this);
+        dwarf.getComponent(IInventoryComponent.class).addListener(this);
+        dwarf.getComponent(IEatDrinkComponent.class).addListener(this);
         update();
     }
 
@@ -146,17 +150,17 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
      */
     public void update() {
         nameTextField.setText(dwarf.getName());
-        LaborType profession = dwarf.getSkill().getProfession();
+        LaborType profession = dwarf.getComponent(ISkillComponent.class).getProfession();
         professionTextField.setText(profession.professionName);
         deadTextField.setText(Boolean.toString(dwarf.isDead()));
-        Item haulItem = dwarf.getInventory().getHaulItem();
+        Item haulItem = dwarf.getComponent(IInventoryComponent.class).getHaulItem();
         itemHaulingTextField.setText(haulItem == null ? "Not hauling" : haulItem.getType().name);
-        Item tool = dwarf.getInventory().getToolHolding();
+        Item tool = dwarf.getComponent(IInventoryComponent.class).getToolHolding();
         toolHoldingTextField.setText(tool == null ? "No tool" : tool.getType().name);
-        healthTextField.setText(Integer.toString(dwarf.getHealth().getHealth()));
-        hungerTextField.setText(Integer.toString(dwarf.getEatDrink().getHunger()));
-        thirstTextField.setText(Integer.toString(dwarf.getEatDrink().getThirst()));
-        lockTextField.setText(Boolean.toString(dwarf.isLock()));
+        healthTextField.setText(Integer.toString(dwarf.getComponent(IHealthComponent.class).getHealth()));
+        hungerTextField.setText(Integer.toString(dwarf.getComponent(IEatDrinkComponent.class).getHunger()));
+        thirstTextField.setText(Integer.toString(dwarf.getComponent(IEatDrinkComponent.class).getThirst()));
+        lockTextField.setText(Boolean.toString(dwarf.isLocked()));
         Image dwarfImage = SpriteManager.getInstance().getItemSprite(profession.sprite).getImage();
         dwarfImage = dwarfImage.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_FAST);
         imageLabel.setIcon(new ImageIcon(dwarfImage));

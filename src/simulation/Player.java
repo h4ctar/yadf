@@ -41,6 +41,8 @@ import logger.Logger;
 import misc.MyRandom;
 import misc.NameGenerator;
 import simulation.character.Dwarf;
+import simulation.character.IEatDrinkComponent;
+import simulation.character.ISkillComponent;
 import simulation.farm.Farm;
 import simulation.item.Item;
 import simulation.item.ItemTypeManager;
@@ -211,8 +213,8 @@ public class Player extends AbstractGameObject {
                 continue;
             }
 
-            if (dwarf.getSkill().canDoJob(requiredLabor, dwarf) && dwarf.getEatDrink().canWork()
-                    && dwarf.acquireLock()) {
+            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor, dwarf)
+                    && dwarf.getComponent(IEatDrinkComponent.class).canWork() && dwarf.acquireLock()) {
                 return dwarf;
             }
         }

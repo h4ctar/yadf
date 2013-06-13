@@ -46,9 +46,10 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.Tree;
-import simulation.character.Animal;
 import simulation.character.Dwarf;
+import simulation.character.GameCharacter;
 import simulation.character.Goblin;
+import simulation.character.ISkillComponent;
 import simulation.farm.Farm;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;
@@ -320,7 +321,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
      */
     private void drawAnimals(final Graphics g) {
         Sprite animalSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.ANIMAL_SPRITE);
-        for (Animal animal : region.getAnimals()) {
+        for (GameCharacter animal : region.getAnimals()) {
             MapIndex position = animal.getPosition();
             if (position.z == viewPosition.z) {
                 int x = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
@@ -400,7 +401,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
                         if (dwarf.isDead()) {
                             dwarfSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.DEAD_DWARF_SPRITE);
                         } else {
-                            LaborType profession = dwarf.getSkill().getProfession();
+                            LaborType profession = dwarf.getComponent(ISkillComponent.class).getProfession();
                             dwarfSprite = SpriteManager.getInstance().getItemSprite(profession.sprite);
                         }
                         dwarfSprite.draw(g, x, y);

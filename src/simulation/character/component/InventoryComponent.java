@@ -34,12 +34,13 @@ package simulation.character.component;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IInventoryComponent;
 import simulation.item.Item;
 
 /**
  * The Class InventoryComponent.
  */
-public class InventoryComponent extends AbstractCharacterComponent {
+public class InventoryComponent extends AbstractCharacterComponent implements IInventoryComponent {
 
     /** The item hauling. */
     private Item itemHauling;

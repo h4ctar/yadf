@@ -35,7 +35,9 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IInventoryComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 
 /**
@@ -66,7 +68,7 @@ public class PickupToolJob extends AbstractJob {
     private final Item tool;
 
     /** The move component. */
-    private WalkMoveComponent moveComponent;
+    private WalkMovementComponent moveComponent;
 
     /** The done. */
     private boolean done;
@@ -97,11 +99,8 @@ public class PickupToolJob extends AbstractJob {
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-
         tool.setUsed(false);
-
         character.releaseLock();
-
         done = true;
     }
 
@@ -124,18 +123,16 @@ public class PickupToolJob extends AbstractJob {
         switch (state) {
         case WAITING_FOR_DWARF:
             if (character.acquireLock()) {
-                moveComponent = character.walkToPosition(tool.getPosition(), false);
+                moveComponent = new WalkMovementComponent(tool.getPosition(), false);
+                character.setComponent(IMovementComponent.class, moveComponent);
                 state = State.WALK_TO_TOOL;
             }
             break;
 
         case WALK_TO_TOOL:
             if (moveComponent.isDone()) {
-                // TODO: make remember
-                character.beIdleMovement();
-                character.getInventory().pickupTool(tool);
+                character.getComponent(IInventoryComponent.class).pickupTool(tool);
                 character.releaseLock();
-
                 done = true;
             }
             break;

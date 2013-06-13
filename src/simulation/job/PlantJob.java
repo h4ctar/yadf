@@ -35,6 +35,9 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
+import simulation.character.IMovementComponent;
+import simulation.character.ISkillComponent;
+import simulation.character.component.StillMovementComponent;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;
 import simulation.labor.LaborType;
@@ -117,10 +120,7 @@ public class PlantJob extends AbstractJob {
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-        // Drop the item
         if (dwarf != null) {
-            dwarf.beIdleMovement();
-
             if (needToReleaseLock) {
                 dwarf.releaseLock();
             }
@@ -147,7 +147,7 @@ public class PlantJob extends AbstractJob {
         switch (state) {
         case START:
             if (dwarf == null) {
-                dwarf = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType("Farming"));
+                dwarf = player.getIdleDwarf(REQUIRED_LABOR);
                 needToReleaseLock = true;
             }
             if (dwarf == null) {
@@ -160,7 +160,7 @@ public class PlantJob extends AbstractJob {
 
         case HAUL:
             if (haulJob.isDone()) {
-                dwarf.beStillMovement();
+                dwarf.setComponent(IMovementComponent.class, new StillMovementComponent());
                 simulationSteps = 0;
                 state = State.PLANT;
             }
@@ -170,15 +170,10 @@ public class PlantJob extends AbstractJob {
             simulationSteps++;
             if (simulationSteps > PLANTING_DURATION) {
                 seed.setRemove();
-
-                dwarf.beIdleMovement();
-
                 if (needToReleaseLock) {
                     dwarf.releaseLock();
                 }
-
-                dwarf.getSkill().increaseSkillLevel(REQUIRED_LABOR);
-
+                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
                 done = true;
             }
             break;

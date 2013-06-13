@@ -35,11 +35,14 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.ISkillComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
 import simulation.job.WasteTimeJob;
+import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.BlockType;
 import simulation.map.MapIndex;
@@ -49,9 +52,6 @@ import simulation.map.RegionMap;
  * The Class ChannelJob.
  */
 public class ChannelJob extends AbstractDesignationJob {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = 117706611556221325L;
 
     /**
      * The different states that this job can be in.
@@ -64,6 +64,15 @@ public class ChannelJob extends AbstractDesignationJob {
         /** The channel. */
         CHANNEL
     }
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 117706611556221325L;
+
+    /** Amount of time to spend channeling (simulation steps). */
+    private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
+
+    /** The labor type required for this job. */
+    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Mining");
 
     /** The state. */
     private State state = State.START;
@@ -78,13 +87,10 @@ public class ChannelJob extends AbstractDesignationJob {
     private final ChannelDesignation designation;
 
     /** The move component. */
-    private WalkMoveComponent moveComponent = null;
+    private WalkMovementComponent moveComponent = null;
 
     /** Reference to the waste time job. */
     private WasteTimeJob wasteTimeJob;
-
-    /** Amount of time to spend channeling (simulation steps). */
-    private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 
     /** The dwarf. */
     private Dwarf dwarf = null;
@@ -126,7 +132,6 @@ public class ChannelJob extends AbstractDesignationJob {
         }
 
         if (dwarf != null) {
-            dwarf.beIdleMovement();
             dwarf.releaseLock();
         }
 
@@ -156,15 +161,12 @@ public class ChannelJob extends AbstractDesignationJob {
 
         switch (state) {
         case START:
-            dwarf = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType("Mining"));
-
-            if (dwarf == null) {
-                return;
+            dwarf = player.getIdleDwarf(REQUIRED_LABOR);
+            if (dwarf != null) {
+                moveComponent = new WalkMovementComponent(position, false);
+                dwarf.setComponent(IMovementComponent.class, moveComponent);
+                state = State.GOTO;
             }
-
-            moveComponent = dwarf.walkToPosition(position, false);
-
-            state = State.GOTO;
             break;
 
         case GOTO:
@@ -181,11 +183,9 @@ public class ChannelJob extends AbstractDesignationJob {
 
         case CHANNEL:
             wasteTimeJob.update(player, region);
-
             if (!wasteTimeJob.isDone()) {
                 return;
             }
-
             if (blockType == null) {
                 // create a rock item
                 String itemTypeName = map.getBlock(position.add(0, 0, -1)).itemMined;
@@ -196,20 +196,13 @@ public class ChannelJob extends AbstractDesignationJob {
                     player.getStockManager().addItem(blockItem);
                 }
             }
-
             // channel the block
             map.channelBlock(position.add(0, 0, -1), blockType);
-
             // remove the tile from the designation
             designation.removeFromDesignation(position);
-
-            dwarf.getSkill().increaseSkillLevel(LaborTypeManager.getInstance().getLaborType("Mining"));
-
-            dwarf.beIdleMovement();
+            dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             dwarf.releaseLock();
-
             done = true;
-
             break;
 
         default:

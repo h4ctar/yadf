@@ -31,8 +31,8 @@
  */
 package simulation.character;
 
-import simulation.Player;
-import simulation.Region;
+import simulation.character.component.EatDrinkComponent;
+import simulation.character.component.InventoryComponent;
 import simulation.character.component.SkillComponent;
 import simulation.character.component.SleepComponent;
 import simulation.character.component.WorkComponent;
@@ -40,20 +40,13 @@ import simulation.map.MapIndex;
 
 /**
  * The Class Dwarf.
+ * 
+ * TODO: remove this class and have some kind of character factory instead
  */
 public class Dwarf extends GameCharacter {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 5472142489726028220L;
-
-    /** The skill. */
-    private final SkillComponent skill;
-
-    /** The work component. */
-    private final WorkComponent work;
-
-    /** The sleep component. */
-    private final SleepComponent sleep;
 
     /**
      * Instantiates a new dwarf.
@@ -62,29 +55,10 @@ public class Dwarf extends GameCharacter {
      */
     public Dwarf(final String name, final MapIndex position) {
         super(name, position);
-
-        skill = new SkillComponent();
-        work = new WorkComponent();
-        sleep = new SleepComponent();
-    }
-
-    /**
-     * Gets the skill.
-     * @return the skill
-     */
-    public SkillComponent getSkill() {
-        return skill;
-    }
-
-    @Override
-    public void update(final Player player, final Region region) {
-        skill.update(this, player, region);
-        work.update(this, player, region);
-        sleep.update(this, player, region);
-        super.update(player, region);
-    }
-
-    public SleepComponent getSleep() {
-        return sleep;
+        setComponent(ISkillComponent.class, new SkillComponent());
+        setComponent(IWorkComponent.class, new WorkComponent());
+        setComponent(ISleepComponent.class, new SleepComponent());
+        setComponent(IInventoryComponent.class, new InventoryComponent());
+        setComponent(IEatDrinkComponent.class, new EatDrinkComponent());
     }
 }

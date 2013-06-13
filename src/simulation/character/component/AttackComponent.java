@@ -34,6 +34,7 @@ package simulation.character.component;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IHealthComponent;
 
 /**
  * The Class AttackComponent.
@@ -69,7 +70,7 @@ public class AttackComponent extends AbstractCharacterComponent {
         int distance = character.getPosition().distance(enemy.getPosition());
 
         if (distance <= 1) {
-            enemy.getHealth().decrementHealth();
+            enemy.getComponent(IHealthComponent.class).decrementHealth();
         }
     }
 }

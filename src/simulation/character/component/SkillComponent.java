@@ -39,6 +39,8 @@ import java.util.Set;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IInventoryComponent;
+import simulation.character.ISkillComponent;
 import simulation.item.Item;
 import simulation.job.PickupToolJob;
 import simulation.labor.LaborType;
@@ -47,7 +49,7 @@ import simulation.labor.LaborTypeManager;
 /**
  * The Class SkillComponent.
  */
-public class SkillComponent extends AbstractCharacterComponent {
+public class SkillComponent extends AbstractCharacterComponent implements ISkillComponent {
 
     /** How proficient the dwarf is in the different labors. */
     private final Map<LaborType, Integer> laborSkills;
@@ -96,7 +98,7 @@ public class SkillComponent extends AbstractCharacterComponent {
         }
 
         // Does the dwarf have the required tool
-        Item tool = character.getInventory().getToolHolding();
+        Item tool = character.getComponent(IInventoryComponent.class).getToolHolding();
 
         if (tool == null) {
             return false;
@@ -184,7 +186,7 @@ public class SkillComponent extends AbstractCharacterComponent {
         assert (player != null);
 
         // If dwarf is holding a tool that he no longer needs, drop it
-        Item tool = character.getInventory().getToolHolding();
+        Item tool = character.getComponent(IInventoryComponent.class).getToolHolding();
         if (tool != null) {
             boolean required = false;
             for (LaborType laborType : enabledLabors) {
@@ -194,7 +196,7 @@ public class SkillComponent extends AbstractCharacterComponent {
                 }
             }
             if (!required) {
-                character.getInventory().dropTool();
+                character.getComponent(IInventoryComponent.class).dropTool();
                 tool = null;
             }
         }

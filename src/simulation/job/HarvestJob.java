@@ -35,7 +35,10 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.ISkillComponent;
+import simulation.character.component.StillMovementComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -79,7 +82,7 @@ public class HarvestJob extends AbstractJob {
     private boolean needToReleaseLock;
 
     /** The move component. */
-    private WalkMoveComponent moveComponent;
+    private WalkMovementComponent moveComponent;
 
     /** The done. */
     private boolean done = false;
@@ -115,16 +118,11 @@ public class HarvestJob extends AbstractJob {
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-
-        // Drop the item
         if (dwarf != null) {
-            dwarf.beIdleMovement();
-
             if (needToReleaseLock) {
                 dwarf.releaseLock();
             }
         }
-
         done = true;
     }
 
@@ -152,7 +150,8 @@ public class HarvestJob extends AbstractJob {
             }
 
             if (dwarf != null) {
-                moveComponent = dwarf.walkToPosition(farmPlot.getPosition(), false);
+                moveComponent = new WalkMovementComponent(farmPlot.getPosition(), false);
+                dwarf.setComponent(IMovementComponent.class, moveComponent);
 
                 state = State.GOTO;
             }
@@ -165,7 +164,7 @@ public class HarvestJob extends AbstractJob {
             }
 
             if (moveComponent.isArrived()) {
-                dwarf.beStillMovement();
+                dwarf.setComponent(IMovementComponent.class, new StillMovementComponent());
                 simulationSteps = 0;
                 state = State.HARVEST;
             }
@@ -174,8 +173,6 @@ public class HarvestJob extends AbstractJob {
         case HARVEST:
             simulationSteps++;
             if (simulationSteps > HARVEST_DURATION) {
-                dwarf.beIdleMovement();
-
                 // TODO: move the names of the item types into constants
                 ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
                 Item newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, player);
@@ -183,13 +180,10 @@ public class HarvestJob extends AbstractJob {
                 itemType = ItemTypeManager.getInstance().getItemType("Seed");
                 newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, player);
                 player.getStockManager().addItem(newItem);
-
                 if (needToReleaseLock) {
                     dwarf.releaseLock();
                 }
-
-                dwarf.getSkill().increaseSkillLevel(REQUIRED_LABOR);
-
+                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
                 done = true;
             }
             break;

@@ -5,7 +5,9 @@ import java.util.Set;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.ISleepComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.room.Room;
 
@@ -41,7 +43,7 @@ public class SleepJob extends AbstractJob {
 
     private Item bed;
 
-    private WalkMoveComponent walkComponent;
+    private WalkMovementComponent walkComponent;
 
     private WasteTimeJob wasteTimeJob;
 
@@ -104,7 +106,8 @@ public class SleepJob extends AbstractJob {
                 }
             }
             if (bed != null) {
-                walkComponent = dwarf.walkToPosition(bed.getPosition(), false);
+                walkComponent = new WalkMovementComponent(bed.getPosition(), false);
+                dwarf.setComponent(IMovementComponent.class, walkComponent);
                 state = State.WALK_TO_SLEEP_LOCATION;
             } else {
                 wasteTimeJob = new WasteTimeJob(dwarf, SLEEP_DURATION);
@@ -127,13 +130,10 @@ public class SleepJob extends AbstractJob {
             wasteTimeJob.update(player, region);
             if (wasteTimeJob.isDone()) {
                 dwarf.releaseLock();
-
-                dwarf.getSleep().sleep();
-
+                dwarf.getComponent(ISleepComponent.class).sleep();
                 if (bed != null) {
                     bed.setUsed(false);
                 }
-
                 done = true;
             }
             break;

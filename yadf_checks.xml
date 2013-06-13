@@ -67,7 +67,10 @@
     <module name="MagicNumber">
       <property name="ignoreNumbers" value="-1, 0, 1, 2, 100, 1000"/>
     </module>
-    <module name="MissingSwitchDefault"/>
+    <module name="MissingSwitchDefault">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="RedundantThrows">
       <property name="suppressLoadErrors" value="true"/>
     </module>

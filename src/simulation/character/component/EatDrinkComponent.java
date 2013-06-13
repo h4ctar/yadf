@@ -35,12 +35,14 @@ import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
+import simulation.character.IEatDrinkComponent;
+import simulation.character.IHealthComponent;
 import simulation.job.EatDrinkJob;
 
 /**
  * The Class EatDrinkComponent.
  */
-public class EatDrinkComponent extends AbstractCharacterComponent {
+public class EatDrinkComponent extends AbstractCharacterComponent implements IEatDrinkComponent {
 
     /** How many simulation steps before the dwarf will want to eat. */
     private static final long HUNGER_EAT_THRESHOLD = Region.SIMULATION_STEPS_PER_DAY;
@@ -70,6 +72,7 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
      * Can work.
      * @return true, if successful
      */
+    @Override
     public boolean canWork() {
         // Can only work if is neither eating or drinking
         return (eatJob == null || eatJob.isLooking()) && (drinkJob == null || drinkJob.isLooking());
@@ -78,6 +81,7 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
     /**
      * Drink.
      */
+    @Override
     public void drink() {
         thirst = 0;
     }
@@ -85,6 +89,7 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
     /**
      * Eat.
      */
+    @Override
     public void eat() {
         hunger = 0;
     }
@@ -93,6 +98,7 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
      * Gets the hunger.
      * @return the hunger
      */
+    @Override
     public int getHunger() {
         return (int) (hunger * 100 / HUNGER_EAT_THRESHOLD);
     }
@@ -101,6 +107,7 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
      * Gets the thirst.
      * @return the thirst
      */
+    @Override
     public int getThirst() {
         return (int) (thirst * 100 / THIRST_DRINK_THRESHOLD);
     }
@@ -130,11 +137,11 @@ public class EatDrinkComponent extends AbstractCharacterComponent {
         }
 
         if (hunger > HUNGER_SICK_THRESHOLD) {
-            character.getHealth().decrementHealth();
+            character.getComponent(IHealthComponent.class).decrementHealth();
         }
 
         if (thirst > THIRST_SICK_THRESHOLD) {
-            character.getHealth().decrementHealth();
+            character.getComponent(IHealthComponent.class).decrementHealth();
         }
 
         if (eatJob != null && eatJob.isDone()) {

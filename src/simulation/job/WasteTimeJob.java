@@ -34,6 +34,8 @@ package simulation.job;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IMovementComponent;
+import simulation.character.component.StillMovementComponent;
 
 /**
  * The Class WasteTimeJob.
@@ -57,14 +59,13 @@ public class WasteTimeJob extends AbstractJob {
 
     /**
      * Instantiates a new waste time job.
-     * 
      * @param characterTmp the character
      * @param durationTmp the duration
      */
     public WasteTimeJob(final GameCharacter characterTmp, final long durationTmp) {
         character = characterTmp;
         duration = durationTmp;
-        character.beStillMovement();
+        character.setComponent(IMovementComponent.class, new StillMovementComponent());
     }
 
     @Override
@@ -74,7 +75,6 @@ public class WasteTimeJob extends AbstractJob {
 
     @Override
     public void interrupt(final String message) {
-        character.beIdleMovement();
         done = true;
     }
 
@@ -93,13 +93,9 @@ public class WasteTimeJob extends AbstractJob {
         if (isDone()) {
             return;
         }
-
         simulationSteps++;
-
         if (simulationSteps > duration) {
             done = true;
-            // TODO: replace these with character.setIdle(); or maybe the release lock should set idle.
-            character.beIdleMovement();
         }
     }
 }

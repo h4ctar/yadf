@@ -34,12 +34,13 @@ package simulation.character.component;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IMovementComponent;
 import simulation.map.RegionMap;
 
 /**
  * The Class StillMoveComponent.
  */
-public class StillMoveComponent extends AbstractMoveComponent {
+public class StillMovementComponent extends AbstractMoveComponent implements IMovementComponent {
 
     @Override
     public void kill() {

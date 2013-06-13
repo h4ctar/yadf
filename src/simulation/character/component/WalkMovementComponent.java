@@ -36,6 +36,7 @@ import java.util.List;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IMovementComponent;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.map.WalkableNode;
@@ -43,7 +44,7 @@ import simulation.map.WalkableNode;
 /**
  * The Class WalkMoveComponent.
  */
-public class WalkMoveComponent extends AbstractMoveComponent {
+public class WalkMovementComponent extends AbstractMoveComponent implements IMovementComponent {
 
     /** Where to go. */
     private final MapIndex target;
@@ -75,7 +76,7 @@ public class WalkMoveComponent extends AbstractMoveComponent {
      * @param targetTmp the target
      * @param nextToTmp the next to
      */
-    public WalkMoveComponent(final MapIndex targetTmp, final boolean nextToTmp) {
+    public WalkMovementComponent(final MapIndex targetTmp, final boolean nextToTmp) {
         target = new MapIndex(targetTmp);
         nextTo = nextToTmp;
     }

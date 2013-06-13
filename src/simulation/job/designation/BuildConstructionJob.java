@@ -37,11 +37,15 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.ISkillComponent;
+import simulation.character.component.IdleMovementComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.item.ItemTypeManager;
 import simulation.job.HaulJob;
 import simulation.job.WasteTimeJob;
+import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.BlockType;
 import simulation.map.MapIndex;
@@ -51,9 +55,6 @@ import simulation.map.WalkableNode;
  * The Class BuildConstructionJob.
  */
 public class BuildConstructionJob extends AbstractDesignationJob {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = -6711242158871047234L;
 
     /**
      * The different states that this job can be in.
@@ -70,6 +71,15 @@ public class BuildConstructionJob extends AbstractDesignationJob {
         /** The craft state. */
         BUILDING
     }
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -6711242158871047234L;
+
+    /** Amount of time to spend building (simulation steps). */
+    private static final long BUILD_DURATION = Region.SIMULATION_STEPS_PER_HOUR * 2;
+
+    /** The labor type required for this job. */
+    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Building");
 
     /** The current state of the job. */
     private State state = State.WAITING_FOR_RESOURCES;
@@ -89,9 +99,6 @@ public class BuildConstructionJob extends AbstractDesignationJob {
     /** Reference to the waste time job. */
     private WasteTimeJob wasteTimeJob;
 
-    /** Amount of time to spend building (simulation steps). */
-    private static final long BUILD_DURATION = Region.SIMULATION_STEPS_PER_HOUR * 2;
-
     /** The dwarf. */
     private Dwarf dwarf = null;
 
@@ -99,7 +106,7 @@ public class BuildConstructionJob extends AbstractDesignationJob {
     private boolean done = false;
 
     /** The walk component. */
-    private WalkMoveComponent walkComponent;
+    private WalkMovementComponent walkComponent;
 
     /**
      * Instantiates a new builds the construction job.
@@ -143,7 +150,7 @@ public class BuildConstructionJob extends AbstractDesignationJob {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message);
 
         if (dwarf != null) {
-            dwarf.beIdleMovement();
+            dwarf.setComponent(IMovementComponent.class, new IdleMovementComponent());
             dwarf.releaseLock();
         }
 
@@ -188,11 +195,12 @@ public class BuildConstructionJob extends AbstractDesignationJob {
 
         case WAITING_FOR_DWARF:
             if (dwarf == null) {
-                dwarf = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType("Building"));
+                dwarf = player.getIdleDwarf(REQUIRED_LABOR);
             }
 
             if (dwarf != null) {
-                walkComponent = dwarf.walkToPosition(position, false);
+                walkComponent = new WalkMovementComponent(position, false);
+                dwarf.setComponent(IMovementComponent.class, walkComponent);
                 state = State.GOTO_SITE;
             }
             break;
@@ -214,7 +222,6 @@ public class BuildConstructionJob extends AbstractDesignationJob {
 
             if (wasteTimeJob.isDone()) {
                 haulJob.getItem().setRemove();
-
                 // Move items
                 for (Item item : player.getStockManager().getItems()) {
                     if (item.getPosition().equals(position)) {
@@ -225,13 +232,10 @@ public class BuildConstructionJob extends AbstractDesignationJob {
                         }
                     }
                 }
-
                 region.getMap().setBlock(position, constructionType);
                 designation.removeFromDesignation(position);
-
-                dwarf.getSkill().increaseSkillLevel(LaborTypeManager.getInstance().getLaborType("Building"));
+                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
                 dwarf.releaseLock();
-
                 done = true;
             }
             break;

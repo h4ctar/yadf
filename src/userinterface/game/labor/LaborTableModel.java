@@ -38,7 +38,8 @@ import simulation.AbstractGameObject;
 import simulation.IPlayerListener;
 import simulation.Player;
 import simulation.character.Dwarf;
-import simulation.character.component.IComponentListener;
+import simulation.character.ISkillComponent;
+import simulation.character.component.ICharacterComponentListener;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import controller.AbstractController;
@@ -47,7 +48,7 @@ import controller.command.EnableLaborCommand;
 /**
  * The Class LaborTableModel.
  */
-public class LaborTableModel extends AbstractTableModel implements IPlayerListener, IComponentListener {
+public class LaborTableModel extends AbstractTableModel implements IPlayerListener, ICharacterComponentListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2428815575025895385L;
@@ -68,7 +69,7 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
         controller = controllerTmp;
         player.addListener(this);
         for (Dwarf dwarf : player.getDwarfs()) {
-            dwarf.getSkill().addListener(this);
+            dwarf.getComponent(ISkillComponent.class).addListener(this);
         }
     }
 
@@ -114,7 +115,7 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
         Dwarf dwarf = player.getDwarfs().toArray(new Dwarf[0])[rowIndex];
 
         if (columnIndex == 0) {
-            LaborType profession = dwarf.getSkill().getProfession();
+            LaborType profession = dwarf.getComponent(ISkillComponent.class).getProfession();
             String professionString = " (" + profession.professionName + ")";
             return dwarf.getName() + professionString;
         }
@@ -123,8 +124,8 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
             return null;
         }
         LaborType laborType = (LaborType) LaborTypeManager.getInstance().getLaborTypes().toArray()[columnIndex - 1];
-        Integer skill = new Integer(dwarf.getSkill().getLaborSkill(laborType));
-        Boolean enabled = new Boolean(dwarf.getSkill().isLaborEnabled(laborType));
+        Integer skill = new Integer(dwarf.getComponent(ISkillComponent.class).getLaborSkill(laborType));
+        Boolean enabled = new Boolean(dwarf.getComponent(ISkillComponent.class).isLaborEnabled(laborType));
 
         return new LaborNode(skill, enabled);
     }
@@ -143,7 +144,7 @@ public class LaborTableModel extends AbstractTableModel implements IPlayerListen
         Logger.getInstance().log(this, "playerChanged");
         if (gameObject instanceof Dwarf) {
             Dwarf dwarf = (Dwarf) gameObject;
-            dwarf.getSkill().addListener(this);
+            dwarf.getComponent(ISkillComponent.class).addListener(this);
             fireTableDataChanged();
         }
     }

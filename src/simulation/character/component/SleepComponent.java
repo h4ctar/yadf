@@ -4,12 +4,13 @@ import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
+import simulation.character.ISleepComponent;
 import simulation.job.SleepJob;
 
 /**
  * Component that makes the dwarf sleep when they get tired.
  */
-public class SleepComponent extends AbstractCharacterComponent {
+public class SleepComponent extends AbstractCharacterComponent implements ISleepComponent {
 
     /** How many simulation steps before the dwarf will want to sleep. */
     private static final long SLEEP_THRESHOLD = Region.SIMULATION_STEPS_PER_DAY;

@@ -36,11 +36,14 @@ import simulation.Player;
 import simulation.Region;
 import simulation.Tree;
 import simulation.character.Dwarf;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.ISkillComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
 import simulation.job.WasteTimeJob;
+import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
 
@@ -48,9 +51,6 @@ import simulation.map.MapIndex;
  * The Class ChopTreeJob.
  */
 public class ChopTreeJob extends AbstractDesignationJob {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = -7689577169283098909L;
 
     /**
      * All the possible states that the job can be in.
@@ -64,6 +64,15 @@ public class ChopTreeJob extends AbstractDesignationJob {
         CHOP_TREE
     }
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -7689577169283098909L;
+
+    /** Amount of time to spend chopping down the tree (simulation steps). */
+    private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
+
+    /** The labor type required for this job. */
+    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Wood cutting");
+
     /** The state. */
     private State state = State.WAITING_FOR_DWARF;
 
@@ -74,13 +83,10 @@ public class ChopTreeJob extends AbstractDesignationJob {
     private final ChopTreeDesignation designation;
 
     /** The move component. */
-    private WalkMoveComponent moveComponent = null;
+    private WalkMovementComponent moveComponent = null;
 
     /** Reference to the waste time job. */
     private WasteTimeJob wasteTimeJob;
-
-    /** Amount of time to spend chopping down the tree (simulation steps). */
-    private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 
     /** The dwarf. */
     private Dwarf dwarf;
@@ -118,7 +124,6 @@ public class ChopTreeJob extends AbstractDesignationJob {
         }
 
         if (dwarf != null) {
-            dwarf.beIdleMovement();
             dwarf.releaseLock();
         }
 
@@ -143,9 +148,10 @@ public class ChopTreeJob extends AbstractDesignationJob {
 
         switch (state) {
         case WAITING_FOR_DWARF:
-            dwarf = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType("Wood cutting"));
+            dwarf = player.getIdleDwarf(REQUIRED_LABOR);
             if (dwarf != null) {
-                moveComponent = dwarf.walkToPosition(tree.getPosition(), false);
+                moveComponent = new WalkMovementComponent(tree.getPosition(), false);
+                dwarf.setComponent(IMovementComponent.class, moveComponent);
                 state = State.GOTO;
             }
             break;
@@ -177,8 +183,7 @@ public class ChopTreeJob extends AbstractDesignationJob {
                 Item log = ItemTypeManager.getInstance().createItem(tree.getPosition(), itemType, player);
                 player.getStockManager().addItem(log);
                 tree.setRemove();
-                dwarf.getSkill().increaseSkillLevel(LaborTypeManager.getInstance().getLaborType("Wood cutting"));
-                dwarf.beIdleMovement();
+                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
                 dwarf.releaseLock();
                 done = true;
             }

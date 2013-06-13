@@ -38,13 +38,14 @@ import misc.MyRandom;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IMovementComponent;
 import simulation.map.RegionMap;
 import simulation.map.WalkableNode;
 
 /**
  * The Class IdleMoveComponent.
  */
-public class IdleMoveComponent extends AbstractMoveComponent {
+public class IdleMovementComponent extends AbstractMoveComponent implements IMovementComponent {
 
     /** How many simulation steps since last walking step taken. */
     private int simulationSteps = 0;

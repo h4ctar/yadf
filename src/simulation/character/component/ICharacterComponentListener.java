@@ -3,7 +3,7 @@ package simulation.character.component;
 /**
  * Interface for a character component listener.
  */
-public interface IComponentListener {
+public interface ICharacterComponentListener {
 
     /**
      * Called when the component is changed.

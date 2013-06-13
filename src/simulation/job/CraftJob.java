@@ -39,10 +39,13 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.ISkillComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
+import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.recipe.Recipe;
 import simulation.workshop.Workshop;
@@ -90,13 +93,16 @@ public class CraftJob extends AbstractJob {
     private boolean done = false;
 
     /** The walk component. */
-    private WalkMoveComponent walkComponent;
+    private WalkMovementComponent walkComponent;
 
     /** The dwarf. */
     private Dwarf dwarf;
 
     /** References to the haul jobs that are scheduled for materials. */
     private final List<HaulJob> haulJobs = new ArrayList<>();
+
+    /** The required labor type for this job. */
+    private final LaborType requiredLabor;
 
     /**
      * Instantiates a new craft job.
@@ -106,8 +112,8 @@ public class CraftJob extends AbstractJob {
     public CraftJob(final Workshop workshopTmp, final Recipe recipeTmp) {
         workshop = workshopTmp;
         recipe = recipeTmp;
-        // TODO: check if workshop is occupied
         workshop.setOccupied(true);
+        requiredLabor = LaborTypeManager.getInstance().getLaborType(recipe.skill);
     }
 
     @Override
@@ -185,11 +191,12 @@ public class CraftJob extends AbstractJob {
 
         case WAITING_FOR_DWARF:
             if (dwarf == null) {
-                dwarf = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType(recipe.skill));
+                dwarf = player.getIdleDwarf(requiredLabor);
             }
 
             if (dwarf != null) {
-                walkComponent = dwarf.walkToPosition(workshop.getRandomPosition(), false);
+                walkComponent = new WalkMovementComponent(workshop.getRandomPosition(), false);
+                dwarf.setComponent(IMovementComponent.class, walkComponent);
                 state = State.GOTO_WORKSHOP;
             }
             break;
@@ -213,21 +220,16 @@ public class CraftJob extends AbstractJob {
                 for (HaulJob haulJob : haulJobs) {
                     haulJob.getItem().setRemove();
                 }
-
                 for (int i = 0; i < recipe.quantity; i++) {
                     Item newItem = ItemTypeManager.getInstance().createItem(workshop.getPosition(), recipe.itemType,
                             player);
                     player.getStockManager().addItem(newItem);
                 }
-
                 workshop.setOccupied(false);
-
                 if (recipe.skill != null) {
-                    dwarf.getSkill().increaseSkillLevel(LaborTypeManager.getInstance().getLaborType(recipe.skill));
+                    dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(requiredLabor);
                 }
-
                 dwarf.releaseLock();
-
                 done = true;
             }
             break;

@@ -35,11 +35,14 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.WalkMoveComponent;
+import simulation.character.IMovementComponent;
+import simulation.character.ISkillComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
 import simulation.job.WasteTimeJob;
+import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
@@ -48,9 +51,6 @@ import simulation.map.RegionMap;
  * Task to do some mining.
  */
 public class MineJob extends AbstractDesignationJob {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = -43625505095983333L;
 
     /**
      * The different states that this job can be in.
@@ -64,6 +64,15 @@ public class MineJob extends AbstractDesignationJob {
         MINE
     }
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -43625505095983333L;
+
+    /** Amount of time to spend mining (simulation steps). */
+    private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
+
+    /** The labor type required for this job. */
+    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Mining");
+
     /** The state. */
     private State state = State.START;
 
@@ -74,13 +83,10 @@ public class MineJob extends AbstractDesignationJob {
     private final MineDesignation designation;
 
     /** The move component. */
-    private WalkMoveComponent moveComponent = null;
+    private WalkMovementComponent moveComponent = null;
 
     /** Reference to the waste time job. */
     private WasteTimeJob wasteTimeJob;
-
-    /** Amount of time to spend mining (simulation steps). */
-    private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 
     /** The dwarf. */
     private Dwarf dwarf = null;
@@ -90,12 +96,12 @@ public class MineJob extends AbstractDesignationJob {
 
     /**
      * Constructor for the mine task.
-     * @param position the position
-     * @param designation the designation
+     * @param positionTmp the position to mine
+     * @param designationTmp the designation
      */
-    public MineJob(final MapIndex position, final MineDesignation designation) {
-        this.position = position;
-        this.designation = designation;
+    public MineJob(final MapIndex positionTmp, final MineDesignation designationTmp) {
+        position = positionTmp;
+        designation = designationTmp;
     }
 
     @Override
@@ -111,18 +117,13 @@ public class MineJob extends AbstractDesignationJob {
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-
         designation.removeFromDesignation(position);
-
         if (wasteTimeJob != null) {
             wasteTimeJob.interrupt("Channel job was interrupted");
         }
-
         if (dwarf != null) {
-            dwarf.beIdleMovement();
             dwarf.releaseLock();
         }
-
         done = true;
     }
 
@@ -144,28 +145,20 @@ public class MineJob extends AbstractDesignationJob {
 
         switch (state) {
         case START:
-            if (region.getMap().getAdjacencies(position).isEmpty()) {
-                return;
+            if (!region.getMap().getAdjacencies(position).isEmpty()) {
+                dwarf = player.getIdleDwarf(REQUIRED_LABOR);
+                if (dwarf != null) {
+                    moveComponent = new WalkMovementComponent(position, false);
+                    dwarf.setComponent(IMovementComponent.class, moveComponent);
+                    state = State.GOTO;
+                }
             }
-
-            dwarf = player.getIdleDwarf(LaborTypeManager.getInstance().getLaborType("Mining"));
-
-            if (dwarf == null) {
-                return;
-            }
-
-            moveComponent = dwarf.walkToPosition(position, true);
-
-            state = State.GOTO;
             break;
 
         case GOTO:
             if (moveComponent.isNoPath()) {
                 interrupt("No path to site");
-                return;
-            }
-
-            if (moveComponent.isArrived()) {
+            } else if (moveComponent.isArrived()) {
                 state = State.MINE;
                 wasteTimeJob = new WasteTimeJob(dwarf, DURATION);
             }
@@ -173,27 +166,20 @@ public class MineJob extends AbstractDesignationJob {
 
         case MINE:
             wasteTimeJob.update(player, region);
-
-            if (!wasteTimeJob.isDone()) {
-                return;
+            if (wasteTimeJob.isDone()) {
+                RegionMap map = region.getMap();
+                String itemTypeName = map.getBlock(position).itemMined;
+                if (itemTypeName != null) {
+                    ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
+                    Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, player);
+                    player.getStockManager().addItem(blockItem);
+                }
+                map.mineBlock(position);
+                designation.removeFromDesignation(position);
+                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
+                dwarf.releaseLock();
+                done = true;
             }
-
-            RegionMap map = region.getMap();
-
-            String itemTypeName = map.getBlock(position).itemMined;
-            if (itemTypeName != null) {
-                ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
-                Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, player);
-                player.getStockManager().addItem(blockItem);
-            }
-            map.mineBlock(position);
-            designation.removeFromDesignation(position);
-            // TODO: move this into static attribute
-            dwarf.getSkill().increaseSkillLevel(LaborTypeManager.getInstance().getLaborType("Mining"));
-            // TODO: move this to dwarf to fix when dead bug
-            dwarf.beIdleMovement();
-            dwarf.releaseLock();
-            done = true;
             break;
         }
     }
