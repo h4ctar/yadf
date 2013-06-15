@@ -79,19 +79,19 @@ IPlayer</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>206.0</double>
+      <double>268.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>443.0</double>
+      <double>438.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>206.0</double>
-     <double>443.0</double>
+     <double>268.0</double>
+     <double>438.0</double>
     </void>
    </object>
   </void>
@@ -137,24 +137,27 @@ IPlayer</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>653.0</double>
+      <double>554.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>438.0</double>
+      <double>442.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>653.0</double>
-     <double>438.0</double>
+     <double>554.0</double>
+     <double>442.0</double>
     </void>
    </object>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="HV"/>
+    </void>
     <void property="endLabel">
      <string>*</string>
     </void>
@@ -191,6 +194,9 @@ IPlayer</string>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="HV"/>
+    </void>
     <void property="endLabel">
      <string>*</string>
     </void>
