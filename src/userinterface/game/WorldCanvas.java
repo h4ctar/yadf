@@ -49,7 +49,7 @@ import simulation.Tree;
 import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
 import simulation.character.Goblin;
-import simulation.character.ISkillComponent;
+import simulation.character.component.ISkillComponent;
 import simulation.farm.Farm;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;

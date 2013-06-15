@@ -38,10 +38,12 @@ import java.util.Map;
 
 import logger.Logger;
 import simulation.AbstractEntity;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.component.HealthComponent;
 import simulation.character.component.ICharacterComponent;
+import simulation.character.component.IHealthComponent;
+import simulation.character.component.IMovementComponent;
 import simulation.character.component.IdleMovementComponent;
 import simulation.character.component.StillMovementComponent;
 import simulation.map.MapIndex;
@@ -58,7 +60,7 @@ public class GameCharacter extends AbstractEntity {
     private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new HashMap<>();
 
     /** The list of listeners. */
-    private final List<ICharacterListener> listeners;
+    private final List<ICharacterListener> listeners = new ArrayList<>();
 
     /** The dead. */
     protected boolean dead;
@@ -69,18 +71,20 @@ public class GameCharacter extends AbstractEntity {
     /** The lock. */
     private boolean locked;
 
+    private final IPlayer player;
+
     /**
      * Instantiates a new game character.
      * 
      * @param nameTmp the name
      * @param position the position
      */
-    public GameCharacter(final String nameTmp, final MapIndex position) {
+    public GameCharacter(final String nameTmp, final MapIndex position, final IPlayer playerTmp) {
         super(position);
         name = nameTmp;
+        player = playerTmp;
         setComponent(IHealthComponent.class, new HealthComponent());
         setComponent(IMovementComponent.class, new IdleMovementComponent());
-        listeners = new ArrayList<>();
     }
 
     /**
@@ -170,17 +174,18 @@ public class GameCharacter extends AbstractEntity {
     public void releaseLock() {
         locked = false;
         notifyListeners();
-        setComponent(IMovementComponent.class, new IdleMovementComponent());
+        if (!dead) {
+            setComponent(IMovementComponent.class, new IdleMovementComponent());
+        }
     }
 
     /**
      * Update all the components.
-     * @param player the player
      * @param region the region
      */
-    public void update(final Player player, final Region region) {
+    public void update(final Region region) {
         for (ICharacterComponent component : components.values()) {
-            component.update(this, player, region);
+            component.update(this, region);
         }
     }
 
@@ -191,5 +196,9 @@ public class GameCharacter extends AbstractEntity {
         for (ICharacterListener listener : listeners) {
             listener.charactedChanged();
         }
+    }
+
+    public IPlayer getPlayer() {
+        return player;
     }
 }

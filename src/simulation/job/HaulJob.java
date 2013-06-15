@@ -32,11 +32,12 @@
 package simulation.job;
 
 import logger.Logger;
+import simulation.IPlayerListener;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.IInventoryComponent;
-import simulation.character.IMovementComponent;
+import simulation.character.component.IInventoryComponent;
+import simulation.character.component.IMovementComponent;
 import simulation.character.component.WalkMovementComponent;
 import simulation.item.IContainer;
 import simulation.item.Item;
@@ -44,16 +45,14 @@ import simulation.item.ItemType;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
+import simulation.stock.IStockManagerListener;
 
 /**
  * The Class HaulJob.
  * 
  * A job which hauls an item to some place.
  */
-public class HaulJob extends AbstractJob {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = -1705328544980248473L;
+public class HaulJob extends AbstractJob implements IStockManagerListener, IPlayerListener {
 
     /** All the possible job states. */
     enum State {
@@ -66,6 +65,12 @@ public class HaulJob extends AbstractJob {
         /** The dwarf is hauling the item to the drop location. */
         GOTO_DROP
     }
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1705328544980248473L;
+
+    /** The labor type required for this job. */
+    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Hauling");
 
     /** The current state of the job. */
     private State state;
@@ -105,7 +110,8 @@ public class HaulJob extends AbstractJob {
             final MapIndex dropPositionTmp) {
         this(itemTmp, containerTmp, dropPositionTmp);
         character = characterTmp;
-        state = State.LOOKING_FOR_ITEM;
+        state = State.WAITING_FOR_DWARF;
+        character.getPlayer().addListener(this);
     }
 
     /**
@@ -133,6 +139,11 @@ public class HaulJob extends AbstractJob {
         dropPosition = dropPositionTmp;
         itemType = itemTypeTmp;
         state = State.LOOKING_FOR_ITEM;
+        character.getPlayer().getStockManager().addListener(itemType, this);
+    }
+
+    private void updateLookingForItem() {
+
     }
 
     /**
@@ -215,8 +226,7 @@ public class HaulJob extends AbstractJob {
 
         case WAITING_FOR_DWARF:
             if (character == null) {
-                LaborType requiredLabor = LaborTypeManager.getInstance().getLaborType("Hauling");
-                character = player.getIdleDwarf(requiredLabor);
+                character = player.getIdleDwarf(REQUIRED_LABOR);
                 needToReleaseLock = true;
             }
             if (character != null) {
@@ -272,5 +282,11 @@ public class HaulJob extends AbstractJob {
         default:
             break;
         }
+    }
+
+    @Override
+    public void stockManagerChanged() {
+        // TODO Auto-generated method stub
+
     }
 }

@@ -41,8 +41,8 @@ import logger.Logger;
 import misc.MyRandom;
 import misc.NameGenerator;
 import simulation.character.Dwarf;
-import simulation.character.IEatDrinkComponent;
-import simulation.character.ISkillComponent;
+import simulation.character.component.IEatDrinkComponent;
+import simulation.character.component.ISkillComponent;
 import simulation.farm.Farm;
 import simulation.item.Item;
 import simulation.item.ItemTypeManager;
@@ -51,13 +51,14 @@ import simulation.labor.LaborType;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.room.Room;
+import simulation.stock.IStockManager;
 import simulation.stock.StockManager;
 import simulation.workshop.Workshop;
 
 /**
  * The Class Player.
  */
-public class Player extends AbstractGameObject {
+public class Player extends AbstractGameObject implements IPlayer {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -6334725429593228897L;
@@ -120,6 +121,7 @@ public class Player extends AbstractGameObject {
      * Add a new listener to this player.
      * @param listener the listener to add
      */
+    @Override
     public void addListener(final IPlayerListener listener) {
         listeners.add(listener);
     }
@@ -214,7 +216,7 @@ public class Player extends AbstractGameObject {
             }
 
             if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor, dwarf)
-                    && dwarf.getComponent(IEatDrinkComponent.class).canWork() && dwarf.acquireLock()) {
+                    && !dwarf.getComponent(IEatDrinkComponent.class).isHungryOrThirsty() && dwarf.acquireLock()) {
                 return dwarf;
             }
         }
@@ -280,7 +282,8 @@ public class Player extends AbstractGameObject {
      * Gets the stock manager.
      * @return the stock manager
      */
-    public StockManager getStockManager() {
+    @Override
+    public IStockManager getStockManager() {
         return stockManager;
     }
 
@@ -342,7 +345,7 @@ public class Player extends AbstractGameObject {
         stockManager.update(this);
 
         for (Dwarf dwarf : dwarfs) {
-            dwarf.update(this, region);
+            dwarf.update(region);
         }
         for (Farm farm : farms) {
             farm.update(this);

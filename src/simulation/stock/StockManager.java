@@ -32,15 +32,16 @@
 package simulation.stock;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
 import simulation.Player;
 import simulation.item.ContainerItem;
-import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.map.MapArea;
@@ -49,7 +50,7 @@ import simulation.map.MapIndex;
 /**
  * The Class StockManager, manages items for a player including stockpiles.
  */
-public class StockManager extends AbstractGameObject implements IContainer, Serializable {
+public class StockManager extends AbstractGameObject implements IStockManager, Serializable {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 2947690954735554619L;
@@ -61,30 +62,42 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
     private final Set<Item> items = new HashSet<>();
 
     /** Listeners to this stock manager. */
-    private final Set<IStockManagerListener> listeners = new HashSet<>();
+    private final Map<ItemType, Set<IStockManagerListener>> listeners = new HashMap<>();
 
     @Override
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item - itemType: " + item.getType());
         items.add(item);
-        notifyListeners();
+        notifyListeners(item.getType());
         return true;
     }
 
     /**
-     * Add a listener to the stock manager.
-     * @param listener the new listener
+     * Gets all the unstored items.
+     * @return A list of references to all the unstored items
      */
-    public void addListener(final IStockManagerListener listener) {
-        listeners.add(listener);
+    public Set<Item> getItems() {
+        return items;
     }
 
     /**
-     * Adds a new stockpile to this stock manager.
-     * @param stockpile The new stockpile
+     * Get an item located at a specific map position.
+     * @param index the map position
+     * @return the item, null if no item found
      */
-    public void addStockpile(final Stockpile stockpile) {
-        stockpiles.add(stockpile);
+    public Item getItem(final MapIndex index) {
+        for (Item item : items) {
+            if (index.equals(item.getPosition())) {
+                return item;
+            }
+        }
+        for (Stockpile stockpile : stockpiles) {
+            Item item = stockpile.getItem(index);
+            if (item != null) {
+                return item;
+            }
+        }
+        return null;
     }
 
     /**
@@ -117,70 +130,36 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
         return count;
     }
 
-    /**
-     * Gets all the unstored items.
-     * @return A list of references to all the unstored items
-     */
-    public Set<Item> getItems() {
-        return items;
+    @Override
+    public void addListener(final ItemType itemType, final IStockManagerListener listener) {
+        if (!listeners.containsKey(itemType)) {
+            listeners.put(itemType, new HashSet<IStockManagerListener>());
+        }
+        listeners.get(itemType).add(listener);
+    }
+
+    @Override
+    public void removeListener(final ItemType itemType, final IStockManagerListener listener) {
+        if (listeners.containsKey(itemType)) {
+            listeners.get(itemType).remove(listener);
+        }
+    }
+
+    @Override
+    public void removeListener(final IStockManagerListener listener) {
+        for (Set<IStockManagerListener> listenersTmp : listeners.values()) {
+            listenersTmp.remove(listener);
+        }
     }
 
     /**
-     * Gets the stockpile.
-     * @param stockpileId the stockpile id
-     * @return the stockpile
+     * Notify all listeners that something has changed in the stock manager.
+     * @param itemType the listeners of this item type will be notified
      */
-    public Stockpile getStockpile(final int stockpileId) {
-        for (Stockpile stockpile : stockpiles) {
-            if (stockpile.getId() == stockpileId) {
-                return stockpile;
-            }
+    private void notifyListeners(final ItemType itemType) {
+        for (IStockManagerListener listener : listeners.get(itemType)) {
+            listener.stockManagerChanged();
         }
-        return null;
-    }
-
-    /**
-     * Gets the stockpile.
-     * @param index the index
-     * @return the stockpile
-     */
-    public Stockpile getStockpile(final MapIndex index) {
-        for (Stockpile stockpile : stockpiles) {
-            MapArea area = stockpile.getArea();
-            if (index.x >= area.pos.x && index.x < area.pos.x + area.width && index.y >= area.pos.y
-                    && index.y < area.pos.y + area.height && area.pos.z == index.z) {
-                return stockpile;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get an item located at a specific map position.
-     * @param index the map position
-     * @return the item, null if no item found
-     */
-    public Item getItem(final MapIndex index) {
-        for (Item item : items) {
-            if (index.equals(item.getPosition())) {
-                return item;
-            }
-        }
-        for (Stockpile stockpile : stockpiles) {
-            Item item = stockpile.getItem(index);
-            if (item != null) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Gets references to all the stockpiles.
-     * @return A vector of references to all the stockpiles
-     */
-    public Set<Stockpile> getStockpiles() {
-        return stockpiles;
     }
 
     /**
@@ -188,6 +167,7 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
      * @param itemTypes the item types to find
      * @return A reference to the found item, will be null if none could be found
      */
+    @Override
     public Item getUnstoredItem(final List<ItemType> itemTypes) {
         Item foundItem = null;
         for (Item item : items) {
@@ -285,9 +265,55 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
             }
         }
         if (itemRemoved) {
-            notifyListeners();
+            notifyListeners(item.getType());
         }
         return itemRemoved;
+    }
+
+    /**
+     * Adds a new stockpile to this stock manager.
+     * @param stockpile The new stockpile
+     */
+    public void addStockpile(final Stockpile stockpile) {
+        stockpiles.add(stockpile);
+    }
+
+    /**
+     * Gets the stockpile.
+     * @param stockpileId the stockpile id
+     * @return the stockpile
+     */
+    public Stockpile getStockpile(final int stockpileId) {
+        for (Stockpile stockpile : stockpiles) {
+            if (stockpile.getId() == stockpileId) {
+                return stockpile;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the stockpile.
+     * @param index the index
+     * @return the stockpile
+     */
+    public Stockpile getStockpile(final MapIndex index) {
+        for (Stockpile stockpile : stockpiles) {
+            MapArea area = stockpile.getArea();
+            if (index.x >= area.pos.x && index.x < area.pos.x + area.width && index.y >= area.pos.y
+                    && index.y < area.pos.y + area.height && area.pos.z == index.z) {
+                return stockpile;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets references to all the stockpiles.
+     * @return A vector of references to all the stockpiles
+     */
+    public Set<Stockpile> getStockpiles() {
+        return stockpiles;
     }
 
     /**
@@ -305,22 +331,5 @@ public class StockManager extends AbstractGameObject implements IContainer, Seri
                 items.remove(item);
             }
         }
-    }
-
-    /**
-     * Notify all listeners that something has changed in the stock manager.
-     */
-    private void notifyListeners() {
-        for (IStockManagerListener listener : listeners) {
-            listener.stockManagerChanged();
-        }
-    }
-
-    /**
-     * Stop a listener from listening.
-     * @param listener the listener
-     */
-    public void removeListener(final IStockManagerListener listener) {
-        listeners.remove(listener);
     }
 }

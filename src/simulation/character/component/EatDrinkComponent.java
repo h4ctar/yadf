@@ -35,8 +35,6 @@ import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
-import simulation.character.IEatDrinkComponent;
-import simulation.character.IHealthComponent;
 import simulation.job.EatDrinkJob;
 
 /**
@@ -68,53 +66,31 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
     /** A reference to the drink job. */
     private EatDrinkJob drinkJob;
 
-    /**
-     * Can work.
-     * @return true, if successful
-     */
     @Override
-    public boolean canWork() {
-        // Can only work if is neither eating or drinking
-        return (eatJob == null || eatJob.isLooking()) && (drinkJob == null || drinkJob.isLooking());
+    public boolean isHungryOrThirsty() {
+        return !(eatJob == null || eatJob.isLooking()) || !(drinkJob == null || drinkJob.isLooking());
     }
 
-    /**
-     * Drink.
-     */
     @Override
     public void drink() {
         thirst = 0;
     }
 
-    /**
-     * Eat.
-     */
     @Override
     public void eat() {
         hunger = 0;
     }
 
-    /**
-     * Gets the hunger.
-     * @return the hunger
-     */
     @Override
     public int getHunger() {
         return (int) (hunger * 100 / HUNGER_EAT_THRESHOLD);
     }
 
-    /**
-     * Gets the thirst.
-     * @return the thirst
-     */
     @Override
     public int getThirst() {
         return (int) (thirst * 100 / THIRST_DRINK_THRESHOLD);
     }
 
-    /**
-     * Kill.
-     */
     @Override
     public void kill() {
         eatJob = null;

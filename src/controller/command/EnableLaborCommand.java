@@ -33,7 +33,7 @@ package controller.command;
 
 import simulation.Player;
 import simulation.character.Dwarf;
-import simulation.character.ISkillComponent;
+import simulation.character.component.ISkillComponent;
 
 /**
  * The Class EnableLaborCommand.

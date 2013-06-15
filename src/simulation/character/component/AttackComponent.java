@@ -34,12 +34,11 @@ package simulation.character.component;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.IHealthComponent;
 
 /**
  * The Class AttackComponent.
  */
-public class AttackComponent extends AbstractCharacterComponent {
+public class AttackComponent extends AbstractCharacterComponent implements IAttackComponent {
 
     /** The enemy. */
     private GameCharacter enemy;

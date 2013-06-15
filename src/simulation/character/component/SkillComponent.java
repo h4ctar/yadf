@@ -39,8 +39,6 @@ import java.util.Set;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.IInventoryComponent;
-import simulation.character.ISkillComponent;
 import simulation.item.Item;
 import simulation.job.PickupToolJob;
 import simulation.labor.LaborType;

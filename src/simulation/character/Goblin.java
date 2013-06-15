@@ -31,6 +31,7 @@
  */
 package simulation.character;
 
+import simulation.character.component.IKillEveryoneComponent;
 import simulation.character.component.KillEveryoneComponent;
 import simulation.map.MapIndex;
 

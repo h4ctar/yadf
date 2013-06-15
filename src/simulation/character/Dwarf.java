@@ -32,6 +32,11 @@
 package simulation.character;
 
 import simulation.character.component.EatDrinkComponent;
+import simulation.character.component.IEatDrinkComponent;
+import simulation.character.component.IInventoryComponent;
+import simulation.character.component.ISkillComponent;
+import simulation.character.component.ISleepComponent;
+import simulation.character.component.IWorkComponent;
 import simulation.character.component.InventoryComponent;
 import simulation.character.component.SkillComponent;
 import simulation.character.component.SleepComponent;

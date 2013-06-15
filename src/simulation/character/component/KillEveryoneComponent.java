@@ -34,7 +34,6 @@ package simulation.character.component;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.IKillEveryoneComponent;
 
 /**
  * The Class KillEveryoneComponent.

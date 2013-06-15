@@ -34,10 +34,6 @@ package simulation.character.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import simulation.Player;
-import simulation.Region;
-import simulation.character.GameCharacter;
-
 /**
  * The Interface ICharacterComponent.
  */
@@ -56,15 +52,6 @@ public abstract class AbstractCharacterComponent {
     }
 
     /**
-     * Update.
-     * 
-     * @param character the character
-     * @param player the player
-     * @param region the region
-     */
-    public abstract void update(GameCharacter character, Player player, Region region);
-
-    /**
      * Notify all of the listeners.
      */
     protected void notifyListeners() {
@@ -72,9 +59,4 @@ public abstract class AbstractCharacterComponent {
             listener.componentChanged();
         }
     }
-
-    /**
-     * Kill.
-     */
-    abstract void kill();
 }

@@ -4,7 +4,6 @@ import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
-import simulation.character.ISleepComponent;
 import simulation.job.SleepJob;
 
 /**
@@ -35,12 +34,13 @@ public class SleepComponent extends AbstractCharacterComponent implements ISleep
     }
 
     @Override
-    void kill() {
+    public void kill() {
     }
 
     /**
      * Sleep.
      */
+    @Override
     public void sleep() {
         sleepiness = 0;
     }

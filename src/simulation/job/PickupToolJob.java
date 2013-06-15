@@ -35,8 +35,8 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.IInventoryComponent;
-import simulation.character.IMovementComponent;
+import simulation.character.component.IInventoryComponent;
+import simulation.character.component.IMovementComponent;
 import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 

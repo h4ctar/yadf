@@ -90,7 +90,6 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         player = playerTmp;
         used = new boolean[area.width][area.height];
         Logger.getInstance().log(this, "New stockpile id: " + getId());
-        player.getStockManager().addListener(this);
     }
 
     @Override
@@ -276,10 +275,12 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         if (accept) {
             if (!acceptableItemTypes.contains(itemType)) {
                 acceptableItemTypes.add(itemType);
+                player.getStockManager().addListener(itemType, this);
                 createHaulJobs();
             }
         } else {
             acceptableItemTypes.remove(itemType);
+            player.getStockManager().removeListener(itemType, this);
             // Interrupt and remove haul tasks that have been started
             for (HaulJob haulJob : haulJobs) {
                 if (haulJob.getItem().getType().equals(itemTypeName)) {

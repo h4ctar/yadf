@@ -49,11 +49,11 @@ import javax.swing.WindowConstants;
 
 import simulation.character.Dwarf;
 import simulation.character.ICharacterListener;
-import simulation.character.IEatDrinkComponent;
-import simulation.character.IHealthComponent;
-import simulation.character.IInventoryComponent;
-import simulation.character.ISkillComponent;
 import simulation.character.component.ICharacterComponentListener;
+import simulation.character.component.IEatDrinkComponent;
+import simulation.character.component.IHealthComponent;
+import simulation.character.component.IInventoryComponent;
+import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.labor.LaborType;
 import userinterface.game.WorldCanvas;

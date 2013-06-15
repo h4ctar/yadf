@@ -34,7 +34,6 @@ package simulation.character.component;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.IInventoryComponent;
 import simulation.item.Item;
 
 /**
@@ -48,10 +47,7 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
     /** The tool holding. */
     private Item toolHolding;
 
-    /**
-     * Drop haul item.
-     * @param freeItem the free item
-     */
+    @Override
     public void dropHaulItem(final boolean freeItem) {
         if (itemHauling != null) {
             if (freeItem) {
@@ -62,9 +58,7 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
         }
     }
 
-    /**
-     * Drop tool.
-     */
+    @Override
     public void dropTool() {
         if (toolHolding != null) {
             toolHolding.setUsed(false);
@@ -73,18 +67,12 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
         }
     }
 
-    /**
-     * Gets the haul item.
-     * @return the haul item
-     */
+    @Override
     public Item getHaulItem() {
         return itemHauling;
     }
 
-    /**
-     * Gets the tool holding.
-     * @return the tool holding
-     */
+    @Override
     public Item getToolHolding() {
         return toolHolding;
     }
@@ -95,10 +83,7 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
         dropTool();
     }
 
-    /**
-     * Pickup haul item.
-     * @param item the item
-     */
+    @Override
     public void pickupHaulItem(final Item item) {
         if (itemHauling != null) {
             dropHaulItem(true);
@@ -109,10 +94,7 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
         notifyListeners();
     }
 
-    /**
-     * Pickup tool.
-     * @param tool the tool
-     */
+    @Override
     public void pickupTool(final Item tool) {
         if (toolHolding != null) {
             dropTool();

@@ -34,7 +34,7 @@ package simulation.job;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.IMovementComponent;
+import simulation.character.component.IMovementComponent;
 import simulation.character.component.StillMovementComponent;
 
 /**

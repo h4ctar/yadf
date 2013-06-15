@@ -36,7 +36,6 @@ import java.util.List;
 import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
-import simulation.character.IMovementComponent;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.map.WalkableNode;

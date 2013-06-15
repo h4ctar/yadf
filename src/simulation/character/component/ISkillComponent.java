@@ -1,6 +1,6 @@
-package simulation.character;
+package simulation.character.component;
 
-import simulation.character.component.ICharacterComponent;
+import simulation.character.GameCharacter;
 import simulation.labor.LaborType;
 
 public interface ISkillComponent extends ICharacterComponent {

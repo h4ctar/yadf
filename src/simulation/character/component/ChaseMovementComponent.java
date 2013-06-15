@@ -42,7 +42,7 @@ import simulation.map.WalkableNode;
 /**
  * The Class ChaseMoveComponent.
  */
-public class ChaseMoveComponent extends AbstractMoveComponent {
+public class ChaseMovementComponent extends AbstractMoveComponent implements IMovementComponent {
 
     /** The pursuee. */
     private GameCharacter pursuee;
@@ -58,7 +58,7 @@ public class ChaseMoveComponent extends AbstractMoveComponent {
      * 
      * @param pursueeTmp the pursuee
      */
-    public ChaseMoveComponent(final GameCharacter pursueeTmp) {
+    public ChaseMovementComponent(final GameCharacter pursueeTmp) {
         pursuee = pursueeTmp;
     }
 
