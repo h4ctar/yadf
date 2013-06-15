@@ -161,7 +161,7 @@ public class ChannelJob extends AbstractDesignationJob {
 
         switch (state) {
         case START:
-            dwarf = player.getIdleDwarf(REQUIRED_LABOR);
+            dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
             if (dwarf != null) {
                 moveComponent = new WalkMovementComponent(position, false);
                 dwarf.setComponent(IMovementComponent.class, moveComponent);

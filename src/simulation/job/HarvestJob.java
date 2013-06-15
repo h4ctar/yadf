@@ -145,7 +145,7 @@ public class HarvestJob extends AbstractJob {
         switch (state) {
         case WAITING_FOR_DWARF:
             if (dwarf == null) {
-                dwarf = player.getIdleDwarf(REQUIRED_LABOR);
+                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
                 needToReleaseLock = true;
             }
 

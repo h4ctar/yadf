@@ -42,6 +42,7 @@ import simulation.character.component.ISkillComponent;
 import simulation.character.component.IdleMovementComponent;
 import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
+import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
 import simulation.job.HaulJob;
 import simulation.job.WasteTimeJob;
@@ -181,8 +182,8 @@ public class BuildConstructionJob extends AbstractDesignationJob {
 
         switch (state) {
         case WAITING_FOR_RESOURCES:
-            haulJob = new HaulJob(ItemTypeManager.getInstance().getItemType("Rock"), player.getStockManager(),
-                    position);
+            ItemType itemType = ItemTypeManager.getInstance().getItemType("Rock");
+            haulJob = new HaulJob(itemType, player.getStockManager(), position, player);
             state = State.HAUL_RESOURCES;
             break;
 
@@ -195,7 +196,7 @@ public class BuildConstructionJob extends AbstractDesignationJob {
 
         case WAITING_FOR_DWARF:
             if (dwarf == null) {
-                dwarf = player.getIdleDwarf(REQUIRED_LABOR);
+                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
             }
 
             if (dwarf != null) {

@@ -138,7 +138,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
                 Item item = player.getStockManager().getUnstoredItem(contentItemType);
                 if (item != null) {
                     item.setUsed(true);
-                    HaulJob haulJob = new HaulJob(item, this, position);
+                    HaulJob haulJob = new HaulJob(item, this, position, player);
                     haulJob.addListener(this);
                     player.getJobManager().addJob(haulJob);
                     haulJobs.add(haulJob);

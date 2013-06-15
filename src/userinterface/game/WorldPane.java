@@ -279,7 +279,7 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
             // Left mouse button
             case MouseEvent.BUTTON1:
                 // If click on dwarf, show the dwarf interface
-                Dwarf dwarf = player.getDwarf(mouseIndex);
+                Dwarf dwarf = player.getDwarfManager().getDwarf(mouseIndex);
                 if (dwarf != null) {
                     dwarfInterface.setDwarf(dwarf, worldCanvas);
                     dwarfInterface.setVisible(true);

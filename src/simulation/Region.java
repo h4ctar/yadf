@@ -249,7 +249,7 @@ public class Region implements Serializable {
         Dwarf minDwarf = null;
 
         for (Player player : players) {
-            Set<Dwarf> dwarfs = player.getDwarfs();
+            Set<Dwarf> dwarfs = player.getDwarfManager().getDwarfs();
             for (Dwarf dwarf : dwarfs) {
                 if (!dwarf.isDead()) {
                     int distance = dwarf.getPosition().distance(position);
@@ -271,7 +271,7 @@ public class Region implements Serializable {
      */
     public GameCharacter getDwarf(final MapIndex mouseIndex) {
         for (Player player : players) {
-            for (GameCharacter dwarf : player.getDwarfs()) {
+            for (GameCharacter dwarf : player.getDwarfManager().getDwarfs()) {
                 if (dwarf.getPosition().equals(mouseIndex)) {
                     return dwarf;
                 }
@@ -288,7 +288,7 @@ public class Region implements Serializable {
      */
     public GameCharacter getGameCharacter(final MapIndex position) {
         for (Player player : players) {
-            Set<Dwarf> dwarfs = player.getDwarfs();
+            Set<Dwarf> dwarfs = player.getDwarfManager().getDwarfs();
             for (Dwarf dwarf : dwarfs) {
                 if (dwarf.getPosition().equals(position)) {
                     return dwarf;

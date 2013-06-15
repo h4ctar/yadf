@@ -17,9 +17,15 @@ public interface ICharacterComponent {
 
     /**
      * Add a listener to the component that will be notified whenever it changes.
-     * @param listener the listener
+     * @param listener the listener to add
      */
     void addListener(ICharacterComponentListener listener);
+
+    /**
+     * Remove a listener from this component.
+     * @param listener the listener to remove
+     */
+    void removeListener(ICharacterComponentListener listener);
 
     /**
      * Kill.

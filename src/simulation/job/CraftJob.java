@@ -168,7 +168,8 @@ public class CraftJob extends AbstractJob {
             for (Entry<ItemType, Integer> entry : recipe.resources.entrySet()) {
                 ItemType itemType = entry.getKey();
                 for (int i = 0; i < entry.getValue().intValue(); i++) {
-                    HaulJob haulJob = new HaulJob(itemType, player.getStockManager(), workshop.getRandomPosition());
+                    HaulJob haulJob = new HaulJob(itemType, player.getStockManager(), workshop.getRandomPosition(),
+                            player);
                     haulJobs.add(haulJob);
                 }
             }
@@ -191,7 +192,7 @@ public class CraftJob extends AbstractJob {
 
         case WAITING_FOR_DWARF:
             if (dwarf == null) {
-                dwarf = player.getIdleDwarf(requiredLabor);
+                dwarf = player.getDwarfManager().getIdleDwarf(requiredLabor);
             }
 
             if (dwarf != null) {

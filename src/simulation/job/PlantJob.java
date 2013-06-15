@@ -147,7 +147,7 @@ public class PlantJob extends AbstractJob {
         switch (state) {
         case START:
             if (dwarf == null) {
-                dwarf = player.getIdleDwarf(REQUIRED_LABOR);
+                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
                 needToReleaseLock = true;
             }
             if (dwarf == null) {

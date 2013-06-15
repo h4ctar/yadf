@@ -32,10 +32,11 @@
 package simulation.job;
 
 import logger.Logger;
-import simulation.AbstractGameObject;
-import simulation.IPlayerListener;
+import simulation.IDwarfManagerListener;
+import simulation.IPlayer;
 import simulation.Player;
 import simulation.Region;
+import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
 import simulation.character.component.IInventoryComponent;
 import simulation.character.component.IMovementComponent;
@@ -53,7 +54,7 @@ import simulation.stock.IStockManagerListener;
  * 
  * A job which hauls an item to some place.
  */
-public class HaulJob extends AbstractJob implements IStockManagerListener, IPlayerListener {
+public class HaulJob extends AbstractJob implements IStockManagerListener, IDwarfManagerListener {
 
     /** All the possible job states. */
     enum State {
@@ -100,6 +101,8 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IPlay
     /** The item type. */
     private final ItemType itemType;
 
+    private final IPlayer player;
+
     /**
      * Instantiates a new haul job.
      * @param characterTmp the character
@@ -109,10 +112,13 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IPlay
      */
     public HaulJob(final GameCharacter characterTmp, final Item itemTmp, final IContainer containerTmp,
             final MapIndex dropPositionTmp) {
-        this(itemTmp, containerTmp, dropPositionTmp);
+        item = itemTmp;
+        container = containerTmp;
+        dropPosition = dropPositionTmp;
         character = characterTmp;
+        itemType = item.getType();
+        player = character.getPlayer();
         state = State.WAITING_FOR_DWARF;
-        character.getPlayer().addListener(this);
     }
 
     /**
@@ -120,11 +126,14 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IPlay
      * @param itemTmp the item
      * @param containerTmp the container to put the item in
      * @param dropPositionTmp the drop position
+     * @param playerTmp the player
      */
-    public HaulJob(final Item itemTmp, final IContainer containerTmp, final MapIndex dropPositionTmp) {
+    public HaulJob(final Item itemTmp, final IContainer containerTmp, final MapIndex dropPositionTmp,
+            final IPlayer playerTmp) {
         item = itemTmp;
         container = containerTmp;
         dropPosition = dropPositionTmp;
+        player = playerTmp;
         itemType = item.getType();
         state = State.WAITING_FOR_DWARF;
     }
@@ -134,17 +143,15 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IPlay
      * @param itemTypeTmp the item
      * @param containerTmp the container to put the item in
      * @param dropPositionTmp the drop position
+     * @param playerTmp the player
      */
-    public HaulJob(final ItemType itemTypeTmp, final IContainer containerTmp, final MapIndex dropPositionTmp) {
+    public HaulJob(final ItemType itemTypeTmp, final IContainer containerTmp, final MapIndex dropPositionTmp,
+            final IPlayer playerTmp) {
         container = containerTmp;
         dropPosition = dropPositionTmp;
         itemType = itemTypeTmp;
+        player = playerTmp;
         state = State.LOOKING_FOR_ITEM;
-        character.getPlayer().getStockManager().addListener(itemType, this);
-    }
-
-    private void updateLookingForItem() {
-
     }
 
     /**
@@ -209,7 +216,7 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IPlay
     }
 
     @Override
-    public void update(final Player player, final Region region) {
+    public void update(final Player playerTmp, final Region regionTmp) {
         if (isDone()) {
             return;
         }
@@ -227,7 +234,7 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IPlay
 
         case WAITING_FOR_DWARF:
             if (character == null) {
-                character = player.getIdleDwarf(REQUIRED_LABOR);
+                character = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
                 needToReleaseLock = true;
             }
             if (character != null) {
@@ -292,7 +299,13 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IPlay
     }
 
     @Override
-    public void playerChanged(AbstractGameObject gameObject, boolean added) {
+    public void dwarfAdded(Dwarf dwarf) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void dwarfRemoved(Dwarf dwarf) {
         // TODO Auto-generated method stub
 
     }

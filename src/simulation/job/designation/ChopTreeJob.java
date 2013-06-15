@@ -148,7 +148,7 @@ public class ChopTreeJob extends AbstractDesignationJob {
 
         switch (state) {
         case WAITING_FOR_DWARF:
-            dwarf = player.getIdleDwarf(REQUIRED_LABOR);
+            dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
             if (dwarf != null) {
                 moveComponent = new WalkMovementComponent(tree.getPosition(), false);
                 dwarf.setComponent(IMovementComponent.class, moveComponent);

@@ -329,7 +329,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
                         if (item != null) {
                             item.setUsed(true);
                             used[x][y] = true;
-                            HaulJob haulJob = new HaulJob(item, this, area.pos.add(x, y, 0));
+                            HaulJob haulJob = new HaulJob(item, this, area.pos.add(x, y, 0), player);
                             haulJob.addListener(this);
                             player.getJobManager().addJob(haulJob);
                             haulJobs.add(haulJob);

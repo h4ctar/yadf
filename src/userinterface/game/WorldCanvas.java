@@ -390,7 +390,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
     private void drawDwarfs(final Graphics g) {
         Set<Player> players = region.getPlayers();
         for (Player playerTmp : players) {
-            Set<Dwarf> dwarfs = playerTmp.getDwarfs();
+            Set<Dwarf> dwarfs = playerTmp.getDwarfManager().getDwarfs();
             for (Dwarf dwarf : dwarfs) {
                 MapIndex position = dwarf.getPosition();
                 if (position.z == viewPosition.z) {

@@ -1,5 +1,6 @@
 package simulation;
 
+import simulation.character.IDwarfManager;
 import simulation.job.IJobManager;
 import simulation.stock.IStockManager;
 
@@ -20,8 +21,8 @@ public interface IPlayer {
     IJobManager getJobManager();
 
     /**
-     * Add a listener to this player, they will be notified when...
-     * @param listener
+     * Gets the dwarf manager.
+     * @return the dwarf manager
      */
-    void addListener(IPlayerListener listener);
+    IDwarfManager getDwarfManager();
 }

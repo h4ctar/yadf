@@ -16,5 +16,4 @@ public interface ISkillComponent extends ICharacterComponent {
     boolean isLaborEnabled(LaborType laborType);
 
     void setLaborEnabled(String laborTypeName, boolean enabled);
-
 }

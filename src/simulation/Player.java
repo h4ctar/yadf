@@ -31,7 +31,6 @@
  */
 package simulation;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -39,15 +38,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
 import misc.MyRandom;
-import misc.NameGenerator;
-import simulation.character.Dwarf;
-import simulation.character.component.IEatDrinkComponent;
-import simulation.character.component.ISkillComponent;
+import simulation.character.DwarfManager;
+import simulation.character.IDwarfManager;
 import simulation.farm.Farm;
 import simulation.item.Item;
 import simulation.item.ItemTypeManager;
 import simulation.job.JobManager;
-import simulation.labor.LaborType;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.room.Room;
@@ -72,8 +68,8 @@ public class Player extends AbstractGameObject implements IPlayer {
     /** The stock manager. */
     private final StockManager stockManager = new StockManager();
 
-    /** The dwarfs. */
-    private final Set<Dwarf> dwarfs = new CopyOnWriteArraySet<>();
+    /** The dwarf manager. */
+    private final DwarfManager dwarfManager = new DwarfManager(this);
 
     /** The rooms. */
     private final Set<Room> rooms = new CopyOnWriteArraySet<>();
@@ -84,12 +80,6 @@ public class Player extends AbstractGameObject implements IPlayer {
     /** The farms. */
     private final Set<Farm> farms = new CopyOnWriteArraySet<>();
 
-    /** The name generator. */
-    private NameGenerator nameGenerator;
-
-    /** All the listeners to this player. */
-    private final Set<IPlayerListener> listeners = new HashSet<>();
-
     /** The size of the embark area. */
     private static final int EMBARK_SIZE = 10;
 
@@ -99,12 +89,6 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     public Player(final String playerName) {
         name = playerName;
-        try {
-            nameGenerator = new NameGenerator("elven.txt");
-        } catch (Exception e) {
-            e.printStackTrace();
-            nameGenerator = null;
-        }
     }
 
     /**
@@ -114,27 +98,6 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     public void addFarm(final Farm farm) {
         farms.add(farm);
-        notifyListeners(farm, true);
-    }
-
-    /**
-     * Add a new listener to this player.
-     * @param listener the listener to add
-     */
-    @Override
-    public void addListener(final IPlayerListener listener) {
-        listeners.add(listener);
-    }
-
-    /**
-     * Adds the new dwarf.
-     * 
-     * @param position the position
-     */
-    public void addNewDwarf(final MapIndex position) {
-        Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position, this);
-        dwarfs.add(dwarf);
-        notifyListeners(dwarf, true);
     }
 
     /**
@@ -144,7 +107,6 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     public void addRoom(final Room room) {
         rooms.add(room);
-        notifyListeners(room, true);
     }
 
     /**
@@ -154,46 +116,6 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     public void addWorkshop(final Workshop workshop) {
         workshops.add(workshop);
-        notifyListeners(workshop, true);
-    }
-
-    /**
-     * Gets the dwarf.
-     * 
-     * @param id the id
-     * @return the dwarf
-     */
-    public Dwarf getDwarf(final int id) {
-        for (Dwarf dwarf : dwarfs) {
-            if (dwarf.getId() == id) {
-                return dwarf;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the dwarf at a specific position.
-     * @param position the position
-     * @return the dwarf
-     */
-    public Dwarf getDwarf(final MapIndex position) {
-        for (Dwarf dwarf : dwarfs) {
-            if (dwarf.getPosition().equals(position)) {
-                return dwarf;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets all the dwarfs.
-     * @return the dwarfs
-     */
-    public Set<Dwarf> getDwarfs() {
-        return dwarfs;
     }
 
     /**
@@ -202,26 +124,6 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     public Set<Farm> getFarms() {
         return farms;
-    }
-
-    /**
-     * Also acquires a lock on the dwarf.
-     * @param requiredLabor the required labor
-     * @return the idle dwarf
-     */
-    public Dwarf getIdleDwarf(final LaborType requiredLabor) {
-        for (Dwarf dwarf : dwarfs) {
-            if (dwarf.isDead()) {
-                continue;
-            }
-
-            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor, dwarf)
-                    && !dwarf.getComponent(IEatDrinkComponent.class).isHungryOrThirsty() && dwarf.acquireLock()) {
-                return dwarf;
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -344,10 +246,8 @@ public class Player extends AbstractGameObject implements IPlayer {
     public void update(final Region region) {
         jobManager.update(this, region);
         stockManager.update(this);
+        dwarfManager.update(region);
 
-        for (Dwarf dwarf : dwarfs) {
-            dwarf.update(region);
-        }
         for (Farm farm : farms) {
             farm.update(this);
         }
@@ -355,11 +255,6 @@ public class Player extends AbstractGameObject implements IPlayer {
             workshop.update(this);
         }
 
-        for (Dwarf dwarf : dwarfs.toArray(new Dwarf[0])) {
-            if (dwarf.getRemove()) {
-                dwarfs.remove(dwarf);
-            }
-        }
         for (Room room : rooms.toArray(new Room[0])) {
             if (room.getRemove()) {
                 rooms.remove(room);
@@ -386,7 +281,7 @@ public class Player extends AbstractGameObject implements IPlayer {
             pos.x = embarkPosition.x + random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
             pos.y = embarkPosition.y + random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
             pos.z = map.getHeight(pos.x, pos.y);
-            addNewDwarf(pos);
+            dwarfManager.addNewDwarf(pos);
         }
     }
 
@@ -410,13 +305,10 @@ public class Player extends AbstractGameObject implements IPlayer {
     }
 
     /**
-     * Notify all the listeners that something has changed.
-     * @param gameObject the object that has changed
-     * @param added true if the object has been added
+     * Gets the dwarf manager.
+     * @return the dwarf manager
      */
-    private void notifyListeners(final AbstractGameObject gameObject, final boolean added) {
-        for (IPlayerListener listener : listeners) {
-            listener.playerChanged(gameObject, added);
-        }
+    public IDwarfManager getDwarfManager() {
+        return dwarfManager;
     }
 }

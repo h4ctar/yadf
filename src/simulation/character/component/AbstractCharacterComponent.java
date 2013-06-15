@@ -44,11 +44,18 @@ public abstract class AbstractCharacterComponent {
 
     /**
      * Add a listener to this component.
-     * 
      * @param listener the listener to add
      */
     public void addListener(final ICharacterComponentListener listener) {
         listeners.add(listener);
+    }
+
+    /**
+     * Remove a listener to from component.
+     * @param listener the listener to add
+     */
+    public void removeListener(final ICharacterComponentListener listener) {
+        listeners.remove(listener);
     }
 
     /**

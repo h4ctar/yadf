@@ -157,7 +157,7 @@ public class BuildWorkshopJob extends AbstractJob {
                 ItemType itemType = entry.getKey();
                 for (int i = 0; i < entry.getValue().intValue(); i++) {
                     HaulJob haulJob = new HaulJob(itemType, player.getStockManager(),
-                            Workshop.getRandomPostition(position));
+                            Workshop.getRandomPostition(position), player);
                     haulJobs.add(haulJob);
                 }
             }
@@ -180,7 +180,7 @@ public class BuildWorkshopJob extends AbstractJob {
 
         case WAITING_FOR_DWARF:
             if (dwarf == null) {
-                dwarf = player.getIdleDwarf(REQUIRED_LABOR);
+                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
             }
 
             if (dwarf != null) {
