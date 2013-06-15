@@ -132,7 +132,7 @@ public class Player extends AbstractGameObject implements IPlayer {
      * @param position the position
      */
     public void addNewDwarf(final MapIndex position) {
-        Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position);
+        Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position, this);
         dwarfs.add(dwarf);
         notifyListeners(dwarf, true);
     }
@@ -228,6 +228,7 @@ public class Player extends AbstractGameObject implements IPlayer {
      * Gets the job manager.
      * @return the job manager
      */
+    @Override
     public JobManager getJobManager() {
         return jobManager;
     }

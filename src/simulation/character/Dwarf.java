@@ -31,6 +31,7 @@
  */
 package simulation.character;
 
+import simulation.IPlayer;
 import simulation.character.component.EatDrinkComponent;
 import simulation.character.component.IEatDrinkComponent;
 import simulation.character.component.IInventoryComponent;
@@ -45,8 +46,6 @@ import simulation.map.MapIndex;
 
 /**
  * The Class Dwarf.
- * 
- * TODO: remove this class and have some kind of character factory instead
  */
 public class Dwarf extends GameCharacter {
 
@@ -55,11 +54,12 @@ public class Dwarf extends GameCharacter {
 
     /**
      * Instantiates a new dwarf.
-     * @param name the name
-     * @param position the position
+     * @param name the name of the dwarf
+     * @param position the position of the dwarf
+     * @param player the player that the dwarf belongs to
      */
-    public Dwarf(final String name, final MapIndex position) {
-        super(name, position);
+    public Dwarf(final String name, final MapIndex position, final IPlayer player) {
+        super(name, position, player);
         setComponent(ISkillComponent.class, new SkillComponent());
         setComponent(IWorkComponent.class, new WorkComponent());
         setComponent(ISleepComponent.class, new SleepComponent());

@@ -31,8 +31,8 @@
  */
 package simulation.stock;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
@@ -60,13 +60,13 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     private final boolean[][] used;
 
     /** A reference to the item at a particular position. */
-    private final List<Item> items = new ArrayList<>();
+    private final Set<Item> items = new HashSet<>();
 
     /** The area of the stockpile. */
     private final MapArea area;
 
     /** What item type the stockpile accepts. */
-    private final List<ItemType> acceptableItemTypes = new ArrayList<>();
+    private final Set<ItemType> acceptableItemTypes = new HashSet<>();
 
     /** The player that this stockpile belongs to. */
     private final Player player;
@@ -75,10 +75,10 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * An array of haul tasks that have been created for this stockpile, its remembered so they can be canceled if the
      * stockpile is deleted or its items to collect changes.
      */
-    private final List<HaulJob> haulJobs = new ArrayList<>();
+    private final Set<HaulJob> haulJobs = new HashSet<>();
 
     /** The listeners that are notified of changes in the stockpile. */
-    private final List<IStockpileListener> listeners = new ArrayList<>();
+    private final Set<IStockpileListener> listeners = new HashSet<>();
 
     /**
      * Constructor for the stockpile.
@@ -172,7 +172,8 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * Gets all the stored items.
      * @return the items
      */
-    public List<Item> getItems() {
+    @Override
+    public Set<Item> getItems() {
         return items;
     }
 
@@ -180,7 +181,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * Returns the types of item that this stockpile will accept.
      * @return the types of item that this stockpile will accept
      */
-    public List<ItemType> getItemTypes() {
+    public Set<ItemType> getItemTypes() {
         return acceptableItemTypes;
     }
 
@@ -290,14 +291,12 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
                 }
             }
             // Remove items from this stockpile that are no longer accepted
-            for (int i = 0; i < items.size(); i++) {
-                Item item = items.get(i);
+            for (Item item : items.toArray(new Item[0])) {
                 if (item.getType().equals(itemType)) {
-                    items.remove(i);
+                    items.remove(item);
                     player.getStockManager().addItem(item);
                     MapIndex pos = item.getPosition().sub(area.pos);
                     used[pos.x][pos.y] = false;
-                    i--;
                 }
             }
         }

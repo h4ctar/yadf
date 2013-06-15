@@ -47,6 +47,6 @@ public class Animal extends GameCharacter {
      * @param position the position of the animal
      */
     public Animal(final String name, final MapIndex position) {
-        super(name, position);
+        super(name, position, null);
     }
 }

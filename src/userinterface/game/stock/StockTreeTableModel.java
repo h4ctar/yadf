@@ -40,8 +40,8 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
+import simulation.stock.IStockManager;
 import simulation.stock.IStockManagerListener;
-import simulation.stock.StockManager;
 
 /**
  * The Class StockTreeTableModel.
@@ -49,7 +49,7 @@ import simulation.stock.StockManager;
 public class StockTreeTableModel extends AbstractTreeTableModel implements IStockManagerListener {
 
     /** The stock manager. */
-    private final StockManager stockManager;
+    private final IStockManager stockManager;
 
     /** The root. */
     private final DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
@@ -58,7 +58,7 @@ public class StockTreeTableModel extends AbstractTreeTableModel implements IStoc
      * Instantiates a new stock tree table model.
      * @param stockManagerTmp the stock manager
      */
-    public StockTreeTableModel(final StockManager stockManagerTmp) {
+    public StockTreeTableModel(final IStockManager stockManagerTmp) {
         stockManager = stockManagerTmp;
         stockManager.addListener(this);
 

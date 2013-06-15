@@ -31,7 +31,7 @@
  */
 package simulation.item;
 
-import java.util.List;
+import java.util.Set;
 
 import org.w3c.dom.Element;
 
@@ -148,7 +148,7 @@ public class Item extends AbstractEntity {
      * @param itemTypes the item types that this item must match
      * @return true if it can be stored
      */
-    public boolean canBeStored(final List<ItemType> itemTypes) {
+    public boolean canBeStored(final Set<ItemType> itemTypes) {
         boolean storable = false;
         if (itemTypes.contains(itemType) && !getRemove() && !placed) {
             storable = true;

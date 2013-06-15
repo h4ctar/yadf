@@ -31,7 +31,6 @@
  */
 package simulation.character.component;
 
-import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
 import simulation.job.IJob;
@@ -52,7 +51,7 @@ public class WorkComponent extends AbstractCharacterComponent implements IWorkCo
     }
 
     @Override
-    public void update(final GameCharacter character, final Player player, final Region region) {
+    public void update(final GameCharacter character, final Region region) {
         if (character.isDead() && job != null) {
             job.interrupt("Character died");
         }

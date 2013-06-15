@@ -6,7 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.util.List;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -77,10 +77,11 @@ public class ItemInterface extends JInternalFrame {
         if (item instanceof ContainerItem) {
             contentsLabel.setVisible(true);
             scrollPane.setVisible(true);
-            List<Item> contents = ((ContainerItem) item).getContentItems();
-            String[] contentStrings = new String[contents.size()];
-            for (int i = 0; i < contents.size(); i++) {
-                contentStrings[i] = contents.get(i).toString();
+            Set<Item> contentItems = ((ContainerItem) item).getItems();
+            String[] contentStrings = new String[contentItems.size()];
+            int i = 0;
+            for (Item contentItem : contentItems) {
+                contentStrings[i++] = contentItem.toString();
             }
             contentsList.setListData(contentStrings);
         } else {

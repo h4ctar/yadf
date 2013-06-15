@@ -52,7 +52,7 @@ import simulation.map.BlockType;
  * This class is responsible for holding all the jobs, telling them to update and removing them when they are done, it
  * also contains the designations and launches jobs for them when required.
  */
-public class JobManager implements Serializable {
+public class JobManager implements IJobManager, Serializable {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -3697576654461518146L;

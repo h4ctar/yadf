@@ -36,7 +36,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.GameCharacter;
 import simulation.item.Item;
@@ -80,6 +80,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
      * @param character the character
      * @return true, if successful
      */
+    @Override
     public boolean canDoJob(final LaborType requiredLabor, final GameCharacter character) {
         if (requiredLabor == null) {
             return true;
@@ -114,6 +115,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
      * @param laborType the labor type
      * @return the labor skill
      */
+    @Override
     public int getLaborSkill(final LaborType laborType) {
         int skill = 0;
         if (laborSkills.containsKey(laborType)) {
@@ -126,6 +128,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
      * Gets the profession.
      * @return the profession
      */
+    @Override
     public LaborType getProfession() {
         return profession;
     }
@@ -134,6 +137,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
      * Increase skill level.
      * @param laborType the labor type
      */
+    @Override
     public void increaseSkillLevel(final LaborType laborType) {
         if (!laborSkills.containsKey(laborType)) {
             laborSkills.put(laborType, Integer.valueOf(0));
@@ -150,6 +154,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
      * @param requiredLabor the required labor
      * @return true, if is labor enabled
      */
+    @Override
     public boolean isLaborEnabled(final LaborType requiredLabor) {
         return enabledLabors.contains(requiredLabor);
     }
@@ -164,6 +169,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
      * @param laborTypeName the labor type name
      * @param enabled the enabled
      */
+    @Override
     public void setLaborEnabled(final String laborTypeName, final boolean enabled) {
         LaborType laborType = LaborTypeManager.getInstance().getLaborType(laborTypeName);
         if (enabled) {
@@ -180,8 +186,8 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
     }
 
     @Override
-    public void update(final GameCharacter character, final Player player, final Region region) {
-        assert (player != null);
+    public void update(final GameCharacter character, final Region region) {
+        IPlayer player = character.getPlayer();
 
         // If dwarf is holding a tool that he no longer needs, drop it
         Item tool = character.getComponent(IInventoryComponent.class).getToolHolding();

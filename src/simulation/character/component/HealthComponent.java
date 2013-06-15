@@ -31,7 +31,6 @@
  */
 package simulation.character.component;
 
-import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
 
@@ -63,7 +62,7 @@ public class HealthComponent extends AbstractCharacterComponent implements IHeal
     }
 
     @Override
-    public void update(final GameCharacter character, final Player player, final Region region) {
+    public void update(final GameCharacter character, final Region region) {
         if (health <= 0 && !character.isDead()) {
             character.kill();
         }

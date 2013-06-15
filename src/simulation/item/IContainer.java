@@ -1,5 +1,7 @@
 package simulation.item;
 
+import java.util.Set;
+
 import simulation.IGameObject;
 
 /**
@@ -33,4 +35,10 @@ public interface IContainer extends IGameObject {
      * @return the item from category
      */
     Item getUnusedItemFromCategory(String category);
+
+    /**
+     * Gets all the items.
+     * @return A list of references to all the items
+     */
+    Set<Item> getItems();
 }

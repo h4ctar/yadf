@@ -533,7 +533,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
                 g.setColor(STOCKPILE_COLOUR);
                 g.fillRect(x, y, area.width * SpriteManager.SPRITE_SIZE, area.height * SpriteManager.SPRITE_SIZE);
 
-                List<Item> items = stockpile.getItems();
+                Set<Item> items = stockpile.getItems();
                 for (Item item : items) {
                     MapIndex position = item.getPosition();
                     if (position.z == viewPosition.z) {

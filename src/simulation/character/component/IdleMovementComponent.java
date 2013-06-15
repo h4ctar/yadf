@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Random;
 
 import misc.MyRandom;
-import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
 import simulation.map.RegionMap;
@@ -61,7 +60,7 @@ public class IdleMovementComponent extends AbstractMoveComponent implements IMov
     }
 
     @Override
-    public void update(final GameCharacter character, final Player player, final Region region) {
+    public void update(final GameCharacter character, final Region region) {
         RegionMap map = region.getMap();
         Random random = MyRandom.getInstance();
 

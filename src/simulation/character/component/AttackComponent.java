@@ -31,7 +31,6 @@
  */
 package simulation.character.component;
 
-import simulation.Player;
 import simulation.Region;
 import simulation.character.GameCharacter;
 
@@ -65,7 +64,7 @@ public class AttackComponent extends AbstractCharacterComponent implements IAtta
     }
 
     @Override
-    public void update(final GameCharacter character, final Player player, final Region region) {
+    public void update(final GameCharacter character, final Region region) {
         int distance = character.getPosition().distance(enemy.getPosition());
 
         if (distance <= 1) {

@@ -31,7 +31,7 @@
  */
 package simulation.character.component;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
@@ -98,7 +98,9 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
     }
 
     @Override
-    public void update(final GameCharacter character, final Player player, final Region region) {
+    public void update(final GameCharacter character, final Region region) {
+        IPlayer player = character.getPlayer();
+
         hunger++;
         thirst++;
 

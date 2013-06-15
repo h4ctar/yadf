@@ -33,7 +33,6 @@ package simulation.item;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -61,6 +60,18 @@ public final class ItemTypeManager {
     /** The instance. */
     private static ItemTypeManager instance;
 
+    /** The item types. */
+    private Set<ItemType> itemTypes = new HashSet<>();
+
+    /** The item types, keyed by name. */
+    private Map<String, ItemType> itemTypesByName = new HashMap<>();
+
+    /** The item types, keyed by category. */
+    private Map<String, Set<ItemType>> itemTypesByCategory = new HashMap<>();
+
+    /** The embark items. */
+    private Set<Item> embarkItems = new HashSet<>();
+
     /**
      * Gets the single instance of ItemTypeManager.
      * @return single instance of ItemTypeManager
@@ -71,12 +82,6 @@ public final class ItemTypeManager {
         }
         return instance;
     }
-
-    /** The item types. */
-    private Map<String, Map<String, ItemType>> itemTypes = new HashMap<>();
-
-    /** The embark items. */
-    private List<Item> embarkItems = new ArrayList<>();
 
     /**
      * Instantiates a new item type manager.
@@ -89,7 +94,7 @@ public final class ItemTypeManager {
      * @return the category names
      */
     public Set<String> getCategoryNames() {
-        return itemTypes.keySet();
+        return itemTypesByCategory.keySet();
     }
 
     /**
@@ -98,7 +103,6 @@ public final class ItemTypeManager {
      * @return the embark items
      */
     public List<Item> getEmbarkItems(final Player player) {
-        // TODO: this needs to return clones of the list
         List<Item> copyOfEmbarkItems = new ArrayList<>();
         for (Item item : embarkItems) {
             Item copyItem = createItem(item, player);
@@ -108,18 +112,24 @@ public final class ItemTypeManager {
     }
 
     /**
+     * Get all the item types.
+     * @return all the item types
+     */
+    public Set<ItemType> getItemTypes() {
+        return itemTypes;
+    }
+
+    /**
      * Gets the item type.
      * @param itemTypeName the item type name
      * @return the item type
      */
     public ItemType getItemType(final String itemTypeName) {
-        for (Map<String, ItemType> category : itemTypes.values()) {
-            if (category.containsKey(itemTypeName)) {
-                return category.get(itemTypeName);
-            }
+        ItemType itemType = itemTypesByName.get(itemTypeName);
+        if (itemType == null) {
+            Logger.getInstance().log(null, "Item type does not exis - itemTypeName: " + itemTypeName, true);
         }
-        Logger.getInstance().log(null, "Item type does not exis - itemTypeName: " + itemTypeName, true);
-        return null;
+        return itemType;
     }
 
     /**
@@ -127,8 +137,8 @@ public final class ItemTypeManager {
      * @param category the category
      * @return the item types from category
      */
-    public Collection<ItemType> getItemTypesFromCategory(final String category) {
-        return itemTypes.get(category).values();
+    public Set<ItemType> getItemTypesFromCategory(final String category) {
+        return itemTypesByCategory.get(category);
     }
 
     /**
@@ -137,7 +147,7 @@ public final class ItemTypeManager {
      * @return the number of item types in category
      */
     public int getNumberOfItemTypesInCategory(final String categoryName) {
-        return itemTypes.get(categoryName).size();
+        return itemTypesByCategory.get(categoryName).size();
     }
 
     /**
@@ -146,11 +156,9 @@ public final class ItemTypeManager {
      */
     public Set<ItemType> getPlaceableItems() {
         Set<ItemType> placeableItemTypes = new HashSet<>();
-        for (Map<String, ItemType> items : itemTypes.values()) {
-            for (ItemType itemType : items.values()) {
-                if (itemType.placeable) {
-                    placeableItemTypes.add(itemType);
-                }
+        for (ItemType itemType : itemTypes) {
+            if (itemType.placeable) {
+                placeableItemTypes.add(itemType);
             }
         }
         return placeableItemTypes;
@@ -177,30 +185,36 @@ public final class ItemTypeManager {
 
     /**
      * Load all the item types from the item_types.xml.
-     * @param root
+     * @param root the element
      * @throws Exception something went wrong
      */
     public void loadItemTypes(final Element root) throws Exception {
         NodeList categoryNodes = root.getElementsByTagName("category");
+
         for (int i = 0; i < categoryNodes.getLength(); i++) {
             Node categoryeNode = categoryNodes.item(i);
             Element categoryElement = (Element) categoryeNode;
             String category = categoryElement.getAttribute("name");
-            Map<String, ItemType> categories = new HashMap<>();
-            itemTypes.put(category, categories);
+            Set<ItemType> itemTypesInCategory = new HashSet<>();
+
             NodeList itemTypeNodes = categoryElement.getElementsByTagName("itemType");
             for (int j = 0; j < itemTypeNodes.getLength(); j++) {
                 Node itemTypeNode = itemTypeNodes.item(j);
                 Element itemTypeElement = (Element) itemTypeNode;
                 ItemType itemType = new ItemType(itemTypeElement, category);
-                categories.put(itemType.name, itemType);
+
+                itemTypesInCategory.add(itemType);
+                itemTypes.add(itemType);
+                itemTypesByName.put(itemType.name, itemType);
             }
+
+            itemTypesByCategory.put(category, itemTypesInCategory);
         }
     }
 
     /**
      * Load all the embark item configuration from the embark_items.xml.
-     * @param root
+     * @param root the element
      * @throws Exception something went wrong
      */
     public void loadEmbarkItems(final Element root) throws Exception {
@@ -217,9 +231,14 @@ public final class ItemTypeManager {
         }
     }
 
+    /**
+     * Unload all the item types.
+     */
     public void unload() {
-        itemTypes = new HashMap<>();
-        embarkItems = new ArrayList<>();
+        itemTypes = new HashSet<>();
+        itemTypesByName = new HashMap<>();
+        itemTypesByCategory = new HashMap<>();
+        embarkItems = new HashSet<>();
     }
 
     /**

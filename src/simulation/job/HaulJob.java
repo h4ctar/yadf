@@ -32,6 +32,7 @@
 package simulation.job;
 
 import logger.Logger;
+import simulation.AbstractGameObject;
 import simulation.IPlayerListener;
 import simulation.Player;
 import simulation.Region;
@@ -286,6 +287,12 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IPlay
 
     @Override
     public void stockManagerChanged() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void playerChanged(AbstractGameObject gameObject, boolean added) {
         // TODO Auto-generated method stub
 
     }

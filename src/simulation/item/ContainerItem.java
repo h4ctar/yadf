@@ -1,7 +1,7 @@
 package simulation.item;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import logger.Logger;
 
@@ -23,13 +23,13 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
     private static final long serialVersionUID = 4639675681496031393L;
 
     /** The contents of this item if it's a container. */
-    private final List<Item> contentItems = new ArrayList<>();
+    private final Set<Item> contentItems = new HashSet<>();
 
     /** The type of item that this item is storing if it's a container. */
     private ItemType contentItemType;
 
     /** The haul jobs created to haul content items to this item if it's a container. */
-    private final List<HaulJob> haulJobs = new ArrayList<>();
+    private final Set<HaulJob> haulJobs = new HashSet<>();
 
     /**
      * Constructor from a DOM element. This item will not belong to a player. Only useful for temporary items that can
@@ -47,9 +47,6 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
             Item contentItem = new Item(new MapIndex(), contentItemType, player);
             contentItems.add(contentItem);
         }
-        if (player != null) {
-            player.getStockManager().addListener(this);
-        }
     }
 
     /**
@@ -60,9 +57,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
      */
     public ContainerItem(final MapIndex position, final ItemType itemTypeTmp, final Player playerTmp) {
         super(position, itemTypeTmp, playerTmp);
-        if (player != null) {
-            player.getStockManager().addListener(this);
-        }
+        contentItemType = null;
     }
 
     /**
@@ -78,8 +73,13 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
         }
         contentItemType = item.contentItemType;
         if (player != null) {
-            player.getStockManager().addListener(this);
+            player.getStockManager().addListener(contentItemType, this);
         }
+    }
+
+    @Override
+    public Set<Item> getItems() {
+        return contentItems;
     }
 
     @Override
@@ -168,7 +168,6 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
         if (contentItemType == null || contentItems.isEmpty()) {
             selectContentItemType();
         }
-        // TODO: should only listen to stockmanager adding new items of type contentItemType
         if (contentItemType != null) {
             createHaulJobs();
         }
@@ -223,7 +222,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
     }
 
     @Override
-    public boolean canBeStored(final List<ItemType> itemTypes) {
+    public boolean canBeStored(final Set<ItemType> itemTypes) {
         boolean storable = false;
         if (!getRemove() && !placed) {
             if (contentItemType == null && itemTypes.contains(itemType)) {
@@ -233,13 +232,5 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
             }
         }
         return storable;
-    }
-
-    /**
-     * Get all the items that are in this container.
-     * @return the items
-     */
-    public List<Item> getContentItems() {
-        return contentItems;
     }
 }

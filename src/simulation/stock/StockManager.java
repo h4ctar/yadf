@@ -34,7 +34,6 @@ package simulation.stock;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,8 +41,10 @@ import logger.Logger;
 import simulation.AbstractGameObject;
 import simulation.Player;
 import simulation.item.ContainerItem;
+import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
+import simulation.item.ItemTypeManager;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
@@ -76,23 +77,20 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
      * Gets all the unstored items.
      * @return A list of references to all the unstored items
      */
+    @Override
     public Set<Item> getItems() {
         return items;
     }
 
-    /**
-     * Get an item located at a specific map position.
-     * @param index the map position
-     * @return the item, null if no item found
-     */
-    public Item getItem(final MapIndex index) {
+    @Override
+    public Item getItem(final MapIndex mapIndex) {
         for (Item item : items) {
-            if (index.equals(item.getPosition())) {
+            if (mapIndex.equals(item.getPosition())) {
                 return item;
             }
         }
         for (Stockpile stockpile : stockpiles) {
-            Item item = stockpile.getItem(index);
+            Item item = stockpile.getItem(mapIndex);
             if (item != null) {
                 return item;
             }
@@ -100,11 +98,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
         return null;
     }
 
-    /**
-     * Gets the item count.
-     * @param itemType the item type
-     * @return the item count
-     */
+    @Override
     public int getItemQuantity(final ItemType itemType) {
         int count = 0;
         for (Item item : items) {
@@ -115,11 +109,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
         return count;
     }
 
-    /**
-     * Get the number of items in a category.
-     * @param category the category
-     * @return the number of items in the category
-     */
+    @Override
     public int getItemQuantity(final String category) {
         int count = 0;
         for (Item item : items) {
@@ -136,6 +126,13 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
             listeners.put(itemType, new HashSet<IStockManagerListener>());
         }
         listeners.get(itemType).add(listener);
+    }
+
+    @Override
+    public void addListener(final IStockManagerListener listener) {
+        for (ItemType itemType : ItemTypeManager.getInstance().getItemTypes()) {
+            addListener(itemType, listener);
+        }
     }
 
     @Override
@@ -157,8 +154,10 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
      * @param itemType the listeners of this item type will be notified
      */
     private void notifyListeners(final ItemType itemType) {
-        for (IStockManagerListener listener : listeners.get(itemType)) {
-            listener.stockManagerChanged();
+        if (listeners.containsKey(itemType)) {
+            for (IStockManagerListener listener : listeners.get(itemType)) {
+                listener.stockManagerChanged();
+            }
         }
     }
 
@@ -168,7 +167,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
      * @return A reference to the found item, will be null if none could be found
      */
     @Override
-    public Item getUnstoredItem(final List<ItemType> itemTypes) {
+    public Item getUnstoredItem(final Set<ItemType> itemTypes) {
         Item foundItem = null;
         for (Item item : items) {
             if (item.canBeStored(itemTypes) && !item.isUsed()) {
@@ -184,6 +183,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
      * @param itemType the item type to find
      * @return A reference to the found item, will be null if none could be found
      */
+    @Override
     public Item getUnstoredItem(final ItemType itemType) {
         for (Item item : items) {
             // TODO: move this into item
@@ -206,9 +206,8 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
             if (item.getType().equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
                 return item;
             }
-            // TODO: can this be done neatly without using instance of?
-            if (item instanceof ContainerItem) {
-                Item contentItem = ((ContainerItem) item).getUnusedItem(itemTypeName);
+            if (item instanceof IContainer) {
+                Item contentItem = ((IContainer) item).getUnusedItem(itemTypeName);
                 if (contentItem != null) {
                     return contentItem;
                 }
@@ -229,9 +228,8 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
             if (item.getType().category.equals(category) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
                 return item;
             }
-            // TODO: can this be done neatly without using instance of?
-            if (item instanceof ContainerItem) {
-                Item contentItem = ((ContainerItem) item).getUnusedItemFromCategory(category);
+            if (item instanceof IContainer) {
+                Item contentItem = ((IContainer) item).getUnusedItemFromCategory(category);
                 if (contentItem != null) {
                     return contentItem;
                 }
@@ -274,6 +272,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
      * Adds a new stockpile to this stock manager.
      * @param stockpile The new stockpile
      */
+    @Override
     public void addStockpile(final Stockpile stockpile) {
         stockpiles.add(stockpile);
     }
@@ -283,6 +282,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
      * @param stockpileId the stockpile id
      * @return the stockpile
      */
+    @Override
     public Stockpile getStockpile(final int stockpileId) {
         for (Stockpile stockpile : stockpiles) {
             if (stockpile.getId() == stockpileId) {
@@ -292,26 +292,18 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
         return null;
     }
 
-    /**
-     * Gets the stockpile.
-     * @param index the index
-     * @return the stockpile
-     */
-    public Stockpile getStockpile(final MapIndex index) {
+    @Override
+    public Stockpile getStockpile(final MapIndex mapIndex) {
         for (Stockpile stockpile : stockpiles) {
             MapArea area = stockpile.getArea();
-            if (index.x >= area.pos.x && index.x < area.pos.x + area.width && index.y >= area.pos.y
-                    && index.y < area.pos.y + area.height && area.pos.z == index.z) {
+            if (area.containesIndex(mapIndex)) {
                 return stockpile;
             }
         }
         return null;
     }
 
-    /**
-     * Gets references to all the stockpiles.
-     * @return A vector of references to all the stockpiles
-     */
+    @Override
     public Set<Stockpile> getStockpiles() {
         return stockpiles;
     }

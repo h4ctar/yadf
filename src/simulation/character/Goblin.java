@@ -49,7 +49,7 @@ public class Goblin extends GameCharacter {
      * @param position the position
      */
     public Goblin(final String name, final MapIndex position) {
-        super(name, position);
+        super(name, position, null);
         setComponent(IKillEveryoneComponent.class, new KillEveryoneComponent());
     }
 }
