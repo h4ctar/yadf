@@ -22,9 +22,9 @@ public class HaulJobTest {
     }
 
     @Test
-    public void testInterrupt() {
-        fail("Not yet implemented");
-    }
+        public void testCleanUp() {
+            fail("Not yet implemented");
+        }
 
     @Test
     public void testUpdateLookingForItemAlreadyHaveItem() {

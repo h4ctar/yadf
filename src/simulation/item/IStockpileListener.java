@@ -1,4 +1,4 @@
-package simulation.stock;
+package simulation.item;
 
 public interface IStockpileListener {
 

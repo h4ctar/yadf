@@ -29,7 +29,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package simulation.stock;
+package simulation.item;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -40,11 +40,6 @@ import java.util.Set;
 import logger.Logger;
 import simulation.AbstractGameObject;
 import simulation.Player;
-import simulation.item.ContainerItem;
-import simulation.item.IContainer;
-import simulation.item.Item;
-import simulation.item.ItemType;
-import simulation.item.ItemTypeManager;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
@@ -69,7 +64,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item - itemType: " + item.getType());
         items.add(item);
-        notifyListeners(item.getType());
+        notifyListenersThatItemIsAvailable(item);
         return true;
     }
 
@@ -151,12 +146,12 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
 
     /**
      * Notify all listeners that something has changed in the stock manager.
-     * @param itemType the listeners of this item type will be notified
+     * @param item the listeners of this item type will be notified with this item
      */
-    private void notifyListeners(final ItemType itemType) {
-        if (listeners.containsKey(itemType)) {
-            for (IStockManagerListener listener : listeners.get(itemType)) {
-                listener.stockManagerChanged();
+    private void notifyListenersThatItemIsAvailable(final Item item) {
+        if (listeners.containsKey(item.getType())) {
+            for (IStockManagerListener listener : listeners.get(item.getType())) {
+                listener.itemNowAvailable(item);
             }
         }
     }
@@ -261,9 +256,6 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
                     }
                 }
             }
-        }
-        if (itemRemoved) {
-            notifyListeners(item.getType());
         }
         return itemRemoved;
     }

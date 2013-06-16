@@ -38,15 +38,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
+import simulation.item.IStockManager;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
-import simulation.stock.IStockManager;
-import simulation.stock.IStockManagerListener;
 
 /**
  * The Class StockTreeTableModel.
  */
-public class StockTreeTableModel extends AbstractTreeTableModel implements IStockManagerListener {
+public class StockTreeTableModel extends AbstractTreeTableModel {
 
     /** The stock manager. */
     private final IStockManager stockManager;
@@ -60,7 +59,6 @@ public class StockTreeTableModel extends AbstractTreeTableModel implements IStoc
      */
     public StockTreeTableModel(final IStockManager stockManagerTmp) {
         stockManager = stockManagerTmp;
-        stockManager.addListener(this);
 
         Set<String> categoryNames = ItemTypeManager.getInstance().getCategoryNames();
         for (String categoryName : categoryNames) {
@@ -137,10 +135,5 @@ public class StockTreeTableModel extends AbstractTreeTableModel implements IStoc
         default:
             return null;
         }
-    }
-
-    @Override
-    public void stockManagerChanged() {
-        // TODO: make this only update what it should
     }
 }

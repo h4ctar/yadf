@@ -81,6 +81,11 @@ public class MapArea implements Serializable {
         height = heightTmp;
     }
 
+    @Override
+    public String toString() {
+        return pos.toString() + " - (" + width + ", " + height + ")";
+    }
+
     /**
      * Check if this area contains an index.
      * @param index the index

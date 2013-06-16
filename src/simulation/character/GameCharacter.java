@@ -71,6 +71,7 @@ public class GameCharacter extends AbstractEntity {
     /** The lock. */
     private boolean locked;
 
+    /** The player that this character belongs to. */
     private final IPlayer player;
 
     /**
@@ -78,6 +79,7 @@ public class GameCharacter extends AbstractEntity {
      * 
      * @param nameTmp the name
      * @param position the position
+     * @param playerTmp the player that this dwarf belongs to
      */
     public GameCharacter(final String nameTmp, final MapIndex position, final IPlayer playerTmp) {
         super(position);
@@ -173,10 +175,10 @@ public class GameCharacter extends AbstractEntity {
      */
     public void releaseLock() {
         locked = false;
-        notifyListeners();
         if (!dead) {
             setComponent(IMovementComponent.class, new IdleMovementComponent());
         }
+        notifyListeners();
     }
 
     /**
@@ -194,10 +196,14 @@ public class GameCharacter extends AbstractEntity {
      */
     private void notifyListeners() {
         for (ICharacterListener listener : listeners) {
-            listener.charactedChanged();
+            listener.charactedChanged(this);
         }
     }
 
+    /**
+     * Get the player that this dwarf belongs to.
+     * @return the player that this dwarf belongs to
+     */
     public IPlayer getPlayer() {
         return player;
     }

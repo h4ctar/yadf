@@ -39,10 +39,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 import simulation.Player;
+import simulation.item.IStockpileListener;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
-import simulation.stock.IStockpileListener;
-import simulation.stock.Stockpile;
+import simulation.item.Stockpile;
 import userinterface.game.labor.LaborNode;
 import controller.AbstractController;
 import controller.command.SetStockpileCommand;

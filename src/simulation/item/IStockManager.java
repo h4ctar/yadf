@@ -1,10 +1,7 @@
-package simulation.stock;
+package simulation.item;
 
 import java.util.Set;
 
-import simulation.item.IContainer;
-import simulation.item.Item;
-import simulation.item.ItemType;
 import simulation.map.MapIndex;
 
 /**

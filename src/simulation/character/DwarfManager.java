@@ -1,6 +1,5 @@
 package simulation.character;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -16,7 +15,7 @@ import simulation.map.MapIndex;
 /**
  * The dwarf manager.
  */
-public class DwarfManager implements IDwarfManager {
+public class DwarfManager implements IDwarfManager, ICharacterListener {
 
     /** The dwarfs. */
     private final Set<Dwarf> dwarfs = new CopyOnWriteArraySet<>();
@@ -28,7 +27,7 @@ public class DwarfManager implements IDwarfManager {
     private final IPlayer player;
 
     /** The dwarf manager listeners. */
-    private final Set<IDwarfManagerListener> listeners = new HashSet<>();
+    private final Set<IDwarfManagerListener> listeners = new CopyOnWriteArraySet<>();
 
     /**
      * Constructor.
@@ -50,6 +49,7 @@ public class DwarfManager implements IDwarfManager {
      */
     public void addNewDwarf(final MapIndex position) {
         Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position, player);
+        dwarf.addListener(this);
         dwarfs.add(dwarf);
         notifyDwarfAdded(dwarf);
     }
@@ -134,6 +134,11 @@ public class DwarfManager implements IDwarfManager {
         listeners.add(listener);
     }
 
+    @Override
+    public void removeListener(final IDwarfManagerListener listener) {
+        listeners.remove(listener);
+    }
+
     /**
      * Notify all the listeners that a dwarf has been added.
      * @param dwarf the dwarf that was added
@@ -146,11 +151,28 @@ public class DwarfManager implements IDwarfManager {
 
     /**
      * Notify all the listeners that a dwarf has been removed.
-     * @param dwarf
+     * @param dwarf the dwarf that was removed
      */
     private void notifyDwarfRemoved(final Dwarf dwarf) {
         for (IDwarfManagerListener listener : listeners) {
             listener.dwarfRemoved(dwarf);
+        }
+    }
+
+    /**
+     * Notify all the listeners that a dwarf is not idle.
+     * @param dwarf the dwarf that is now idle
+     */
+    private void notifyDwarfNowIdle(final Dwarf dwarf) {
+        for (IDwarfManagerListener listener : listeners) {
+            listener.dwarfNowIdle(dwarf);
+        }
+    }
+
+    @Override
+    public void charactedChanged(final GameCharacter character) {
+        if (!character.isLocked()) {
+            notifyDwarfNowIdle((Dwarf) character);
         }
     }
 }

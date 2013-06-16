@@ -1,8 +1,8 @@
 package simulation;
 
 import simulation.character.IDwarfManager;
+import simulation.item.IStockManager;
 import simulation.job.IJobManager;
-import simulation.stock.IStockManager;
 
 /**
  * Interface of a player.

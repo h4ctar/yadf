@@ -32,8 +32,8 @@
 package controller.command;
 
 import simulation.Player;
+import simulation.item.Stockpile;
 import simulation.map.MapArea;
-import simulation.stock.Stockpile;
 
 /**
  * The Class CreateStockpileCommand.

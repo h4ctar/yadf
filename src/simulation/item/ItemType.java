@@ -32,6 +32,8 @@
 package simulation.item;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.w3c.dom.Element;
 
@@ -62,7 +64,7 @@ public class ItemType implements Serializable {
     public final int capacity;
 
     /** The types of items that can be stored if it's a container. */
-    public final String[] contentItemTypeNames;
+    public final Set<String> contentItemTypeNames = new HashSet<>();
 
     /**
      * Instantiates a new item type.
@@ -79,8 +81,10 @@ public class ItemType implements Serializable {
         placeable = Boolean.parseBoolean(itemTypeElement.getAttribute("placeable"));
         tempString = itemTypeElement.getAttribute("capacity");
         capacity = "".equals(tempString) ? 0 : Integer.parseInt(tempString);
-        tempString = itemTypeElement.getAttribute("contentCategory");
-        contentItemTypeNames = tempString == "" ? null : tempString.split(",");
+        tempString = itemTypeElement.getAttribute("contentItemTypes");
+        for (String contentItemTypeName : tempString.split(",")) {
+            contentItemTypeNames.add(contentItemTypeName);
+        }
     }
 
     @Override

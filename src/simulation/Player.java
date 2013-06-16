@@ -41,14 +41,14 @@ import misc.MyRandom;
 import simulation.character.DwarfManager;
 import simulation.character.IDwarfManager;
 import simulation.farm.Farm;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemTypeManager;
+import simulation.item.StockManager;
 import simulation.job.JobManager;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.room.Room;
-import simulation.stock.IStockManager;
-import simulation.stock.StockManager;
 import simulation.workshop.Workshop;
 
 /**

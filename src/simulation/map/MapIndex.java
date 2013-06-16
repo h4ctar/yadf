@@ -73,6 +73,11 @@ public class MapIndex implements Serializable {
         z = old.z;
     }
 
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ", " + z + ")";
+    }
+
     /**
      * Adds an offset to the map index and returns the result.
      * @param xTmp the x

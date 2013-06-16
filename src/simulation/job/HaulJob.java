@@ -38,35 +38,24 @@ import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.GameCharacter;
+import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.IInventoryComponent;
 import simulation.character.component.IMovementComponent;
 import simulation.character.component.WalkMovementComponent;
 import simulation.item.IContainer;
+import simulation.item.IStockManagerListener;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
-import simulation.stock.IStockManagerListener;
 
 /**
  * The Class HaulJob.
  * 
  * A job which hauls an item to some place.
  */
-public class HaulJob extends AbstractJob implements IStockManagerListener, IDwarfManagerListener {
-
-    /** All the possible job states. */
-    enum State {
-        /** The looking for item. */
-        LOOKING_FOR_ITEM,
-        /** The waiting for the/a dwarf to become free to haul the item. */
-        WAITING_FOR_DWARF,
-        /** The dwarf is walking to the item. */
-        GOTO_ITEM,
-        /** The dwarf is hauling the item to the drop location. */
-        GOTO_DROP
-    }
+public class HaulJob extends AbstractJob {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -1705328544980248473L;
@@ -75,13 +64,13 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IDwar
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Hauling");
 
     /** The current state of the job. */
-    private State state;
+    private IJobState state;
 
     /** The character that will haul the item. */
     private GameCharacter character;
 
     /** The item. */
-    private Item item = null;
+    private Item item;
 
     /** If not null, the item should be stored here. */
     private final IContainer container;
@@ -89,22 +78,20 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IDwar
     /** The drop position. */
     private final MapIndex dropPosition;
 
-    /** The walk component. */
-    private WalkMovementComponent walkComponent;
-
     /** The job is done. */
     private boolean done = false;
 
-    /** The lock on the dwarf needs to be released. */
+    /** The lock on the dwarf needs to be released, it should only be released if we acquired the dwarf. */
     private boolean needToReleaseLock = false;
 
     /** The item type. */
     private final ItemType itemType;
 
+    /** The player that this job is for. */
     private final IPlayer player;
 
     /**
-     * Instantiates a new haul job.
+     * Instantiates a new haul job, start with dwarf and item.
      * @param characterTmp the character
      * @param itemTmp the item
      * @param containerTmp the container to put the item in
@@ -118,11 +105,11 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IDwar
         character = characterTmp;
         itemType = item.getType();
         player = character.getPlayer();
-        state = State.WAITING_FOR_DWARF;
+        state = new WalkToItemState();
     }
 
     /**
-     * Instantiates a new haul job.
+     * Instantiates a new haul job, start with item.
      * @param itemTmp the item
      * @param containerTmp the container to put the item in
      * @param dropPositionTmp the drop position
@@ -135,7 +122,7 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IDwar
         dropPosition = dropPositionTmp;
         player = playerTmp;
         itemType = item.getType();
-        state = State.WAITING_FOR_DWARF;
+        state = new LookingForDwarfState();
     }
 
     /**
@@ -151,7 +138,17 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IDwar
         dropPosition = dropPositionTmp;
         itemType = itemTypeTmp;
         player = playerTmp;
-        state = State.LOOKING_FOR_ITEM;
+        item = player.getStockManager().getUnusedItem(itemType.name);
+        if (item == null) {
+            state = new LookingForItemState();
+        } else {
+            character = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
+            if (character == null) {
+                state = new LookingForDwarfState();
+            } else {
+                state = new WalkToItemState();
+            }
+        }
     }
 
     /**
@@ -172,36 +169,13 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IDwar
 
     @Override
     public String getStatus() {
-        if (character == null) {
-            return "Not assigned";
-        }
-        switch (state) {
-        case LOOKING_FOR_ITEM:
-            return "Looking for item";
-        case WAITING_FOR_DWARF:
-            return "Waiting for dwarf";
-        case GOTO_ITEM:
-            return "Walking to item";
-        case GOTO_DROP:
-            return "Walking to drop location";
-        default:
-            return null;
-        }
+        return state.toString();
     }
 
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-        // Drop the item
-        if (character != null) {
-            character.getComponent(IInventoryComponent.class).dropHaulItem(true);
-            if (needToReleaseLock) {
-                character.releaseLock();
-            }
-        }
-        if (item != null) {
-            item.setUsed(false);
-        }
+        state.cleanUp();
         done = true;
     }
 
@@ -217,56 +191,181 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IDwar
 
     @Override
     public void update(final Player playerTmp, final Region regionTmp) {
-        if (isDone()) {
-            return;
+
+    }
+
+    /**
+     * Interface for a job state.
+     */
+    private interface IJobState {
+
+        /**
+         * Clean up the state, will be called when the job is interrupted.
+         */
+        void cleanUp();
+    }
+
+    /**
+     * The job is looking for an item.
+     */
+    private class LookingForItemState implements IJobState, IStockManagerListener {
+
+        /**
+         * Constructor.
+         */
+        public LookingForItemState() {
+            player.getStockManager().addListener(itemType, this);
         }
-        switch (state) {
-        case LOOKING_FOR_ITEM:
-            if (item == null) {
-                item = player.getStockManager().getUnusedItem(itemType.name);
-            }
-            if (item != null) {
-                Logger.getInstance().log(this, "Item found, should now look for dwarf");
-                item.setUsed(true);
-                state = State.WAITING_FOR_DWARF;
-            }
-            break;
 
-        case WAITING_FOR_DWARF:
-            if (character == null) {
-                character = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
+        @Override
+        public String toString() {
+            return "Looking for item";
+        }
+
+        @Override
+        public void cleanUp() {
+            player.getStockManager().removeListener(this);
+        }
+
+        @Override
+        public void itemNowAvailable(final Item availableItem) {
+            if (!availableItem.isUsed()) {
+                availableItem.setUsed(true);
+                item = availableItem;
+                if (character == null) {
+                    character = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
+                }
+                if (character == null) {
+                    state = new LookingForDwarfState();
+                } else {
+                    state = new WalkToItemState();
+                }
+                cleanUp();
+            }
+        }
+    }
+
+    /**
+     * The job is looking for a dwarf.
+     */
+    private class LookingForDwarfState implements IJobState, IDwarfManagerListener {
+
+        /**
+         * Constructor.
+         */
+        public LookingForDwarfState() {
+            player.getDwarfManager().addListener(this);
+        }
+
+        @Override
+        public String toString() {
+            return "Looking for dwarf";
+        }
+
+        @Override
+        public void cleanUp() {
+            player.getDwarfManager().removeListener(this);
+        }
+
+        @Override
+        public void dwarfAdded(final Dwarf dwarf) {
+            acquireDwarf(dwarf);
+        }
+
+        @Override
+        public void dwarfRemoved(final Dwarf dwarf) {
+            // do nothing
+        }
+
+        @Override
+        public void dwarfNowIdle(final Dwarf dwarf) {
+            acquireDwarf(dwarf);
+        }
+
+        /**
+         * Attempt to acquire the dwarf, and transition to next state if successful.
+         * @param dwarf the dwarf to acquire
+         */
+        private void acquireDwarf(final Dwarf dwarf) {
+            if (dwarf.acquireLock()) {
+                character = dwarf;
                 needToReleaseLock = true;
+                state = new WalkToItemState();
+                cleanUp();
             }
-            if (character != null) {
-                Logger.getInstance().log(this, "Dwarf found, should now go to item");
-                walkComponent = new WalkMovementComponent(item.getPosition(), false);
-                character.setComponent(IMovementComponent.class, walkComponent);
-                state = State.GOTO_ITEM;
-            }
-            break;
+        }
+    }
 
-        case GOTO_ITEM:
-            if (walkComponent.isNoPath()) {
-                interrupt("No path to item");
-                return;
-            }
+    /**
+     * The dwarf is walking to the item.
+     */
+    private class WalkToItemState implements IJobState, ICharacterComponentListener {
+
+        /** The walk component. */
+        private final WalkMovementComponent walkComponent;
+
+        /**
+         * Constructor.
+         */
+        public WalkToItemState() {
+            walkComponent = new WalkMovementComponent(item.getPosition(), false);
+            walkComponent.addListener(this);
+            character.setComponent(IMovementComponent.class, walkComponent);
+        }
+
+        @Override
+        public String toString() {
+            return "Walking to item";
+        }
+
+        @Override
+        public void cleanUp() {
+            walkComponent.removeListener(this);
+        }
+
+        @Override
+        public void componentChanged() {
             if (walkComponent.isArrived()) {
-                Logger.getInstance().log(this, "Arrived at item, should now take it to drop");
-                player.getStockManager().removeItem(item);
-                walkComponent = new WalkMovementComponent(dropPosition, false);
-                character.setComponent(IMovementComponent.class, walkComponent);
                 character.getComponent(IInventoryComponent.class).pickupHaulItem(item);
-                state = State.GOTO_DROP;
+                player.getStockManager().removeItem(item);
+                state = new WalkToDropState();
+                cleanUp();
+            } else if (walkComponent.isNoPath()) {
+                interrupt("No path to item");
             }
-            break;
+        }
+    }
 
-        case GOTO_DROP:
-            if (walkComponent.isNoPath()) {
-                interrupt("No path to drop");
-                return;
-            }
+    /**
+     * The dwarf is walking to the drop.
+     */
+    private class WalkToDropState implements IJobState, ICharacterComponentListener {
+
+        /** The walk component. */
+        private final WalkMovementComponent walkComponent;
+
+        /**
+         * Constructor.
+         */
+        public WalkToDropState() {
+            walkComponent = new WalkMovementComponent(dropPosition, false);
+            walkComponent.addListener(this);
+            character.setComponent(IMovementComponent.class, walkComponent);
+        }
+
+        @Override
+        public String toString() {
+            return "Walking to drop";
+        }
+
+        @Override
+        public void cleanUp() {
+            walkComponent.removeListener(this);
+        }
+
+        @Override
+        public void componentChanged() {
             if (walkComponent.isArrived()) {
-                Logger.getInstance().log(this, "Arrived at drop, should now drop item; job done");
                 character.getComponent(IInventoryComponent.class).dropHaulItem(false);
                 if (needToReleaseLock) {
                     character.releaseLock();
@@ -283,30 +382,11 @@ public class HaulJob extends AbstractJob implements IStockManagerListener, IDwar
                     }
                 }
                 done = true;
+                cleanUp();
                 notifyListeners();
+            } else if (walkComponent.isNoPath()) {
+                interrupt("No path to drop");
             }
-            break;
-
-        default:
-            break;
         }
-    }
-
-    @Override
-    public void stockManagerChanged() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void dwarfAdded(Dwarf dwarf) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void dwarfRemoved(Dwarf dwarf) {
-        // TODO Auto-generated method stub
-
     }
 }

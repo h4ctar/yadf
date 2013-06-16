@@ -31,8 +31,8 @@
  */
 package simulation.character.component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * The Interface ICharacterComponent.
@@ -40,7 +40,7 @@ import java.util.List;
 public abstract class AbstractCharacterComponent {
 
     /** The listeners to be notified of changes to this component. */
-    private final List<ICharacterComponentListener> listeners = new ArrayList<>();
+    private final Set<ICharacterComponentListener> listeners = new CopyOnWriteArraySet<>();
 
     /**
      * Add a listener to this component.

@@ -156,4 +156,9 @@ public class LaborTableModel extends AbstractTableModel implements IDwarfManager
     public void dwarfRemoved(final Dwarf dwarf) {
         dwarf.getComponent(ISkillComponent.class).removeListener(this);
     }
+
+    @Override
+    public void dwarfNowIdle(final Dwarf dwarf) {
+        // do nothing
+    }
 }

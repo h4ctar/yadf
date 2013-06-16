@@ -23,7 +23,7 @@ public interface IContainer extends IGameObject {
     boolean removeItem(Item item);
 
     /**
-     * Finds an item that is unused.
+     * Finds an item that is unused but does not remove it from the container.
      * @param itemTypeName The type of item to find
      * @return A reference to the found item, will be null if none could be found
      */

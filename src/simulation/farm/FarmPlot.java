@@ -128,6 +128,7 @@ public class FarmPlot {
             if (job == null) {
                 Item seed = player.getStockManager().getUnusedItem("Seed");
                 if (seed != null) {
+                    player.getStockManager().removeItem(seed);
                     seed.setUsed(true);
                     job = new PlantJob(seed, this);
                     player.getJobManager().addJob(job);

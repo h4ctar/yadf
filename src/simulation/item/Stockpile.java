@@ -29,7 +29,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package simulation.stock;
+package simulation.item;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,11 +37,6 @@ import java.util.Set;
 import logger.Logger;
 import simulation.AbstractGameObject;
 import simulation.Player;
-import simulation.item.ContainerItem;
-import simulation.item.IContainer;
-import simulation.item.Item;
-import simulation.item.ItemType;
-import simulation.item.ItemTypeManager;
 import simulation.job.HaulJob;
 import simulation.job.IJob;
 import simulation.job.IJobListener;
@@ -311,11 +306,6 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         }
     }
 
-    @Override
-    public void stockManagerChanged() {
-        createHaulJobs();
-    }
-
     /**
      * Create haul tasks to fill up the stockpile.
      */
@@ -365,5 +355,10 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         for (HaulJob haulJob : haulJobs) {
             haulJob.interrupt("Stockpile deleted");
         }
+    }
+
+    @Override
+    public void itemNowAvailable(final Item availableItem) {
+        createHaulJobs();
     }
 }

@@ -48,6 +48,7 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import simulation.character.Dwarf;
+import simulation.character.GameCharacter;
 import simulation.character.ICharacterListener;
 import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.IEatDrinkComponent;
@@ -106,9 +107,15 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
 
     /** The lbl new label. */
     private JLabel imageLabel;
-    private JPanel panel_1;
-    private JButton btnZoom;
-    private JButton btnFollow;
+
+    /** The button panel. */
+    private JPanel buttonPanel;
+
+    /** The zoom button. */
+    private JButton zoomButton;
+
+    /** The follow button. */
+    private JButton followButton;
 
     /**
      * Create the frame.
@@ -118,13 +125,10 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
     }
 
     @Override
-    public void charactedChanged() {
+    public void charactedChanged(final GameCharacter character) {
         update();
     }
 
-    /**
-     * Update.
-     */
     @Override
     public void componentChanged() {
         update();
@@ -367,21 +371,21 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         panel.add(lockTextField, lockTextFieldConstraints);
         lockTextField.setColumns(10);
 
-        panel_1 = new JPanel();
-        panel_1.setOpaque(false);
-        GridBagConstraints gbc_panel_1 = new GridBagConstraints();
-        gbc_panel_1.gridwidth = 3;
-        gbc_panel_1.insets = new Insets(0, 0, 0, 5);
-        gbc_panel_1.fill = GridBagConstraints.HORIZONTAL;
-        gbc_panel_1.gridx = 0;
-        gbc_panel_1.gridy = 9;
-        panel.add(panel_1, gbc_panel_1);
+        buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        GridBagConstraints gbc_buttonPanel = new GridBagConstraints();
+        gbc_buttonPanel.gridwidth = 3;
+        gbc_buttonPanel.insets = new Insets(0, 0, 0, 5);
+        gbc_buttonPanel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_buttonPanel.gridx = 0;
+        gbc_buttonPanel.gridy = 9;
+        panel.add(buttonPanel, gbc_buttonPanel);
 
-        btnZoom = new JButton("Zoom");
-        panel_1.add(btnZoom);
+        zoomButton = new JButton("Zoom");
+        buttonPanel.add(zoomButton);
 
-        btnFollow = new JButton("Follow");
-        panel_1.add(btnFollow);
+        followButton = new JButton("Follow");
+        buttonPanel.add(followButton);
         // CHECKSTYLE:ON
     }
 }

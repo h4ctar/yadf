@@ -47,7 +47,7 @@ import javax.swing.WindowConstants;
 import org.jdesktop.swingx.JXTreeTable;
 
 import simulation.Player;
-import simulation.stock.Stockpile;
+import simulation.item.Stockpile;
 import userinterface.misc.ImagePanel;
 import controller.AbstractController;
 import controller.command.DeleteStockpileCommand;

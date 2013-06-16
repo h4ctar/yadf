@@ -110,6 +110,10 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
 
     @Override
     public void update(final GameCharacter character, final Region region) {
+        if (isDone()) {
+            return;
+        }
+
         RegionMap map = region.getMap();
 
         fallDown(character, map);
@@ -117,6 +121,7 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
         checkBlocked(character, map);
 
         if (checkArrived(character)) {
+            notifyListeners();
             return;
         }
 

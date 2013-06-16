@@ -44,11 +44,11 @@ import simulation.character.GameCharacter;
 import simulation.character.Goblin;
 import simulation.farm.Farm;
 import simulation.item.Item;
+import simulation.item.Stockpile;
 import simulation.map.BlockType;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
-import simulation.stock.Stockpile;
 import simulation.workshop.Workshop;
 
 /**

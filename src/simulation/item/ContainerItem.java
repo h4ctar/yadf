@@ -12,7 +12,6 @@ import simulation.job.HaulJob;
 import simulation.job.IJob;
 import simulation.job.IJobListener;
 import simulation.map.MapIndex;
-import simulation.stock.IStockManagerListener;
 
 /**
  * An item that can contain other items, i.e. barrel or chest.
@@ -40,12 +39,14 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
     public ContainerItem(final Element itemElement) throws Exception {
         super(itemElement);
         String contentTypeName = itemElement.getAttribute("contentType");
-        contentItemType = ItemTypeManager.getInstance().getItemType(contentTypeName);
-        String tempString = itemElement.getAttribute("contentQuantity");
-        int quantity = "".equals(tempString) ? 0 : Integer.parseInt(tempString);
-        for (int i = 0; i < quantity; i++) {
-            Item contentItem = new Item(new MapIndex(), contentItemType, player);
-            contentItems.add(contentItem);
+        if (!"".equals(contentTypeName)) {
+            contentItemType = ItemTypeManager.getInstance().getItemType(contentTypeName);
+            String tempString = itemElement.getAttribute("contentQuantity");
+            int quantity = "".equals(tempString) ? 0 : Integer.parseInt(tempString);
+            for (int i = 0; i < quantity; i++) {
+                Item contentItem = new Item(new MapIndex(), contentItemType, player);
+                contentItems.add(contentItem);
+            }
         }
     }
 
@@ -58,6 +59,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
     public ContainerItem(final MapIndex position, final ItemType itemTypeTmp, final Player playerTmp) {
         super(position, itemTypeTmp, playerTmp);
         contentItemType = null;
+        player.getStockManager().addListener(this);
     }
 
     /**
@@ -72,8 +74,11 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
             contentItems.add(newContentItem);
         }
         contentItemType = item.contentItemType;
-        if (player != null) {
+        if (contentItemType == null) {
+            player.getStockManager().addListener(this);
+        } else {
             player.getStockManager().addListener(contentItemType, this);
+            createAllHaulJobs();
         }
     }
 
@@ -107,102 +112,63 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
     }
 
     @Override
-    public boolean removeItem(final Item item) {
-        Logger.getInstance().log(this, "Removing item - itemType: " + item.getType());
-        return contentItems.remove(item);
-    }
-
-    @Override
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item - itemType: " + item.getType());
         boolean itemAdded = false;
         if (!item.getPosition().equals(position)) {
             Logger.getInstance().log(this,
-                    "Item could not be added to container as they are not in the same location");
-        } else if (contentItems.size() < itemType.capacity) {
+                    "Item could not be added to container as they are not in the same location", true);
+        } else if (isFull()) {
+            Logger.getInstance().log(this, "Item could not be added to container as the container is full", true);
+        } else if (contentItemType != null && !contentItemType.equals(item.getType())) {
+            Logger.getInstance().log(this,
+                    "Item could not be added to container as the container does not accept this item type", true);
+        } else {
+            if (contentItemType == null) {
+                contentItemType = item.getType();
+                // Stop listening to all items and only listen to this new content item type
+                player.getStockManager().removeListener(this);
+                player.getStockManager().addListener(contentItemType, this);
+                createAllHaulJobs();
+            }
             contentItems.add(item);
             itemAdded = true;
-        } else {
-            Logger.getInstance().log(this, "Item could not be added to container as the container is full");
+            if (isFull()) {
+                player.getStockManager().removeListener(this);
+            }
         }
         return itemAdded;
     }
 
-    /**
-     * Create haul tasks to fill up the stockpile.
-     */
-    private void createHaulJobs() {
-        if (contentItemType != null) {
-            for (int i = contentItems.size() + haulJobs.size(); i < itemType.capacity; i++) {
-                Logger.getInstance().log(this, "Create haul jobs");
-                Item item = player.getStockManager().getUnstoredItem(contentItemType);
-                if (item != null) {
-                    item.setUsed(true);
-                    HaulJob haulJob = new HaulJob(item, this, position, player);
-                    haulJob.addListener(this);
-                    player.getJobManager().addJob(haulJob);
-                    haulJobs.add(haulJob);
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
     @Override
-    public void jobChanged(final IJob job) {
-        if (job.isDone()) {
-            if (haulJobs.remove(job)) {
-                HaulJob haulJob = (HaulJob) job;
-                Logger.getInstance().log(this,
-                        "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
-                haulJob.getItem().setUsed(false);
-            } else {
-                Logger.getInstance().log(this, "Job should be in the haulJobs list, something went wrong");
-            }
+    public boolean removeItem(final Item item) {
+        Logger.getInstance().log(this, "Removing item - itemType: " + item.getType());
+        // If the container was full, we want to find an item to fill it again
+        if (isFull() && contentItems.contains(item)) {
+            player.getStockManager().addListener(contentItemType, this);
         }
-    }
-
-    @Override
-    public void stockManagerChanged() {
-        if (contentItemType == null || contentItems.isEmpty()) {
-            selectContentItemType();
-        }
-        if (contentItemType != null) {
-            createHaulJobs();
-        }
-    }
-
-    /**
-     * Allocate this container to an item type based on what unstored items need to be stored.
-     */
-    private void selectContentItemType() {
-        // TODO: this also needs to look at items in stockpiles that arn't in a container
-        System.out.println("select content item type");
-        // A haul job has already found an item
-        for (HaulJob haulJob : haulJobs) {
-            if (haulJob.getItem() != null) {
-                Logger.getInstance().log(this, "A haul job has already found an item");
-                return;
-            }
-        }
-
-        int maxQuantity = 0;
-        ItemType maxItemType = null;
-        for (String contentItemTypeName : itemType.contentItemTypeNames) {
-            int quantity = player.getStockManager().getItemQuantity(contentItemTypeName);
-            if (quantity > maxQuantity) {
-                maxQuantity = quantity;
-                maxItemType = contentItemType;
-            }
-        }
-        if (maxQuantity > 2) {
-            Logger.getInstance().log(this,
-                    "Content type of " + itemType + " is set to " + maxItemType + ", " + maxQuantity + " found");
-            contentItemType = maxItemType;
-        } else {
+        boolean itemRemoved = contentItems.remove(item);
+        if (isEmpty()) {
             contentItemType = null;
+            player.getStockManager().addListener(this);
         }
+        return itemRemoved;
+    }
+
+    /**
+     * Is the container empty.
+     * @return true if empty
+     */
+    public boolean isEmpty() {
+        return contentItems.isEmpty();
+    }
+
+    /**
+     * Is the container full.
+     * @return true if full
+     */
+    public boolean isFull() {
+        return contentItems.size() >= itemType.capacity;
     }
 
     /**
@@ -232,5 +198,82 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
             }
         }
         return storable;
+    }
+
+    /**
+     * If an item is available that we care about and we're not full, add a haul job for it. {@inheritDoc}
+     */
+    @Override
+    public void itemNowAvailable(final Item availableItem) {
+        if (!availableItem.used) {
+            if (contentItemType == null) {
+                selectContentItemType();
+            } else if (contentItems.size() + haulJobs.size() < itemType.capacity
+                    && contentItemType.equals(availableItem.itemType)) {
+                availableItem.setUsed(true);
+                HaulJob haulJob = new HaulJob(availableItem, this, position, player);
+                haulJob.addListener(this);
+                player.getJobManager().addJob(haulJob);
+                haulJobs.add(haulJob);
+            }
+        }
+    }
+
+    /**
+     * Looks for unused items in the stockmanager and creates haul jobs for them all.
+     */
+    private void createAllHaulJobs() {
+        Logger.getInstance().log(this, "Create haul jobs");
+        for (int i = contentItems.size() + haulJobs.size(); i < itemType.capacity; i++) {
+            Item item = player.getStockManager().getUnstoredItem(contentItemType);
+            if (item != null) {
+                item.setUsed(true);
+                HaulJob haulJob = new HaulJob(item, this, position, player);
+                haulJob.addListener(this);
+                player.getJobManager().addJob(haulJob);
+                haulJobs.add(haulJob);
+            } else {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Allocate this container to an item type based on what unstored items need to be stored.
+     */
+    private void selectContentItemType() {
+        int maxQuantity = 0;
+        ItemType maxItemType = null;
+        for (String contentItemTypeName : itemType.contentItemTypeNames) {
+            ItemType itemType = ItemTypeManager.getInstance().getItemType(contentItemTypeName);
+            int quantity = player.getStockManager().getItemQuantity(itemType);
+            if (quantity > maxQuantity) {
+                maxQuantity = quantity;
+                maxItemType = itemType;
+            }
+        }
+        if (maxQuantity > 2) {
+            Logger.getInstance().log(this,
+                    "Content type of " + itemType + " is set to " + maxItemType + ", " + maxQuantity + " found");
+            contentItemType = maxItemType;
+            createAllHaulJobs();
+        }
+    }
+
+    /**
+     * If the job is finished remove it from our list. {@inheritDoc}
+     */
+    @Override
+    public void jobChanged(final IJob job) {
+        if (job.isDone()) {
+            if (haulJobs.remove(job)) {
+                HaulJob haulJob = (HaulJob) job;
+                Logger.getInstance().log(this,
+                        "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
+                haulJob.getItem().setUsed(false);
+            } else {
+                Logger.getInstance().log(this, "Job should be in the haulJobs list, something went wrong", true);
+            }
+        }
     }
 }

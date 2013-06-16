@@ -217,7 +217,6 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
                     continue;
                 }
                 tool.setUsed(true);
-                player.getStockManager().removeItem(tool);
                 pickupToolJob = new PickupToolJob(character, tool);
                 player.getJobManager().addJob(pickupToolJob);
                 break;

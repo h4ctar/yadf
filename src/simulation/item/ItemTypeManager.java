@@ -127,7 +127,7 @@ public final class ItemTypeManager {
     public ItemType getItemType(final String itemTypeName) {
         ItemType itemType = itemTypesByName.get(itemTypeName);
         if (itemType == null) {
-            Logger.getInstance().log(null, "Item type does not exis - itemTypeName: " + itemTypeName, true);
+            Logger.getInstance().log(null, "Item type does not exist - itemTypeName: " + itemTypeName, true);
         }
         return itemType;
     }

@@ -32,7 +32,7 @@
 package controller.command;
 
 import simulation.Player;
-import simulation.stock.Stockpile;
+import simulation.item.Stockpile;
 
 /**
  * The Class SetStockpileCommand.

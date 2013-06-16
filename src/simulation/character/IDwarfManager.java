@@ -39,8 +39,15 @@ public interface IDwarfManager {
     Set<Dwarf> getDwarfs();
 
     /**
-     * Add a listener that will be notified when a dwarf is added or removed from the dwarf manager.
+     * Add a listener that will be notified when a dwarf is added or removed from the dwarf manager or when a dwarf
+     * becomes idle.
      * @param listener the listener to add
      */
     void addListener(IDwarfManagerListener listener);
+
+    /**
+     * Remove a listener from the dwarf manager.
+     * @param listener the listener to remove
+     */
+    void removeListener(IDwarfManagerListener listener);
 }
