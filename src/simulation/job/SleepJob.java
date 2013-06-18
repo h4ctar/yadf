@@ -2,13 +2,14 @@ package simulation.job;
 
 import java.util.Set;
 
-import simulation.Player;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.IMovementComponent;
 import simulation.character.component.ISleepComponent;
-import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.WalkToPositionState;
+import simulation.job.jobstate.WasteTimeState;
+import simulation.map.MapIndex;
 import simulation.room.Room;
 
 /**
@@ -19,82 +20,50 @@ public class SleepJob extends AbstractJob {
     /** The serial version UID. */
     private static final long serialVersionUID = 6230915816367520292L;
 
+    /** How many simulation steps the dwarf should sleep for. */
     private static final long SLEEP_DURATION = Region.SIMULATION_STEPS_PER_HOUR;
-
-    /**
-     * All the possible states that the job can be in.
-     */
-    enum State {
-        /** Waiting for the dwarf to become free. */
-        WAIT_FOR_DWARF,
-        /** The dwarf is looking for somewhere to sleep. */
-        LOOK_FOR_SLEEP_LOCATION,
-        /** The dwarf is walking to sleep place. */
-        WALK_TO_SLEEP_LOCATION,
-        /** The consume. */
-        SLEEP
-    }
-
-    /** The current state of the job. */
-    private State state = State.WAIT_FOR_DWARF;
 
     /** The dwarf that wants to sleep. */
     private final Dwarf dwarf;
 
+    /** The bed that the dwarf sleeps in, null if he can't find one. */
     private Item bed;
 
-    private WalkMovementComponent walkComponent;
-
-    private WasteTimeJob wasteTimeJob;
-
-    private boolean done;
-
+    /**
+     * Constructor.
+     * @param dwarfTmp the dwarf that want's to sleep
+     */
     public SleepJob(final Dwarf dwarfTmp) {
+        super(dwarfTmp.getPlayer());
         dwarf = dwarfTmp;
+        setJobState(new WaitingForDwarfState());
     }
 
     @Override
-    public String getStatus() {
-        switch (state) {
-        case WAIT_FOR_DWARF:
-            return "Waiting for the dwarf to become free";
-        case LOOK_FOR_SLEEP_LOCATION:
-            return "Looking for somewhere to sleep";
-        case WALK_TO_SLEEP_LOCATION:
-            return "Walking to sleep place";
-        case SLEEP:
-            return "Sleeping";
-        default:
-            return null;
-        }
+    public String toString() {
+        return "Sleep";
     }
 
     @Override
-    public void interrupt(final String message) {
-        // TODO Auto-generated method stub
-
+    public MapIndex getPosition() {
+        return dwarf.getPosition();
     }
 
-    @Override
-    public boolean isDone() {
-        return done;
-    }
+    /**
+     * The waiting for dwarf job state.
+     */
+    private class WaitingForDwarfState extends simulation.job.jobstate.WaitingForDwarfState {
 
-    @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+        /**
+         * Constructor.
+         */
+        public WaitingForDwarfState() {
+            super(dwarf, SleepJob.this);
         }
 
-        switch (state) {
-        case WAIT_FOR_DWARF:
-            if (dwarf.acquireLock()) {
-                state = State.LOOK_FOR_SLEEP_LOCATION;
-            }
-            break;
-
-        case LOOK_FOR_SLEEP_LOCATION:
-            Set<Room> rooms = player.getRooms();
+        @Override
+        public void transitionOutOf() {
+            Set<Room> rooms = getPlayer().getRooms();
             for (Room room : rooms) {
                 // TODO: do I have my own room?
                 if (room.getType().equals("Dormitory")) {
@@ -105,41 +74,62 @@ public class SleepJob extends AbstractJob {
                     }
                 }
             }
+        }
+
+        @Override
+        public IJobState getNextState() {
+            IJobState nextState;
             if (bed != null) {
-                walkComponent = new WalkMovementComponent(bed.getPosition(), false);
-                dwarf.setComponent(IMovementComponent.class, walkComponent);
-                state = State.WALK_TO_SLEEP_LOCATION;
+                nextState = new WalkToSleepBedState();
             } else {
-                wasteTimeJob = new WasteTimeJob(dwarf, SLEEP_DURATION);
-                state = State.SLEEP;
+                nextState = new SleepState();
             }
-            break;
+            return nextState;
+        }
+    }
 
-        case WALK_TO_SLEEP_LOCATION:
-            if (walkComponent.isNoPath()) {
-                interrupt("No path to bed");
-                return;
-            }
-            if (walkComponent.isArrived()) {
-                wasteTimeJob = new WasteTimeJob(dwarf, SLEEP_DURATION);
-                state = State.SLEEP;
-            }
-            break;
+    /**
+     * The walk to bed job state.
+     */
+    private class WalkToSleepBedState extends WalkToPositionState {
 
-        case SLEEP:
-            wasteTimeJob.update(player, region);
-            if (wasteTimeJob.isDone()) {
-                dwarf.releaseLock();
-                dwarf.getComponent(ISleepComponent.class).sleep();
-                if (bed != null) {
-                    bed.setUsed(false);
-                }
-                done = true;
-            }
-            break;
+        /**
+         * Constructor.
+         */
+        public WalkToSleepBedState() {
+            super(bed.getPosition(), dwarf, SleepJob.this);
+        }
 
-        default:
-            break;
+        @Override
+        public IJobState getNextState() {
+            return new SleepState();
+        }
+    }
+
+    /**
+     * The sleep job state.
+     */
+    private class SleepState extends WasteTimeState {
+
+        /**
+         * Constructor.
+         */
+        public SleepState() {
+            super(SLEEP_DURATION, dwarf, SleepJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            dwarf.getComponent(ISleepComponent.class).sleep();
+            dwarf.releaseLock();
+            if (bed != null) {
+                bed.setUsed(false);
+            }
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

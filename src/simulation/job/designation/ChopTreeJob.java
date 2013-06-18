@@ -31,18 +31,19 @@
  */
 package simulation.job.designation;
 
-import logger.Logger;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.Tree;
 import simulation.character.Dwarf;
-import simulation.character.component.IMovementComponent;
 import simulation.character.component.ISkillComponent;
-import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
-import simulation.job.WasteTimeJob;
+import simulation.job.AbstractJob;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.LookingForDwarfState;
+import simulation.job.jobstate.WalkToPositionState;
+import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
@@ -50,19 +51,7 @@ import simulation.map.MapIndex;
 /**
  * The Class ChopTreeJob.
  */
-public class ChopTreeJob extends AbstractDesignationJob {
-
-    /**
-     * All the possible states that the job can be in.
-     */
-    enum State {
-        /** The waiting for dwarf. */
-        WAITING_FOR_DWARF,
-        /** The goto. */
-        GOTO,
-        /** The chop tree. */
-        CHOP_TREE
-    }
+public class ChopTreeJob extends AbstractJob {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -7689577169283098909L;
@@ -73,35 +62,25 @@ public class ChopTreeJob extends AbstractDesignationJob {
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Wood cutting");
 
-    /** The state. */
-    private State state = State.WAITING_FOR_DWARF;
-
     /** The tree. */
     private final Tree tree;
 
     /** The designation. */
     private final ChopTreeDesignation designation;
 
-    /** The move component. */
-    private WalkMovementComponent moveComponent = null;
-
-    /** Reference to the waste time job. */
-    private WasteTimeJob wasteTimeJob;
-
     /** The dwarf. */
-    private Dwarf dwarf;
-
-    /** The done. */
-    private boolean done = false;
+    private Dwarf lumberjack;
 
     /**
      * Instantiates a new chop tree job.
      * @param treeTmp the tree
      * @param designationTmp the designation
      */
-    public ChopTreeJob(final Tree treeTmp, final ChopTreeDesignation designationTmp) {
+    public ChopTreeJob(final Tree treeTmp, final ChopTreeDesignation designationTmp, final IPlayer player) {
+        super(player);
         tree = treeTmp;
         designation = designationTmp;
+        setJobState(new LookingForLumberjackState());
     }
 
     @Override
@@ -110,87 +89,72 @@ public class ChopTreeJob extends AbstractDesignationJob {
     }
 
     @Override
-    public String getStatus() {
-        return "Chopping tree";
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-        designation.removeFromDesignation(tree.getPosition());
-
-        if (wasteTimeJob != null) {
-            wasteTimeJob.interrupt("Chop tree job was interrupted");
-        }
-
-        if (dwarf != null) {
-            dwarf.releaseLock();
-        }
-
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
-    }
-
-    @Override
     public String toString() {
         return "Chop down tree";
     }
 
-    @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+    private class LookingForLumberjackState extends LookingForDwarfState {
+
+        /**
+         * Constructor.
+         */
+        public LookingForLumberjackState() {
+            super(REQUIRED_LABOR, ChopTreeJob.this);
         }
 
-        switch (state) {
-        case WAITING_FOR_DWARF:
-            dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
-            if (dwarf != null) {
-                moveComponent = new WalkMovementComponent(tree.getPosition(), false);
-                dwarf.setComponent(IMovementComponent.class, moveComponent);
-                state = State.GOTO;
-            }
-            break;
+        @Override
+        public void transitionOutOf() {
+            lumberjack = getDwarf();
+        }
 
-        case GOTO:
+        @Override
+        public IJobState getNextState() {
+            return new WalkToTreeState();
+        }
+    }
+
+    /**
+     * The walk to channel site job state.
+     */
+    private class WalkToTreeState extends WalkToPositionState {
+
+        /**
+         * Constructor.
+         */
+        public WalkToTreeState() {
+            super(tree.getPosition(), lumberjack, ChopTreeJob.this);
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return new ChopTreeState();
+        }
+    }
+
+    private class ChopTreeState extends WasteTimeState {
+
+        public ChopTreeState() {
+            super(DURATION, lumberjack, ChopTreeJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            designation.removeFromDesignation(tree.getPosition());
             if (tree == null || tree.getRemove()) {
                 interrupt("Tree missing");
                 return;
             }
-            if (moveComponent.isNoPath()) {
-                interrupt("No path to tree");
-                return;
-            }
-            if (moveComponent.isArrived()) {
-                state = State.CHOP_TREE;
-                wasteTimeJob = new WasteTimeJob(dwarf, DURATION);
-            }
-            break;
+            ItemType itemType = ItemTypeManager.getInstance().getItemType("Log");
+            Item log = ItemTypeManager.getInstance().createItem(tree.getPosition(), itemType, getPlayer());
+            getPlayer().getStockManager().addItem(log);
+            tree.setRemove();
+            lumberjack.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
+            lumberjack.releaseLock();
+        }
 
-        case CHOP_TREE:
-            wasteTimeJob.update(player, region);
-            if (wasteTimeJob.isDone()) {
-                designation.removeFromDesignation(tree.getPosition());
-                if (tree == null || tree.getRemove()) {
-                    interrupt("Tree missing");
-                    return;
-                }
-                ItemType itemType = ItemTypeManager.getInstance().getItemType("Log");
-                Item log = ItemTypeManager.getInstance().createItem(tree.getPosition(), itemType, player);
-                player.getStockManager().addItem(log);
-                tree.setRemove();
-                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-                dwarf.releaseLock();
-                done = true;
-            }
-            break;
-
-        default:
-            break;
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

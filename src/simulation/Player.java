@@ -63,7 +63,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     private final String name;
 
     /** The job manager. */
-    private final JobManager jobManager = new JobManager();
+    private final JobManager jobManager = new JobManager(this);
 
     /** The stock manager. */
     private final StockManager stockManager = new StockManager();
@@ -80,6 +80,9 @@ public class Player extends AbstractGameObject implements IPlayer {
     /** The farms. */
     private final Set<Farm> farms = new CopyOnWriteArraySet<>();
 
+    /** The region that this player is in. */
+    private final Region region;
+
     /** The size of the embark area. */
     private static final int EMBARK_SIZE = 10;
 
@@ -87,8 +90,9 @@ public class Player extends AbstractGameObject implements IPlayer {
      * Instantiates a new player.
      * @param playerName the players name
      */
-    public Player(final String playerName) {
+    public Player(final String playerName, final Region regionTmp) {
         name = playerName;
+        region = regionTmp;
     }
 
     /**
@@ -114,6 +118,7 @@ public class Player extends AbstractGameObject implements IPlayer {
      * 
      * @param workshop the workshop
      */
+    @Override
     public void addWorkshop(final Workshop workshop) {
         workshops.add(workshop);
     }
@@ -163,6 +168,7 @@ public class Player extends AbstractGameObject implements IPlayer {
      * @param index the index
      * @return the room
      */
+    @Override
     public Room getRoom(final MapIndex index) {
         for (Room room : rooms) {
             if (room.hasIndex(index)) {
@@ -177,6 +183,7 @@ public class Player extends AbstractGameObject implements IPlayer {
      * Gets the rooms.
      * @return the rooms
      */
+    @Override
     public Set<Room> getRooms() {
         return rooms;
     }
@@ -308,7 +315,13 @@ public class Player extends AbstractGameObject implements IPlayer {
      * Gets the dwarf manager.
      * @return the dwarf manager
      */
+    @Override
     public IDwarfManager getDwarfManager() {
         return dwarfManager;
+    }
+
+    @Override
+    public Region getRegion() {
+        return region;
     }
 }

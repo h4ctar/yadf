@@ -33,8 +33,7 @@ package simulation.job;
 
 import java.io.Serializable;
 
-import simulation.Player;
-import simulation.Region;
+import simulation.map.MapIndex;
 
 /**
  * Abstract class for a job, a job is just something that needs doing.
@@ -45,26 +44,35 @@ public interface IJob extends Serializable {
      * Gets the current status of the job, used by the GUI.
      * @return A status message
      */
-    public abstract String getStatus();
+    String getStatus();
 
     /**
      * Interrupts the job so that it cannot be restarted, this method is called when the job is interrupted.
      * @param message Why the job was interrupted
      */
-    public abstract void interrupt(String message);
+    void interrupt(String message);
 
     /**
      * Checks if is done.
      * @return true, if is done
      */
-    public abstract boolean isDone();
+    boolean isDone();
 
     /**
-     * Update.
-     * @param player the player
-     * @param region the region
+     * Add a listener to this job.
+     * @param listener the listener to add
      */
-    public abstract void update(Player player, Region region);
+    void addListener(IJobListener listener);
 
-	void addListener(IJobListener listener);
+    /**
+     * Remove a listener from this job.
+     * @param listener the listener to remove
+     */
+    void removeListener(IJobListener listener);
+
+    /**
+     * Get the position of the job.
+     * @return the position of the job
+     */
+    MapIndex getPosition();
 }

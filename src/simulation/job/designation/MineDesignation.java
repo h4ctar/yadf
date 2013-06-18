@@ -31,9 +31,9 @@
  */
 package simulation.job.designation;
 
-import simulation.Region;
+import simulation.IPlayer;
+import simulation.job.AbstractJob;
 import simulation.map.MapIndex;
-import simulation.map.RegionMap;
 
 /**
  * The Class MineDesignation.
@@ -43,20 +43,22 @@ public class MineDesignation extends AbstractDesignation {
     /** The serial version UID. */
     private static final long serialVersionUID = 5078985398861947613L;
 
+    public MineDesignation(final IPlayer player) {
+        super(player);
+    }
+
     @Override
     public String toString() {
         return "Mine Designation";
     }
 
     @Override
-    public boolean valid(final MapIndex mapIndex, final Region region) {
-        RegionMap map = region.getMap();
-
-        return map.getBlock(mapIndex).isMineable;
+    public boolean valid(final MapIndex mapIndex) {
+        return getRegion().getMap().getBlock(mapIndex).isMineable;
     }
 
     @Override
-    protected AbstractDesignationJob createJob(final MapIndex mapIndex, final Region region) {
-        return new MineJob(mapIndex, this);
+    protected AbstractJob createJob(final MapIndex mapIndex) {
+        return new MineJob(mapIndex, this, getPlayer());
     }
 }

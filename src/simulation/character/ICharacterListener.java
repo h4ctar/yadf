@@ -9,5 +9,5 @@ public interface ICharacterListener {
      * Method that will be called whenever the character changes.
      * @param character the character that has changed
      */
-    void charactedChanged(GameCharacter character);
+    void characterChanged(GameCharacter character);
 }

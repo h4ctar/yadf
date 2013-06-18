@@ -31,8 +31,9 @@
  */
 package simulation.job.designation;
 
-import simulation.Region;
+import simulation.IPlayer;
 import simulation.Tree;
+import simulation.job.AbstractJob;
 import simulation.map.MapIndex;
 
 /**
@@ -43,23 +44,27 @@ public class ChopTreeDesignation extends AbstractDesignation {
     /** The serial version UID. */
     private static final long serialVersionUID = 498334310762797158L;
 
+    public ChopTreeDesignation(final IPlayer player) {
+        super(player);
+    }
+
     @Override
     public String toString() {
         return "Chop Tree Designation";
     }
 
     @Override
-    public boolean valid(final MapIndex mapIndex, final Region region) {
-        Tree tree = region.getTree(mapIndex);
+    public boolean valid(final MapIndex mapIndex) {
+        Tree tree = getRegion().getTree(mapIndex);
         return tree != null;
     }
 
     @Override
-    protected AbstractDesignationJob createJob(final MapIndex mapIndex, final Region region) {
-        Tree tree = region.getTree(mapIndex);
+    protected AbstractJob createJob(final MapIndex mapIndex) {
+        Tree tree = getRegion().getTree(mapIndex);
 
         if (tree != null) {
-            return new ChopTreeJob(tree, this);
+            return new ChopTreeJob(tree, this, getPlayer());
         }
 
         return null;

@@ -31,14 +31,12 @@
  */
 package simulation.job;
 
-import logger.Logger;
-import simulation.Player;
-import simulation.Region;
 import simulation.character.GameCharacter;
 import simulation.character.component.IInventoryComponent;
-import simulation.character.component.IMovementComponent;
-import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.WalkToPositionState;
+import simulation.map.MapIndex;
 
 /**
  * The Class PickupToolJob.
@@ -48,65 +46,23 @@ public class PickupToolJob extends AbstractJob {
     /** The serial version UID. */
     private static final long serialVersionUID = -8533807757453770766L;
 
-    /**
-     * All the possible states that the job can be in.
-     */
-    enum State {
-        /** The waiting for dwarf. */
-        WAITING_FOR_DWARF,
-        /** The walk to tool. */
-        WALK_TO_TOOL
-    }
-
-    /** The state. */
-    private State state = State.WAITING_FOR_DWARF;
-
-    /** The character. */
-    private final GameCharacter character;
+    /** The dwarf. */
+    private final GameCharacter dwarf;
 
     /** The tool. */
     private final Item tool;
 
-    /** The move component. */
-    private WalkMovementComponent moveComponent;
-
-    /** The done. */
-    private boolean done;
-
     /**
      * Instantiates a new pickup tool job.
-     * @param characterTmp the character
+     * @param character the dwarf
      * @param toolTmp the tool
      */
-    public PickupToolJob(final GameCharacter characterTmp, final Item toolTmp) {
-        character = characterTmp;
+    public PickupToolJob(final GameCharacter character, final Item toolTmp) {
+        super(character.getPlayer());
+        dwarf = character;
         tool = toolTmp;
         tool.setUsed(true);
-    }
-
-    @Override
-    public String getStatus() {
-        switch (state) {
-        case WAITING_FOR_DWARF:
-            return "Waiting for dwarf to become free";
-        case WALK_TO_TOOL:
-            return "Walking to tool";
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-        tool.setUsed(false);
-        character.releaseLock();
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
+        setJobState(new WaitingForDwarfState());
     }
 
     @Override
@@ -115,30 +71,49 @@ public class PickupToolJob extends AbstractJob {
     }
 
     @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+    public MapIndex getPosition() {
+        return tool.getPosition();
+    }
+
+    /**
+     * The waiting for dwarf job state.
+     */
+    private class WaitingForDwarfState extends simulation.job.jobstate.WaitingForDwarfState {
+
+        /**
+         * Constructor.
+         */
+        public WaitingForDwarfState() {
+            super(dwarf, PickupToolJob.this);
         }
 
-        switch (state) {
-        case WAITING_FOR_DWARF:
-            if (character.acquireLock()) {
-                moveComponent = new WalkMovementComponent(tool.getPosition(), false);
-                character.setComponent(IMovementComponent.class, moveComponent);
-                state = State.WALK_TO_TOOL;
-            }
-            break;
+        @Override
+        public IJobState getNextState() {
+            return new WalkToToolState();
+        }
+    }
 
-        case WALK_TO_TOOL:
-            if (moveComponent.isDone()) {
-                character.getComponent(IInventoryComponent.class).pickupTool(tool);
-                character.releaseLock();
-                done = true;
-            }
-            break;
+    /**
+     * The walk to tool job state.
+     */
+    private class WalkToToolState extends WalkToPositionState {
 
-        default:
-            break;
+        /**
+         * Constructor.
+         */
+        public WalkToToolState() {
+            super(tool.getPosition(), dwarf, PickupToolJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            dwarf.getComponent(IInventoryComponent.class).pickupTool(tool);
+            dwarf.releaseLock();
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

@@ -49,6 +49,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import simulation.IPlayer;
 import simulation.Player;
 import simulation.map.MapIndex;
 
@@ -266,7 +267,7 @@ public final class ItemTypeManager {
      * @param player the player that the new item will belong to
      * @return the new item
      */
-    public Item createItem(final MapIndex position, final ItemType itemType, final Player player) {
+    public Item createItem(final MapIndex position, final ItemType itemType, final IPlayer player) {
         Item item;
         if (itemType.capacity > 0) {
             item = new ContainerItem(position, itemType, player);

@@ -196,7 +196,7 @@ public class Workshop extends AbstractGameObject {
     public void update(final Player player) {
         if (craftJob == null) {
             if (!orders.isEmpty()) {
-                craftJob = new CraftJob(this, orders.get(0));
+                craftJob = new CraftJob(this, orders.get(0), player);
                 player.getJobManager().addJob(craftJob);
                 notifyListeners();
             }

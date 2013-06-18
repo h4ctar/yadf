@@ -46,6 +46,7 @@ public abstract class AbstractCommand implements Serializable {
     /** The serial version UID. */
     private static final long serialVersionUID = 8258888197341045332L;
 
+    // TODO: make these private
     /** The player id. */
     protected int playerId;
 

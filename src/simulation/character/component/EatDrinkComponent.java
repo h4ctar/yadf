@@ -68,7 +68,7 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
 
     @Override
     public boolean isHungryOrThirsty() {
-        return !(eatJob == null || eatJob.isLooking()) || !(drinkJob == null || drinkJob.isLooking());
+        return hunger > HUNGER_EAT_THRESHOLD || thirst > THIRST_DRINK_THRESHOLD;
     }
 
     @Override

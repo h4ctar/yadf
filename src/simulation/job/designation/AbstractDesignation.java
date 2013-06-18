@@ -33,41 +33,71 @@ package simulation.job.designation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import logger.Logger;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
-import simulation.job.AbstractJob;
 import simulation.job.IJob;
+import simulation.job.IJobListener;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
 /**
- * abstract class Abstractfor a designation Designations are groups or areas of jobs to do that can be added to or
- * subtracted from and spawn jobs.
+ * Abstract class for a designation.
+ * 
+ * Designations are groups or areas of jobs to do that can be added to or subtracted from and spawn jobs.
  */
-public abstract class AbstractDesignation extends AbstractJob {
+public abstract class AbstractDesignation implements IJob, IJobListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -7914906499210843383L;
 
     /** The jobs. */
-    protected List<AbstractDesignationJob> jobs = new ArrayList<>();
+    protected List<IJob> jobs = new ArrayList<>();
 
     /** The map indicies. */
     protected List<MapIndex> mapIndicies = new ArrayList<>();
 
-    /** The new map indicies. */
-    protected List<MapIndex> newMapIndicies = new ArrayList<>();
+    /**
+     * The player that this job belongs to.
+     */
+    private final IPlayer player;
+
+    /** The listeners to this job. */
+    private final List<IJobListener> listeners = new CopyOnWriteArrayList<>();
+
+    /**
+     * Constructor.
+     * @param playerTmp the player that this designation belongs to
+     */
+    public AbstractDesignation(final IPlayer playerTmp) {
+        player = playerTmp;
+    }
 
     /**
      * Add an area to the designation.
-     * @param area An area to add to the designation
+     * @param area an area to add to the designation
      */
     public void addToDesignation(final MapArea area) {
         for (int x = area.pos.x; x < area.pos.x + area.width; x++) {
             for (int y = area.pos.y; y < area.pos.y + area.height; y++) {
-                newMapIndicies.add(new MapIndex(x, y, area.pos.z));
+                MapIndex mapIndex = new MapIndex(x, y, area.pos.z);
+                if (!valid(mapIndex)) {
+                    continue;
+                }
+                boolean alreadyAdded = false;
+                for (MapIndex existingMapIndex : mapIndicies) {
+                    if (existingMapIndex.equals(mapIndex)) {
+                        alreadyAdded = true;
+                        break;
+                    }
+                }
+                if (!alreadyAdded) {
+                    IJob newJob = createJob(mapIndex);
+                    newJob.addListener(this);
+                    jobs.add(newJob);
+                    mapIndicies.add(mapIndex);
+                }
             }
         }
     }
@@ -87,12 +117,6 @@ public abstract class AbstractDesignation extends AbstractJob {
         }
 
         return mapIndicies.size() + " locations";
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        /* This should never be interrupted */
-        Logger.getInstance().log(this, "Error: Designations should never be interrupted", true);
     }
 
     @Override
@@ -122,61 +146,13 @@ public abstract class AbstractDesignation extends AbstractJob {
 
     /**
      * Removes a location from the designation.
-     * @param mapIndex2 The location to be removed
+     * @param mapIndexTmp The location to be removed
      */
-    public void removeFromDesignation(final MapIndex mapIndex2) {
+    public void removeFromDesignation(final MapIndex mapIndexTmp) {
         for (MapIndex mapIndex : mapIndicies) {
-            if (mapIndex2.equals(mapIndex)) {
+            if (mapIndexTmp.equals(mapIndex)) {
                 mapIndicies.remove(mapIndex);
                 return;
-            }
-        }
-    }
-
-    @Override
-    public void update(final Player player, final Region region) {
-        addNewJobs(region);
-
-        for (IJob job : jobs) {
-            job.update(player, region);
-        }
-
-        removeDoneJobs();
-    }
-
-    /**
-     * Adds the new jobs.
-     * @param region the region
-     */
-    private void addNewJobs(final Region region) {
-        for (MapIndex mapIndex : newMapIndicies) {
-            if (!valid(mapIndex, region)) {
-                continue;
-            }
-            boolean alreadyAdded = false;
-            for (MapIndex existingMapIndex : mapIndicies) {
-                if (existingMapIndex.equals(mapIndex)) {
-                    alreadyAdded = true;
-                    break;
-                }
-            }
-            if (!alreadyAdded) {
-                jobs.add(createJob(mapIndex, region));
-                mapIndicies.add(mapIndex);
-            }
-        }
-        newMapIndicies.clear();
-    }
-
-    /**
-     * Removes the done jobs.
-     */
-    private void removeDoneJobs() {
-        for (int i = 0; i < jobs.size(); i++) {
-            IJob job = jobs.get(i);
-            if (job.isDone()) {
-                jobs.remove(i);
-                i--;
             }
         }
     }
@@ -187,7 +163,7 @@ public abstract class AbstractDesignation extends AbstractJob {
      * @param index The location of the job to be removed
      */
     private void removeJob(final MapIndex index) {
-        for (AbstractDesignationJob job : jobs) {
+        for (IJob job : jobs) {
             if (job.getPosition().equals(index)) {
                 job.interrupt("Designation removed");
                 return;
@@ -195,21 +171,65 @@ public abstract class AbstractDesignation extends AbstractJob {
         }
     }
 
+    @Override
+    public void jobChanged(final IJob job) {
+        assert jobs.contains(job);
+        if (job.isDone()) {
+            job.removeListener(this);
+            jobs.remove(job);
+        }
+    }
+
+    /**
+     * Get the region that this designation is within.
+     * @return the region that this designation is within
+     */
+    protected Region getRegion() {
+        return player.getRegion();
+    }
+
+    /**
+     * Get the player that this designation belongs to.
+     * @return the player that this designation belongs to
+     */
+    protected IPlayer getPlayer() {
+        return player;
+    }
+
+    @Override
+    public void interrupt(final String message) {
+        // designations can't be interrupted
+        assert true;
+    }
+
+    @Override
+    public void addListener(final IJobListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(final IJobListener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
+    public MapIndex getPosition() {
+        return null;
+    }
+
     /**
      * Template method to be filled out by concrete sub classes that adds a job to a job manager for this particular
      * designation.
      * @param mapIndex The location of the job
-     * @param region the region
-     * @return the i designation job
+     * @return the designation job
      */
-    protected abstract AbstractDesignationJob createJob(MapIndex mapIndex, Region region);
+    protected abstract IJob createJob(MapIndex mapIndex);
 
     /**
      * Template method that should return if a particular location(map index) is valid for the particular designation
      * type.
-     * @param mapIndex The location to check
-     * @param region the region
-     * @return True if location is valid otherwise false
+     * @param mapIndex the location to check
+     * @return true if location is valid otherwise false
      */
-    protected abstract boolean valid(MapIndex mapIndex, Region region);
+    protected abstract boolean valid(MapIndex mapIndex);
 }

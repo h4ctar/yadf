@@ -33,19 +33,19 @@ package simulation.job.designation;
 
 import java.util.List;
 
-import logger.Logger;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.IMovementComponent;
 import simulation.character.component.ISkillComponent;
-import simulation.character.component.IdleMovementComponent;
-import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
-import simulation.job.HaulJob;
-import simulation.job.WasteTimeJob;
+import simulation.job.AbstractJob;
+import simulation.job.jobstate.HaulItemState;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.LookingForDwarfState;
+import simulation.job.jobstate.WalkToPositionState;
+import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.BlockType;
@@ -55,23 +55,7 @@ import simulation.map.WalkableNode;
 /**
  * The Class BuildConstructionJob.
  */
-public class BuildConstructionJob extends AbstractDesignationJob {
-
-    /**
-     * The different states that this job can be in.
-     */
-    enum State {
-        /** The waiting for resources state. */
-        WAITING_FOR_RESOURCES,
-        /** The haul resources state. */
-        HAUL_RESOURCES,
-        /** The waiting for dwarf state. */
-        WAITING_FOR_DWARF,
-        /** The dwarf walking to workshop state. */
-        GOTO_SITE,
-        /** The craft state. */
-        BUILDING
-    }
+public class BuildConstructionJob extends AbstractJob {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -6711242158871047234L;
@@ -82,8 +66,7 @@ public class BuildConstructionJob extends AbstractDesignationJob {
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Building");
 
-    /** The current state of the job. */
-    private State state = State.WAITING_FOR_RESOURCES;
+    private final ItemType BUILDING_MATERIAL_TYPE = ItemTypeManager.getInstance().getItemType("Rock");
 
     /** The position. */
     private final MapIndex position;
@@ -94,20 +77,10 @@ public class BuildConstructionJob extends AbstractDesignationJob {
     /** The designation. */
     private final ConstructionDesignation designation;
 
-    /** References to the haul jobs that are scheduled for materials. */
-    private HaulJob haulJob;
+    /** The builder dwarf. */
+    private Dwarf builder;
 
-    /** Reference to the waste time job. */
-    private WasteTimeJob wasteTimeJob;
-
-    /** The dwarf. */
-    private Dwarf dwarf = null;
-
-    /** The done. */
-    private boolean done = false;
-
-    /** The walk component. */
-    private WalkMovementComponent walkComponent;
+    private Item rock;
 
     /**
      * Instantiates a new builds the construction job.
@@ -117,56 +90,12 @@ public class BuildConstructionJob extends AbstractDesignationJob {
      * @param designationTmp the designation
      */
     public BuildConstructionJob(final MapIndex positionTmp, final BlockType constructionTypeTmp,
-            final ConstructionDesignation designationTmp) {
+            final ConstructionDesignation designationTmp, final IPlayer player) {
+        super(player);
         position = positionTmp;
         constructionType = constructionTypeTmp;
         designation = designationTmp;
-    }
-
-    @Override
-    public MapIndex getPosition() {
-        return position;
-    }
-
-    @Override
-    public String getStatus() {
-        switch (state) {
-        case WAITING_FOR_RESOURCES:
-            return "Waiting on resources";
-        case HAUL_RESOURCES:
-            return "Hauling resources";
-        case WAITING_FOR_DWARF:
-            return "Waiting for builder";
-        case GOTO_SITE:
-            return "Walking to site";
-        case BUILDING:
-            return "Building";
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message);
-
-        if (dwarf != null) {
-            dwarf.setComponent(IMovementComponent.class, new IdleMovementComponent());
-            dwarf.releaseLock();
-        }
-
-        if (wasteTimeJob != null) {
-            wasteTimeJob.interrupt("Construction job was canceled");
-        }
-
-        designation.removeFromDesignation(position);
-
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
+        setJobState(new HaulBuildingMaterialsState());
     }
 
     @Override
@@ -175,74 +104,100 @@ public class BuildConstructionJob extends AbstractDesignationJob {
     }
 
     @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+    public MapIndex getPosition() {
+        return position;
+    }
+
+    private class HaulBuildingMaterialsState extends HaulItemState {
+
+        /**
+         * Constructor.
+         */
+        public HaulBuildingMaterialsState() {
+            super(BUILDING_MATERIAL_TYPE, position, BuildConstructionJob.this);
         }
 
-        switch (state) {
-        case WAITING_FOR_RESOURCES:
-            ItemType itemType = ItemTypeManager.getInstance().getItemType("Rock");
-            haulJob = new HaulJob(itemType, player.getStockManager(), position, player);
-            state = State.HAUL_RESOURCES;
-            break;
+        @Override
+        public void transitionOutOf() {
+            rock = getItem();
+        }
 
-        case HAUL_RESOURCES:
-            haulJob.update(player, region);
-            if (haulJob.isDone()) {
-                state = State.WAITING_FOR_DWARF;
-            }
-            break;
+        @Override
+        public IJobState getNextState() {
+            return new LookingForBuilderState();
+        }
+    }
 
-        case WAITING_FOR_DWARF:
-            if (dwarf == null) {
-                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
-            }
+    private class LookingForBuilderState extends LookingForDwarfState {
 
-            if (dwarf != null) {
-                walkComponent = new WalkMovementComponent(position, false);
-                dwarf.setComponent(IMovementComponent.class, walkComponent);
-                state = State.GOTO_SITE;
-            }
-            break;
+        /**
+         * Constructor.
+         */
+        public LookingForBuilderState() {
+            super(REQUIRED_LABOR, BuildConstructionJob.this);
+        }
 
-        case GOTO_SITE:
-            if (walkComponent.isNoPath()) {
-                interrupt("No path to workshop");
-                return;
-            }
+        @Override
+        public void transitionOutOf() {
+            builder = getDwarf();
+        }
 
-            if (walkComponent.isArrived()) {
-                wasteTimeJob = new WasteTimeJob(dwarf, BUILD_DURATION);
-                state = State.BUILDING;
-            }
-            break;
+        @Override
+        public IJobState getNextState() {
+            return new WalkToBuildingSiteState();
+        }
+    }
 
-        case BUILDING:
-            wasteTimeJob.update(player, region);
+    /**
+     * The walk to building site job state.
+     */
+    private class WalkToBuildingSiteState extends WalkToPositionState {
 
-            if (wasteTimeJob.isDone()) {
-                haulJob.getItem().setRemove();
-                // Move items
-                for (Item item : player.getStockManager().getItems()) {
-                    if (item.getPosition().equals(position)) {
-                        List<WalkableNode> adjacencies = region.getMap().getAdjacencies(position);
+        /**
+         * Constructor.
+         */
+        public WalkToBuildingSiteState() {
+            super(position, builder, BuildConstructionJob.this);
+        }
 
-                        if (!adjacencies.isEmpty()) {
-                            item.setPosition(adjacencies.get(0));
-                        }
+        @Override
+        public IJobState getNextState() {
+            return new BuildState();
+        }
+    }
+
+    private class BuildState extends WasteTimeState {
+
+        /**
+         * Constructor.
+         */
+        public BuildState() {
+            super(BUILD_DURATION, builder, BuildConstructionJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            rock.setRemove();
+
+            // Move items away from build area
+            for (Item item : getPlayer().getStockManager().getItems()) {
+                if (item.getPosition().equals(position)) {
+                    List<WalkableNode> adjacencies = getPlayer().getRegion().getMap().getAdjacencies(position);
+
+                    if (!adjacencies.isEmpty()) {
+                        item.setPosition(adjacencies.get(0));
                     }
                 }
-                region.getMap().setBlock(position, constructionType);
-                designation.removeFromDesignation(position);
-                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-                dwarf.releaseLock();
-                done = true;
             }
-            break;
+            getPlayer().getRegion().getMap().setBlock(position, constructionType);
+            designation.removeFromDesignation(position);
+            builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
+            builder.releaseLock();
+        }
 
-        default:
-            break;
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

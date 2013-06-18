@@ -105,13 +105,13 @@ public class FarmPlot {
 
     /**
      * Update.
-     * 
      * @param player the player
      */
     public void update(final Player player) {
+        // TODO: the farm should listen to the jobs
         switch (state) {
         case START:
-            job = new TillJob(this);
+            job = new TillJob(this, player);
             player.getJobManager().addJob(job);
 
             state = State.TILL;
@@ -130,7 +130,7 @@ public class FarmPlot {
                 if (seed != null) {
                     player.getStockManager().removeItem(seed);
                     seed.setUsed(true);
-                    job = new PlantJob(seed, this);
+                    job = new PlantJob(seed, this, player);
                     player.getJobManager().addJob(job);
                 }
             } else if (job.isDone()) {
@@ -142,7 +142,7 @@ public class FarmPlot {
         case GROW:
             simulationSteps++;
             if (simulationSteps > GROW_DURATION) {
-                job = new HarvestJob(this);
+                job = new HarvestJob(this, player);
                 player.getJobManager().addJob(job);
                 state = State.HARVEST;
             }

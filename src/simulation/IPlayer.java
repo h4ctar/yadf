@@ -1,8 +1,13 @@
 package simulation;
 
+import java.util.Set;
+
 import simulation.character.IDwarfManager;
 import simulation.item.IStockManager;
 import simulation.job.IJobManager;
+import simulation.map.MapIndex;
+import simulation.room.Room;
+import simulation.workshop.Workshop;
 
 /**
  * Interface of a player.
@@ -25,4 +30,12 @@ public interface IPlayer {
      * @return the dwarf manager
      */
     IDwarfManager getDwarfManager();
+
+    void addWorkshop(Workshop workshop);
+
+    Set<Room> getRooms();
+
+    Room getRoom(MapIndex position);
+
+    Region getRegion();
 }

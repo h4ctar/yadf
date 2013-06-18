@@ -97,7 +97,8 @@ public class JobsTableModel extends AbstractTableModel implements IJobManagerLis
     }
 
     @Override
-    public void jobRemoved(final int index) {
-        this.fireTableRowsDeleted(index, index);
+    public void jobRemoved(IJob job) {
+        // this.fireTableRowsDeleted(index, index);
+        // TODO: fix this
     }
 }

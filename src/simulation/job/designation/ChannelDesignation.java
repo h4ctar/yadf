@@ -31,8 +31,8 @@
  */
 package simulation.job.designation;
 
-import simulation.Region;
-import simulation.map.BlockType;
+import simulation.IPlayer;
+import simulation.job.IJob;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
@@ -45,15 +45,11 @@ public class ChannelDesignation extends AbstractDesignation {
     /** The serial version UID. */
     private static final long serialVersionUID = 6420960356264271866L;
 
-    /** The block type. */
-    private final BlockType blockType;
-
     /**
      * Instantiates a new channel designation.
-     * @param blockTypeTmp the block type
      */
-    public ChannelDesignation(final BlockType blockTypeTmp) {
-        blockType = blockTypeTmp;
+    public ChannelDesignation(final IPlayer player) {
+        super(player);
     }
 
     @Override
@@ -62,14 +58,14 @@ public class ChannelDesignation extends AbstractDesignation {
     }
 
     @Override
-    public boolean valid(final MapIndex mapIndex, final Region region) {
-        RegionMap map = region.getMap();
-
-        return region.checkAreaValid(new MapArea(mapIndex, 1, 1)) && map.getBlock(mapIndex.add(0, 0, -1)).isMineable;
+    public boolean valid(final MapIndex mapIndex) {
+        RegionMap map = getRegion().getMap();
+        return getRegion().checkAreaValid(new MapArea(mapIndex, 1, 1))
+                && map.getBlock(mapIndex.add(0, 0, -1)).isMineable;
     }
 
     @Override
-    protected AbstractDesignationJob createJob(final MapIndex mapIndex, final Region region) {
-        return new ChannelJob(mapIndex, blockType, this);
+    protected IJob createJob(final MapIndex mapIndex) {
+        return new ChannelJob(mapIndex, this, getPlayer());
     }
 }

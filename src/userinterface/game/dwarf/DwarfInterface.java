@@ -125,7 +125,7 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
     }
 
     @Override
-    public void charactedChanged(final GameCharacter character) {
+    public void characterChanged(final GameCharacter character) {
         update();
     }
 

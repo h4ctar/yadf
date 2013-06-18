@@ -7,6 +7,7 @@ import logger.Logger;
 
 import org.w3c.dom.Element;
 
+import simulation.IPlayer;
 import simulation.Player;
 import simulation.job.HaulJob;
 import simulation.job.IJob;
@@ -54,10 +55,10 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
      * Create an item from an item type.
      * @param position the position of the new item
      * @param itemTypeTmp the type of the new item
-     * @param playerTmp the player that the item will belong to
+     * @param player the player that the item will belong to
      */
-    public ContainerItem(final MapIndex position, final ItemType itemTypeTmp, final Player playerTmp) {
-        super(position, itemTypeTmp, playerTmp);
+    public ContainerItem(final MapIndex position, final ItemType itemTypeTmp, final IPlayer player) {
+        super(position, itemTypeTmp, player);
         contentItemType = null;
         player.getStockManager().addListener(this);
     }

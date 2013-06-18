@@ -31,22 +31,20 @@
  */
 package simulation.job;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
-import logger.Logger;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.IMovementComponent;
 import simulation.character.component.ISkillComponent;
-import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
-import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
+import simulation.job.jobstate.HaulResourcesState;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.LookingForDwarfState;
+import simulation.job.jobstate.WalkToPositionState;
+import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
+import simulation.map.MapIndex;
 import simulation.recipe.Recipe;
 import simulation.workshop.Workshop;
 
@@ -58,27 +56,8 @@ public class CraftJob extends AbstractJob {
     /** The serial version UID. */
     private static final long serialVersionUID = 8969989694678543875L;
 
-    /**
-     * The different states that this job can be in.
-     */
-    enum State {
-        /** The waiting for resources state. */
-        WAITING_FOR_RESOURCES,
-        /** The haul resources state. */
-        HAUL_RESOURCES,
-        /** The waiting for dwarf state. */
-        WAITING_FOR_DWARF,
-        /** The dwarf walking to workshop state. */
-        GOTO_WORKSHOP,
-        /** The craft state. */
-        CRAFT
-    }
-
     /** How long it takes to craft the item. */
-    private static final long CRAFT_TIME = 2 * Region.SIMULATION_STEPS_PER_HOUR;
-
-    /** The state. */
-    private State state = State.WAITING_FOR_RESOURCES;
+    private static final long CRAFT_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
 
     /** The workshop. */
     private final Workshop workshop;
@@ -86,20 +65,8 @@ public class CraftJob extends AbstractJob {
     /** The recipe. */
     private final Recipe recipe;
 
-    /** Reference to the waste time job. */
-    private WasteTimeJob wasteTimeJob;
-
-    /** The done. */
-    private boolean done = false;
-
-    /** The walk component. */
-    private WalkMovementComponent walkComponent;
-
     /** The dwarf. */
-    private Dwarf dwarf;
-
-    /** References to the haul jobs that are scheduled for materials. */
-    private final List<HaulJob> haulJobs = new ArrayList<>();
+    private Dwarf crafter;
 
     /** The required labor type for this job. */
     private final LaborType requiredLabor;
@@ -108,135 +75,115 @@ public class CraftJob extends AbstractJob {
      * Instantiates a new craft job.
      * @param workshopTmp the workshop
      * @param recipeTmp the recipe
+     * @param player the player that this job belongs to
      */
-    public CraftJob(final Workshop workshopTmp, final Recipe recipeTmp) {
+    public CraftJob(final Workshop workshopTmp, final Recipe recipeTmp, final IPlayer player) {
+        super(player);
         workshop = workshopTmp;
         recipe = recipeTmp;
         workshop.setOccupied(true);
         requiredLabor = LaborTypeManager.getInstance().getLaborType(recipe.skill);
-    }
-
-    @Override
-    public String getStatus() {
-        switch (state) {
-        case WAITING_FOR_RESOURCES:
-            return "Waiting on resources";
-        case HAUL_RESOURCES:
-            return "Hauling resources";
-        case WAITING_FOR_DWARF:
-            return "Waiting for crafter";
-        case GOTO_WORKSHOP:
-            return "Walking to site";
-        case CRAFT:
-            return "Crafting";
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-
-        workshop.setOccupied(false);
-
-        if (dwarf != null) {
-            dwarf.releaseLock();
-        }
-
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
+        setJobState(new HaulCraftingMaterialsState());
     }
 
     @Override
     public String toString() {
-        return "Craft " + recipe.itemType.name;
+        return "Crafting " + recipe.itemType.name;
     }
 
     @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+    public MapIndex getPosition() {
+        return workshop.getPosition();
+    }
+
+    /**
+     * The haul crafting materials job state.
+     */
+    private class HaulCraftingMaterialsState extends HaulResourcesState {
+
+        /**
+         * Constructor.
+         */
+        public HaulCraftingMaterialsState() {
+            super(recipe.resources, workshop.getPosition(), CraftJob.this);
         }
 
-        switch (state) {
-        case WAITING_FOR_RESOURCES:
-            for (Entry<ItemType, Integer> entry : recipe.resources.entrySet()) {
-                ItemType itemType = entry.getKey();
-                for (int i = 0; i < entry.getValue().intValue(); i++) {
-                    HaulJob haulJob = new HaulJob(itemType, player.getStockManager(), workshop.getRandomPosition(),
-                            player);
-                    haulJobs.add(haulJob);
-                }
+        @Override
+        public IJobState getNextState() {
+            return new LookingForCrafterState();
+        }
+    }
+
+    /**
+     * The looking for crafter job state.
+     */
+    private class LookingForCrafterState extends LookingForDwarfState {
+
+        /**
+         * Constructor.
+         */
+        public LookingForCrafterState() {
+            super(requiredLabor, CraftJob.this);
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return new WalkToWorkshopState();
+        }
+
+        @Override
+        public void transitionOutOf() {
+            crafter = getDwarf();
+        }
+    }
+
+    /**
+     * The walk to workshop job state.
+     */
+    private class WalkToWorkshopState extends WalkToPositionState {
+
+        /**
+         * Constructor.
+         */
+        public WalkToWorkshopState() {
+            super(workshop.getPosition(), crafter, CraftJob.this);
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return new ConstructCraftState();
+        }
+    }
+
+    /**
+     * The construct craft job state.
+     */
+    private class ConstructCraftState extends WasteTimeState {
+
+        /**
+         * Constructor.
+         */
+        public ConstructCraftState() {
+            super(CRAFT_DURATION, crafter, CraftJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            for (int i = 0; i < recipe.quantity; i++) {
+                Item newItem = ItemTypeManager.getInstance().createItem(workshop.getPosition(), recipe.itemType,
+                        getPlayer());
+                getPlayer().getStockManager().addItem(newItem);
             }
-            state = State.HAUL_RESOURCES;
-            break;
-
-        case HAUL_RESOURCES:
-            boolean resourcesDone = true;
-            for (HaulJob haulJob : haulJobs) {
-                haulJob.update(player, region);
-                if (!haulJob.isDone()) {
-                    resourcesDone = false;
-                }
+            workshop.setOccupied(false);
+            if (recipe.skill != null) {
+                crafter.getComponent(ISkillComponent.class).increaseSkillLevel(requiredLabor);
             }
+            crafter.releaseLock();
+        }
 
-            if (resourcesDone) {
-                state = State.WAITING_FOR_DWARF;
-            }
-            break;
-
-        case WAITING_FOR_DWARF:
-            if (dwarf == null) {
-                dwarf = player.getDwarfManager().getIdleDwarf(requiredLabor);
-            }
-
-            if (dwarf != null) {
-                walkComponent = new WalkMovementComponent(workshop.getRandomPosition(), false);
-                dwarf.setComponent(IMovementComponent.class, walkComponent);
-                state = State.GOTO_WORKSHOP;
-            }
-            break;
-
-        case GOTO_WORKSHOP:
-            if (walkComponent.isNoPath()) {
-                interrupt("No path to workshop");
-                return;
-            }
-
-            if (walkComponent.isArrived()) {
-                wasteTimeJob = new WasteTimeJob(dwarf, CRAFT_TIME);
-                state = State.CRAFT;
-            }
-            break;
-
-        case CRAFT:
-            wasteTimeJob.update(player, region);
-
-            if (wasteTimeJob.isDone()) {
-                for (HaulJob haulJob : haulJobs) {
-                    haulJob.getItem().setRemove();
-                }
-                for (int i = 0; i < recipe.quantity; i++) {
-                    Item newItem = ItemTypeManager.getInstance().createItem(workshop.getPosition(), recipe.itemType,
-                            player);
-                    player.getStockManager().addItem(newItem);
-                }
-                workshop.setOccupied(false);
-                if (recipe.skill != null) {
-                    dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(requiredLabor);
-                }
-                dwarf.releaseLock();
-                done = true;
-            }
-            break;
-
-        default:
-            break;
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

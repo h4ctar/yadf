@@ -31,10 +31,10 @@
  */
 package simulation.job;
 
-import logger.Logger;
-import simulation.Player;
-import simulation.Region;
+import simulation.IPlayer;
 import simulation.item.Item;
+import simulation.job.jobstate.HaulItemState;
+import simulation.job.jobstate.IJobState;
 import simulation.map.MapIndex;
 import simulation.room.Room;
 
@@ -46,74 +46,26 @@ public class PlaceItemJob extends AbstractJob {
     /** The serial version UID. */
     private static final long serialVersionUID = -7795181197544909062L;
 
-    /**
-     * The different states that this job can be in.
-     */
-    enum State {
-        /** The start. */
-        START,
-        /** The haul item. */
-        HAUL_ITEM
-    }
-
-    /** The current state of the job. */
-    private State state = State.START;
-
-    /** References to the haul job. */
-    private HaulJob haulJob;
-
-    /** The item. */
+    /** The item to place. */
     private Item item;
 
     /** The item type name. */
     private final String itemTypeName;
 
-    /** The position. */
+    /** The position to place the item. */
     private final MapIndex position;
-
-    /** The done. */
-    private boolean done = false;
 
     /**
      * Instantiates a new place item job.
-     * @param position the position
-     * @param itemTypeName the item type name
+     * @param positionTmp the position
+     * @param itemTypeNameTmp the item type name
+     * @param player the player that this job belongs to
      */
-    public PlaceItemJob(final MapIndex position, final String itemTypeName) {
-        this.itemTypeName = itemTypeName;
-        this.position = position;
-    }
-
-    @Override
-    public String getStatus() {
-        switch (state) {
-        case HAUL_ITEM:
-            return "Hauling item";
-        case START:
-            return "Waiting for item";
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-
-        if (haulJob != null) {
-            haulJob.interrupt("Place item job has been interrupted");
-        }
-
-        if (item != null) {
-            item.setUsed(false);
-        }
-
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
+    public PlaceItemJob(final MapIndex positionTmp, final String itemTypeNameTmp, final IPlayer player) {
+        super(player);
+        position = positionTmp;
+        itemTypeName = itemTypeNameTmp;
+        setJobState(new PlaceItemState());
     }
 
     @Override
@@ -122,45 +74,35 @@ public class PlaceItemJob extends AbstractJob {
     }
 
     @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+    public MapIndex getPosition() {
+        return position;
+    }
+
+    /**
+     * The place item job state.
+     */
+    private class PlaceItemState extends HaulItemState {
+
+        /**
+         * Constructor.
+         */
+        public PlaceItemState() {
+            super(item, position, PlaceItemJob.this);
         }
 
-        switch (state) {
-        case START:
-            item = player.getStockManager().getUnusedItem(itemTypeName);
-            if (item == null) {
-                return;
+        @Override
+        public void transitionOutOf() {
+            item.setUsed(false);
+            item.setPlaced(true);
+            Room room = getPlayer().getRoom(position);
+            if (room != null) {
+                room.addItem(item);
             }
-            item.setUsed(true);
-            haulJob = new HaulJob(item, player.getStockManager(), position, player);
-            state = State.HAUL_ITEM;
-            break;
+        }
 
-        case HAUL_ITEM:
-            haulJob.update(player, region);
-
-            if (haulJob.isDone()) {
-                if (!item.getPosition().equals(position)) {
-                    interrupt("Item was not hauled");
-                    return;
-                }
-
-                item.setUsed(false);
-                item.setPlaced(true);
-
-                Room room = player.getRoom(position);
-                if (room != null) {
-                    room.addItem(item);
-                }
-
-                done = true;
-            }
-            break;
-
-        default:
-            break;
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

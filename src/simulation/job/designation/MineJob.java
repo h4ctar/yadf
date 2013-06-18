@@ -31,17 +31,18 @@
  */
 package simulation.job.designation;
 
-import logger.Logger;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.IMovementComponent;
 import simulation.character.component.ISkillComponent;
-import simulation.character.component.WalkMovementComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
-import simulation.job.WasteTimeJob;
+import simulation.job.AbstractJob;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.LookingForDwarfState;
+import simulation.job.jobstate.WalkToPositionState;
+import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
@@ -50,19 +51,7 @@ import simulation.map.RegionMap;
 /**
  * Task to do some mining.
  */
-public class MineJob extends AbstractDesignationJob {
-
-    /**
-     * The different states that this job can be in.
-     */
-    enum State {
-        /** The start. */
-        START,
-        /** The goto. */
-        GOTO,
-        /** The mine. */
-        MINE
-    }
+public class MineJob extends AbstractJob {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -43625505095983333L;
@@ -73,35 +62,25 @@ public class MineJob extends AbstractDesignationJob {
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Mining");
 
-    /** The state. */
-    private State state = State.START;
-
     /** The index of the block to be mined. */
     private final MapIndex position;
 
     /** The designation. */
     private final MineDesignation designation;
 
-    /** The move component. */
-    private WalkMovementComponent moveComponent = null;
-
-    /** Reference to the waste time job. */
-    private WasteTimeJob wasteTimeJob;
-
-    /** The dwarf. */
-    private Dwarf dwarf = null;
-
-    /** The done. */
-    private boolean done = false;
+    /** The miner dwarf. */
+    private Dwarf miner;
 
     /**
      * Constructor for the mine task.
      * @param positionTmp the position to mine
      * @param designationTmp the designation
      */
-    public MineJob(final MapIndex positionTmp, final MineDesignation designationTmp) {
+    public MineJob(final MapIndex positionTmp, final MineDesignation designationTmp, final IPlayer player) {
+        super(player);
         position = positionTmp;
         designation = designationTmp;
+        setJobState(new LookingForMinerState());
     }
 
     @Override
@@ -110,77 +89,73 @@ public class MineJob extends AbstractDesignationJob {
     }
 
     @Override
-    public String getStatus() {
-        return "Mining";
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-        designation.removeFromDesignation(position);
-        if (wasteTimeJob != null) {
-            wasteTimeJob.interrupt("Channel job was interrupted");
-        }
-        if (dwarf != null) {
-            dwarf.releaseLock();
-        }
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
-    }
-
-    @Override
     public String toString() {
         return "Mine";
     }
 
-    @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+    private class LookingForMinerState extends LookingForDwarfState {
+
+        /**
+         * Constructor.
+         */
+        public LookingForMinerState() {
+            super(REQUIRED_LABOR, MineJob.this);
         }
 
-        switch (state) {
-        case START:
-            if (!region.getMap().getAdjacencies(position).isEmpty()) {
-                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
-                if (dwarf != null) {
-                    moveComponent = new WalkMovementComponent(position, false);
-                    dwarf.setComponent(IMovementComponent.class, moveComponent);
-                    state = State.GOTO;
-                }
-            }
-            break;
+        @Override
+        public void transitionOutOf() {
+            miner = getDwarf();
+        }
 
-        case GOTO:
-            if (moveComponent.isNoPath()) {
-                interrupt("No path to site");
-            } else if (moveComponent.isArrived()) {
-                state = State.MINE;
-                wasteTimeJob = new WasteTimeJob(dwarf, DURATION);
-            }
-            break;
+        @Override
+        public IJobState getNextState() {
+            return new WalkToChannelingSiteState();
+        }
+    }
 
-        case MINE:
-            wasteTimeJob.update(player, region);
-            if (wasteTimeJob.isDone()) {
-                RegionMap map = region.getMap();
-                String itemTypeName = map.getBlock(position).itemMined;
-                if (itemTypeName != null) {
-                    ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
-                    Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, player);
-                    player.getStockManager().addItem(blockItem);
-                }
-                map.mineBlock(position);
-                designation.removeFromDesignation(position);
-                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-                dwarf.releaseLock();
-                done = true;
+    /**
+     * The walk to channel site job state.
+     */
+    private class WalkToChannelingSiteState extends WalkToPositionState {
+
+        /**
+         * Constructor.
+         */
+        public WalkToChannelingSiteState() {
+            super(position, miner, MineJob.this);
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return new ChannelState();
+        }
+    }
+
+    private class ChannelState extends WasteTimeState {
+
+        public ChannelState() {
+            super(DURATION, miner, MineJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            RegionMap map = designation.getRegion().getMap();
+            String itemTypeName = map.getBlock(position).itemMined;
+            if (itemTypeName != null) {
+                ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
+                Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, getPlayer());
+                getPlayer().getStockManager().addItem(blockItem);
             }
-            break;
+            map.mineBlock(position);
+            designation.removeFromDesignation(position);
+            miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
+            miner.releaseLock();
+        }
+
+        @Override
+        public IJobState getNextState() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

@@ -31,20 +31,21 @@
  */
 package simulation.job;
 
-import logger.Logger;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.IMovementComponent;
 import simulation.character.component.ISkillComponent;
-import simulation.character.component.StillMovementComponent;
-import simulation.character.component.WalkMovementComponent;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.LookingForDwarfState;
+import simulation.job.jobstate.WalkToPositionState;
+import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
+import simulation.map.MapIndex;
 
 /**
  * The Class HarvestJob.
@@ -54,81 +55,27 @@ public class HarvestJob extends AbstractJob {
     /** The serial version UID. */
     private static final long serialVersionUID = 220791158826975417L;
 
-    /**
-     * All the possible states that the job can be in.
-     */
-    enum State {
-        /** The waiting for dwarf state. */
-        WAITING_FOR_DWARF,
-        /** The goto state. */
-        GOTO,
-        /** The harvest state. */
-        HARVEST
-    }
-
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
-
-    /** The state. */
-    private State state = State.WAITING_FOR_DWARF;
-
-    /** The farm plot. */
-    private final FarmPlot farmPlot;
-
-    /** The dwarf. */
-    private Dwarf dwarf;
-
-    /** The need to release lock. */
-    private boolean needToReleaseLock;
-
-    /** The move component. */
-    private WalkMovementComponent moveComponent;
-
-    /** The done. */
-    private boolean done = false;
 
     /** The Constant harvestDuration. */
     private static final long HARVEST_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
 
-    /** The simulation steps. */
-    private int simulationSteps = 0;
+    /** The farm plot. */
+    private final FarmPlot farmPlot;
+
+    /** The farmer dwarf. */
+    private Dwarf farmer;
 
     /**
      * Instantiates a new harvest job.
      * @param farmPlotTmp the farm plot
+     * @param player the player that this job belongs to
      */
-    public HarvestJob(final FarmPlot farmPlotTmp) {
+    public HarvestJob(final FarmPlot farmPlotTmp, final IPlayer player) {
+        super(player);
         farmPlot = farmPlotTmp;
-    }
-
-    @Override
-    public String getStatus() {
-        switch (state) {
-        case WAITING_FOR_DWARF:
-            return "Waiting for farmer";
-        case GOTO:
-            return "Walking to the farm plot";
-        case HARVEST:
-            return "Tilling the farm plot";
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-        if (dwarf != null) {
-            if (needToReleaseLock) {
-                dwarf.releaseLock();
-            }
-        }
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
+        setJobState(new LookingForFarmerState());
     }
 
     @Override
@@ -137,59 +84,78 @@ public class HarvestJob extends AbstractJob {
     }
 
     @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+    public MapIndex getPosition() {
+        return farmPlot.getPosition();
+    }
+
+    /**
+     * The waiting for farmer job state.
+     */
+    private class LookingForFarmerState extends LookingForDwarfState {
+
+        /**
+         * Constructor.
+         */
+        public LookingForFarmerState() {
+            super(REQUIRED_LABOR, HarvestJob.this);
         }
 
-        switch (state) {
-        case WAITING_FOR_DWARF:
-            if (dwarf == null) {
-                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
-                needToReleaseLock = true;
-            }
+        @Override
+        public void transitionOutOf() {
+            farmer = getDwarf();
+        }
 
-            if (dwarf != null) {
-                moveComponent = new WalkMovementComponent(farmPlot.getPosition(), false);
-                dwarf.setComponent(IMovementComponent.class, moveComponent);
+        @Override
+        public IJobState getNextState() {
+            return new WalkToCropState();
+        }
+    }
 
-                state = State.GOTO;
-            }
-            break;
+    /**
+     * The walk to crop state.
+     */
+    private class WalkToCropState extends WalkToPositionState {
 
-        case GOTO:
-            if (moveComponent.isNoPath()) {
-                interrupt("No path to farm plot");
-                return;
-            }
+        /**
+         * Constructor.
+         */
+        public WalkToCropState() {
+            super(farmPlot.getPosition(), farmer, HarvestJob.this);
+        }
 
-            if (moveComponent.isArrived()) {
-                dwarf.setComponent(IMovementComponent.class, new StillMovementComponent());
-                simulationSteps = 0;
-                state = State.HARVEST;
-            }
-            break;
+        @Override
+        public IJobState getNextState() {
+            return new HarvestCropState();
+        }
+    }
 
-        case HARVEST:
-            simulationSteps++;
-            if (simulationSteps > HARVEST_DURATION) {
-                // TODO: move the names of the item types into constants
-                ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
-                Item newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, player);
-                player.getStockManager().addItem(newItem);
-                itemType = ItemTypeManager.getInstance().getItemType("Seed");
-                newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, player);
-                player.getStockManager().addItem(newItem);
-                if (needToReleaseLock) {
-                    dwarf.releaseLock();
-                }
-                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-                done = true;
-            }
-            break;
+    /**
+     * The harvest crop state.
+     */
+    private class HarvestCropState extends WasteTimeState {
 
-        default:
-            break;
+        /**
+         * Constructor.
+         */
+        public HarvestCropState() {
+            super(HARVEST_DURATION, farmer, HarvestJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
+            Item newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, getPlayer());
+            getPlayer().getStockManager().addItem(newItem);
+            itemType = ItemTypeManager.getInstance().getItemType("Seed");
+            newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, getPlayer());
+            getPlayer().getStockManager().addItem(newItem);
+            farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
+            farmer.releaseLock();
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

@@ -31,17 +31,19 @@
  */
 package simulation.job;
 
-import logger.Logger;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.IMovementComponent;
 import simulation.character.component.ISkillComponent;
-import simulation.character.component.StillMovementComponent;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;
+import simulation.job.jobstate.HaulItemState;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.LookingForDwarfState;
+import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
+import simulation.map.MapIndex;
 
 /**
  * The Class PlantJob.
@@ -51,41 +53,14 @@ public class PlantJob extends AbstractJob {
     /** The serial version UID. */
     private static final long serialVersionUID = -2033952601756317716L;
 
-    /**
-     * All the possible states that the job can be in.
-     */
-    enum State {
-        /** The start. */
-        START,
-        /** The haul. */
-        HAUL,
-        /** The plant. */
-        PLANT
-    }
-
     /** The labor type required to plant a crop. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
 
-    /** The state. */
-    private State state = State.START;
-
-    /** The dwarf. */
-    private Dwarf dwarf;
-
-    /** The need to release lock. */
-    private boolean needToReleaseLock;
-
-    /** The haul job. */
-    private HaulJob haulJob;
-
-    /** The done. */
-    private boolean done = false;
-
     /** How many simulation steps to plant. */
-    private static final long PLANTING_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
+    private static final long PLANT_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
 
-    /** The simulation steps. */
-    private int simulationSteps = 0;
+    /** The farmer dwarf. */
+    private Dwarf farmer;
 
     /** The seed. */
     private final Item seed;
@@ -97,40 +72,18 @@ public class PlantJob extends AbstractJob {
      * Instantiates a new plant job.
      * @param seedTmp the seed
      * @param farmPlotTmp the farm plot
+     * @param player the player that this job belongs to
      */
-    public PlantJob(final Item seedTmp, final FarmPlot farmPlotTmp) {
+    public PlantJob(final Item seedTmp, final FarmPlot farmPlotTmp, final IPlayer player) {
+        super(player);
         seed = seedTmp;
         farmPlot = farmPlotTmp;
+        setJobState(new LookingForFarmerState());
     }
 
     @Override
-    public String getStatus() {
-        switch (state) {
-        case START:
-            return "Waiting for farmer";
-        case HAUL:
-            return "Hauling seed to farm plot";
-        case PLANT:
-            return "Planting seed in farm plot";
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-        if (dwarf != null) {
-            if (needToReleaseLock) {
-                dwarf.releaseLock();
-            }
-        }
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
+    public MapIndex getPosition() {
+        return farmPlot.getPosition();
     }
 
     @Override
@@ -138,48 +91,69 @@ public class PlantJob extends AbstractJob {
         return "Plant crop";
     }
 
-    @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+    /**
+     * The waiting for farmer job state.
+     */
+    private class LookingForFarmerState extends LookingForDwarfState {
+
+        /**
+         * Constructor.
+         */
+        public LookingForFarmerState() {
+            super(REQUIRED_LABOR, PlantJob.this);
         }
 
-        switch (state) {
-        case START:
-            if (dwarf == null) {
-                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
-                needToReleaseLock = true;
-            }
-            if (dwarf == null) {
-                return;
-            }
-            haulJob = new HaulJob(dwarf, seed, player.getStockManager(), farmPlot.getPosition());
-            player.getJobManager().addJob(haulJob);
-            state = State.HAUL;
-            break;
+        @Override
+        public void transitionOutOf() {
+            farmer = getDwarf();
+        }
 
-        case HAUL:
-            if (haulJob.isDone()) {
-                dwarf.setComponent(IMovementComponent.class, new StillMovementComponent());
-                simulationSteps = 0;
-                state = State.PLANT;
-            }
-            break;
+        @Override
+        public IJobState getNextState() {
+            return new HaulSeedToCropState();
+        }
+    }
 
-        case PLANT:
-            simulationSteps++;
-            if (simulationSteps > PLANTING_DURATION) {
-                seed.setRemove();
-                if (needToReleaseLock) {
-                    dwarf.releaseLock();
-                }
-                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-                done = true;
-            }
-            break;
+    /**
+     * The haul seed to crop state.
+     */
+    private class HaulSeedToCropState extends HaulItemState {
 
-        default:
-            break;
+        /**
+         * Constructor.
+         */
+        public HaulSeedToCropState() {
+            super(farmer, seed, farmPlot.getPosition(), PlantJob.this);
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return new PlantCropState();
+        }
+    }
+
+    /**
+     * The plant crop state.
+     */
+    private class PlantCropState extends WasteTimeState {
+
+        /**
+         * Constructor.
+         */
+        public PlantCropState() {
+            super(PLANT_DURATION, farmer, PlantJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            seed.setRemove();
+            farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
+            farmer.releaseLock();
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

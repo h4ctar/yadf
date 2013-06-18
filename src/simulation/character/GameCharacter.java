@@ -31,10 +31,10 @@
  */
 package simulation.character;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import logger.Logger;
 import simulation.AbstractEntity;
@@ -60,7 +60,7 @@ public class GameCharacter extends AbstractEntity {
     private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new HashMap<>();
 
     /** The list of listeners. */
-    private final List<ICharacterListener> listeners = new ArrayList<>();
+    private final List<ICharacterListener> listeners = new CopyOnWriteArrayList<>();
 
     /** The dead. */
     protected boolean dead;
@@ -99,7 +99,6 @@ public class GameCharacter extends AbstractEntity {
         if (!locked) {
             locked = true;
             lockAcquired = true;
-            notifyListeners();
         }
 
         return lockAcquired;
@@ -111,6 +110,10 @@ public class GameCharacter extends AbstractEntity {
      */
     public void addListener(final ICharacterListener listener) {
         listeners.add(listener);
+    }
+
+    public void removeListener(ICharacterListener listener) {
+        listeners.remove(listener);
     }
 
     /**
@@ -167,18 +170,20 @@ public class GameCharacter extends AbstractEntity {
         Logger.getInstance().log(this, "Character died");
         setComponent(IMovementComponent.class, new StillMovementComponent());
         dead = true;
-        notifyListeners();
     }
 
     /**
      * Release lock.
      */
     public void releaseLock() {
-        locked = false;
-        if (!dead) {
-            setComponent(IMovementComponent.class, new IdleMovementComponent());
+        if (locked) {
+            locked = false;
+            if (!dead) {
+                setComponent(IMovementComponent.class, new IdleMovementComponent());
+            }
+            // TODO: rename notify listeners and asdf to something about dwarf available
+            notifyListeners();
         }
-        notifyListeners();
     }
 
     /**
@@ -196,7 +201,7 @@ public class GameCharacter extends AbstractEntity {
      */
     private void notifyListeners() {
         for (ICharacterListener listener : listeners) {
-            listener.charactedChanged(this);
+            listener.characterChanged(this);
         }
     }
 

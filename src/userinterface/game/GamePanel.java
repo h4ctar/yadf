@@ -109,7 +109,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
             MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
 
-            player = new Player(playerName);
+            player = new Player(playerName, region);
             player.setup(embarkPosition, numberOfStartingDwarfs, region.getMap());
             region.addPlayer(player);
 
@@ -150,7 +150,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
 
             for (String playerName : playerNames) {
                 Logger.getInstance().log(this, "Adding player " + playerName);
-                Player newPlayer = new Player(playerName);
+                Player newPlayer = new Player(playerName, region);
                 int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
                 MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
                 region.addPlayer(newPlayer);

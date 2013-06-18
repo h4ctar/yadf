@@ -31,18 +31,15 @@
  */
 package simulation.job;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
-import logger.Logger;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.IMovementComponent;
 import simulation.character.component.ISkillComponent;
-import simulation.character.component.WalkMovementComponent;
-import simulation.item.ItemType;
+import simulation.job.jobstate.HaulResourcesState;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.LookingForDwarfState;
+import simulation.job.jobstate.WalkToPositionState;
+import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
@@ -55,33 +52,14 @@ import simulation.workshop.WorkshopTypeManager;
  */
 public class BuildWorkshopJob extends AbstractJob {
 
-    /**
-     * The different states that this job can be in.
-     */
-    enum State {
-        /** The waiting for resources. */
-        WAITING_FOR_RESOURCES,
-        /** The haul resources. */
-        HAUL_RESOURCES,
-        /** The waiting for dwarf. */
-        WAITING_FOR_DWARF,
-        /** The goto workshop. */
-        GOTO_WORKSHOP,
-        /** The build. */
-        BUILD
-    }
-
     /** The serial version UID. */
     private static final long serialVersionUID = 6619232211299027703L;
 
     /** How long it takes to build the workshop. */
-    private static final long BUILD_TIME = Region.SIMULATION_STEPS_PER_DAY;
+    private static final long BUILD_DURATION = Region.SIMULATION_STEPS_PER_DAY;
 
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Building");
-
-    /** The state. */
-    private State state = State.WAITING_FOR_RESOURCES;
 
     /** The position. */
     private final MapIndex position;
@@ -89,59 +67,20 @@ public class BuildWorkshopJob extends AbstractJob {
     /** The workshop type. */
     private final WorkshopType workshopType;
 
-    /** The dwarf. */
-    private Dwarf dwarf;
-
-    /** References to the haul jobs that are scheduled for materials. */
-    private final List<HaulJob> haulJobs = new ArrayList<>();
-
-    /** Reference to the waste time job. */
-    private WasteTimeJob wasteTimeJob;
-
-    /** The done. */
-    private boolean done;
-
-    /** The walk component. */
-    private WalkMovementComponent walkComponent;
+    /** The dwarf that will do the building. */
+    private Dwarf builder;
 
     /**
-     * Instantiates a new builds the workshop job.
-     * 
+     * Instantiates a new build workshop job.
      * @param positionTmp the position
      * @param workshopTypeTmp the workshop type
+     * @param player the player that this job belongs to
      */
-    public BuildWorkshopJob(final MapIndex positionTmp, final String workshopTypeTmp) {
+    public BuildWorkshopJob(final MapIndex positionTmp, final String workshopTypeTmp, final IPlayer player) {
+        super(player);
         position = positionTmp;
         workshopType = WorkshopTypeManager.getInstance().getWorkshopType(workshopTypeTmp);
-    }
-
-    @Override
-    public String getStatus() {
-        switch (state) {
-        case WAITING_FOR_RESOURCES:
-            return "Waiting for resource";
-        case HAUL_RESOURCES:
-            return "Hauling resource";
-        case GOTO_WORKSHOP:
-            return "Builder walking to workshop";
-        case BUILD:
-            return "Building";
-        case WAITING_FOR_DWARF:
-            return "Waiting for dwarf";
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
+        setJobState(new HaulBuildingMaterialsState());
     }
 
     @Override
@@ -150,74 +89,92 @@ public class BuildWorkshopJob extends AbstractJob {
     }
 
     @Override
-    public void update(final Player player, final Region region) {
-        switch (state) {
-        case WAITING_FOR_RESOURCES:
-            for (Entry<ItemType, Integer> entry : workshopType.resources.entrySet()) {
-                ItemType itemType = entry.getKey();
-                for (int i = 0; i < entry.getValue().intValue(); i++) {
-                    HaulJob haulJob = new HaulJob(itemType, player.getStockManager(),
-                            Workshop.getRandomPostition(position), player);
-                    haulJobs.add(haulJob);
-                }
-            }
-            state = State.HAUL_RESOURCES;
-            break;
+    public MapIndex getPosition() {
+        return position;
+    }
 
-        case HAUL_RESOURCES:
-            boolean resourcesDone = true;
-            for (HaulJob haulJob : haulJobs) {
-                haulJob.update(player, region);
-                if (!haulJob.isDone()) {
-                    resourcesDone = false;
-                }
-            }
+    /**
+     * The haul building materials job state.
+     */
+    private class HaulBuildingMaterialsState extends HaulResourcesState {
 
-            if (resourcesDone) {
-                state = State.WAITING_FOR_DWARF;
-            }
-            break;
+        /**
+         * Constructor.
+         */
+        public HaulBuildingMaterialsState() {
+            super(workshopType.resources, position, BuildWorkshopJob.this);
+        }
 
-        case WAITING_FOR_DWARF:
-            if (dwarf == null) {
-                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
-            }
+        @Override
+        public IJobState getNextState() {
+            return new LookingForBuilderState();
+        }
+    }
 
-            if (dwarf != null) {
-                walkComponent = new WalkMovementComponent(position, false);
-                dwarf.setComponent(IMovementComponent.class, walkComponent);
-                state = State.GOTO_WORKSHOP;
-            }
-            break;
+    /**
+     * The looking for builder job state.
+     */
+    private class LookingForBuilderState extends LookingForDwarfState {
 
-        case GOTO_WORKSHOP:
-            if (walkComponent.isNoPath()) {
-                interrupt("No path to workshop");
-                return;
-            }
+        /**
+         * Constructor.
+         */
+        public LookingForBuilderState() {
+            super(REQUIRED_LABOR, BuildWorkshopJob.this);
+        }
 
-            if (walkComponent.isArrived()) {
-                wasteTimeJob = new WasteTimeJob(dwarf, BUILD_TIME);
-                state = State.BUILD;
-            }
-            break;
+        @Override
+        public IJobState getNextState() {
+            return new WalkToBuildingSiteState();
+        }
 
-        case BUILD:
-            wasteTimeJob.update(player, region);
+        @Override
+        public void transitionOutOf() {
+            builder = getDwarf();
+        }
+    }
 
-            if (wasteTimeJob.isDone()) {
-                for (HaulJob haulJob : haulJobs) {
-                    haulJob.getItem().setRemove();
-                }
-                player.addWorkshop(new Workshop(workshopType, position));
-                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-                dwarf.releaseLock();
-                done = true;
-            }
-            break;
+    /**
+     * The walk to building site job state.
+     */
+    private class WalkToBuildingSiteState extends WalkToPositionState {
 
-        default:
-            break;
+        /**
+         * Constructor.
+         */
+        public WalkToBuildingSiteState() {
+            super(position, builder, BuildWorkshopJob.this);
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return new BuildWorkshopState();
+        }
+    }
+
+    /**
+     * The build workshop state.
+     */
+    private class BuildWorkshopState extends WasteTimeState {
+
+        /**
+         * Constructor.
+         */
+        public BuildWorkshopState() {
+            super(BUILD_DURATION, builder, BuildWorkshopJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            getPlayer().addWorkshop(new Workshop(workshopType, position));
+            builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
+            builder.releaseLock();
+            super.transitionOutOf();
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

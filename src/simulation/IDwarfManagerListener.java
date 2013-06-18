@@ -9,19 +9,19 @@ public interface IDwarfManagerListener {
 
     /**
      * A new dwarf has been added to the dwarf manager.
-     * @param dwarf the new dwarf
+     * @param newDwarf the new dwarf
      */
-    void dwarfAdded(Dwarf dwarf);
+    void dwarfAdded(Dwarf newDwarf);
 
     /**
      * A dwarf has been removed from the dwarf manager.
-     * @param dwarf the removed dwarf
+     * @param removedDwarf the removed dwarf
      */
-    void dwarfRemoved(Dwarf dwarf);
+    void dwarfRemoved(Dwarf removedDwarf);
 
     /**
      * A dwarf has become idle.
-     * @param dwarf the idle dwarf
+     * @param idleDwarf the idle dwarf
      */
-    void dwarfNowIdle(Dwarf dwarf);
+    void dwarfNowIdle(Dwarf idleDwarf);
 }

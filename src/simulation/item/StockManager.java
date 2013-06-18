@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
@@ -55,7 +56,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
     private final Set<Stockpile> stockpiles = new HashSet<>();
 
     /** All the items looked after by this stock manager. */
-    private final Set<Item> items = new HashSet<>();
+    private final Set<Item> items = new CopyOnWriteArraySet<>();
 
     /** Listeners to this stock manager. */
     private final Map<ItemType, Set<IStockManagerListener>> listeners = new HashMap<>();

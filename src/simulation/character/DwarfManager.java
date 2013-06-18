@@ -170,7 +170,7 @@ public class DwarfManager implements IDwarfManager, ICharacterListener {
     }
 
     @Override
-    public void charactedChanged(final GameCharacter character) {
+    public void characterChanged(final GameCharacter character) {
         if (!character.isLocked()) {
             notifyDwarfNowIdle((Dwarf) character);
         }

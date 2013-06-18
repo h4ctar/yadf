@@ -31,17 +31,18 @@
  */
 package simulation.job;
 
-import logger.Logger;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.component.IMovementComponent;
 import simulation.character.component.ISkillComponent;
-import simulation.character.component.StillMovementComponent;
-import simulation.character.component.WalkMovementComponent;
 import simulation.farm.FarmPlot;
+import simulation.job.jobstate.IJobState;
+import simulation.job.jobstate.LookingForDwarfState;
+import simulation.job.jobstate.WalkToPositionState;
+import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
+import simulation.map.MapIndex;
 
 /**
  * The Class TillJob.
@@ -51,82 +52,27 @@ public class TillJob extends AbstractJob {
     /** The serial version UID. */
     private static final long serialVersionUID = -8463713853261562676L;
 
-    /**
-     * All the possible states that the job can be in.
-     */
-    enum State {
+    /** The Constant tillDuration. */
+    private static final long TILL_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
 
-        /** The waiting for dwarf. */
-        WAITING_FOR_DWARF,
-        /** The goto. */
-        GOTO,
-        /** The till. */
-        TILL
-    }
-
-    /** The state. */
-    private State state = State.WAITING_FOR_DWARF;
+    /** The required labor. */
+    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
 
     /** The farm plot. */
     private final FarmPlot farmPlot;
 
-    /** The dwarf. */
-    private Dwarf dwarf;
-
-    /** The need to release lock. */
-    private boolean needToReleaseLock;
-
-    /** The move component. */
-    private WalkMovementComponent moveComponent;
-
-    /** The done. */
-    private boolean done = false;
-
-    /** The Constant tillDuration. */
-    private static final int TILL_DURATION = 100;
-
-    /** The simulation steps. */
-    private int simulationSteps = 0;
-
-    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
+    /** The farmer dwarf. */
+    private Dwarf farmer;
 
     /**
      * Instantiates a new till job.
-     * 
      * @param farmPlotTmp the farm plot
+     * @param player the player that this job belongs to
      */
-    public TillJob(final FarmPlot farmPlotTmp) {
+    public TillJob(final FarmPlot farmPlotTmp, final IPlayer player) {
+        super(player);
         farmPlot = farmPlotTmp;
-    }
-
-    @Override
-    public String getStatus() {
-        switch (state) {
-        case WAITING_FOR_DWARF:
-            return "Waiting for farmer";
-        case GOTO:
-            return "Walking to the farm plot";
-        case TILL:
-            return "Tilling the farm plot";
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void interrupt(final String message) {
-        Logger.getInstance().log(this, toString() + " has been canceled: " + message, true);
-        if (dwarf != null) {
-            if (needToReleaseLock) {
-                dwarf.releaseLock();
-            }
-        }
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
+        setJobState(new LookingForFarmerState());
     }
 
     @Override
@@ -135,51 +81,72 @@ public class TillJob extends AbstractJob {
     }
 
     @Override
-    public void update(final Player player, final Region region) {
-        if (isDone()) {
-            return;
+    public MapIndex getPosition() {
+        return farmPlot.getPosition();
+    }
+
+    /**
+     * The waiting for farmer job state.
+     */
+    private class LookingForFarmerState extends LookingForDwarfState {
+
+        /**
+         * Constructor.
+         */
+        public LookingForFarmerState() {
+            super(REQUIRED_LABOR, TillJob.this);
         }
 
-        switch (state) {
-        case WAITING_FOR_DWARF:
-            if (dwarf == null) {
-                dwarf = player.getDwarfManager().getIdleDwarf(REQUIRED_LABOR);
-                needToReleaseLock = true;
-            }
-            if (dwarf == null) {
-                return;
-            }
-            moveComponent = new WalkMovementComponent(farmPlot.getPosition(), false);
-            dwarf.setComponent(IMovementComponent.class, moveComponent);
-            state = State.GOTO;
-            break;
+        @Override
+        public void transitionOutOf() {
+            farmer = getDwarf();
+        }
 
-        case GOTO:
-            if (moveComponent.isNoPath()) {
-                interrupt("No path to farm plot");
-                return;
-            }
+        @Override
+        public IJobState getNextState() {
+            return new WalkToCropState();
+        }
+    }
 
-            if (moveComponent.isArrived()) {
-                dwarf.setComponent(IMovementComponent.class, new StillMovementComponent());
-                simulationSteps = 0;
-                state = State.TILL;
-            }
-            break;
+    /**
+     * The walk to crop state.
+     */
+    private class WalkToCropState extends WalkToPositionState {
 
-        case TILL:
-            simulationSteps++;
-            if (simulationSteps > TILL_DURATION) {
-                if (needToReleaseLock) {
-                    dwarf.releaseLock();
-                }
-                dwarf.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-                done = true;
-            }
-            break;
+        /**
+         * Constructor.
+         */
+        public WalkToCropState() {
+            super(farmPlot.getPosition(), farmer, TillJob.this);
+        }
 
-        default:
-            break;
+        @Override
+        public IJobState getNextState() {
+            return new TillCropState();
+        }
+    }
+
+    /**
+     * The harvest crop state.
+     */
+    private class TillCropState extends WasteTimeState {
+
+        /**
+         * Constructor.
+         */
+        public TillCropState() {
+            super(TILL_DURATION, farmer, TillJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
+            farmer.releaseLock();
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return null;
         }
     }
 }

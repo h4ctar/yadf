@@ -36,6 +36,7 @@ import java.util.Set;
 import org.w3c.dom.Element;
 
 import simulation.AbstractEntity;
+import simulation.IPlayer;
 import simulation.Player;
 import simulation.map.MapIndex;
 
@@ -57,7 +58,7 @@ public class Item extends AbstractEntity {
     protected boolean placed = false;
 
     /** The player that this item belongs to. */
-    protected final Player player;
+    protected final IPlayer player;
 
     /**
      * Create an item from a DOM element.
@@ -75,12 +76,12 @@ public class Item extends AbstractEntity {
      * The constructor for the item.
      * @param position The initial position of the item
      * @param itemTypeTmp the item type name
-     * @param playerTmp the player that this item belongs to
+     * @param player2 the player that this item belongs to
      */
-    public Item(final MapIndex position, final ItemType itemTypeTmp, final Player playerTmp) {
+    public Item(final MapIndex position, final ItemType itemTypeTmp, final IPlayer player2) {
         super(position);
         itemType = itemTypeTmp;
-        player = playerTmp;
+        player = player2;
     }
 
     /**

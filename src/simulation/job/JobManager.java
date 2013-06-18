@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import logger.Logger;
+import simulation.IPlayer;
 import simulation.Player;
 import simulation.Region;
 import simulation.job.designation.AbstractDesignation;
@@ -60,12 +61,6 @@ public class JobManager implements IJobManager, Serializable {
     /** The jobs. */
     private final List<IJob> jobs = new ArrayList<>();
 
-    /**
-     * A list of new jobs that are added at the end of the update because the other list will break with concurrent
-     * modification exceptions.
-     */
-    private final List<IJob> newJobs = new ArrayList<>();
-
     /** The designations. */
     private final AbstractDesignation[] designations;
 
@@ -74,16 +69,18 @@ public class JobManager implements IJobManager, Serializable {
 
     /**
      * The constructor, sets up the designations.
-     * 
+     * @param region
+     * @param player
      */
-    public JobManager() {
-        designations = new AbstractDesignation[DesignationType.values().length];
-        designations[DesignationType.MINE.ordinal()] = new MineDesignation();
-        designations[DesignationType.CHANNEL.ordinal()] = new ChannelDesignation(null);
-        designations[DesignationType.CHOP_TREE.ordinal()] = new ChopTreeDesignation();
-        designations[DesignationType.BUILD_WALL.ordinal()] = new ConstructionDesignation(BlockType.WALL);
-        designations[DesignationType.BUILD_RAMP.ordinal()] = new ConstructionDesignation(BlockType.RAMP);
-        designations[DesignationType.CARVE_STAIR.ordinal()] = new ChannelDesignation(BlockType.STAIR);
+    public JobManager(IPlayer player) {
+        designations = new AbstractDesignation[DesignationType.values().length - 1]; // TODO: -1
+        designations[DesignationType.MINE.ordinal()] = new MineDesignation(player);
+        designations[DesignationType.CHANNEL.ordinal()] = new ChannelDesignation(player);
+        designations[DesignationType.CHOP_TREE.ordinal()] = new ChopTreeDesignation(player);
+        designations[DesignationType.BUILD_WALL.ordinal()] = new ConstructionDesignation(BlockType.WALL, player);
+        designations[DesignationType.BUILD_RAMP.ordinal()] = new ConstructionDesignation(BlockType.RAMP, player);
+        // TODO: carve stair
+        // designations[DesignationType.CARVE_STAIR.ordinal()] = new ChannelDesignation(BlockType.STAIR);
 
         // This can't be done in the designations constructor because the player.getJobManager call would return null
         for (AbstractDesignation designation : designations) {
@@ -93,17 +90,16 @@ public class JobManager implements IJobManager, Serializable {
 
     /**
      * Adds a new job.
-     * 
      * @param job The job to add
      */
+    @Override
     public void addJob(final IJob job) {
         Logger.getInstance().log(this, "Adding job: " + job.toString());
-        newJobs.add(job);
+        jobs.add(job);
     }
 
     /**
      * Add a new listener to be notified when jobs change.
-     * 
      * @param listener the listener to add.
      */
     public void addListener(final IJobManagerListener listener) {
@@ -112,7 +108,6 @@ public class JobManager implements IJobManager, Serializable {
 
     /**
      * Gets a reference to a particular designation.
-     * 
      * @param type The designation type that the caller wants
      * @return A reference to the designation
      */
@@ -122,7 +117,6 @@ public class JobManager implements IJobManager, Serializable {
 
     /**
      * Gets a reference to all the designations.
-     * 
      * @return A reference to the designations array
      */
     public AbstractDesignation[] getDesignations() {
@@ -130,8 +124,7 @@ public class JobManager implements IJobManager, Serializable {
     }
 
     /**
-     * Gets the jobs.
-     * 
+     * Gets all the jobs.
      * @return the jobs
      */
     public List<IJob> getJobs() {
@@ -140,46 +133,18 @@ public class JobManager implements IJobManager, Serializable {
 
     /**
      * Removes completed jobs.
-     * 
      * @param player the player
      * @param region the region
      */
     public void update(final Player player, final Region region) {
-        for (IJob job : jobs) {
-            job.update(player, region);
-        }
-
-        removeDoneJobs();
-
-        addNewJobs();
-    }
-
-    /**
-     * Adds the new jobs.
-     */
-    private void addNewJobs() {
-        int firstIndex = jobs.size();
-        int lastIndex = firstIndex + newJobs.size() - 1;
-        jobs.addAll(newJobs);
-        newJobs.clear();
-        for (IJobManagerListener listener : listeners) {
-            listener.jobsAdded(firstIndex, lastIndex);
-        }
-    }
-
-    /**
-     * Removes the done jobs.
-     */
-    private void removeDoneJobs() {
-        for (int i = 0; i < jobs.size(); i++) {
-            IJob job = jobs.get(i);
+        for (IJob job : jobs.toArray(new IJob[0])) {
             if (job.isDone()) {
+                jobs.remove(job);
                 for (IJobManagerListener listener : listeners) {
-                    listener.jobRemoved(i);
+                    listener.jobRemoved(job);
                 }
-                jobs.remove(i);
-                i--;
             }
         }
     }
+
 }

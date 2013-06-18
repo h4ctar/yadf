@@ -18,7 +18,11 @@ public interface IInventoryComponent extends ICharacterComponent {
      */
     void dropTool();
 
-    void dropHaulItem(boolean b);
+    /**
+     * Drop the item that the dwarf is hauling.
+     * @param freeItem if true the item will be set to not used
+     */
+    void dropHaulItem(boolean freeItem);
 
     void pickupHaulItem(Item item);
 

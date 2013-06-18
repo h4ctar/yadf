@@ -63,6 +63,6 @@ public class PlaceItemCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getJobManager().addJob(new PlaceItemJob(position, itemTypeName));
+        player.getJobManager().addJob(new PlaceItemJob(position, itemTypeName, player));
     }
 }
