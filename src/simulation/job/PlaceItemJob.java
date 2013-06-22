@@ -112,7 +112,7 @@ public class PlaceItemJob extends AbstractJob {
          * Constructor.
          */
         public PlaceItemState() {
-            super(item, position, PlaceItemJob.this);
+            super(item, position, getPlayer().getStockManager(), PlaceItemJob.this);
         }
 
         @Override

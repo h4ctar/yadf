@@ -2,6 +2,8 @@ package simulation.job.jobstate;
 
 import simulation.ITimeListener;
 import simulation.character.Dwarf;
+import simulation.character.component.IMovementComponent;
+import simulation.character.component.StillMovementComponent;
 import simulation.job.AbstractJob;
 
 /**
@@ -35,11 +37,11 @@ public abstract class WasteTimeState extends AbstractJobState implements ITimeLi
     @Override
     public void transitionInto() {
         dwarf.getPlayer().getRegion().addTimeListener(duration, this);
+        dwarf.setComponent(IMovementComponent.class, new StillMovementComponent(dwarf));
     }
 
     @Override
     public void transitionOutOf() {
-
     }
 
     @Override

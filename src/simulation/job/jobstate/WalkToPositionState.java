@@ -22,17 +22,20 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
     /** The walk component. */
     private WalkMovementComponent walkComponent;
 
+    private final boolean oneOff;
+
     /**
      * Constructor.
      * @param positionTmp the position to walk to.
      * @param characterTmp the character that is walking to the position
      * @param jobTmp the job that this state belongs to
      */
-    public WalkToPositionState(final MapIndex positionTmp, final IGameCharacter characterTmp,
+    public WalkToPositionState(final MapIndex positionTmp, final IGameCharacter characterTmp, boolean oneOffTmp,
             final AbstractJob jobTmp) {
         super(jobTmp);
         position = positionTmp;
         character = characterTmp;
+        oneOff = oneOffTmp;
     }
 
     @Override
@@ -42,7 +45,7 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
 
     @Override
     public void transitionInto() {
-        walkComponent = new WalkMovementComponent(character, position, false);
+        walkComponent = new WalkMovementComponent(character, position, oneOff);
         walkComponent.addListener(this);
         character.setComponent(IMovementComponent.class, walkComponent);
     }
@@ -55,7 +58,7 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
     @Override
     public void componentChanged(final ICharacterComponent component) {
         assert component == walkComponent;
-        if (walkComponent.isDone()) {
+        if (walkComponent.isArrived()) {
             getJob().stateDone(this);
         } else if (walkComponent.isNoPath()) {
             getJob().stateInterrupted(this, "No path to position");

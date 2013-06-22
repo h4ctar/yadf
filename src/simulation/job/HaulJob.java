@@ -72,7 +72,7 @@ public class HaulJob extends AbstractJob {
     private final MapIndex dropPosition;
 
     /** The lock on the dwarf needs to be released, it should only be released if we acquired the dwarf. */
-    private boolean needToReleaseLock = false;
+    private final boolean needToReleaseLock;
 
     /** The item type. */
     private final ItemType itemType;
@@ -92,6 +92,7 @@ public class HaulJob extends AbstractJob {
         dropPosition = dropPositionTmp;
         hauler = character;
         itemType = item.getType();
+        needToReleaseLock = false;
         setJobState(new WalkToItemState());
     }
 
@@ -163,7 +164,7 @@ public class HaulJob extends AbstractJob {
         @Override
         public void transitionOutOf() {
             super.transitionOutOf();
-            item = getItem();
+            item = super.getItem();
         }
 
         @Override
@@ -211,7 +212,7 @@ public class HaulJob extends AbstractJob {
          * Constructor.
          */
         public WalkToItemState() {
-            super(item.getPosition(), hauler, HaulJob.this);
+            super(item.getPosition(), hauler, false, HaulJob.this);
         }
 
         @Override
@@ -237,7 +238,7 @@ public class HaulJob extends AbstractJob {
          * Constructor.
          */
         public WalkToDropState() {
-            super(dropPosition, hauler, HaulJob.this);
+            super(dropPosition, hauler, false, HaulJob.this);
         }
 
         @Override

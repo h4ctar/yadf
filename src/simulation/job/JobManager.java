@@ -37,8 +37,6 @@ import java.util.List;
 
 import logger.Logger;
 import simulation.IPlayer;
-import simulation.Player;
-import simulation.Region;
 import simulation.job.designation.AbstractDesignation;
 import simulation.job.designation.ChannelDesignation;
 import simulation.job.designation.ChopTreeDesignation;
@@ -53,7 +51,7 @@ import simulation.map.BlockType;
  * This class is responsible for holding all the jobs, telling them to update and removing them when they are done, it
  * also contains the designations and launches jobs for them when required.
  */
-public class JobManager implements IJobManager, Serializable {
+public class JobManager implements IJobManager, Serializable, IJobListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -3697576654461518146L;
@@ -69,10 +67,9 @@ public class JobManager implements IJobManager, Serializable {
 
     /**
      * The constructor, sets up the designations.
-     * @param region
      * @param player
      */
-    public JobManager(IPlayer player) {
+    public JobManager(final IPlayer player) {
         designations = new AbstractDesignation[DesignationType.values().length - 1]; // TODO: -1
         designations[DesignationType.MINE.ordinal()] = new MineDesignation(player);
         designations[DesignationType.CHANNEL.ordinal()] = new ChannelDesignation(player);
@@ -95,7 +92,21 @@ public class JobManager implements IJobManager, Serializable {
     @Override
     public void addJob(final IJob job) {
         Logger.getInstance().log(this, "Adding job: " + job.toString());
+        job.addListener(this);
         jobs.add(job);
+        for (IJobManagerListener listener : listeners) {
+            listener.jobsAdded(job);
+        }
+    }
+
+    @Override
+    public void jobDone(final IJob job) {
+        Logger.getInstance().log(this, "Removing job: " + job.toString());
+        assert jobs.contains(job);
+        jobs.remove(job);
+        for (IJobManagerListener listener : listeners) {
+            listener.jobRemoved(job);
+        }
     }
 
     /**
@@ -130,21 +141,4 @@ public class JobManager implements IJobManager, Serializable {
     public List<IJob> getJobs() {
         return jobs;
     }
-
-    /**
-     * Removes completed jobs.
-     * @param player the player
-     * @param region the region
-     */
-    public void update(final Player player, final Region region) {
-        for (IJob job : jobs.toArray(new IJob[0])) {
-            if (job.isDone()) {
-                jobs.remove(job);
-                for (IJobManagerListener listener : listeners) {
-                    listener.jobRemoved(job);
-                }
-            }
-        }
-    }
-
 }

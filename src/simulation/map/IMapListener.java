@@ -1,5 +1,5 @@
 package simulation.map;
 
 public interface IMapListener {
-    void mapChanged();
+    void mapChanged(MapIndex mapIndex);
 }

@@ -128,6 +128,7 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
 
         if (path == null) {
             if (!getPath(map)) {
+                notifyListeners();
                 return;
             }
         }

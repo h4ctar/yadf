@@ -6,7 +6,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import misc.NameGenerator;
 import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.component.IEatDrinkComponent;
 import simulation.character.component.ISkillComponent;
 import simulation.labor.LaborType;
 import simulation.map.MapIndex;
@@ -106,8 +105,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
             if (dwarf.isDead()) {
                 continue;
             }
-            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor)
-                    && !dwarf.getComponent(IEatDrinkComponent.class).isHungryOrThirsty() && dwarf.acquireLock()) {
+            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && dwarf.acquireLock()) {
                 return dwarf;
             }
         }

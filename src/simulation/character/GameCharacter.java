@@ -62,7 +62,7 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
     /** The list of listeners. */
     private final List<ICharacterAvailableListener> availableListeners = new CopyOnWriteArrayList<>();
 
-    private List<ICharacterListener> changeListeners;
+    private final List<ICharacterListener> changeListeners = new CopyOnWriteArrayList<>();
 
     /** The dead. */
     protected boolean dead;
@@ -103,31 +103,26 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
             locked = true;
             lockAcquired = true;
         }
-
         return lockAcquired;
     }
 
     @Override
     public void addListener(final ICharacterAvailableListener listener) {
-        assert !availableListeners.contains(listener);
         availableListeners.add(listener);
     }
 
     @Override
     public void removeListener(final ICharacterAvailableListener listener) {
-        assert availableListeners.contains(listener);
         availableListeners.remove(listener);
     }
 
     @Override
     public void addListener(final ICharacterListener listener) {
-        assert !changeListeners.contains(listener);
         changeListeners.add(listener);
     }
 
     @Override
     public void removeListener(final ICharacterListener listener) {
-        assert changeListeners.contains(listener);
         changeListeners.remove(listener);
     }
 
@@ -151,6 +146,10 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
      */
     @Override
     public <T extends ICharacterComponent> void setComponent(final Class<T> componentInterface, final T component) {
+        Logger.getInstance().log(
+                this,
+                "Set component: " + componentInterface.getSimpleName() + " = "
+                        + component.getClass().getSimpleName());
         components.put(componentInterface, component);
     }
 

@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
 import misc.MyRandom;
@@ -98,13 +99,13 @@ public class Region implements Serializable {
     private final RegionMap map = new RegionMap();
 
     /** A vector of the trees on the map. */
-    private final Set<Tree> trees = new HashSet<>();
+    private final Set<Tree> trees = new CopyOnWriteArraySet<>();
 
     /** The animals. */
-    private final Set<Animal> animals = new HashSet<>();
+    private final Set<Animal> animals = new CopyOnWriteArraySet<>();
 
     /** The goblins. */
-    private final Set<Goblin> goblins = new HashSet<>();
+    private final Set<Goblin> goblins = new CopyOnWriteArraySet<>();
 
     /** A vector of all the players in this region. */
     private final Set<Player> players = new HashSet<>();
@@ -487,7 +488,7 @@ public class Region implements Serializable {
 
     public void addTimeListener(long duration, ITimeListener listener) {
         long notifyTime = time + duration;
-        if (!timeListeners.containsKey(time)) {
+        if (!timeListeners.containsKey(notifyTime)) {
             timeListeners.put(notifyTime, new HashSet<ITimeListener>());
         }
         timeListeners.get(notifyTime).add(listener);

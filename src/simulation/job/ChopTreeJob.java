@@ -121,7 +121,7 @@ public class ChopTreeJob extends AbstractJob {
          * Constructor.
          */
         public WalkToTreeState() {
-            super(tree.getPosition(), lumberjack, ChopTreeJob.this);
+            super(tree.getPosition(), lumberjack, false, ChopTreeJob.this);
         }
 
         @Override

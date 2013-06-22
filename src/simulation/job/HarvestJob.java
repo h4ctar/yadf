@@ -121,7 +121,7 @@ public class HarvestJob extends AbstractJob {
          * Constructor.
          */
         public WalkToCropState() {
-            super(farmPlot.getPosition(), farmer, HarvestJob.this);
+            super(farmPlot.getPosition(), farmer, false, HarvestJob.this);
         }
 
         @Override

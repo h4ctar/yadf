@@ -32,10 +32,10 @@
 package simulation.item;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
@@ -59,11 +59,11 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
     private final Set<Item> items = new CopyOnWriteArraySet<>();
 
     /** Listeners to this stock manager. */
-    private final Map<ItemType, Set<IStockManagerListener>> listeners = new HashMap<>();
+    private final Map<ItemType, Set<IStockManagerListener>> listeners = new ConcurrentHashMap<>();
 
     @Override
     public boolean addItem(final Item item) {
-        Logger.getInstance().log(this, "Adding item - itemType: " + item.getType());
+        Logger.getInstance().log(this, "Adding item: " + item.getType());
         items.add(item);
         notifyListenersThatItemIsAvailable(item);
         return true;
@@ -119,7 +119,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
     @Override
     public void addListener(final ItemType itemType, final IStockManagerListener listener) {
         if (!listeners.containsKey(itemType)) {
-            listeners.put(itemType, new HashSet<IStockManagerListener>());
+            listeners.put(itemType, new CopyOnWriteArraySet<IStockManagerListener>());
         }
         listeners.get(itemType).add(listener);
     }
@@ -237,7 +237,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
 
     @Override
     public boolean removeItem(final Item item) {
-        Logger.getInstance().log(this, "Removing item - itemType: " + item.getType());
+        Logger.getInstance().log(this, "Removing item: " + item.getType());
         boolean itemRemoved = false;
         itemRemoved = items.remove(item);
         if (!itemRemoved) {

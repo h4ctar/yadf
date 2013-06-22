@@ -1,6 +1,7 @@
 package simulation.job.jobstate;
 
 import simulation.character.Dwarf;
+import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.job.AbstractJob;
@@ -31,6 +32,8 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     /** The type of item to haul. */
     private ItemType itemType;
 
+    private final IContainer container;
+
     /**
      * Constructor.
      * @param dwarfTmp the dwarf to do the hauling
@@ -39,11 +42,12 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * @param jobTmp the job that this state belong to
      */
     public HaulItemState(final Dwarf dwarfTmp, final Item itemTmp, final MapIndex positionTmp,
-            final AbstractJob jobTmp) {
+            final IContainer containerTmp, final AbstractJob jobTmp) {
         super(jobTmp);
         dwarf = dwarfTmp;
         item = itemTmp;
         position = positionTmp;
+        container = containerTmp;
     }
 
     /**
@@ -52,10 +56,12 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * @param positionTmp the position to haul the item to
      * @param jobTmp the job that this state belong to
      */
-    public HaulItemState(final Item itemTmp, final MapIndex positionTmp, final AbstractJob jobTmp) {
+    public HaulItemState(final Item itemTmp, final MapIndex positionTmp, final IContainer containerTmp,
+            final AbstractJob jobTmp) {
         super(jobTmp);
         item = itemTmp;
         position = positionTmp;
+        container = containerTmp;
     }
 
     @Override
@@ -69,22 +75,24 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * @param positionTmp the position to haul the item to
      * @param jobTmp the job that this state belong to
      */
-    public HaulItemState(final ItemType itemTypeTmp, final MapIndex positionTmp, final AbstractJob jobTmp) {
+    public HaulItemState(final ItemType itemTypeTmp, final MapIndex positionTmp, final IContainer containerTmp,
+            final AbstractJob jobTmp) {
         super(jobTmp);
         itemType = itemTypeTmp;
         position = positionTmp;
+        container = containerTmp;
     }
 
     @Override
     public void transitionInto() {
         if (dwarf == null) {
             if (item == null) {
-                haulJob = new HaulJob(itemType, null, position, getJob().getPlayer());
+                haulJob = new HaulJob(itemType, container, position, getJob().getPlayer());
             } else {
-                haulJob = new HaulJob(item, null, position, getJob().getPlayer());
+                haulJob = new HaulJob(item, container, position, getJob().getPlayer());
             }
         } else {
-            haulJob = new HaulJob(dwarf, item, null, position);
+            haulJob = new HaulJob(dwarf, item, container, position);
         }
         haulJob.addListener(this);
     }
@@ -96,11 +104,10 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     @Override
     public void jobDone(final IJob job) {
         assert haulJob == job;
-
-        if (job.isDone()) {
-            job.removeListener(this);
-            getJob().stateDone(this);
-        }
+        assert job.isDone();
+        item = ((HaulJob) job).getItem();
+        job.removeListener(this);
+        getJob().stateDone(this);
     }
 
     /**

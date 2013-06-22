@@ -38,12 +38,15 @@ import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
+import simulation.job.jobstate.AbstractJobState;
 import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.LookingForDwarfState;
 import simulation.job.jobstate.WalkToPositionState;
 import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
+import simulation.map.BlockType;
+import simulation.map.IMapListener;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 
@@ -75,7 +78,7 @@ public class MineJob extends AbstractJob {
     public MineJob(final MapIndex positionTmp, final IPlayer player) {
         super(player);
         position = positionTmp;
-        setJobState(new LookingForMinerState());
+        setJobState(new WaitUntilAccessibleState());
     }
 
     @Override
@@ -86,6 +89,65 @@ public class MineJob extends AbstractJob {
     @Override
     public String toString() {
         return "Mine";
+    }
+
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (miner != null) {
+            miner.releaseLock();
+        }
+    }
+
+    /**
+     * Job state that waits until one of the blocks around the block to be mined is free.
+     */
+    private class WaitUntilAccessibleState extends AbstractJobState implements IMapListener {
+
+        /**
+         * Constructor.
+         */
+        public WaitUntilAccessibleState() {
+            super(MineJob.this);
+        }
+
+        @Override
+        public void transitionInto() {
+            BlockType[] neighbourTypes = new BlockType[8];
+            getPlayer().getRegion().getMap().getNeighbourTypes(position, neighbourTypes);
+            boolean accessible = false;
+            for (BlockType blockType : neighbourTypes) {
+                if (blockType.isStandIn) {
+                    accessible = true;
+                    break;
+                }
+            }
+            if (accessible) {
+                getJob().stateDone(this);
+            } else {
+                getPlayer().getRegion().getMap().addListener(this);
+            }
+        }
+
+        @Override
+        public void transitionOutOf() {
+            getPlayer().getRegion().getMap().removeListener(this);
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return new LookingForMinerState();
+        }
+
+        @Override
+        public void mapChanged(final MapIndex mapIndex) {
+            BlockType blockType = getPlayer().getRegion().getMap().getBlock(mapIndex);
+            if (blockType.isStandIn
+                    && (mapIndex.x == position.x || mapIndex.x == position.x - 1 || mapIndex.x == position.x + 1)
+                    && (mapIndex.y == position.y || mapIndex.y == position.y - 1 || mapIndex.y == position.y + 1)) {
+                getJob().stateDone(this);
+            }
+        }
     }
 
     /**
@@ -108,37 +170,37 @@ public class MineJob extends AbstractJob {
 
         @Override
         public IJobState getNextState() {
-            return new WalkToChannelingSiteState();
+            return new WalkToMiningSiteState();
         }
     }
 
     /**
-     * The walk to channel site job state.
+     * The walk to mining site job state.
      */
-    private class WalkToChannelingSiteState extends WalkToPositionState {
+    private class WalkToMiningSiteState extends WalkToPositionState {
 
         /**
          * Constructor.
          */
-        public WalkToChannelingSiteState() {
-            super(position, miner, MineJob.this);
+        public WalkToMiningSiteState() {
+            super(position, miner, true, MineJob.this);
         }
 
         @Override
         public IJobState getNextState() {
-            return new ChannelState();
+            return new MineState();
         }
     }
 
     /**
-     * The channel job state.
+     * The mine job state.
      */
-    private class ChannelState extends WasteTimeState {
+    private class MineState extends WasteTimeState {
 
         /**
          * Constructor.
          */
-        public ChannelState() {
+        public MineState() {
             super(DURATION, miner, MineJob.this);
         }
 

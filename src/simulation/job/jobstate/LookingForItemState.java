@@ -61,6 +61,7 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
                 getJob().getPlayer().getStockManager().addListener(this);
             }
         } else {
+            item.setUsed(true);
             getJob().stateDone(this);
         }
     }

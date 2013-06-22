@@ -118,7 +118,7 @@ public class TillJob extends AbstractJob {
          * Constructor.
          */
         public WalkToCropState() {
-            super(farmPlot.getPosition(), farmer, TillJob.this);
+            super(farmPlot.getPosition(), farmer, false, TillJob.this);
         }
 
         @Override

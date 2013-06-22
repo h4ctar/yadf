@@ -55,26 +55,6 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
     }
 
     @Override
-    public void dropHaulItem(final boolean freeItem) {
-        if (itemHauling != null) {
-            if (freeItem) {
-                itemHauling.setUsed(false);
-            }
-            itemHauling = null;
-            notifyListeners();
-        }
-    }
-
-    @Override
-    public void dropTool() {
-        if (toolHolding != null) {
-            toolHolding.setUsed(false);
-            toolHolding = null;
-            notifyListeners();
-        }
-    }
-
-    @Override
     public Item getHaulItem() {
         return itemHauling;
     }
@@ -92,24 +72,38 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
 
     @Override
     public void pickupHaulItem(final Item item) {
-        if (itemHauling != null) {
-            dropHaulItem(true);
-        }
-
-        item.setUsed(true);
+        assert itemHauling == null;
         itemHauling = item;
+        itemHauling.setUsed(true);
         notifyListeners();
     }
 
     @Override
-    public void pickupTool(final Item tool) {
-        if (toolHolding != null) {
-            dropTool();
+    public void dropHaulItem(final boolean freeItem) {
+        if (itemHauling != null) {
+            if (freeItem) {
+                itemHauling.setUsed(false);
+            }
+            itemHauling = null;
+            notifyListeners();
         }
+    }
 
-        tool.setUsed(true);
+    @Override
+    public void pickupTool(final Item tool) {
+        assert toolHolding == null;
         toolHolding = tool;
+        getCharacter().getPlayer().getStockManager().removeItem(toolHolding);
         notifyListeners();
+    }
+
+    @Override
+    public void dropTool() {
+        if (toolHolding != null) {
+            getCharacter().getPlayer().getStockManager().addItem(toolHolding);
+            toolHolding = null;
+            notifyListeners();
+        }
     }
 
     @Override
@@ -117,7 +111,6 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
         if (itemHauling != null) {
             itemHauling.setPosition(getCharacter().getPosition());
         }
-
         if (toolHolding != null) {
             toolHolding.setPosition(getCharacter().getPosition());
         }

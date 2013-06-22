@@ -112,7 +112,7 @@ public class BuildConstructionJob extends AbstractJob {
          * Constructor.
          */
         public HaulBuildingMaterialsState() {
-            super(BUILDING_MATERIAL_TYPE, position, BuildConstructionJob.this);
+            super(BUILDING_MATERIAL_TYPE, position, null, BuildConstructionJob.this);
         }
 
         @Override
@@ -160,7 +160,7 @@ public class BuildConstructionJob extends AbstractJob {
          * Constructor.
          */
         public WalkToBuildingSiteState() {
-            super(position, builder, BuildConstructionJob.this);
+            super(position, builder, false, BuildConstructionJob.this);
         }
 
         @Override
@@ -185,7 +185,6 @@ public class BuildConstructionJob extends AbstractJob {
         public void transitionOutOf() {
             super.transitionOutOf();
             rock.setRemove();
-
             // Move items away from build area
             for (Item item : getPlayer().getStockManager().getItems()) {
                 if (item.getPosition().equals(position)) {

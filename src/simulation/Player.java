@@ -248,7 +248,6 @@ public class Player extends AbstractGameObject implements IPlayer {
      * Update.
      */
     public void update() {
-        jobManager.update(this, region);
         stockManager.update(this);
         dwarfManager.update(region);
 

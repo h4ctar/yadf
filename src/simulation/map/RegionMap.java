@@ -37,6 +37,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import logger.Logger;
 import misc.MyRandom;
@@ -49,23 +50,6 @@ public class RegionMap implements Serializable {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -7703563679963601586L;
-
-    /**
-     * Gets the neighbours.
-     * @param b the b
-     * @param neighbours the neighbours
-     */
-    public static void getNeighbours(final MapIndex b, final MapIndex[] neighbours) {
-        int i = 0;
-        neighbours[i++] = new MapIndex(b.x - 1, b.y - 1, b.z);
-        neighbours[i++] = new MapIndex(b.x - 1, b.y + 1, b.z);
-        neighbours[i++] = new MapIndex(b.x - 1, b.y, b.z);
-        neighbours[i++] = new MapIndex(b.x + 1, b.y - 1, b.z);
-        neighbours[i++] = new MapIndex(b.x + 1, b.y + 1, b.z);
-        neighbours[i++] = new MapIndex(b.x + 1, b.y, b.z);
-        neighbours[i++] = new MapIndex(b.x, b.y - 1, b.z);
-        neighbours[i++] = new MapIndex(b.x, b.y + 1, b.z);
-    }
 
     // private List<MapChange> mapChanges;
 
@@ -81,15 +65,18 @@ public class RegionMap implements Serializable {
     /** The path planner. */
     private final PathPlanner pathPlanner = new PathPlanner();
 
-    private final List<IMapListener> listeners = new ArrayList<>();
+    private final List<IMapListener> listeners = new CopyOnWriteArrayList<>();
 
     public void addListener(final IMapListener listener) {
         listeners.add(listener);
     }
 
+    public void removeListener(IMapListener listener) {
+        listeners.remove(listener);
+    }
+
     /**
      * Channel block.
-     * 
      * @param index the index
      * @param blockType the block type
      */
@@ -125,7 +112,6 @@ public class RegionMap implements Serializable {
 
     /**
      * Find path.
-     * 
      * @param position the position
      * @param target the target
      * @return the list
@@ -149,7 +135,6 @@ public class RegionMap implements Serializable {
 
     /**
      * Generates the map.
-     * 
      * @param mapSizeTmp the size of the map
      */
     public void generateMap(final MapIndex mapSizeTmp) {
@@ -182,7 +167,6 @@ public class RegionMap implements Serializable {
     /**
      * This method should return the walkable nodes surrounding a particular block, even if that block is itself not
      * walkable.
-     * 
      * @param position the position
      * @return the adjacencies
      */
@@ -233,7 +217,6 @@ public class RegionMap implements Serializable {
 
     /**
      * Gets the block type at a passed location.
-     * 
      * @param x x position
      * @param y y position
      * @param z z position
@@ -249,7 +232,6 @@ public class RegionMap implements Serializable {
 
     /**
      * Gets the block type at a passed location.
-     * 
      * @param blockIndex position of block to get type
      * @return The block type
      */
@@ -259,7 +241,6 @@ public class RegionMap implements Serializable {
 
     /**
      * Gets the height at a position, this is going down from the sky until a solid block is reached (i.e. not a ramp)
-     * 
      * @param x the x
      * @param y the y
      * @return the height
@@ -276,7 +257,6 @@ public class RegionMap implements Serializable {
 
     /**
      * Gets the map size.
-     * 
      * @return the map size
      */
     public MapIndex getMapSize() {
@@ -285,7 +265,6 @@ public class RegionMap implements Serializable {
 
     /**
      * Gets the neighbour types.
-     * 
      * @param b the b
      * @param neighbourTypes the neighbour types
      */
@@ -301,10 +280,26 @@ public class RegionMap implements Serializable {
         neighbourTypes[i++] = getBlock(b.x, b.y + 1, b.z);
     }
 
+    /**
+     * Gets the neighbours.
+     * @param b the b
+     * @param neighbours the neighbours
+     */
+    public static void getNeighbours(final MapIndex b, final MapIndex[] neighbours) {
+        int i = 0;
+        neighbours[i++] = new MapIndex(b.x - 1, b.y - 1, b.z);
+        neighbours[i++] = new MapIndex(b.x - 1, b.y + 1, b.z);
+        neighbours[i++] = new MapIndex(b.x - 1, b.y, b.z);
+        neighbours[i++] = new MapIndex(b.x + 1, b.y - 1, b.z);
+        neighbours[i++] = new MapIndex(b.x + 1, b.y + 1, b.z);
+        neighbours[i++] = new MapIndex(b.x + 1, b.y, b.z);
+        neighbours[i++] = new MapIndex(b.x, b.y - 1, b.z);
+        neighbours[i++] = new MapIndex(b.x, b.y + 1, b.z);
+    }
+
     // TODO: implement quad tree
     /**
      * Gets the walkable node.
-     * 
      * @param position the position
      * @return the walkable node
      */
@@ -321,7 +316,6 @@ public class RegionMap implements Serializable {
     // TODO: this can use walkablenodes
     /**
      * Checks if is walkable.
-     * 
      * @param mapIndex the map index
      * @return true, if is walkable
      */
@@ -339,23 +333,16 @@ public class RegionMap implements Serializable {
 
     /**
      * Mine block.
-     * 
      * @param index the index
      */
     public void mineBlock(final MapIndex index) {
         BlockType blockType = blockTypes[index.x][index.y][index.z];
-
-        try {
-            setBlock(index, BlockType.valueOf("MINE_" + blockType));
-            removeRampsAroundBlock(index);
-        } catch (Exception e) {
-            Logger.getInstance().log(this, blockType.toString() + " can't be mined", true);
-        }
+        setBlock(index, BlockType.valueOf("MINE_" + blockType));
+        removeRampsAroundBlock(index);
     }
 
     /**
      * Sets the block.
-     * 
      * @param index the index
      * @param type the type
      */
@@ -425,7 +412,8 @@ public class RegionMap implements Serializable {
             }
             walkableNodes.add(newNode);
         }
-        notifyListeners();
+
+        notifyListeners(index);
     }
 
     /**
@@ -452,15 +440,14 @@ public class RegionMap implements Serializable {
         }
     }
 
-    private void notifyListeners() {
+    private void notifyListeners(final MapIndex mapIndex) {
         for (IMapListener listener : listeners) {
-            listener.mapChanged();
+            listener.mapChanged(mapIndex);
         }
     }
 
     /**
      * Read object.
-     * 
      * @param in the in
      * @throws IOException Signals that an I/O exception has occurred.
      * @throws ClassNotFoundException the class not found exception
@@ -473,7 +460,6 @@ public class RegionMap implements Serializable {
 
     /**
      * Removes the ramps around block.
-     * 
      * @param index the index
      */
     private void removeRampsAroundBlock(final MapIndex index) {

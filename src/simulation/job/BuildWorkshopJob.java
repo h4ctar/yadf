@@ -31,10 +31,13 @@
  */
 package simulation.job;
 
+import java.util.Set;
+
 import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.component.ISkillComponent;
+import simulation.item.Item;
 import simulation.job.jobstate.HaulResourcesState;
 import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.LookingForDwarfState;
@@ -69,6 +72,8 @@ public class BuildWorkshopJob extends AbstractJob {
 
     /** The dwarf that will do the building. */
     private Dwarf builder;
+
+    private Set<Item> resources;
 
     /**
      * Instantiates a new build workshop job.
@@ -106,6 +111,12 @@ public class BuildWorkshopJob extends AbstractJob {
         }
 
         @Override
+        public void transitionOutOf() {
+            super.transitionOutOf();
+            resources = getResources();
+        }
+
+        @Override
         public IJobState getNextState() {
             return new LookingForBuilderState();
         }
@@ -124,13 +135,14 @@ public class BuildWorkshopJob extends AbstractJob {
         }
 
         @Override
-        public IJobState getNextState() {
-            return new WalkToBuildingSiteState();
+        public void transitionOutOf() {
+            super.transitionOutOf();
+            builder = getDwarf();
         }
 
         @Override
-        public void transitionOutOf() {
-            builder = getDwarf();
+        public IJobState getNextState() {
+            return new WalkToBuildingSiteState();
         }
     }
 
@@ -143,7 +155,7 @@ public class BuildWorkshopJob extends AbstractJob {
          * Constructor.
          */
         public WalkToBuildingSiteState() {
-            super(position, builder, BuildWorkshopJob.this);
+            super(position, builder, false, BuildWorkshopJob.this);
         }
 
         @Override
@@ -170,6 +182,9 @@ public class BuildWorkshopJob extends AbstractJob {
             getPlayer().addWorkshop(new Workshop(workshopType, position));
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.releaseLock();
+            for (Item resource : resources) {
+                resource.setRemove();
+            }
             super.transitionOutOf();
         }
 

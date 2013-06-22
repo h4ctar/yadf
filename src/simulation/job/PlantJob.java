@@ -124,7 +124,7 @@ public class PlantJob extends AbstractJob {
          * Constructor.
          */
         public HaulSeedToCropState() {
-            super(farmer, seed, farmPlot.getPosition(), PlantJob.this);
+            super(farmer, seed, farmPlot.getPosition(), null, PlantJob.this);
         }
 
         @Override

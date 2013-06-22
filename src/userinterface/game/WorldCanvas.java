@@ -184,9 +184,9 @@ public class WorldCanvas extends JComponent implements IMapListener {
             g.setColor(INVALID_SELECTION_COLOUR);
         }
 
-        g.fillRect((selection.pos.x - viewPosition.x) * SpriteManager.SPRITE_SIZE, (selection.pos.y - viewPosition.y)
-                * SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE * selection.width, SpriteManager.SPRITE_SIZE
-                * selection.height);
+        g.fillRect((selection.pos.x - viewPosition.x) * SpriteManager.SPRITE_SIZE,
+                (selection.pos.y - viewPosition.y) * SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE
+                        * selection.width, SpriteManager.SPRITE_SIZE * selection.height);
     }
 
     /**
@@ -205,7 +205,8 @@ public class WorldCanvas extends JComponent implements IMapListener {
     }
 
     @Override
-    public void mapChanged() {
+    public void mapChanged(MapIndex mapIndex) {
+        // TODO: make this only redraw the changed block
         drawBackgroundRequired = true;
     }
 
@@ -292,8 +293,8 @@ public class WorldCanvas extends JComponent implements IMapListener {
             canvasHeight = 1;
         }
 
-        viewSize = new MapIndex(canvasWidth / SpriteManager.SPRITE_SIZE + 1, canvasHeight / SpriteManager.SPRITE_SIZE
-                + 1, 0);
+        viewSize = new MapIndex(canvasWidth / SpriteManager.SPRITE_SIZE + 1, canvasHeight
+                / SpriteManager.SPRITE_SIZE + 1, 0);
 
         if (region != null) {
             MapIndex mapSize = region.getMap().getMapSize();

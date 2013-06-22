@@ -92,12 +92,13 @@ public class JobsTableModel extends AbstractTableModel implements IJobManagerLis
     }
 
     @Override
-    public void jobsAdded(final int firstIndex, final int lastIndex) {
-        this.fireTableRowsInserted(firstIndex, lastIndex);
+    public void jobsAdded(final IJob job) {
+        // this.fireTableRowsInserted(firstIndex, lastIndex);
+        // TODO: fix this
     }
 
     @Override
-    public void jobRemoved(IJob job) {
+    public void jobRemoved(final IJob job) {
         // this.fireTableRowsDeleted(index, index);
         // TODO: fix this
     }

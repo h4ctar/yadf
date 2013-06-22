@@ -124,7 +124,7 @@ public class ChannelJob extends AbstractJob {
          * Constructor.
          */
         public WalkToChannelingSiteState() {
-            super(position, miner, ChannelJob.this);
+            super(position, miner, false, ChannelJob.this);
         }
 
         @Override

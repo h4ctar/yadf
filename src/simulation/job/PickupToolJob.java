@@ -102,7 +102,7 @@ public class PickupToolJob extends AbstractJob {
          * Constructor.
          */
         public WalkToToolState() {
-            super(tool.getPosition(), character, PickupToolJob.this);
+            super(tool.getPosition(), character, false, PickupToolJob.this);
         }
 
         @Override

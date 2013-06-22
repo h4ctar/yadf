@@ -22,7 +22,6 @@ public abstract class WaitingForDwarfState extends AbstractJobState implements I
     public WaitingForDwarfState(final IGameCharacter character, final AbstractJob jobTmp) {
         super(jobTmp);
         dwarf = character;
-        dwarf.addListener(this);
     }
 
     @Override
@@ -32,6 +31,11 @@ public abstract class WaitingForDwarfState extends AbstractJobState implements I
 
     @Override
     public void transitionInto() {
+        if (dwarf.acquireLock()) {
+            getJob().stateDone(this);
+        } else {
+            dwarf.addListener(this);
+        }
     }
 
     @Override

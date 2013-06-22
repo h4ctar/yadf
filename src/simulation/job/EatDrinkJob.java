@@ -174,9 +174,21 @@ public class EatDrinkJob extends AbstractJob {
             if (table != null) {
                 nextState = new HaulFoodDrinkToTableState();
             } else {
-                nextState = new ConsumeFoodDrinkState();
+                nextState = new WalkToFoodDrinkState();
             }
             return nextState;
+        }
+    }
+
+    private class WalkToFoodDrinkState extends WalkToPositionState {
+
+        public WalkToFoodDrinkState() {
+            super(foodDrinkItem.getPosition(), dwarf, false, EatDrinkJob.this);
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return new ConsumeFoodDrinkState();
         }
     }
 
@@ -191,7 +203,7 @@ public class EatDrinkJob extends AbstractJob {
          * Constructor.
          */
         public HaulFoodDrinkToTableState() {
-            super(dwarf, foodDrinkItem, table.getPosition(), EatDrinkJob.this);
+            super(dwarf, foodDrinkItem, table.getPosition(), null, EatDrinkJob.this);
         }
 
         @Override
@@ -215,7 +227,7 @@ public class EatDrinkJob extends AbstractJob {
          * Constructor.
          */
         public WalkToChairState() {
-            super(chair.getPosition(), dwarf, EatDrinkJob.this);
+            super(chair.getPosition(), dwarf, false, EatDrinkJob.this);
         }
 
         @Override

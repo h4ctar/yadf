@@ -31,6 +31,8 @@
  */
 package simulation.job;
 
+import java.util.Set;
+
 import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
@@ -71,6 +73,8 @@ public class CraftJob extends AbstractJob {
     /** The required labor type for this job. */
     private final LaborType requiredLabor;
 
+    private Set<Item> resources;
+
     /**
      * Instantiates a new craft job.
      * @param workshopTmp the workshop
@@ -106,6 +110,12 @@ public class CraftJob extends AbstractJob {
          */
         public HaulCraftingMaterialsState() {
             super(recipe.resources, workshop.getPosition(), CraftJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            super.transitionOutOf();
+            resources = getResources();
         }
 
         @Override
@@ -147,7 +157,7 @@ public class CraftJob extends AbstractJob {
          * Constructor.
          */
         public WalkToWorkshopState() {
-            super(workshop.getPosition(), crafter, CraftJob.this);
+            super(workshop.getPosition(), crafter, false, CraftJob.this);
         }
 
         @Override
@@ -179,6 +189,9 @@ public class CraftJob extends AbstractJob {
             workshop.setOccupied(false);
             if (recipe.skill != null) {
                 crafter.getComponent(ISkillComponent.class).increaseSkillLevel(requiredLabor);
+            }
+            for (Item resource : resources) {
+                resource.setRemove();
             }
             crafter.releaseLock();
         }

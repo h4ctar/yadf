@@ -98,7 +98,7 @@ public class SleepJob extends AbstractJob {
          * Constructor.
          */
         public WalkToSleepBedState() {
-            super(bed.getPosition(), dwarf, SleepJob.this);
+            super(bed.getPosition(), dwarf, false, SleepJob.this);
         }
 
         @Override
