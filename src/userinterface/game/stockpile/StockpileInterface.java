@@ -48,6 +48,7 @@ import org.jdesktop.swingx.JXTreeTable;
 
 import simulation.Player;
 import simulation.item.Stockpile;
+import userinterface.game.WorldCanvas;
 import userinterface.misc.ImagePanel;
 import controller.AbstractController;
 import controller.command.DeleteStockpileCommand;
@@ -55,7 +56,7 @@ import controller.command.DeleteStockpileCommand;
 /**
  * The Class StockpileInterface.
  */
-public class StockpileInterface extends JInternalFrame implements ActionListener {
+public class StockpileInterface extends JInternalFrame {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -7914475811407054901L;
@@ -78,21 +79,27 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
     /** The tree table. */
     private JXTreeTable treeTable;
 
+    /** The panel the holds the buttons. */
+    private JPanel buttonPanel;
+
+    /** A button that zooms to the stockpile. */
+    private JButton zoomButton;
+
+    /** The canvas (required to zoom to the stockpile). */
+    private final WorldCanvas worldCanvas;
+
     /**
      * Create the frame.
+     * @param worldCanvasTmp the canvas (required to zoom to the stockpile)
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public StockpileInterface(final Player playerTmp, final AbstractController controllerTmp) {
+    public StockpileInterface(final WorldCanvas worldCanvasTmp, final Player playerTmp,
+            final AbstractController controllerTmp) {
+        worldCanvas = worldCanvasTmp;
         player = playerTmp;
         controller = controllerTmp;
         setupLayout();
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        controller.addCommand(new DeleteStockpileCommand(player, stockpile.getId()));
-        setVisible(false);
     }
 
     /**
@@ -104,6 +111,29 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
         StockpileTreeTableModel tableModel = new StockpileTreeTableModel(stockpile, controller, player);
         treeTable = new JXTreeTable(tableModel);
         scrollPane.setViewportView(treeTable);
+    }
+
+    /**
+     * Action listener for the delete button.
+     */
+    private class ZoomButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            worldCanvas.zoomToArea(stockpile.getArea());
+        }
+    }
+
+    /**
+     * Action listener for the delete button.
+     */
+    private class DeleteButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            controller.addCommand(new DeleteStockpileCommand(player, stockpile.getId()));
+            setVisible(false);
+        }
     }
 
     /**
@@ -125,7 +155,7 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
         gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
         gridBagLayout.rowWeights = new double[] { 1.0, 0.0 };
         panel.setLayout(gridBagLayout);
-        add(panel);
+        getContentPane().add(panel);
 
         scrollPane = new JScrollPane();
         GridBagConstraints scrollPaneConstraints = new GridBagConstraints();
@@ -138,12 +168,21 @@ public class StockpileInterface extends JInternalFrame implements ActionListener
         treeTable = new JXTreeTable();
         scrollPane.setViewportView(treeTable);
 
+        buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        GridBagConstraints gbc_buttonPanel = new GridBagConstraints();
+        gbc_buttonPanel.fill = GridBagConstraints.BOTH;
+        gbc_buttonPanel.gridx = 0;
+        gbc_buttonPanel.gridy = 1;
+        panel.add(buttonPanel, gbc_buttonPanel);
+
+        zoomButton = new JButton("Zoom");
+        buttonPanel.add(zoomButton);
+        zoomButton.addActionListener(new ZoomButtonActionListener());
+
         deleteButton = new JButton("Delete");
-        GridBagConstraints deleteButtonConstraints = new GridBagConstraints();
-        deleteButtonConstraints.gridx = 0;
-        deleteButtonConstraints.gridy = 1;
-        panel.add(deleteButton, deleteButtonConstraints);
-        deleteButton.addActionListener(this);
+        buttonPanel.add(deleteButton);
+        deleteButton.addActionListener(new DeleteButtonActionListener());
         // CHECKSTYLE:ON
     }
 }

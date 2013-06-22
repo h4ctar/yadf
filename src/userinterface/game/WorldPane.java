@@ -153,7 +153,8 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "LEFT");
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "RIGHT");
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0, false), "UP_Z");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "DOWN_Z");
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "DOWN_Z");
 
         getActionMap().put("SHIFT_UP", new AbstractAction() {
 
@@ -527,17 +528,14 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         region = regionTmp;
         player = playerTmp;
         controller = controllerTmp;
-
         worldCanvas.setRegion(region);
         worldCanvas.setPlayer(player);
-
         mainPopupMenu = new MainPopupMenu(this);
         roomInterface = new RoomInterface(player, controller);
         workshopInterface = new WorkshopInterface(player, controller);
-        stockpileInterface = new StockpileInterface(player, controller);
+        stockpileInterface = new StockpileInterface(worldCanvas, player, controller);
         dwarfInterface = new DwarfInterface();
         itemInterface = new ItemInterface();
-
         add(mainPopupMenu);
         add(roomInterface);
         add(workshopInterface);

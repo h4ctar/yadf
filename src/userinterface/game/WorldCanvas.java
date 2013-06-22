@@ -219,6 +219,28 @@ public class WorldCanvas extends JComponent implements IMapListener {
         drawBackgroundRequired = true;
     }
 
+    /**
+     * Move the view to center on a position.
+     * @param position where to zoom to
+     */
+    public void zoomToPosition(final MapIndex position) {
+        viewPosition.x = position.x - viewSize.x / 2;
+        viewPosition.y = position.y - viewSize.y / 2;
+        viewPosition.z = position.z;
+        drawBackgroundRequired = true;
+    }
+
+    /**
+     * Move the view to center on an area.
+     * @param area where to zoom to
+     */
+    public void zoomToArea(final MapArea area) {
+        viewPosition.x = area.pos.x + area.width / 2 - viewSize.x / 2;
+        viewPosition.y = area.pos.y + area.height / 2 - viewSize.y / 2;
+        viewPosition.z = area.pos.z;
+        drawBackgroundRequired = true;
+    }
+
     @Override
     public void paint(final Graphics g) {
         if (region == null) {
@@ -282,24 +304,19 @@ public class WorldCanvas extends JComponent implements IMapListener {
     public void setSize(final Dimension d) {
         canvasWidth = d.width;
         canvasHeight = d.height;
-
         if (canvasWidth <= 0) {
             canvasWidth = 1;
         }
-
         if (canvasHeight <= 0) {
             canvasHeight = 1;
         }
-
         viewSize = new MapIndex(canvasWidth / SpriteManager.SPRITE_SIZE + 1, canvasHeight
                 / SpriteManager.SPRITE_SIZE + 1, 0);
-
         if (region != null) {
             MapIndex mapSize = region.getMap().getMapSize();
             viewPosition = new MapIndex((mapSize.x - viewSize.x) / 2, (mapSize.y - viewSize.y) / 2, 0);
             viewPosition.z = region.getMap().getHeight(mapSize.x / 2, mapSize.y / 2);
         }
-
         super.setSize(d);
         backgroundImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_ARGB);
         drawBackgroundRequired = true;
