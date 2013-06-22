@@ -21,8 +21,9 @@ All sprites are just placeholders and have been borrowed from other games/sprite
 
 Credits:
 --------
-Noise generator by Ken Perlin
-Name generator by Sinipull
+Noise generator - Ken Perlin
+Name generator - Sinipull
+Font - Dwarven stonecraft - http://www.2200freefonts.com
 
 License:
 --------
