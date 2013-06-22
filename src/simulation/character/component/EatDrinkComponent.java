@@ -34,7 +34,7 @@ package simulation.character.component;
 import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.Dwarf;
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.job.EatDrinkJob;
 
 /**
@@ -65,6 +65,14 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
 
     /** A reference to the drink job. */
     private EatDrinkJob drinkJob;
+
+    /**
+     * Constructor.
+     * @param characterTmp the character that this component belongs to
+     */
+    public EatDrinkComponent(final IGameCharacter characterTmp) {
+        super(characterTmp);
+    }
 
     @Override
     public boolean isHungryOrThirsty() {
@@ -98,28 +106,28 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
     }
 
     @Override
-    public void update(final GameCharacter character, final Region region) {
-        IPlayer player = character.getPlayer();
+    public void update(final Region region) {
+        IPlayer player = getCharacter().getPlayer();
 
         hunger++;
         thirst++;
 
         if (hunger > HUNGER_EAT_THRESHOLD && eatJob == null) {
-            eatJob = new EatDrinkJob((Dwarf) character, true);
+            eatJob = new EatDrinkJob((Dwarf) getCharacter(), true);
             player.getJobManager().addJob(eatJob);
         }
 
         if (thirst > THIRST_DRINK_THRESHOLD && drinkJob == null) {
-            drinkJob = new EatDrinkJob((Dwarf) character, false);
+            drinkJob = new EatDrinkJob((Dwarf) getCharacter(), false);
             player.getJobManager().addJob(drinkJob);
         }
 
         if (hunger > HUNGER_SICK_THRESHOLD) {
-            character.getComponent(IHealthComponent.class).decrementHealth();
+            getCharacter().getComponent(IHealthComponent.class).decrementHealth();
         }
 
         if (thirst > THIRST_SICK_THRESHOLD) {
-            character.getComponent(IHealthComponent.class).decrementHealth();
+            getCharacter().getComponent(IHealthComponent.class).decrementHealth();
         }
 
         if (eatJob != null && eatJob.isDone()) {

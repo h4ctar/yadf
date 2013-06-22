@@ -1,7 +1,7 @@
 package simulation.job.jobstate;
 
-import simulation.character.GameCharacter;
-import simulation.character.ICharacterListener;
+import simulation.character.ICharacterAvailableListener;
+import simulation.character.IGameCharacter;
 import simulation.job.AbstractJob;
 
 /**
@@ -9,19 +9,19 @@ import simulation.job.AbstractJob;
  * 
  * Waits until a dwarf becomes free and acquires a lock on them.
  */
-public abstract class WaitingForDwarfState extends AbstractJobState implements ICharacterListener {
+public abstract class WaitingForDwarfState extends AbstractJobState implements ICharacterAvailableListener {
 
     /** The dwarf we're waiting for. */
-    private final GameCharacter dwarf;
+    private final IGameCharacter dwarf;
 
     /**
      * Constructor.
-     * @param dwarfTmp the dwarf we're waiting for
+     * @param character the dwarf we're waiting for
      * @param jobTmp the job that this state belongs to
      */
-    public WaitingForDwarfState(final GameCharacter dwarfTmp, final AbstractJob jobTmp) {
+    public WaitingForDwarfState(final IGameCharacter character, final AbstractJob jobTmp) {
         super(jobTmp);
-        dwarf = dwarfTmp;
+        dwarf = character;
         dwarf.addListener(this);
     }
 
@@ -40,7 +40,7 @@ public abstract class WaitingForDwarfState extends AbstractJobState implements I
     }
 
     @Override
-    public void characterChanged(final GameCharacter character) {
+    public void characterAvailable(final IGameCharacter character) {
         assert character == dwarf;
         if (dwarf.acquireLock()) {
             getJob().stateDone(this);

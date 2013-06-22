@@ -135,6 +135,7 @@ public class EatDrinkJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             Set<Room> rooms = getPlayer().getRooms();
             for (Room room : rooms) {
                 if (room.getType().equals("Dining room")) {
@@ -237,16 +238,14 @@ public class EatDrinkJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             foodDrinkItem.setRemove();
-
             dwarf.releaseLock();
-
             if (eat) {
                 dwarf.getComponent(IEatDrinkComponent.class).eat();
             } else {
                 dwarf.getComponent(IEatDrinkComponent.class).drink();
             }
-
             if (chair != null) {
                 chair.setUsed(false);
             }

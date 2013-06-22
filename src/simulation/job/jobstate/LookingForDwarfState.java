@@ -1,14 +1,16 @@
 package simulation.job.jobstate;
 
-import simulation.IDwarfManagerListener;
 import simulation.character.Dwarf;
+import simulation.character.ICharacterAvailableListener;
+import simulation.character.IGameCharacter;
+import simulation.character.component.ISkillComponent;
 import simulation.job.AbstractJob;
 import simulation.labor.LaborType;
 
 /**
  * Generic state to look for a dwarf.
  */
-public abstract class LookingForDwarfState extends AbstractJobState implements IDwarfManagerListener {
+public abstract class LookingForDwarfState extends AbstractJobState implements ICharacterAvailableListener {
 
     /** The found dwarf. */
     private Dwarf dwarf;
@@ -46,27 +48,10 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
     }
 
     @Override
-    public void dwarfAdded(final Dwarf newDwarf) {
-        acquireDwarf(newDwarf);
-    }
-
-    @Override
-    public void dwarfRemoved(final Dwarf removedDwarf) {
-        // do nothing
-    }
-
-    @Override
-    public void dwarfNowIdle(final Dwarf idleDwarf) {
-        acquireDwarf(idleDwarf);
-    }
-
-    /**
-     * Attempt to acquire the dwarf, and transition to next state if successful.
-     * @param dwarfTmp the dwarf to acquire
-     */
-    private void acquireDwarf(final Dwarf dwarfTmp) {
-        if (dwarfTmp.acquireLock()) {
-            dwarf = dwarfTmp;
+    public void characterAvailable(final IGameCharacter character) {
+        assert character instanceof Dwarf;
+        if (character.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && character.acquireLock()) {
+            dwarf = (Dwarf) character;
             getJob().stateDone(this);
             getJob().getPlayer().getDwarfManager().removeListener(this);
         }

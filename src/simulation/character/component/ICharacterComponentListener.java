@@ -8,5 +8,5 @@ public interface ICharacterComponentListener {
     /**
      * Called when the component is changed.
      */
-    void componentChanged();
+    void componentChanged(ICharacterComponent component);
 }

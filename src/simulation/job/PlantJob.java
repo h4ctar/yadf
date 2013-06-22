@@ -105,6 +105,7 @@ public class PlantJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             farmer = getDwarf();
         }
 
@@ -146,6 +147,7 @@ public class PlantJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             seed.setRemove();
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             farmer.releaseLock();

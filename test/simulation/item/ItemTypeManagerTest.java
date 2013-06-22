@@ -2,7 +2,6 @@ package simulation.item;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -70,7 +69,7 @@ public class ItemTypeManagerTest {
         ItemType itemType = ItemTypeManager.getInstance().getItemType("Pork");
         assertEquals("Item type name should be Pork", "Pork", itemType.name);
         assertEquals("Item type capacity should be 0", 0, itemType.capacity);
-        assertNull("Item type content item type names should be null", itemType.contentItemTypeNames);
+        assertTrue("Item type content item type names should be empty", itemType.contentItemTypeNames.isEmpty());
         assertEquals("Item type category should be Food", "Food", itemType.category);
         assertFalse("Item type placeable should be False", itemType.placeable);
         assertEquals("Item type sprite should be 25", 25, itemType.sprite);
@@ -123,8 +122,8 @@ public class ItemTypeManagerTest {
 
         // From item type
         MapIndex position = new MapIndex(1, 2, 3);
-        item = ItemTypeManager.getInstance().createItem(position, ItemTypeManager.getInstance().getItemType("Bread"),
-                null);
+        item = ItemTypeManager.getInstance().createItem(position,
+                ItemTypeManager.getInstance().getItemType("Bread"), null);
         assertEquals("Item position should be position", position, item.getPosition());
         assertEquals("Item type should be Bread", "Bread", item.getType().name);
 

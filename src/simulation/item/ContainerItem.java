@@ -90,7 +90,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
 
     @Override
     public Item getUnusedItem(final String itemTypeName) {
-        if (contentItemType != null && contentItemType.equals(itemTypeName)) {
+        if (contentItemType != null && contentItemType.name.equals(itemTypeName)) {
             for (Item contentItem : contentItems) {
                 if (!contentItem.isUsed() && !contentItem.getRemove()) {
                     return contentItem;
@@ -265,16 +265,15 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
      * If the job is finished remove it from our list. {@inheritDoc}
      */
     @Override
-    public void jobChanged(final IJob job) {
-        if (job.isDone()) {
-            if (haulJobs.remove(job)) {
-                HaulJob haulJob = (HaulJob) job;
-                Logger.getInstance().log(this,
-                        "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
-                haulJob.getItem().setUsed(false);
-            } else {
-                Logger.getInstance().log(this, "Job should be in the haulJobs list, something went wrong", true);
-            }
+    public void jobDone(final IJob job) {
+        assert job.isDone();
+        if (haulJobs.remove(job)) {
+            HaulJob haulJob = (HaulJob) job;
+            Logger.getInstance().log(this,
+                    "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
+            haulJob.getItem().setUsed(false);
+        } else {
+            Logger.getInstance().log(this, "Job should be in the haulJobs list, something went wrong", true);
         }
     }
 }

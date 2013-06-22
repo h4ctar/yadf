@@ -163,7 +163,7 @@ public class MainWindow extends JFrame implements IMainWindow {
 
     @Override
     public void startSinglePlayerGame(final String playerName, final MapIndex regionSize) {
-        GamePanel gamePanel = new GamePanel();
+        GamePanel gamePanel = new GamePanel(this);
         setContentPane(gamePanel);
         gamePanel.startSinglePlayerGame(playerName, regionSize);
         revalidate();
@@ -172,7 +172,7 @@ public class MainWindow extends JFrame implements IMainWindow {
     @Override
     public void startMultiplayerGame(final Connection connection, final List<String> playerNames,
             final int playerIndex, final MapIndex regionSize) {
-        GamePanel gamePanel = new GamePanel();
+        GamePanel gamePanel = new GamePanel(this);
         setContentPane(gamePanel);
         gamePanel.startMultiplayerGame(connection, playerNames, playerIndex, regionSize);
         revalidate();
@@ -187,7 +187,7 @@ public class MainWindow extends JFrame implements IMainWindow {
 
     @Override
     public void loadSinglePlayerGame() {
-        GamePanel gamePanel = new GamePanel();
+        GamePanel gamePanel = new GamePanel(this);
         setContentPane(gamePanel);
         gamePanel.loadSinglePlayerGame();
         revalidate();

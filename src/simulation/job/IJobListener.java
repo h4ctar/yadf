@@ -6,8 +6,8 @@ package simulation.job;
 public interface IJobListener {
 
     /**
-     * The job has changed.
+     * The job has finished.
      * @param job the job that changed
      */
-    void jobChanged(final IJob job);
+    void jobDone(final IJob job);
 }

@@ -28,6 +28,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     /** The item to haul. */
     private Item item;
 
+    /** The type of item to haul. */
     private ItemType itemType;
 
     /**
@@ -93,7 +94,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     }
 
     @Override
-    public void jobChanged(final IJob job) {
+    public void jobDone(final IJob job) {
         assert haulJob == job;
 
         if (job.isDone()) {
@@ -102,6 +103,10 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
         }
     }
 
+    /**
+     * Get the item that has been hauled.
+     * @return the item that was hauled
+     */
     public Item getItem() {
         return item;
     }

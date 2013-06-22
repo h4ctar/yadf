@@ -32,6 +32,8 @@
 package controller.command;
 
 import simulation.Player;
+import simulation.item.ItemType;
+import simulation.item.ItemTypeManager;
 import simulation.job.PlaceItemJob;
 import simulation.map.MapIndex;
 
@@ -63,6 +65,7 @@ public class PlaceItemCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getJobManager().addJob(new PlaceItemJob(position, itemTypeName, player));
+        ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
+        player.getJobManager().addJob(new PlaceItemJob(position, itemType, player));
     }
 }

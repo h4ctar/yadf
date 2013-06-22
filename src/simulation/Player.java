@@ -89,6 +89,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     /**
      * Instantiates a new player.
      * @param playerName the players name
+     * @param regionTmp the region that this player is in
      */
     public Player(final String playerName, final Region regionTmp) {
         name = playerName;
@@ -96,8 +97,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     }
 
     /**
-     * Adds the farm.
-     * 
+     * Adds a farm.
      * @param farm the farm
      */
     public void addFarm(final Farm farm) {
@@ -105,8 +105,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     }
 
     /**
-     * Adds the room.
-     * 
+     * Adds a room.
      * @param room the room
      */
     public void addRoom(final Room room) {
@@ -114,8 +113,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     }
 
     /**
-     * Adds the workshop.
-     * 
+     * Adds a workshop.
      * @param workshop the workshop
      */
     @Override
@@ -242,15 +240,14 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     public void setup(final MapIndex embarkPosition, final int numberOfStartingDwarfs, final RegionMap map) {
         Logger.getInstance().log(this, "Setting up");
-        addEmbarkDwarfs(embarkPosition, numberOfStartingDwarfs, map);
-        addEmbarkResources(embarkPosition, map);
+        addEmbarkDwarfs(embarkPosition, numberOfStartingDwarfs);
+        addEmbarkResources(embarkPosition);
     }
 
     /**
      * Update.
-     * @param region the region
      */
-    public void update(final Region region) {
+    public void update() {
         jobManager.update(this, region);
         stockManager.update(this);
         dwarfManager.update(region);
@@ -276,36 +273,32 @@ public class Player extends AbstractGameObject implements IPlayer {
 
     /**
      * Add the starting dwarfs.
-     * 
      * @param embarkPosition the position to embark
      * @param numberOfStartingDwarfs the number of starting dwarfs
-     * @param map the map to embark on
      */
-    private void addEmbarkDwarfs(final MapIndex embarkPosition, final int numberOfStartingDwarfs, final RegionMap map) {
+    private void addEmbarkDwarfs(final MapIndex embarkPosition, final int numberOfStartingDwarfs) {
         Random random = MyRandom.getInstance();
         for (int i = 0; i < numberOfStartingDwarfs; i++) {
             MapIndex pos = new MapIndex();
             pos.x = embarkPosition.x + random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
             pos.y = embarkPosition.y + random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
-            pos.z = map.getHeight(pos.x, pos.y);
+            pos.z = region.getMap().getHeight(pos.x, pos.y);
             dwarfManager.addNewDwarf(pos);
         }
     }
 
     /**
      * Add the starting resources.
-     * 
      * @param embarkPosition the position to embark
-     * @param map the map to embark on
      */
-    private void addEmbarkResources(final MapIndex embarkPosition, final RegionMap map) {
+    private void addEmbarkResources(final MapIndex embarkPosition) {
         Random random = MyRandom.getInstance();
         List<Item> embarkItems = ItemTypeManager.getInstance().getEmbarkItems(this);
         for (Item item : embarkItems) {
             MapIndex position = new MapIndex(embarkPosition);
             position.x -= random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
             position.y -= random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
-            position.z = map.getHeight(position.x, position.y);
+            position.z = region.getMap().getHeight(position.x, position.y);
             item.setPosition(position);
             stockManager.addItem(item);
         }

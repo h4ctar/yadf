@@ -31,6 +31,7 @@
  */
 package simulation.workshop;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +45,10 @@ import simulation.item.ItemTypeManager;
 /**
  * The Class WorkshopType.
  */
-public class WorkshopType {
+public class WorkshopType implements Serializable {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 1199284619007917723L;
 
     /** The name. */
     public final String name;
@@ -81,10 +85,6 @@ public class WorkshopType {
     public boolean equals(final Object other) {
         if (other instanceof WorkshopType) {
             return ((WorkshopType) other).name.equals(name);
-        }
-
-        if (other instanceof String) {
-            return ((String) other).equals(name);
         }
 
         return false;

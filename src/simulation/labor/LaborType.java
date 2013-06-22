@@ -68,7 +68,7 @@ public class LaborType implements Serializable {
         professionName = laborTypeElement.getAttribute("professionName");
         sprite = Integer.parseInt(laborTypeElement.getAttribute("sprite"));
         String toolTypeName = laborTypeElement.getAttribute("tool");
-        if (toolTypeName != "") {
+        if (!"".equals(toolTypeName)) {
             toolType = ItemTypeManager.getInstance().getItemType(toolTypeName);
             if (toolType == null) {
                 throw new Exception("Item type does not exist: " + toolTypeName);

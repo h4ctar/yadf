@@ -33,7 +33,7 @@ package simulation.job;
 
 import logger.Logger;
 import simulation.IPlayer;
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.character.component.IInventoryComponent;
 import simulation.item.IContainer;
 import simulation.item.Item;
@@ -60,7 +60,7 @@ public class HaulJob extends AbstractJob {
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Hauling");
 
     /** The character that will haul the item. */
-    private GameCharacter hauler;
+    private IGameCharacter hauler;
 
     /** The item to be hauled. */
     private Item item;
@@ -79,25 +79,20 @@ public class HaulJob extends AbstractJob {
 
     /**
      * Instantiates a new haul job, start with dwarf and item.
-     * @param characterTmp the character
+     * @param character the character
      * @param itemTmp the item
      * @param containerTmp the container to put the item in
      * @param dropPositionTmp the drop position
      */
-    public HaulJob(final GameCharacter characterTmp, final Item itemTmp, final IContainer containerTmp,
+    public HaulJob(final IGameCharacter character, final Item itemTmp, final IContainer containerTmp,
             final MapIndex dropPositionTmp) {
-        super(characterTmp.getPlayer());
+        super(character.getPlayer());
         item = itemTmp;
         container = containerTmp;
         dropPosition = dropPositionTmp;
-        hauler = characterTmp;
+        hauler = character;
         itemType = item.getType();
         setJobState(new WalkToItemState());
-    }
-
-    @Override
-    public MapIndex getPosition() {
-        return dropPosition;
     }
 
     /**
@@ -140,11 +135,8 @@ public class HaulJob extends AbstractJob {
         return "Hauling " + item.getType().name;
     }
 
-    /**
-     * Gets the drop position.
-     * @return the drop position
-     */
-    public MapIndex getDropPosition() {
+    @Override
+    public MapIndex getPosition() {
         return dropPosition;
     }
 
@@ -166,6 +158,12 @@ public class HaulJob extends AbstractJob {
          */
         public LookingForHaulItemState() {
             super(itemType, HaulJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            super.transitionOutOf();
+            item = getItem();
         }
 
         @Override
@@ -194,6 +192,7 @@ public class HaulJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             hauler = getDwarf();
         }
 
@@ -243,6 +242,7 @@ public class HaulJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             hauler.getComponent(IInventoryComponent.class).dropHaulItem(false);
             if (needToReleaseLock) {
                 hauler.releaseLock();

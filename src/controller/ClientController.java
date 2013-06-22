@@ -53,7 +53,7 @@ public class ClientController extends AbstractController {
     /**
      * Instantiates a new client controller.
      * @param connectionTmp the connection
-     * @param listenerTmp the listener
+     * @param gamePanelTmp the game panel
      */
     public ClientController(final Connection connectionTmp, final IGamePanel gamePanelTmp) {
         connection = connectionTmp;

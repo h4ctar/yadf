@@ -29,7 +29,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package simulation.job.designation;
+package simulation.job;
 
 import java.util.List;
 
@@ -40,7 +40,6 @@ import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
-import simulation.job.AbstractJob;
 import simulation.job.jobstate.HaulItemState;
 import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.LookingForDwarfState;
@@ -66,7 +65,8 @@ public class BuildConstructionJob extends AbstractJob {
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Building");
 
-    private final ItemType BUILDING_MATERIAL_TYPE = ItemTypeManager.getInstance().getItemType("Rock");
+    /** The item type that is required as a resource to build the construction. */
+    private static final ItemType BUILDING_MATERIAL_TYPE = ItemTypeManager.getInstance().getItemType("Rock");
 
     /** The position. */
     private final MapIndex position;
@@ -74,27 +74,22 @@ public class BuildConstructionJob extends AbstractJob {
     /** The construction type. */
     private final BlockType constructionType;
 
-    /** The designation. */
-    private final ConstructionDesignation designation;
-
     /** The builder dwarf. */
     private Dwarf builder;
 
+    /** The building material. */
     private Item rock;
 
     /**
-     * Instantiates a new builds the construction job.
-     * 
+     * Instantiates a new build construction job.
      * @param positionTmp the position
      * @param constructionTypeTmp the construction type
-     * @param designationTmp the designation
+     * @param player the player that this job belongs to
      */
-    public BuildConstructionJob(final MapIndex positionTmp, final BlockType constructionTypeTmp,
-            final ConstructionDesignation designationTmp, final IPlayer player) {
+    public BuildConstructionJob(final MapIndex positionTmp, final BlockType constructionTypeTmp, final IPlayer player) {
         super(player);
         position = positionTmp;
         constructionType = constructionTypeTmp;
-        designation = designationTmp;
         setJobState(new HaulBuildingMaterialsState());
     }
 
@@ -108,6 +103,9 @@ public class BuildConstructionJob extends AbstractJob {
         return position;
     }
 
+    /**
+     * The haul building materials job state.
+     */
     private class HaulBuildingMaterialsState extends HaulItemState {
 
         /**
@@ -119,6 +117,7 @@ public class BuildConstructionJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             rock = getItem();
         }
 
@@ -128,6 +127,9 @@ public class BuildConstructionJob extends AbstractJob {
         }
     }
 
+    /**
+     * The looking for builder job state.
+     */
     private class LookingForBuilderState extends LookingForDwarfState {
 
         /**
@@ -139,6 +141,7 @@ public class BuildConstructionJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             builder = getDwarf();
         }
 
@@ -166,6 +169,9 @@ public class BuildConstructionJob extends AbstractJob {
         }
     }
 
+    /**
+     * The build job state.
+     */
     private class BuildState extends WasteTimeState {
 
         /**
@@ -177,6 +183,7 @@ public class BuildConstructionJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             rock.setRemove();
 
             // Move items away from build area
@@ -190,7 +197,6 @@ public class BuildConstructionJob extends AbstractJob {
                 }
             }
             getPlayer().getRegion().getMap().setBlock(position, constructionType);
-            designation.removeFromDesignation(position);
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.releaseLock();
         }

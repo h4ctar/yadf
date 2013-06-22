@@ -32,7 +32,7 @@
 package simulation.character.component;
 
 import simulation.Region;
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 
 /**
  * The Class AttackComponent.
@@ -40,13 +40,15 @@ import simulation.character.GameCharacter;
 public class AttackComponent extends AbstractCharacterComponent implements IAttackComponent {
 
     /** The enemy. */
-    private GameCharacter enemy;
+    private IGameCharacter enemy;
 
     /**
      * Instantiates a new attack component.
+     * @param character the character that this component belongs to
      * @param enemyTmp the enemy
      */
-    public AttackComponent(final GameCharacter enemyTmp) {
+    public AttackComponent(final IGameCharacter character, final IGameCharacter enemyTmp) {
+        super(character);
         enemy = enemyTmp;
     }
 
@@ -64,9 +66,8 @@ public class AttackComponent extends AbstractCharacterComponent implements IAtta
     }
 
     @Override
-    public void update(final GameCharacter character, final Region region) {
-        int distance = character.getPosition().distance(enemy.getPosition());
-
+    public void update(final Region region) {
+        int distance = getCharacter().getPosition().distance(enemy.getPosition());
         if (distance <= 1) {
             enemy.getComponent(IHealthComponent.class).decrementHealth();
         }

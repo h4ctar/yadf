@@ -115,6 +115,19 @@ public class MapIndex implements Serializable {
         return Math.abs(x - pos.x) + Math.abs(y - pos.y) + Math.abs(z - pos.z);
     }
 
+    /**
+     * Subtract a map index from this map index and returns the result.
+     * @param b the map index to subtract
+     * @return the result
+     */
+    public MapIndex sub(final MapIndex b) {
+        MapIndex a = new MapIndex();
+        a.x = x - b.x;
+        a.y = y - b.y;
+        a.z = z - b.z;
+        return a;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -147,18 +160,5 @@ public class MapIndex implements Serializable {
         result = prime * result + this.y;
         result = prime * result + this.z;
         return result;
-    }
-
-    /**
-     * Subtract a map index from this map index and returns the result.
-     * @param b the map index to subtract
-     * @return the result
-     */
-    public MapIndex sub(final MapIndex b) {
-        MapIndex a = new MapIndex();
-        a.x = x - b.x;
-        a.y = y - b.y;
-        a.z = z - b.z;
-        return a;
     }
 }

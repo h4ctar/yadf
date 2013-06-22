@@ -33,9 +33,10 @@ package userinterface.game.labor;
 
 import javax.swing.table.AbstractTableModel;
 
-import simulation.IDwarfManagerListener;
 import simulation.Player;
 import simulation.character.Dwarf;
+import simulation.character.IDwarfManagerListener;
+import simulation.character.component.ICharacterComponent;
 import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.ISkillComponent;
 import simulation.labor.LaborType;
@@ -46,7 +47,8 @@ import controller.command.EnableLaborCommand;
 /**
  * The Class LaborTableModel.
  */
-public class LaborTableModel extends AbstractTableModel implements IDwarfManagerListener, ICharacterComponentListener {
+public class LaborTableModel extends AbstractTableModel implements IDwarfManagerListener,
+        ICharacterComponentListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2428815575025895385L;
@@ -72,7 +74,8 @@ public class LaborTableModel extends AbstractTableModel implements IDwarfManager
     }
 
     @Override
-    public void componentChanged() {
+    public void componentChanged(final ICharacterComponent component) {
+        assert component instanceof ISkillComponent;
         fireTableRowsUpdated(0, getRowCount() - 1);
     }
 
@@ -155,10 +158,5 @@ public class LaborTableModel extends AbstractTableModel implements IDwarfManager
     @Override
     public void dwarfRemoved(final Dwarf dwarf) {
         dwarf.getComponent(ISkillComponent.class).removeListener(this);
-    }
-
-    @Override
-    public void dwarfNowIdle(final Dwarf dwarf) {
-        // do nothing
     }
 }

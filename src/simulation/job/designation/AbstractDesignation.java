@@ -148,7 +148,7 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
      * Removes a location from the designation.
      * @param mapIndexTmp The location to be removed
      */
-    public void removeFromDesignation(final MapIndex mapIndexTmp) {
+    private void removeFromDesignation(final MapIndex mapIndexTmp) {
         for (MapIndex mapIndex : mapIndicies) {
             if (mapIndexTmp.equals(mapIndex)) {
                 mapIndicies.remove(mapIndex);
@@ -172,19 +172,19 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
     }
 
     @Override
-    public void jobChanged(final IJob job) {
+    public void jobDone(final IJob job) {
         assert jobs.contains(job);
-        if (job.isDone()) {
-            job.removeListener(this);
-            jobs.remove(job);
-        }
+        assert job.isDone();
+        job.removeListener(this);
+        jobs.remove(job);
+        removeFromDesignation(job.getPosition());
     }
 
     /**
      * Get the region that this designation is within.
      * @return the region that this designation is within
      */
-    protected Region getRegion() {
+    public Region getRegion() {
         return player.getRegion();
     }
 
@@ -192,7 +192,7 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
      * Get the player that this designation belongs to.
      * @return the player that this designation belongs to
      */
-    protected IPlayer getPlayer() {
+    public IPlayer getPlayer() {
         return player;
     }
 

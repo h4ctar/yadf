@@ -29,7 +29,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package simulation.job.designation;
+package simulation.job;
 
 import simulation.IPlayer;
 import simulation.Region;
@@ -38,7 +38,6 @@ import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
-import simulation.job.AbstractJob;
 import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.LookingForDwarfState;
 import simulation.job.jobstate.WalkToPositionState;
@@ -46,39 +45,36 @@ import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
+import simulation.map.RegionMap;
 
 /**
- * The Class ChannelJob.
+ * Task to do some mining.
  */
-public class ChannelJob extends AbstractJob {
+public class MineJob extends AbstractJob {
 
     /** The serial version UID. */
-    private static final long serialVersionUID = 117706611556221325L;
+    private static final long serialVersionUID = -43625505095983333L;
 
-    /** Amount of time to spend channeling (simulation steps). */
+    /** Amount of time to spend mining (simulation steps). */
     private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Mining");
 
-    /** The position. */
+    /** The index of the block to be mined. */
     private final MapIndex position;
-
-    /** The designation. */
-    private final ChannelDesignation designation;
 
     /** The miner dwarf. */
     private Dwarf miner;
 
     /**
-     * Instantiates a new channel job.
-     * @param positionTmp the position
-     * @param designationTmp the designation
+     * Constructor for the mine task.
+     * @param positionTmp the position to mine
+     * @param player the player
      */
-    public ChannelJob(final MapIndex positionTmp, final ChannelDesignation designationTmp, final IPlayer player) {
+    public MineJob(final MapIndex positionTmp, final IPlayer player) {
         super(player);
         position = positionTmp;
-        designation = designationTmp;
         setJobState(new LookingForMinerState());
     }
 
@@ -89,20 +85,24 @@ public class ChannelJob extends AbstractJob {
 
     @Override
     public String toString() {
-        return "Channel";
+        return "Mine";
     }
 
+    /**
+     * The looking for miner job state.
+     */
     private class LookingForMinerState extends LookingForDwarfState {
 
         /**
          * Constructor.
          */
         public LookingForMinerState() {
-            super(REQUIRED_LABOR, ChannelJob.this);
+            super(REQUIRED_LABOR, MineJob.this);
         }
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             miner = getDwarf();
         }
 
@@ -121,7 +121,7 @@ public class ChannelJob extends AbstractJob {
          * Constructor.
          */
         public WalkToChannelingSiteState() {
-            super(position, miner, ChannelJob.this);
+            super(position, miner, MineJob.this);
         }
 
         @Override
@@ -130,33 +130,35 @@ public class ChannelJob extends AbstractJob {
         }
     }
 
+    /**
+     * The channel job state.
+     */
     private class ChannelState extends WasteTimeState {
 
+        /**
+         * Constructor.
+         */
         public ChannelState() {
-            super(DURATION, miner, ChannelJob.this);
+            super(DURATION, miner, MineJob.this);
         }
 
         @Override
         public void transitionOutOf() {
-            // create a rock item
-            String itemTypeName = designation.getRegion().getMap().getBlock(position.add(0, 0, -1)).itemMined;
-
+            super.transitionOutOf();
+            RegionMap map = getPlayer().getRegion().getMap();
+            String itemTypeName = map.getBlock(position).itemMined;
             if (itemTypeName != null) {
                 ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
                 Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, getPlayer());
                 getPlayer().getStockManager().addItem(blockItem);
             }
-            // channel the block
-            designation.getRegion().getMap().channelBlock(position.add(0, 0, -1), null);
-            // remove the tile from the designation
-            designation.removeFromDesignation(position);
+            map.mineBlock(position);
             miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             miner.releaseLock();
         }
 
         @Override
         public IJobState getNextState() {
-            // TODO Auto-generated method stub
             return null;
         }
     }

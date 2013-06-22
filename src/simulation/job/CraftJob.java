@@ -127,13 +127,14 @@ public class CraftJob extends AbstractJob {
         }
 
         @Override
-        public IJobState getNextState() {
-            return new WalkToWorkshopState();
+        public void transitionOutOf() {
+            super.transitionOutOf();
+            crafter = getDwarf();
         }
 
         @Override
-        public void transitionOutOf() {
-            crafter = getDwarf();
+        public IJobState getNextState() {
+            return new WalkToWorkshopState();
         }
     }
 
@@ -169,6 +170,7 @@ public class CraftJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             for (int i = 0; i < recipe.quantity; i++) {
                 Item newItem = ItemTypeManager.getInstance().createItem(workshop.getPosition(), recipe.itemType,
                         getPlayer());

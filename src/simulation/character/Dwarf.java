@@ -37,11 +37,9 @@ import simulation.character.component.IEatDrinkComponent;
 import simulation.character.component.IInventoryComponent;
 import simulation.character.component.ISkillComponent;
 import simulation.character.component.ISleepComponent;
-import simulation.character.component.IWorkComponent;
 import simulation.character.component.InventoryComponent;
 import simulation.character.component.SkillComponent;
 import simulation.character.component.SleepComponent;
-import simulation.character.component.WorkComponent;
 import simulation.map.MapIndex;
 
 /**
@@ -60,10 +58,9 @@ public class Dwarf extends GameCharacter {
      */
     public Dwarf(final String name, final MapIndex position, final IPlayer player) {
         super(name, position, player);
-        setComponent(ISkillComponent.class, new SkillComponent());
-        setComponent(IWorkComponent.class, new WorkComponent());
-        setComponent(ISleepComponent.class, new SleepComponent());
-        setComponent(IInventoryComponent.class, new InventoryComponent());
-        setComponent(IEatDrinkComponent.class, new EatDrinkComponent());
+        setComponent(ISkillComponent.class, new SkillComponent(this));
+        setComponent(ISleepComponent.class, new SleepComponent(this));
+        setComponent(IInventoryComponent.class, new InventoryComponent(this));
+        setComponent(IEatDrinkComponent.class, new EatDrinkComponent(this));
     }
 }

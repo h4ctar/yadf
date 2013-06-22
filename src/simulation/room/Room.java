@@ -131,7 +131,7 @@ public class Room extends AbstractGameObject {
     public Set<Item> getUnusedItems(String itemTypeName) {
         Set<Item> foundItems = new HashSet<>();
         for (Item item : items) {
-            if (item.getType().equals(itemTypeName) && !item.isUsed()) {
+            if (item.getType().name.equals(itemTypeName) && !item.isUsed()) {
                 foundItems.add(item);
             }
         }
@@ -140,7 +140,7 @@ public class Room extends AbstractGameObject {
 
     public Item getUnusedItem(String itemTypeName) {
         for (Item item : items) {
-            if (item.getType().equals(itemTypeName) && !item.isUsed()) {
+            if (item.getType().name.equals(itemTypeName) && !item.isUsed()) {
                 return item;
             }
         }

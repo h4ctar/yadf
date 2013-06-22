@@ -33,6 +33,7 @@ package simulation.job;
 
 import simulation.IPlayer;
 import simulation.item.Item;
+import simulation.item.ItemType;
 import simulation.job.jobstate.HaulItemState;
 import simulation.job.jobstate.IJobState;
 import simulation.map.MapIndex;
@@ -50,7 +51,7 @@ public class PlaceItemJob extends AbstractJob {
     private Item item;
 
     /** The item type name. */
-    private final String itemTypeName;
+    private final ItemType itemType;
 
     /** The position to place the item. */
     private final MapIndex position;
@@ -58,24 +59,48 @@ public class PlaceItemJob extends AbstractJob {
     /**
      * Instantiates a new place item job.
      * @param positionTmp the position
-     * @param itemTypeNameTmp the item type name
+     * @param itemTypeTmp the item type name
      * @param player the player that this job belongs to
      */
-    public PlaceItemJob(final MapIndex positionTmp, final String itemTypeNameTmp, final IPlayer player) {
+    public PlaceItemJob(final MapIndex positionTmp, final ItemType itemTypeTmp, final IPlayer player) {
         super(player);
         position = positionTmp;
-        itemTypeName = itemTypeNameTmp;
-        setJobState(new PlaceItemState());
+        itemType = itemTypeTmp;
+        setJobState(new LookingForItemState());
     }
 
     @Override
     public String toString() {
-        return "Place " + itemTypeName;
+        return "Place " + itemType.name;
     }
 
     @Override
     public MapIndex getPosition() {
         return position;
+    }
+
+    /**
+     * The looking for item state.
+     */
+    private class LookingForItemState extends simulation.job.jobstate.LookingForItemState {
+
+        /**
+         * Constructor.
+         */
+        public LookingForItemState() {
+            super(itemType, PlaceItemJob.this);
+        }
+
+        @Override
+        public void transitionOutOf() {
+            super.transitionOutOf();
+            item = getItem();
+        }
+
+        @Override
+        public IJobState getNextState() {
+            return new PlaceItemState();
+        }
     }
 
     /**

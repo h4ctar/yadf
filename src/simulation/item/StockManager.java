@@ -199,7 +199,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
             }
         }
         for (Item item : items) {
-            if (item.getType().equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+            if (item.getType().name.equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
                 return item;
             }
             if (item instanceof IContainer) {

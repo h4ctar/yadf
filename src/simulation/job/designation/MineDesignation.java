@@ -33,6 +33,7 @@ package simulation.job.designation;
 
 import simulation.IPlayer;
 import simulation.job.AbstractJob;
+import simulation.job.MineJob;
 import simulation.map.MapIndex;
 
 /**
@@ -43,6 +44,10 @@ public class MineDesignation extends AbstractDesignation {
     /** The serial version UID. */
     private static final long serialVersionUID = 5078985398861947613L;
 
+    /**
+     * Constructor.
+     * @param player the player that this designation belongs to
+     */
     public MineDesignation(final IPlayer player) {
         super(player);
     }
@@ -59,6 +64,6 @@ public class MineDesignation extends AbstractDesignation {
 
     @Override
     protected AbstractJob createJob(final MapIndex mapIndex) {
-        return new MineJob(mapIndex, this, getPlayer());
+        return new MineJob(mapIndex, getPlayer());
     }
 }

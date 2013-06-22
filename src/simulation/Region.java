@@ -32,7 +32,9 @@
 package simulation;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -109,6 +111,8 @@ public class Region implements Serializable {
 
     /** The time. */
     private long time;
+
+    private final Map<Long, Set<ITimeListener>> timeListeners = new HashMap<>();
 
     /**
      * Adds the player.
@@ -427,8 +431,14 @@ public class Region implements Serializable {
      */
     public void update() {
         time++;
+        if (timeListeners.containsKey(time)) {
+            for (ITimeListener listener : timeListeners.remove(time)) {
+                listener.notifyTimeEvent();
+            }
+        }
+
         for (Player player : players) {
-            player.update(this);
+            player.update();
         }
         for (GameCharacter animal : animals) {
             animal.update(this);
@@ -473,5 +483,13 @@ public class Region implements Serializable {
                 goblins.add(new Goblin("Goblin", position));
             }
         }
+    }
+
+    public void addTimeListener(long duration, ITimeListener listener) {
+        long notifyTime = time + duration;
+        if (!timeListeners.containsKey(time)) {
+            timeListeners.put(notifyTime, new HashSet<ITimeListener>());
+        }
+        timeListeners.get(notifyTime).add(listener);
     }
 }

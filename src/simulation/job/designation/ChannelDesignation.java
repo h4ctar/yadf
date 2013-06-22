@@ -32,6 +32,7 @@
 package simulation.job.designation;
 
 import simulation.IPlayer;
+import simulation.job.ChannelJob;
 import simulation.job.IJob;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -47,6 +48,7 @@ public class ChannelDesignation extends AbstractDesignation {
 
     /**
      * Instantiates a new channel designation.
+     * @param player the player that this designation belongs to
      */
     public ChannelDesignation(final IPlayer player) {
         super(player);
@@ -66,6 +68,6 @@ public class ChannelDesignation extends AbstractDesignation {
 
     @Override
     protected IJob createJob(final MapIndex mapIndex) {
-        return new ChannelJob(mapIndex, this, getPlayer());
+        return new ChannelJob(mapIndex, this);
     }
 }

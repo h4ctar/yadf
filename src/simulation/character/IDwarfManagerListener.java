@@ -1,9 +1,7 @@
-package simulation;
-
-import simulation.character.Dwarf;
+package simulation.character;
 
 /**
- * Interface for object that want to listen to a player.
+ * Interface for object that want to listen to the dwarf manager.
  */
 public interface IDwarfManagerListener {
 
@@ -18,10 +16,4 @@ public interface IDwarfManagerListener {
      * @param removedDwarf the removed dwarf
      */
     void dwarfRemoved(Dwarf removedDwarf);
-
-    /**
-     * A dwarf has become idle.
-     * @param idleDwarf the idle dwarf
-     */
-    void dwarfNowIdle(Dwarf idleDwarf);
 }

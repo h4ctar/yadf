@@ -7,6 +7,7 @@ public interface IJobManagerListener {
 
     /**
      * A job has been removed.
+     * @param job the job that was removed
      */
     void jobRemoved(IJob job);
 

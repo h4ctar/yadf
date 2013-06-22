@@ -68,7 +68,6 @@ public class ItemType implements Serializable {
 
     /**
      * Instantiates a new item type.
-     * 
      * @param itemTypeElement the item type element
      * @param categoryTmp the category that the item is in
      */
@@ -82,9 +81,16 @@ public class ItemType implements Serializable {
         tempString = itemTypeElement.getAttribute("capacity");
         capacity = "".equals(tempString) ? 0 : Integer.parseInt(tempString);
         tempString = itemTypeElement.getAttribute("contentItemTypes");
-        for (String contentItemTypeName : tempString.split(",")) {
-            contentItemTypeNames.add(contentItemTypeName);
+        if (!"".equals(tempString)) {
+            for (String contentItemTypeName : tempString.split(",")) {
+                contentItemTypeNames.add(contentItemTypeName);
+            }
         }
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override
@@ -93,20 +99,11 @@ public class ItemType implements Serializable {
             return ((ItemType) other).name.equals(name);
         }
 
-        if (other instanceof String) {
-            return ((String) other).equals(name);
-        }
-
         return false;
     }
 
     @Override
     public int hashCode() {
         return name.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return name;
     }
 }

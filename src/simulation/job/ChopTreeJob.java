@@ -29,16 +29,16 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package simulation.job.designation;
+package simulation.job;
 
 import simulation.IPlayer;
 import simulation.Region;
+import simulation.Tree;
 import simulation.character.Dwarf;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
-import simulation.job.AbstractJob;
 import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.LookingForDwarfState;
 import simulation.job.jobstate.WalkToPositionState;
@@ -46,115 +46,119 @@ import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
-import simulation.map.RegionMap;
 
 /**
- * Task to do some mining.
+ * The Class ChopTreeJob.
  */
-public class MineJob extends AbstractJob {
+public class ChopTreeJob extends AbstractJob {
 
     /** The serial version UID. */
-    private static final long serialVersionUID = -43625505095983333L;
+    private static final long serialVersionUID = -7689577169283098909L;
 
-    /** Amount of time to spend mining (simulation steps). */
+    /** Amount of time to spend chopping down the tree (simulation steps). */
     private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 
     /** The labor type required for this job. */
-    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Mining");
+    private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Wood cutting");
 
-    /** The index of the block to be mined. */
-    private final MapIndex position;
+    /** The tree. */
+    private final Tree tree;
 
-    /** The designation. */
-    private final MineDesignation designation;
-
-    /** The miner dwarf. */
-    private Dwarf miner;
+    /** The dwarf. */
+    private Dwarf lumberjack;
 
     /**
-     * Constructor for the mine task.
-     * @param positionTmp the position to mine
-     * @param designationTmp the designation
+     * Instantiates a new chop tree job.
+     * @param treeTmp the tree
+     * @param player the player
      */
-    public MineJob(final MapIndex positionTmp, final MineDesignation designationTmp, final IPlayer player) {
+    public ChopTreeJob(final Tree treeTmp, final IPlayer player) {
         super(player);
-        position = positionTmp;
-        designation = designationTmp;
-        setJobState(new LookingForMinerState());
+        tree = treeTmp;
+        setJobState(new LookingForLumberjackState());
     }
 
     @Override
     public MapIndex getPosition() {
-        return position;
+        return tree.getPosition();
     }
 
     @Override
     public String toString() {
-        return "Mine";
+        return "Chop down tree";
     }
 
-    private class LookingForMinerState extends LookingForDwarfState {
+    /**
+     * The looking for lumberjack job state.
+     */
+    private class LookingForLumberjackState extends LookingForDwarfState {
 
         /**
          * Constructor.
          */
-        public LookingForMinerState() {
-            super(REQUIRED_LABOR, MineJob.this);
+        public LookingForLumberjackState() {
+            super(REQUIRED_LABOR, ChopTreeJob.this);
         }
 
         @Override
         public void transitionOutOf() {
-            miner = getDwarf();
+            super.transitionOutOf();
+            lumberjack = getDwarf();
         }
 
         @Override
         public IJobState getNextState() {
-            return new WalkToChannelingSiteState();
+            return new WalkToTreeState();
         }
     }
 
     /**
      * The walk to channel site job state.
      */
-    private class WalkToChannelingSiteState extends WalkToPositionState {
+    private class WalkToTreeState extends WalkToPositionState {
 
         /**
          * Constructor.
          */
-        public WalkToChannelingSiteState() {
-            super(position, miner, MineJob.this);
+        public WalkToTreeState() {
+            super(tree.getPosition(), lumberjack, ChopTreeJob.this);
         }
 
         @Override
         public IJobState getNextState() {
-            return new ChannelState();
+            return new ChopTreeState();
         }
     }
 
-    private class ChannelState extends WasteTimeState {
+    /**
+     * Chop tree job state.
+     */
+    private class ChopTreeState extends WasteTimeState {
 
-        public ChannelState() {
-            super(DURATION, miner, MineJob.this);
+        /**
+         * Constructor.
+         */
+        public ChopTreeState() {
+            super(DURATION, lumberjack, ChopTreeJob.this);
         }
 
         @Override
         public void transitionOutOf() {
-            RegionMap map = designation.getRegion().getMap();
-            String itemTypeName = map.getBlock(position).itemMined;
-            if (itemTypeName != null) {
-                ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
-                Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, getPlayer());
-                getPlayer().getStockManager().addItem(blockItem);
+            super.transitionOutOf();
+            if (tree == null || tree.getRemove()) {
+                interrupt("Tree missing");
+                return;
             }
-            map.mineBlock(position);
-            designation.removeFromDesignation(position);
-            miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-            miner.releaseLock();
+            ItemType itemType = ItemTypeManager.getInstance().getItemType("Log");
+            Item log = ItemTypeManager.getInstance().createItem(tree.getPosition(), itemType, getPlayer());
+            getPlayer().getStockManager().addItem(log);
+            tree.setRemove();
+            lumberjack.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
+            lumberjack.releaseLock();
         }
 
         @Override
         public IJobState getNextState() {
-            // TODO Auto-generated method stub
             return null;
         }
     }

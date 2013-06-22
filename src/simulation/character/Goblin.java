@@ -31,7 +31,7 @@
  */
 package simulation.character;
 
-import simulation.character.component.IKillEveryoneComponent;
+import simulation.character.component.IFightComponent;
 import simulation.character.component.KillEveryoneComponent;
 import simulation.map.MapIndex;
 
@@ -50,6 +50,6 @@ public class Goblin extends GameCharacter {
      */
     public Goblin(final String name, final MapIndex position) {
         super(name, position, null);
-        setComponent(IKillEveryoneComponent.class, new KillEveryoneComponent());
+        setComponent(IFightComponent.class, new KillEveryoneComponent(this));
     }
 }

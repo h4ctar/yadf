@@ -99,6 +99,7 @@ public class TillJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             farmer = getDwarf();
         }
 
@@ -140,6 +141,7 @@ public class TillJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             farmer.releaseLock();
         }

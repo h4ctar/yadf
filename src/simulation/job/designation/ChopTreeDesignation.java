@@ -34,6 +34,7 @@ package simulation.job.designation;
 import simulation.IPlayer;
 import simulation.Tree;
 import simulation.job.AbstractJob;
+import simulation.job.ChopTreeJob;
 import simulation.map.MapIndex;
 
 /**
@@ -44,6 +45,10 @@ public class ChopTreeDesignation extends AbstractDesignation {
     /** The serial version UID. */
     private static final long serialVersionUID = 498334310762797158L;
 
+    /**
+     * Constructor.
+     * @param player the player that this designation belongs to
+     */
     public ChopTreeDesignation(final IPlayer player) {
         super(player);
     }
@@ -64,7 +69,7 @@ public class ChopTreeDesignation extends AbstractDesignation {
         Tree tree = getRegion().getTree(mapIndex);
 
         if (tree != null) {
-            return new ChopTreeJob(tree, this, getPlayer());
+            return new ChopTreeJob(tree, getPlayer());
         }
 
         return null;

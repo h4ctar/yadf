@@ -34,10 +34,23 @@ package simulation.character.component;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import simulation.character.IGameCharacter;
+
 /**
  * The Interface ICharacterComponent.
  */
-public abstract class AbstractCharacterComponent {
+public abstract class AbstractCharacterComponent implements ICharacterComponent {
+
+    /** The character that this component belongs to. */
+    private final IGameCharacter character;
+
+    /**
+     * Constructor.
+     * @param characterTmp the character that this component belongs to
+     */
+    public AbstractCharacterComponent(final IGameCharacter characterTmp) {
+        character = characterTmp;
+    }
 
     /** The listeners to be notified of changes to this component. */
     private final Set<ICharacterComponentListener> listeners = new CopyOnWriteArraySet<>();
@@ -46,6 +59,7 @@ public abstract class AbstractCharacterComponent {
      * Add a listener to this component.
      * @param listener the listener to add
      */
+    @Override
     public void addListener(final ICharacterComponentListener listener) {
         listeners.add(listener);
     }
@@ -54,6 +68,7 @@ public abstract class AbstractCharacterComponent {
      * Remove a listener to from component.
      * @param listener the listener to add
      */
+    @Override
     public void removeListener(final ICharacterComponentListener listener) {
         listeners.remove(listener);
     }
@@ -63,7 +78,15 @@ public abstract class AbstractCharacterComponent {
      */
     protected void notifyListeners() {
         for (ICharacterComponentListener listener : listeners) {
-            listener.componentChanged();
+            listener.componentChanged(this);
         }
+    }
+
+    /**
+     * Get the character that this component belongs to.
+     * @return the character that this component belongs to
+     */
+    protected IGameCharacter getCharacter() {
+        return character;
     }
 }

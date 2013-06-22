@@ -67,7 +67,7 @@ public abstract class HaulResourcesState extends AbstractJobState implements IJo
     }
 
     @Override
-    public void jobChanged(final IJob job) {
+    public void jobDone(final IJob job) {
         assert haulJobs.contains(job);
 
         if (job.isDone()) {

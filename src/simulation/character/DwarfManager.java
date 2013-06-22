@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import misc.NameGenerator;
-import simulation.IDwarfManagerListener;
 import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.component.IEatDrinkComponent;
@@ -15,7 +14,7 @@ import simulation.map.MapIndex;
 /**
  * The dwarf manager.
  */
-public class DwarfManager implements IDwarfManager, ICharacterListener {
+public class DwarfManager implements IDwarfManager, ICharacterAvailableListener {
 
     /** The dwarfs. */
     private final Set<Dwarf> dwarfs = new CopyOnWriteArraySet<>();
@@ -26,8 +25,11 @@ public class DwarfManager implements IDwarfManager, ICharacterListener {
     /** The player that this manager belongs to. */
     private final IPlayer player;
 
-    /** The dwarf manager listeners. */
-    private final Set<IDwarfManagerListener> listeners = new CopyOnWriteArraySet<>();
+    /** The dwarf manager listeners, notified of add and remove of dwarfs. */
+    private final Set<IDwarfManagerListener> managerListeners = new CopyOnWriteArraySet<>();
+
+    /** The dwarf manager listeners, notified of add and remove of dwarfs. */
+    private final Set<ICharacterAvailableListener> availableListeners = new CopyOnWriteArraySet<>();
 
     /**
      * Constructor.
@@ -104,7 +106,7 @@ public class DwarfManager implements IDwarfManager, ICharacterListener {
             if (dwarf.isDead()) {
                 continue;
             }
-            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor, dwarf)
+            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor)
                     && !dwarf.getComponent(IEatDrinkComponent.class).isHungryOrThirsty() && dwarf.acquireLock()) {
                 return dwarf;
             }
@@ -131,12 +133,14 @@ public class DwarfManager implements IDwarfManager, ICharacterListener {
 
     @Override
     public void addListener(final IDwarfManagerListener listener) {
-        listeners.add(listener);
+        assert !managerListeners.contains(listener);
+        managerListeners.add(listener);
     }
 
     @Override
     public void removeListener(final IDwarfManagerListener listener) {
-        listeners.remove(listener);
+        assert managerListeners.contains(listener);
+        managerListeners.remove(listener);
     }
 
     /**
@@ -144,7 +148,7 @@ public class DwarfManager implements IDwarfManager, ICharacterListener {
      * @param dwarf the dwarf that was added
      */
     private void notifyDwarfAdded(final Dwarf dwarf) {
-        for (IDwarfManagerListener listener : listeners) {
+        for (IDwarfManagerListener listener : managerListeners) {
             listener.dwarfAdded(dwarf);
         }
     }
@@ -154,7 +158,7 @@ public class DwarfManager implements IDwarfManager, ICharacterListener {
      * @param dwarf the dwarf that was removed
      */
     private void notifyDwarfRemoved(final Dwarf dwarf) {
-        for (IDwarfManagerListener listener : listeners) {
+        for (IDwarfManagerListener listener : managerListeners) {
             listener.dwarfRemoved(dwarf);
         }
     }
@@ -163,16 +167,29 @@ public class DwarfManager implements IDwarfManager, ICharacterListener {
      * Notify all the listeners that a dwarf is not idle.
      * @param dwarf the dwarf that is now idle
      */
-    private void notifyDwarfNowIdle(final Dwarf dwarf) {
-        for (IDwarfManagerListener listener : listeners) {
-            listener.dwarfNowIdle(dwarf);
+    private void notifyDwarfNowIdle(final IGameCharacter dwarf) {
+        for (ICharacterAvailableListener listener : availableListeners) {
+            listener.characterAvailable(dwarf);
+            if (dwarf.isLocked()) {
+                break;
+            }
         }
     }
 
     @Override
-    public void characterChanged(final GameCharacter character) {
-        if (!character.isLocked()) {
-            notifyDwarfNowIdle((Dwarf) character);
-        }
+    public void characterAvailable(final IGameCharacter character) {
+        notifyDwarfNowIdle(character);
+    }
+
+    @Override
+    public void addListener(final ICharacterAvailableListener listener) {
+        assert !availableListeners.contains(listener);
+        availableListeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(final ICharacterAvailableListener listener) {
+        assert availableListeners.contains(listener);
+        availableListeners.remove(listener);
     }
 }

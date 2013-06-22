@@ -43,14 +43,10 @@ public final class Main {
      * @param args the arguments
      */
     public static void main(final String[] args) {
-        MainWindow mainWindow = null;
         try {
-            mainWindow = new MainWindow();
+            new MainWindow();
         } catch (Exception e) {
             e.printStackTrace();
-            if (mainWindow != null) {
-                mainWindow.dispose();
-            }
         }
     }
 

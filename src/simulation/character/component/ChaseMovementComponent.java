@@ -34,7 +34,7 @@ package simulation.character.component;
 import java.util.List;
 
 import simulation.Region;
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.map.RegionMap;
 import simulation.map.WalkableNode;
 
@@ -44,7 +44,7 @@ import simulation.map.WalkableNode;
 public class ChaseMovementComponent extends AbstractMoveComponent implements IMovementComponent {
 
     /** The pursuee. */
-    private GameCharacter pursuee;
+    private IGameCharacter pursuee;
 
     /** How many simulation steps since last walking step taken. */
     private int simulationSteps = 0;
@@ -54,10 +54,11 @@ public class ChaseMovementComponent extends AbstractMoveComponent implements IMo
 
     /**
      * Instantiates a new chase move component.
-     * 
+     * @param character the character that this component belongs to
      * @param pursueeTmp the pursuee
      */
-    public ChaseMovementComponent(final GameCharacter pursueeTmp) {
+    public ChaseMovementComponent(final IGameCharacter character, final IGameCharacter pursueeTmp) {
+        super(character);
         pursuee = pursueeTmp;
     }
 
@@ -67,16 +68,16 @@ public class ChaseMovementComponent extends AbstractMoveComponent implements IMo
     }
 
     @Override
-    public void update(final GameCharacter character, final Region region) {
+    public void update(final Region region) {
         RegionMap map = region.getMap();
 
-        fallDown(character, map);
+        fallDown(map);
 
-        checkBlocked(character, map);
+        checkBlocked(map);
 
         simulationSteps++;
         if (simulationSteps > walkSpeed) {
-            List<WalkableNode> adjacencies = map.getAdjacencies(character.getPosition());
+            List<WalkableNode> adjacencies = map.getAdjacencies(getCharacter().getPosition());
 
             // Find adjacency that is closest to target dwarf
             WalkableNode bestNode = null;
@@ -99,9 +100,8 @@ public class ChaseMovementComponent extends AbstractMoveComponent implements IMo
                     }
                 }
             }
-
             if (bestNode != null) {
-                character.setPosition(bestNode);
+                getCharacter().setPosition(bestNode);
                 simulationSteps = 0;
             }
         }

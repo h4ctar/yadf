@@ -44,7 +44,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     private static final long serialVersionUID = -3057695070550769148L;
 
     /** The main window. */
-    IMainWindow mainWindow;
+    private final IMainWindow mainWindow;
 
     /** The game loop runnable. */
     private GameLoop gameLoop;
@@ -85,8 +85,10 @@ public class GamePanel extends ImagePanel implements IGamePanel {
 
     /**
      * Constructor.
+     * @param mainWindowTmp the main window
      */
-    public GamePanel() {
+    public GamePanel(final IMainWindow mainWindowTmp) {
+        mainWindow = mainWindowTmp;
         setupLayout();
     }
 

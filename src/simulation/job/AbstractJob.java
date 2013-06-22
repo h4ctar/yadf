@@ -62,6 +62,8 @@ public abstract class AbstractJob implements IJob {
      * @param jobStateTmp the job state
      */
     public void stateDone(final IJobState jobStateTmp) {
+        Logger.getInstance().log(this,
+                "Job state done " + jobState.toString() + " - notified by " + jobStateTmp.toString());
         assert jobState == jobStateTmp;
         jobState.transitionOutOf();
         jobState = jobState.getNextState();
@@ -70,9 +72,10 @@ public abstract class AbstractJob implements IJob {
                     "Transitioning (" + jobStateTmp.toString() + "->" + jobState.toString() + ")");
             jobState.transitionInto();
         } else {
+            Logger.getInstance().log(this, "Job done");
             done = true;
+            notifyListeners();
         }
-        notifyListeners();
     }
 
     /**
@@ -112,7 +115,7 @@ public abstract class AbstractJob implements IJob {
      */
     private void notifyListeners() {
         for (IJobListener listener : listeners) {
-            listener.jobChanged(this);
+            listener.jobDone(this);
         }
     }
 }

@@ -31,7 +31,7 @@
  */
 package simulation.job;
 
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.character.component.IInventoryComponent;
 import simulation.item.Item;
 import simulation.job.jobstate.IJobState;
@@ -47,19 +47,19 @@ public class PickupToolJob extends AbstractJob {
     private static final long serialVersionUID = -8533807757453770766L;
 
     /** The dwarf. */
-    private final GameCharacter dwarf;
+    private final IGameCharacter character;
 
     /** The tool. */
     private final Item tool;
 
     /**
      * Instantiates a new pickup tool job.
-     * @param character the dwarf
+     * @param characterTmp the character
      * @param toolTmp the tool
      */
-    public PickupToolJob(final GameCharacter character, final Item toolTmp) {
-        super(character.getPlayer());
-        dwarf = character;
+    public PickupToolJob(final IGameCharacter characterTmp, final Item toolTmp) {
+        super(characterTmp.getPlayer());
+        character = characterTmp;
         tool = toolTmp;
         tool.setUsed(true);
         setJobState(new WaitingForDwarfState());
@@ -84,7 +84,7 @@ public class PickupToolJob extends AbstractJob {
          * Constructor.
          */
         public WaitingForDwarfState() {
-            super(dwarf, PickupToolJob.this);
+            super(character, PickupToolJob.this);
         }
 
         @Override
@@ -102,13 +102,14 @@ public class PickupToolJob extends AbstractJob {
          * Constructor.
          */
         public WalkToToolState() {
-            super(tool.getPosition(), dwarf, PickupToolJob.this);
+            super(tool.getPosition(), character, PickupToolJob.this);
         }
 
         @Override
         public void transitionOutOf() {
-            dwarf.getComponent(IInventoryComponent.class).pickupTool(tool);
-            dwarf.releaseLock();
+            super.transitionOutOf();
+            character.getComponent(IInventoryComponent.class).pickupTool(tool);
+            character.releaseLock();
         }
 
         @Override

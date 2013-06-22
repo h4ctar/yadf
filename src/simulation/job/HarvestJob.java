@@ -102,6 +102,7 @@ public class HarvestJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             farmer = getDwarf();
         }
 
@@ -143,6 +144,7 @@ public class HarvestJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
             Item newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, getPlayer());
             getPlayer().getStockManager().addItem(newItem);

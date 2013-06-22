@@ -1,13 +1,15 @@
 package simulation.character.component;
 
-import simulation.character.GameCharacter;
 import simulation.labor.LaborType;
 
+/**
+ * Interface for a skill component.
+ */
 public interface ISkillComponent extends ICharacterComponent {
 
     void increaseSkillLevel(LaborType laborType);
 
-    boolean canDoJob(LaborType requiredLabor, GameCharacter dwarf);
+    boolean canDoJob(LaborType requiredLabor);
 
     LaborType getProfession();
 

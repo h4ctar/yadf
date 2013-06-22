@@ -48,8 +48,9 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import simulation.character.Dwarf;
-import simulation.character.GameCharacter;
 import simulation.character.ICharacterListener;
+import simulation.character.IGameCharacter;
+import simulation.character.component.ICharacterComponent;
 import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.IEatDrinkComponent;
 import simulation.character.component.IHealthComponent;
@@ -125,12 +126,13 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
     }
 
     @Override
-    public void characterChanged(final GameCharacter character) {
+    public void characterChanged(final IGameCharacter character) {
+        assert character == dwarf;
         update();
     }
 
     @Override
-    public void componentChanged() {
+    public void componentChanged(final ICharacterComponent component) {
         update();
     }
 

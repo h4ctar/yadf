@@ -33,7 +33,7 @@ package simulation.character.component;
 
 import java.util.List;
 
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.map.WalkableNode;
@@ -44,37 +44,41 @@ import simulation.map.WalkableNode;
 public abstract class AbstractMoveComponent extends AbstractCharacterComponent {
 
     /**
+     * Constructor.
+     * @param characterTmp the character that this component belongs to
+     */
+    public AbstractMoveComponent(final IGameCharacter characterTmp) {
+        super(characterTmp);
+    }
+
+    /**
      * Check blocked.
-     * 
-     * @param character the character
      * @param map the map
      */
-    protected static void checkBlocked(final GameCharacter character, final RegionMap map) {
-        MapIndex position = character.getPosition();
+    protected void checkBlocked(final RegionMap map) {
+        MapIndex position = getCharacter().getPosition();
 
         // Move if can no longer stand here (wall has been build)
         if (!map.getBlock(position).isStandIn) {
             List<WalkableNode> adjacencies = map.getAdjacencies(position);
             if (!adjacencies.isEmpty()) {
-                character.setPosition(new MapIndex(adjacencies.get(0)));
+                getCharacter().setPosition(new MapIndex(adjacencies.get(0)));
             }
         }
     }
 
     /**
      * Fall down.
-     * 
-     * @param character the character
      * @param map the map
      */
-    protected static void fallDown(final GameCharacter character, final RegionMap map) {
-        MapIndex position = character.getPosition();
+    protected void fallDown(final RegionMap map) {
+        MapIndex position = getCharacter().getPosition();
 
         // Fall down if the block below the dwarf can't be stood on
         if (!map.getBlock(position.add(0, 0, -1)).isStandOn) {
             position.z--;
         }
 
-        character.setPosition(position);
+        getCharacter().setPosition(position);
     }
 }

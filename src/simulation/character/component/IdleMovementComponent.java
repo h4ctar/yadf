@@ -36,7 +36,7 @@ import java.util.Random;
 
 import misc.MyRandom;
 import simulation.Region;
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.map.RegionMap;
 import simulation.map.WalkableNode;
 
@@ -54,27 +54,34 @@ public class IdleMovementComponent extends AbstractMoveComponent implements IMov
     /** Maximum number of simulation steps between walking steps. */
     private static final long MAX_WALK_DURATION = Region.SIMULATION_STEPS_PER_MINUTE * 16;
 
+    /**
+     * Constructor.
+     * @param characterTmp the character that this component belongs to
+     */
+    public IdleMovementComponent(final IGameCharacter characterTmp) {
+        super(characterTmp);
+    }
+
     @Override
     public void kill() {
         /* do nothing. */
     }
 
     @Override
-    public void update(final GameCharacter character, final Region region) {
+    public void update(final Region region) {
         RegionMap map = region.getMap();
         Random random = MyRandom.getInstance();
 
-        fallDown(character, map);
-        checkBlocked(character, map);
+        fallDown(map);
+        checkBlocked(map);
 
         simulationSteps++;
         if (simulationSteps > MIN_WALK_DURATION + random.nextInt((int) (MAX_WALK_DURATION - MIN_WALK_DURATION))) {
-            List<WalkableNode> adjacencies = map.getAdjacencies(character.getPosition());
+            List<WalkableNode> adjacencies = map.getAdjacencies(getCharacter().getPosition());
             if (!adjacencies.isEmpty()) {
                 WalkableNode node = adjacencies.get(random.nextInt(adjacencies.size()));
-
                 if (region.getGameCharacter(node) == null) {
-                    character.setPosition(node);
+                    getCharacter().setPosition(node);
                     simulationSteps = 0;
                 }
             }

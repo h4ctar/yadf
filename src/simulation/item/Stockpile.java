@@ -118,7 +118,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      */
     public boolean getAcceptsItemType(final String itemTypeName) {
         for (ItemType itemType : acceptableItemTypes) {
-            if (itemType.equals(itemTypeName)) {
+            if (itemType.name.equals(itemTypeName)) {
                 return true;
             }
         }
@@ -135,13 +135,13 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
 
     /**
      * Gets the item count.
-     * @param itemName the item name
+     * @param itemTypeName the item name
      * @return the item count
      */
-    public int getItemCount(final String itemName) {
+    public int getItemCount(final String itemTypeName) {
         int count = 0;
         for (Item item : items) {
-            if (item.getType().equals(itemName)) {
+            if (item.getType().name.equals(itemTypeName)) {
                 count++;
             }
         }
@@ -183,7 +183,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     @Override
     public Item getUnusedItem(final String itemTypeName) {
         for (Item item : items) {
-            if (item.getType().equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+            if (item.getType().name.equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
                 return item;
             }
             if (item instanceof ContainerItem) {
@@ -229,14 +229,13 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     }
 
     @Override
-    public void jobChanged(final IJob job) {
-        if (job.isDone()) {
-            HaulJob haulJob = (HaulJob) job;
-            Logger.getInstance().log(this,
-                    "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
-            haulJob.getItem().setUsed(false);
-            haulJobs.remove(haulJob);
-        }
+    public void jobDone(final IJob job) {
+        assert job.isDone();
+        HaulJob haulJob = (HaulJob) job;
+        Logger.getInstance().log(this,
+                "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
+        haulJob.getItem().setUsed(false);
+        haulJobs.remove(haulJob);
     }
 
     @Override
@@ -279,9 +278,9 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
             player.getStockManager().removeListener(itemType, this);
             // Interrupt and remove haul tasks that have been started
             for (HaulJob haulJob : haulJobs) {
-                if (haulJob.getItem().getType().equals(itemTypeName)) {
+                if (haulJob.getItem().getType().name.equals(itemTypeName)) {
                     haulJob.interrupt("The stockpile no longer accepts this item type");
-                    MapIndex pos = haulJob.getDropPosition().sub(area.pos);
+                    MapIndex pos = haulJob.getPosition().sub(area.pos);
                     used[pos.x][pos.y] = false;
                 }
             }

@@ -34,7 +34,7 @@ package simulation.character.component;
 import java.util.List;
 
 import simulation.Region;
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.map.WalkableNode;
@@ -70,11 +70,12 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
 
     /**
      * Instantiates a new walk move component.
-     * 
+     * @param character the character that this component belongs to
      * @param targetTmp the target
      * @param nextToTmp the next to
      */
-    public WalkMovementComponent(final MapIndex targetTmp, final boolean nextToTmp) {
+    public WalkMovementComponent(final IGameCharacter character, final MapIndex targetTmp, final boolean nextToTmp) {
+        super(character);
         target = new MapIndex(targetTmp);
         nextTo = nextToTmp;
     }
@@ -109,39 +110,37 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
     }
 
     @Override
-    public void update(final GameCharacter character, final Region region) {
+    public void update(final Region region) {
         if (isDone()) {
             return;
         }
 
         RegionMap map = region.getMap();
 
-        fallDown(character, map);
+        fallDown(map);
 
-        checkBlocked(character, map);
+        checkBlocked(map);
 
-        if (checkArrived(character)) {
+        if (checkArrived()) {
             notifyListeners();
             return;
         }
 
         if (path == null) {
-            if (!getPath(character, map)) {
+            if (!getPath(map)) {
                 return;
             }
         }
 
-        walkAlongPath(character, map);
+        walkAlongPath(map);
     }
 
     /**
      * Check arrived.
-     * @param character the character
      * @return true, if successful
      */
-    private boolean checkArrived(final GameCharacter character) {
-        MapIndex position = character.getPosition();
-
+    private boolean checkArrived() {
+        MapIndex position = getCharacter().getPosition();
         if (nextTo) {
             for (int x = target.x - 1; x <= target.x + 1; x++) {
                 for (int y = target.y - 1; y <= target.y + 1; y++) {
@@ -157,67 +156,57 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
                 return true;
             }
         }
-
         if (pathIndex < 0) {
             return true;
         }
-
         return false;
     }
 
     /**
      * Gets the path.
-     * @param character the character
      * @param map the map
      * @return the path
      */
-    private boolean getPath(final GameCharacter character, final RegionMap map) {
-        if (map.getWalkableNode(character.getPosition()) == null) {
+    private boolean getPath(final RegionMap map) {
+        if (map.getWalkableNode(getCharacter().getPosition()) == null) {
             return false;
         }
-
         if (nextTo) {
             List<WalkableNode> adjacencies = map.getAdjacencies(target);
 
             for (MapIndex adjacency : adjacencies) {
-                path = map.findPath(character.getPosition(), adjacency);
+                path = map.findPath(getCharacter().getPosition(), adjacency);
                 if (path != null) {
                     break;
                 }
             }
         } else {
-            path = map.findPath(character.getPosition(), target);
+            path = map.findPath(getCharacter().getPosition(), target);
         }
-
         // If the path is still null, there is no path available
         if (path == null) {
             noPath = true;
             return false;
         }
-
         pathIndex = path.size() - 1;
-
         return true;
     }
 
     /**
      * Walk along path.
-     * @param character the character
      * @param map the map
      */
-    private void walkAlongPath(final GameCharacter character, final RegionMap map) {
+    private void walkAlongPath(final RegionMap map) {
         simulationSteps++;
         if (simulationSteps > walkSpeed) {
             MapIndex nextPosition = path.get(pathIndex);
-
             // Is the next position walkable
             if (map.isWalkable(nextPosition)) {
-                character.setPosition(nextPosition);
+                getCharacter().setPosition(nextPosition);
                 pathIndex--;
             } else {
                 path = null;
             }
-
             simulationSteps = 0;
         }
     }

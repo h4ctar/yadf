@@ -33,17 +33,26 @@ package simulation.character.component;
 
 import simulation.Region;
 import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 
 /**
  * The Class KillEveryoneComponent.
  */
-public class KillEveryoneComponent extends AbstractCharacterComponent implements IKillEveryoneComponent {
+public class KillEveryoneComponent extends AbstractCharacterComponent implements IFightComponent {
 
     /** How far can he see. */
-    private static final int VIEW_DISTANCE = 20;
+    // private static final int VIEW_DISTANCE = 20;
 
     /** The dwarf. */
     private GameCharacter dwarf;
+
+    /**
+     * Constructor.
+     * @param characterTmp the character that this component belongs to
+     */
+    public KillEveryoneComponent(final IGameCharacter characterTmp) {
+        super(characterTmp);
+    }
 
     @Override
     public void kill() {
@@ -51,7 +60,7 @@ public class KillEveryoneComponent extends AbstractCharacterComponent implements
     }
 
     @Override
-    public void update(final GameCharacter character, final Region region) {
+    public void update(final Region region) {
         if (dwarf != null) {
             if (dwarf.isDead()) {
                 dwarf = null;
@@ -61,27 +70,26 @@ public class KillEveryoneComponent extends AbstractCharacterComponent implements
         }
 
         if (dwarf == null) {
-            lookForDwarf(character, region);
+            lookForDwarf(region);
         }
     }
 
     /**
      * Look for dwarf.
-     * @param character the character
      * @param region the region
      */
-    private void lookForDwarf(final GameCharacter character, final Region region) {
-        dwarf = region.getClosestDwarf(character.getPosition());
+    private void lookForDwarf(final Region region) {
+        dwarf = region.getClosestDwarf(getCharacter().getPosition());
 
-        if (dwarf != null) {
-            int distance = dwarf.getPosition().distance(character.getPosition());
-
-            if (distance < VIEW_DISTANCE) {
-                // character.move = new ChaseMoveComponent(dwarf);
-                // character.attack = new AttackComponent(dwarf);
-            } else {
-                dwarf = null;
-            }
-        }
+        // if (dwarf != null) {
+        // int distance = dwarf.getPosition().distance(character.getPosition());
+        //
+        // if (distance < VIEW_DISTANCE) {
+        // character.move = new ChaseMoveComponent(dwarf);
+        // character.attack = new AttackComponent(dwarf);
+        // } else {
+        // dwarf = null;
+        // }
+        // }
     }
 }

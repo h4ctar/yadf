@@ -51,7 +51,7 @@ import simulation.map.MapIndex;
 /**
  * The Class GameCharacter.
  */
-public class GameCharacter extends AbstractEntity {
+public class GameCharacter extends AbstractEntity implements IGameCharacter {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -6938089593424613235L;
@@ -60,7 +60,9 @@ public class GameCharacter extends AbstractEntity {
     private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new HashMap<>();
 
     /** The list of listeners. */
-    private final List<ICharacterListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<ICharacterAvailableListener> availableListeners = new CopyOnWriteArrayList<>();
+
+    private List<ICharacterListener> changeListeners;
 
     /** The dead. */
     protected boolean dead;
@@ -85,8 +87,8 @@ public class GameCharacter extends AbstractEntity {
         super(position);
         name = nameTmp;
         player = playerTmp;
-        setComponent(IHealthComponent.class, new HealthComponent());
-        setComponent(IMovementComponent.class, new IdleMovementComponent());
+        setComponent(IHealthComponent.class, new HealthComponent(this));
+        setComponent(IMovementComponent.class, new IdleMovementComponent(this));
     }
 
     /**
@@ -94,6 +96,7 @@ public class GameCharacter extends AbstractEntity {
      * 
      * @return true, if successful
      */
+    @Override
     public boolean acquireLock() {
         boolean lockAcquired = false;
         if (!locked) {
@@ -104,16 +107,28 @@ public class GameCharacter extends AbstractEntity {
         return lockAcquired;
     }
 
-    /**
-     * Add a listener to this character.
-     * @param listener the listener to add
-     */
-    public void addListener(final ICharacterListener listener) {
-        listeners.add(listener);
+    @Override
+    public void addListener(final ICharacterAvailableListener listener) {
+        assert !availableListeners.contains(listener);
+        availableListeners.add(listener);
     }
 
-    public void removeListener(ICharacterListener listener) {
-        listeners.remove(listener);
+    @Override
+    public void removeListener(final ICharacterAvailableListener listener) {
+        assert availableListeners.contains(listener);
+        availableListeners.remove(listener);
+    }
+
+    @Override
+    public void addListener(final ICharacterListener listener) {
+        assert !changeListeners.contains(listener);
+        changeListeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(final ICharacterListener listener) {
+        assert changeListeners.contains(listener);
+        changeListeners.remove(listener);
     }
 
     /**
@@ -122,6 +137,7 @@ public class GameCharacter extends AbstractEntity {
      * @param componentInterface the interface that the component extends
      * @return the component
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <T extends ICharacterComponent> T getComponent(final Class<T> componentInterface) {
         return (T) components.get(componentInterface);
@@ -133,6 +149,7 @@ public class GameCharacter extends AbstractEntity {
      * @param componentInterface the interface that the component extends
      * @param component the component
      */
+    @Override
     public <T extends ICharacterComponent> void setComponent(final Class<T> componentInterface, final T component) {
         components.put(componentInterface, component);
     }
@@ -150,6 +167,7 @@ public class GameCharacter extends AbstractEntity {
      * 
      * @return true, if is dead
      */
+    @Override
     public boolean isDead() {
         return dead;
     }
@@ -159,6 +177,7 @@ public class GameCharacter extends AbstractEntity {
      * 
      * @return true, if is lock
      */
+    @Override
     public boolean isLocked() {
         return locked;
     }
@@ -166,23 +185,26 @@ public class GameCharacter extends AbstractEntity {
     /**
      * Kill.
      */
+    @Override
     public void kill() {
         Logger.getInstance().log(this, "Character died");
-        setComponent(IMovementComponent.class, new StillMovementComponent());
+        setComponent(IMovementComponent.class, new StillMovementComponent(this));
         dead = true;
     }
 
     /**
      * Release lock.
      */
+    @Override
     public void releaseLock() {
         if (locked) {
             locked = false;
             if (!dead) {
-                setComponent(IMovementComponent.class, new IdleMovementComponent());
+                setComponent(IMovementComponent.class, new IdleMovementComponent(this));
+                for (ICharacterAvailableListener listener : availableListeners) {
+                    listener.characterAvailable(this);
+                }
             }
-            // TODO: rename notify listeners and asdf to something about dwarf available
-            notifyListeners();
         }
     }
 
@@ -192,16 +214,7 @@ public class GameCharacter extends AbstractEntity {
      */
     public void update(final Region region) {
         for (ICharacterComponent component : components.values()) {
-            component.update(this, region);
-        }
-    }
-
-    /**
-     * Notify all the listeners.
-     */
-    private void notifyListeners() {
-        for (ICharacterListener listener : listeners) {
-            listener.characterChanged(this);
+            component.update(region);
         }
     }
 
@@ -209,6 +222,7 @@ public class GameCharacter extends AbstractEntity {
      * Get the player that this dwarf belongs to.
      * @return the player that this dwarf belongs to
      */
+    @Override
     public IPlayer getPlayer() {
         return player;
     }

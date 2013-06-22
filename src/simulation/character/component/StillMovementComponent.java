@@ -32,7 +32,7 @@
 package simulation.character.component;
 
 import simulation.Region;
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.map.RegionMap;
 
 /**
@@ -40,17 +40,23 @@ import simulation.map.RegionMap;
  */
 public class StillMovementComponent extends AbstractMoveComponent implements IMovementComponent {
 
+    /**
+     * Constructor.
+     * @param characterTmp the character that this component belongs to
+     */
+    public StillMovementComponent(final IGameCharacter characterTmp) {
+        super(characterTmp);
+    }
+
     @Override
     public void kill() {
         /* do nothing */
     }
 
     @Override
-    public void update(final GameCharacter character, final Region region) {
+    public void update(final Region region) {
         RegionMap map = region.getMap();
-
-        fallDown(character, map);
-
-        checkBlocked(character, map);
+        fallDown(map);
+        checkBlocked(map);
     }
 }

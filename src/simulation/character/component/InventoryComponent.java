@@ -32,7 +32,7 @@
 package simulation.character.component;
 
 import simulation.Region;
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.item.Item;
 
 /**
@@ -45,6 +45,14 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
 
     /** The tool holding. */
     private Item toolHolding;
+
+    /**
+     * Constructor.
+     * @param characterTmp the character that this component belongs to
+     */
+    public InventoryComponent(final IGameCharacter characterTmp) {
+        super(characterTmp);
+    }
 
     @Override
     public void dropHaulItem(final boolean freeItem) {
@@ -105,13 +113,13 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
     }
 
     @Override
-    public void update(final GameCharacter character, final Region region) {
+    public void update(final Region region) {
         if (itemHauling != null) {
-            itemHauling.setPosition(character.getPosition());
+            itemHauling.setPosition(getCharacter().getPosition());
         }
 
         if (toolHolding != null) {
-            toolHolding.setPosition(character.getPosition());
+            toolHolding.setPosition(getCharacter().getPosition());
         }
     }
 }

@@ -1,6 +1,7 @@
 package simulation.job.jobstate;
 
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
+import simulation.character.component.ICharacterComponent;
 import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.IMovementComponent;
 import simulation.character.component.WalkMovementComponent;
@@ -13,7 +14,7 @@ import simulation.map.MapIndex;
 public abstract class WalkToPositionState extends AbstractJobState implements ICharacterComponentListener {
 
     /** The character that is walking to the position. */
-    private final GameCharacter character;
+    private final IGameCharacter character;
 
     /** The position to walk to. */
     private final MapIndex position;
@@ -27,7 +28,8 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
      * @param characterTmp the character that is walking to the position
      * @param jobTmp the job that this state belongs to
      */
-    public WalkToPositionState(final MapIndex positionTmp, final GameCharacter characterTmp, final AbstractJob jobTmp) {
+    public WalkToPositionState(final MapIndex positionTmp, final IGameCharacter characterTmp,
+            final AbstractJob jobTmp) {
         super(jobTmp);
         position = positionTmp;
         character = characterTmp;
@@ -40,7 +42,7 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
 
     @Override
     public void transitionInto() {
-        walkComponent = new WalkMovementComponent(position, false);
+        walkComponent = new WalkMovementComponent(character, position, false);
         walkComponent.addListener(this);
         character.setComponent(IMovementComponent.class, walkComponent);
     }
@@ -51,7 +53,8 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
     }
 
     @Override
-    public void componentChanged() {
+    public void componentChanged(final ICharacterComponent component) {
+        assert component == walkComponent;
         if (walkComponent.isDone()) {
             getJob().stateDone(this);
         } else if (walkComponent.isNoPath()) {

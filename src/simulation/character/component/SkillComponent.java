@@ -38,7 +38,7 @@ import java.util.Set;
 
 import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.GameCharacter;
+import simulation.character.IGameCharacter;
 import simulation.item.Item;
 import simulation.job.PickupToolJob;
 import simulation.labor.LaborType;
@@ -62,9 +62,11 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
     private PickupToolJob pickupToolJob;
 
     /**
-     * Instantiates a new skill component.
+     * Constructor.
+     * @param character the character that this component belongs to
      */
-    public SkillComponent() {
+    public SkillComponent(final IGameCharacter character) {
+        super(character);
         laborSkills = new HashMap<>();
         enabledLabors = new HashSet<>();
         // Enable all labors by default
@@ -77,11 +79,10 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
     /**
      * Can do job.
      * @param requiredLabor the required labor
-     * @param character the character
      * @return true, if successful
      */
     @Override
-    public boolean canDoJob(final LaborType requiredLabor, final GameCharacter character) {
+    public boolean canDoJob(final LaborType requiredLabor) {
         if (requiredLabor == null) {
             return true;
         }
@@ -97,7 +98,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
         }
 
         // Does the dwarf have the required tool
-        Item tool = character.getComponent(IInventoryComponent.class).getToolHolding();
+        Item tool = getCharacter().getComponent(IInventoryComponent.class).getToolHolding();
 
         if (tool == null) {
             return false;
@@ -186,11 +187,11 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
     }
 
     @Override
-    public void update(final GameCharacter character, final Region region) {
-        IPlayer player = character.getPlayer();
+    public void update(final Region region) {
+        IPlayer player = getCharacter().getPlayer();
 
         // If dwarf is holding a tool that he no longer needs, drop it
-        Item tool = character.getComponent(IInventoryComponent.class).getToolHolding();
+        Item tool = getCharacter().getComponent(IInventoryComponent.class).getToolHolding();
         if (tool != null) {
             boolean required = false;
             for (LaborType laborType : enabledLabors) {
@@ -200,7 +201,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
                 }
             }
             if (!required) {
-                character.getComponent(IInventoryComponent.class).dropTool();
+                getCharacter().getComponent(IInventoryComponent.class).dropTool();
                 tool = null;
             }
         }
@@ -217,7 +218,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
                     continue;
                 }
                 tool.setUsed(true);
-                pickupToolJob = new PickupToolJob(character, tool);
+                pickupToolJob = new PickupToolJob(getCharacter(), tool);
                 player.getJobManager().addJob(pickupToolJob);
                 break;
             }
