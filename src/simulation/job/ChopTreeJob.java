@@ -160,7 +160,7 @@ public class ChopTreeJob extends AbstractJob {
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Log");
             Item log = ItemTypeManager.getInstance().createItem(tree.getPosition(), itemType, getPlayer());
             getPlayer().getStockManager().addItem(log);
-            tree.setRemove();
+            tree.delete();
             lumberjack.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             lumberjack.releaseLock();
         }

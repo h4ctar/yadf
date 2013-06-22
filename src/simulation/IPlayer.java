@@ -38,4 +38,6 @@ public interface IPlayer {
     Room getRoom(MapIndex position);
 
     Region getRegion();
+
+    void removeRoom(Room room);
 }

@@ -63,6 +63,6 @@ public class CreateRoomCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.addRoom(new Room(area, roomType));
+        player.addRoom(new Room(area, roomType, player));
     }
 }

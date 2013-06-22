@@ -156,4 +156,11 @@ public class Item extends AbstractEntity {
         }
         return storable;
     }
+
+    /**
+     * Delete the item.
+     */
+    public void delete() {
+        player.getStockManager().removeItem(this);
+    }
 }

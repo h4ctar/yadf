@@ -195,7 +195,7 @@ public class BuildConstructionJob extends AbstractJob {
         @Override
         public void transitionOutOf() {
             super.transitionOutOf();
-            rock.setRemove();
+            rock.delete();
             // Move items away from build area
             for (Item item : getPlayer().getStockManager().getItems()) {
                 if (item.getPosition().equals(position)) {

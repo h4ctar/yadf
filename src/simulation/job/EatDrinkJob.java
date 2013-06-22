@@ -271,7 +271,7 @@ public class EatDrinkJob extends AbstractJob {
         @Override
         public void transitionOutOf() {
             super.transitionOutOf();
-            foodDrinkItem.setRemove();
+            foodDrinkItem.delete();
             dwarf.releaseLock();
             if (eat) {
                 dwarf.getComponent(IEatDrinkComponent.class).eat();

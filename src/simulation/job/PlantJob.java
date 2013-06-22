@@ -159,7 +159,7 @@ public class PlantJob extends AbstractJob {
         @Override
         public void transitionOutOf() {
             super.transitionOutOf();
-            seed.setRemove();
+            seed.delete();
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             farmer.releaseLock();
         }

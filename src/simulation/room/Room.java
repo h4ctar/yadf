@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 import simulation.AbstractGameObject;
+import simulation.IPlayer;
 import simulation.item.Item;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -58,15 +59,18 @@ public class Room extends AbstractGameObject {
     /** The room type. */
     private final String roomType;
 
+    private final IPlayer player;
+
     /**
      * Instantiates a new room.
      * 
      * @param areaTmp the area
      * @param roomTypeTmp the room type
      */
-    public Room(final MapArea areaTmp, final String roomTypeTmp) {
+    public Room(final MapArea areaTmp, final String roomTypeTmp, final IPlayer playerTmp) {
         area = areaTmp;
         roomType = roomTypeTmp;
+        player = playerTmp;
     }
 
     /**
@@ -145,5 +149,9 @@ public class Room extends AbstractGameObject {
             }
         }
         return null;
+    }
+
+    public void delete() {
+        player.removeRoom(this);
     }
 }

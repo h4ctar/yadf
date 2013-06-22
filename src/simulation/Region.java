@@ -138,7 +138,7 @@ public class Region implements Serializable {
                 }
 
                 if (random.nextDouble() < TREE_PROBABILITY) {
-                    trees.add(new Tree(new MapIndex(x, y, z)));
+                    trees.add(new Tree(new MapIndex(x, y, z), this));
                 }
             }
         }
@@ -437,7 +437,6 @@ public class Region implements Serializable {
                 listener.notifyTimeEvent();
             }
         }
-
         for (Player player : players) {
             player.update();
         }
@@ -446,11 +445,6 @@ public class Region implements Serializable {
         }
         for (GameCharacter goblin : goblins) {
             goblin.update(this);
-        }
-        for (Tree tree : trees.toArray(new Tree[0])) {
-            if (tree.getRemove()) {
-                trees.remove(tree);
-            }
         }
         // spawnGoblins();
     }
@@ -492,5 +486,9 @@ public class Region implements Serializable {
             timeListeners.put(notifyTime, new HashSet<ITimeListener>());
         }
         timeListeners.get(notifyTime).add(listener);
+    }
+
+    public void removeTree(Tree tree) {
+        trees.remove(tree);
     }
 }

@@ -186,6 +186,11 @@ public class Player extends AbstractGameObject implements IPlayer {
         return rooms;
     }
 
+    @Override
+    public void removeRoom(final Room room) {
+        rooms.remove(room);
+    }
+
     /**
      * Gets the stock manager.
      * @return the stock manager

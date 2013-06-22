@@ -81,8 +81,7 @@ public abstract class AbstractGameObject implements IGameObject, Serializable {
     /**
      * Sets the remove.
      */
-    @Override
-    public void setRemove() {
+    protected void setRemove() {
         this.remove = true;
     }
 }

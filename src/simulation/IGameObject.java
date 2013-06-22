@@ -15,9 +15,4 @@ public interface IGameObject {
      * @return the removes the
      */
     boolean getRemove();
-
-    /**
-     * Sets the remove.
-     */
-    void setRemove();
 }

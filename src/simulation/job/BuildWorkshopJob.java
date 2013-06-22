@@ -197,7 +197,7 @@ public class BuildWorkshopJob extends AbstractJob {
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.releaseLock();
             for (Item resource : resources) {
-                resource.setRemove();
+                resource.delete();
             }
             super.transitionOutOf();
         }

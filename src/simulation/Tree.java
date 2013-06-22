@@ -40,12 +40,18 @@ public class Tree extends AbstractEntity {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2672289842428964769L;
+    private final Region region;
 
     /**
      * Instantiates a new tree.
      * @param position the position
      */
-    public Tree(final MapIndex position) {
+    public Tree(final MapIndex position, final Region regionTmp) {
         super(position);
+        region = regionTmp;
+    }
+
+    public void delete() {
+        region.removeTree(this);
     }
 }

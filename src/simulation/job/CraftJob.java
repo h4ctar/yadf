@@ -205,7 +205,7 @@ public class CraftJob extends AbstractJob {
                 crafter.getComponent(ISkillComponent.class).increaseSkillLevel(requiredLabor);
             }
             for (Item resource : resources) {
-                resource.setRemove();
+                resource.delete();
             }
             crafter.releaseLock();
         }
