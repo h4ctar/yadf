@@ -56,6 +56,6 @@ public class DeleteStockpileCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getStockManager().getStockpile(stockpileId).setRemove();
+        player.getStockManager().getStockpile(stockpileId).delete();
     }
 }

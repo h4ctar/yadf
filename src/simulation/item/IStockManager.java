@@ -16,6 +16,11 @@ public interface IStockManager extends IContainer {
      */
     Item getUnstoredItem(Set<ItemType> itemTypes);
 
+    /**
+     * Finds an item that is not stored, including containers.
+     * @param itemType the item type to find
+     * @return A reference to the found item, will be null if none could be found
+     */
     Item getUnstoredItem(ItemType itemType);
 
     /**
@@ -90,4 +95,10 @@ public interface IStockManager extends IContainer {
      * @return the stockpile, null if no stockpile found
      */
     Stockpile getStockpile(int stockpileId);
+
+    /**
+     * Remove a stockpile from the stockmanager.
+     * @param stockpile the stockpile to remove
+     */
+    void removeStockpile(Stockpile stockpile);
 }

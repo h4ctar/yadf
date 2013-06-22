@@ -270,6 +270,11 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
         stockpiles.add(stockpile);
     }
 
+    @Override
+    public void removeStockpile(final Stockpile stockpile) {
+        stockpiles.remove(stockpile);
+    }
+
     /**
      * Gets the stockpile.
      * @param stockpileId the stockpile id
@@ -306,11 +311,6 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
      * @param player the player
      */
     public void update(final Player player) {
-        for (Stockpile stockpile : stockpiles.toArray(new Stockpile[0])) {
-            if (stockpile.getRemove()) {
-                stockpiles.remove(stockpile);
-            }
-        }
         for (Item item : items.toArray(new Item[0])) {
             if (item.getRemove()) {
                 items.remove(item);

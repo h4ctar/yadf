@@ -84,21 +84,25 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         area = areaTmp;
         player = playerTmp;
         used = new boolean[area.width][area.height];
-        Logger.getInstance().log(this, "New stockpile id: " + getId());
+        Logger.getInstance().log(this, "New stockpile - id: " + getId());
     }
 
     @Override
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item - itemType: " + item.getType());
         boolean itemAdded = false;
-        if (item.canBeStored(acceptableItemTypes)) {
-            MapIndex pos = item.getPosition().sub(area.pos);
-            used[pos.x][pos.y] = true;
-            items.add(item);
-            notifyListeners();
-            itemAdded = true;
+        if (getRemove()) {
+            Logger.getInstance().log(this, "Stockpile has been deleted", true);
         } else {
-            Logger.getInstance().log(this, "Stockpile does not accept this item type", true);
+            if (item.canBeStored(acceptableItemTypes)) {
+                MapIndex pos = item.getPosition().sub(area.pos);
+                used[pos.x][pos.y] = true;
+                items.add(item);
+                notifyListeners();
+                itemAdded = true;
+            } else {
+                Logger.getInstance().log(this, "Stockpile does not accept this item type", true);
+            }
         }
         return itemAdded;
     }
@@ -346,8 +350,10 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     /**
      * The stockpile has been deleted, clean up everything.
      */
-    public void remove() {
+    public void delete() {
         player.getStockManager().removeListener(this);
+        player.getStockManager().removeStockpile(this);
+        setRemove();
         for (Item item : items) {
             player.getStockManager().addItem(item);
         }
