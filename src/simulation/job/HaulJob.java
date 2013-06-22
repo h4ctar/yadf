@@ -149,6 +149,17 @@ public class HaulJob extends AbstractJob {
         return item;
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (needToReleaseLock && hauler != null) {
+            hauler.releaseLock();
+        }
+        if (item != null) {
+            item.setUsed(false);
+        }
+    }
+
     /**
      * Looking for haul item job state.
      */

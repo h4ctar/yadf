@@ -49,6 +49,17 @@ public class SleepJob extends AbstractJob {
         return dwarf.getPosition();
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (dwarf != null) {
+            dwarf.releaseLock();
+        }
+        if (bed != null) {
+            bed.setUsed(false);
+        }
+    }
+
     /**
      * The waiting for dwarf job state.
      */

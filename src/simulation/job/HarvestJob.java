@@ -88,6 +88,14 @@ public class HarvestJob extends AbstractJob {
         return farmPlot.getPosition();
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (farmer != null) {
+            farmer.releaseLock();
+        }
+    }
+
     /**
      * The waiting for farmer job state.
      */

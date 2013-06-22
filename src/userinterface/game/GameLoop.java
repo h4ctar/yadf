@@ -11,7 +11,7 @@ public class GameLoop implements Runnable {
     private static final long MS_IN_A_SECOND = 1000;
 
     /** The desired period in ms. */
-    private static final long DESIRED_PERIOD = 80;
+    private static final long DESIRED_PERIOD = 40;
 
     /** The number of simulation steps to take before sending commands. */
     private static final long SIMULATION_STEPS_SEND_COMMAND = 10;

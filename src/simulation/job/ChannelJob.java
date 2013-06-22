@@ -91,6 +91,14 @@ public class ChannelJob extends AbstractJob {
         return "Channel";
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (miner != null) {
+            miner.releaseLock();
+        }
+    }
+
     /**
      * The looking for miner job state.
      */

@@ -91,6 +91,17 @@ public class PlantJob extends AbstractJob {
         return "Plant crop";
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (farmer != null) {
+            farmer.releaseLock();
+        }
+        if (seed != null) {
+            seed.setUsed(false);
+        }
+    }
+
     /**
      * The waiting for farmer job state.
      */

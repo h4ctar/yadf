@@ -88,6 +88,14 @@ public class ChopTreeJob extends AbstractJob {
         return "Chop down tree";
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (lumberjack != null) {
+            lumberjack.releaseLock();
+        }
+    }
+
     /**
      * The looking for lumberjack job state.
      */

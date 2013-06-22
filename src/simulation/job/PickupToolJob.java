@@ -75,6 +75,17 @@ public class PickupToolJob extends AbstractJob {
         return tool.getPosition();
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (character != null) {
+            character.releaseLock();
+        }
+        if (tool != null) {
+            tool.setUsed(false);
+        }
+    }
+
     /**
      * The waiting for dwarf job state.
      */

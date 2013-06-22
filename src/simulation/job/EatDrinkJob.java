@@ -98,6 +98,20 @@ public class EatDrinkJob extends AbstractJob {
         return dwarf.getPosition();
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (dwarf != null) {
+            dwarf.releaseLock();
+        }
+        if (chair != null) {
+            chair.setUsed(false);
+        }
+        if (foodDrinkItem != null) {
+            foodDrinkItem.setUsed(false);
+        }
+    }
+
     /**
      * The looking for food or drink job state.
      */
@@ -180,8 +194,14 @@ public class EatDrinkJob extends AbstractJob {
         }
     }
 
+    /**
+     * The walk to food or drink job state.
+     */
     private class WalkToFoodDrinkState extends WalkToPositionState {
 
+        /**
+         * Constructor.
+         */
         public WalkToFoodDrinkState() {
             super(foodDrinkItem.getPosition(), dwarf, false, EatDrinkJob.this);
         }

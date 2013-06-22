@@ -73,6 +73,7 @@ public class CraftJob extends AbstractJob {
     /** The required labor type for this job. */
     private final LaborType requiredLabor;
 
+    /** The resources that have been hauled to the crafting site. */
     private Set<Item> resources;
 
     /**
@@ -98,6 +99,19 @@ public class CraftJob extends AbstractJob {
     @Override
     public MapIndex getPosition() {
         return workshop.getPosition();
+    }
+
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (crafter != null) {
+            crafter.releaseLock();
+        }
+        if (resources != null) {
+            for (Item resource : resources) {
+                resource.setUsed(false);
+            }
+        }
     }
 
     /**

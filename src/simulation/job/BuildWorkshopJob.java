@@ -73,6 +73,7 @@ public class BuildWorkshopJob extends AbstractJob {
     /** The dwarf that will do the building. */
     private Dwarf builder;
 
+    /** The hauled building resources. */
     private Set<Item> resources;
 
     /**
@@ -96,6 +97,19 @@ public class BuildWorkshopJob extends AbstractJob {
     @Override
     public MapIndex getPosition() {
         return position;
+    }
+
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (builder != null) {
+            builder.releaseLock();
+        }
+        if (resources != null) {
+            for (Item resource : resources) {
+                resource.setUsed(false);
+            }
+        }
     }
 
     /**

@@ -103,6 +103,17 @@ public class BuildConstructionJob extends AbstractJob {
         return position;
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (builder != null) {
+            builder.releaseLock();
+        }
+        if (rock != null) {
+            rock.setUsed(false);
+        }
+    }
+
     /**
      * The haul building materials job state.
      */

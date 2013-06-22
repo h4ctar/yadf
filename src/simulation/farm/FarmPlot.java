@@ -46,7 +46,7 @@ import simulation.map.MapIndex;
 public class FarmPlot {
 
     /**
-     * The State of the job.
+     * The State of the farm plot.
      */
     public enum State {
         /** The start state. */
@@ -61,6 +61,9 @@ public class FarmPlot {
         HARVEST
     }
 
+    /** The Constant growDuration. */
+    private static final long GROW_DURATION = Region.SIMULATION_STEPS_PER_WEEK;
+
     /** The state. */
     private State state = State.START;
 
@@ -69,9 +72,6 @@ public class FarmPlot {
 
     /** The job. */
     private IJob job;
-
-    /** The Constant growDuration. */
-    private static final long GROW_DURATION = Region.SIMULATION_STEPS_PER_WEEK;
 
     /** The simulation steps. */
     private int simulationSteps;

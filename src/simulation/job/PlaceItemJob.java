@@ -79,6 +79,14 @@ public class PlaceItemJob extends AbstractJob {
         return position;
     }
 
+    @Override
+    public void interrupt(final String message) {
+        super.interrupt(message);
+        if (item != null) {
+            item.setUsed(false);
+        }
+    }
+
     /**
      * The looking for item state.
      */
