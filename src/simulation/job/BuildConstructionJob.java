@@ -123,7 +123,7 @@ public class BuildConstructionJob extends AbstractJob {
          * Constructor.
          */
         public HaulBuildingMaterialsState() {
-            super(BUILDING_MATERIAL_TYPE, position, null, BuildConstructionJob.this);
+            super(BUILDING_MATERIAL_TYPE, position, getPlayer().getStockManager(), BuildConstructionJob.this);
         }
 
         @Override
