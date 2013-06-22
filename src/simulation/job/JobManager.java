@@ -33,7 +33,10 @@ package simulation.job;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import logger.Logger;
 import simulation.IPlayer;
@@ -60,27 +63,23 @@ public class JobManager implements IJobManager, Serializable, IJobListener {
     private final List<IJob> jobs = new ArrayList<>();
 
     /** The designations. */
-    private final AbstractDesignation[] designations;
+    private final Map<DesignationType, AbstractDesignation> designations = new HashMap<>();
 
     /** Listeners to be notified when something changes. */
     private final List<IJobManagerListener> listeners = new ArrayList<>();
 
     /**
      * The constructor, sets up the designations.
-     * @param player
+     * @param player the player that the job manager belongs to
      */
     public JobManager(final IPlayer player) {
-        designations = new AbstractDesignation[DesignationType.values().length - 1]; // TODO: -1
-        designations[DesignationType.MINE.ordinal()] = new MineDesignation(player);
-        designations[DesignationType.CHANNEL.ordinal()] = new ChannelDesignation(player);
-        designations[DesignationType.CHOP_TREE.ordinal()] = new ChopTreeDesignation(player);
-        designations[DesignationType.BUILD_WALL.ordinal()] = new ConstructionDesignation(BlockType.WALL, player);
-        designations[DesignationType.BUILD_RAMP.ordinal()] = new ConstructionDesignation(BlockType.RAMP, player);
-        // TODO: carve stair
-        // designations[DesignationType.CARVE_STAIR.ordinal()] = new ChannelDesignation(BlockType.STAIR);
-
-        // This can't be done in the designations constructor because the player.getJobManager call would return null
-        for (AbstractDesignation designation : designations) {
+        designations.put(DesignationType.MINE, new MineDesignation(player));
+        designations.put(DesignationType.CHANNEL, new ChannelDesignation(null, player));
+        designations.put(DesignationType.CHOP_TREE, new ChopTreeDesignation(player));
+        designations.put(DesignationType.BUILD_WALL, new ConstructionDesignation(BlockType.WALL, player));
+        designations.put(DesignationType.BUILD_RAMP, new ConstructionDesignation(BlockType.RAMP, player));
+        designations.put(DesignationType.CARVE_STAIR, new ChannelDesignation(BlockType.STAIR, player));
+        for (AbstractDesignation designation : designations.values()) {
             jobs.add(designation);
         }
     }
@@ -123,15 +122,15 @@ public class JobManager implements IJobManager, Serializable, IJobListener {
      * @return A reference to the designation
      */
     public AbstractDesignation getDesignation(final DesignationType type) {
-        return designations[type.ordinal()];
+        return designations.get(type);
     }
 
     /**
      * Gets a reference to all the designations.
      * @return A reference to the designations array
      */
-    public AbstractDesignation[] getDesignations() {
-        return designations;
+    public Collection<AbstractDesignation> getDesignations() {
+        return designations.values();
     }
 
     /**

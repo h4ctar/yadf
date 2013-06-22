@@ -28,6 +28,7 @@ public abstract class HaulResourcesState extends AbstractJobState implements IJo
     /** The resource types and quantities required. */
     private final Map<ItemType, Integer> resourceTypes;
 
+    /** All the resources that need to be hauled. */
     private final Set<Item> resources = new HashSet<>();
 
     /** The position to haul the resources to. */

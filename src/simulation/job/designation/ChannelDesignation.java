@@ -34,6 +34,7 @@ package simulation.job.designation;
 import simulation.IPlayer;
 import simulation.job.ChannelJob;
 import simulation.job.IJob;
+import simulation.map.BlockType;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
@@ -46,12 +47,17 @@ public class ChannelDesignation extends AbstractDesignation {
     /** The serial version UID. */
     private static final long serialVersionUID = 6420960356264271866L;
 
+    /** The type of block to replace the channeled block with, null to totally remove it. */
+    private final BlockType blockType;
+
     /**
      * Instantiates a new channel designation.
+     * @param blockTypeTmp the type of block to replace the channeled block with, null to totally remove it
      * @param player the player that this designation belongs to
      */
-    public ChannelDesignation(final IPlayer player) {
+    public ChannelDesignation(final BlockType blockTypeTmp, final IPlayer player) {
         super(player);
+        blockType = blockTypeTmp;
     }
 
     @Override
@@ -68,6 +74,6 @@ public class ChannelDesignation extends AbstractDesignation {
 
     @Override
     protected IJob createJob(final MapIndex mapIndex) {
-        return new ChannelJob(mapIndex, this);
+        return new ChannelJob(mapIndex, blockType, this);
     }
 }

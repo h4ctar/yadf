@@ -22,16 +22,18 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
     /** The walk component. */
     private WalkMovementComponent walkComponent;
 
+    /** Walk to a map node that is one off the target node. */
     private final boolean oneOff;
 
     /**
      * Constructor.
      * @param positionTmp the position to walk to.
      * @param characterTmp the character that is walking to the position
+     * @param oneOffTmp Walk to a map node that is one off the target node
      * @param jobTmp the job that this state belongs to
      */
-    public WalkToPositionState(final MapIndex positionTmp, final IGameCharacter characterTmp, boolean oneOffTmp,
-            final AbstractJob jobTmp) {
+    public WalkToPositionState(final MapIndex positionTmp, final IGameCharacter characterTmp,
+            final boolean oneOffTmp, final AbstractJob jobTmp) {
         super(jobTmp);
         position = positionTmp;
         character = characterTmp;

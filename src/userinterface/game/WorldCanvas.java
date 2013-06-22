@@ -143,9 +143,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
      */
     public void drawDesignations(final Graphics g) {
         JobManager jobManager = player.getJobManager();
-        AbstractDesignation[] designations = jobManager.getDesignations();
-
-        for (AbstractDesignation designation : designations) {
+        for (AbstractDesignation designation : jobManager.getDesignations()) {
             List<MapIndex> mapIndicies = new ArrayList<>(designation.getMapIndicies());
             for (MapIndex mapIndex : mapIndicies) {
                 if (mapIndex.z == viewPosition.z) {
@@ -205,7 +203,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
     }
 
     @Override
-    public void mapChanged(MapIndex mapIndex) {
+    public void mapChanged(final MapIndex mapIndex) {
         // TODO: make this only redraw the changed block
         drawBackgroundRequired = true;
     }

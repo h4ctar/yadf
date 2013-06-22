@@ -32,6 +32,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     /** The type of item to haul. */
     private ItemType itemType;
 
+    /** The container to put the item in once its hauled, could be null to leave the item nowhere. */
     private final IContainer container;
 
     /**
@@ -39,6 +40,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * @param dwarfTmp the dwarf to do the hauling
      * @param itemTmp the item to haul
      * @param positionTmp the position to haul the item to
+     * @param containerTmp the container to put the item in once its hauled, could be null to leave the item nowhere
      * @param jobTmp the job that this state belong to
      */
     public HaulItemState(final Dwarf dwarfTmp, final Item itemTmp, final MapIndex positionTmp,
@@ -54,6 +56,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * Constructor.
      * @param itemTmp the item to haul
      * @param positionTmp the position to haul the item to
+     * @param containerTmp the container to put the item in once its hauled, could be null to leave the item nowhere
      * @param jobTmp the job that this state belong to
      */
     public HaulItemState(final Item itemTmp, final MapIndex positionTmp, final IContainer containerTmp,
@@ -73,6 +76,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * Constructor.
      * @param itemTypeTmp the item type to haul
      * @param positionTmp the position to haul the item to
+     * @param containerTmp the container to put the item in once its hauled, could be null to leave the item nowhere
      * @param jobTmp the job that this state belong to
      */
     public HaulItemState(final ItemType itemTypeTmp, final MapIndex positionTmp, final IContainer containerTmp,

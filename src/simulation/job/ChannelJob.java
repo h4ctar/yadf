@@ -44,6 +44,7 @@ import simulation.job.jobstate.WalkToPositionState;
 import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
+import simulation.map.BlockType;
 import simulation.map.MapIndex;
 
 /**
@@ -69,14 +70,20 @@ public class ChannelJob extends AbstractJob {
     /** The miner dwarf. */
     private Dwarf miner;
 
+    /** The type of block to replace the channeled block with, null to totally remove it. */
+    private final BlockType blockType;
+
     /**
      * Instantiates a new channel job.
      * @param positionTmp the position
+     * @param blockTypeTmp the type of block to replace the channeled block with, null to totally remove it
      * @param designationTmp the designation
      */
-    public ChannelJob(final MapIndex positionTmp, final ChannelDesignation designationTmp) {
+    public ChannelJob(final MapIndex positionTmp, final BlockType blockTypeTmp,
+            final ChannelDesignation designationTmp) {
         super(designationTmp.getPlayer());
         position = positionTmp;
+        blockType = blockTypeTmp;
         designation = designationTmp;
         setJobState(new LookingForMinerState());
     }
@@ -156,16 +163,14 @@ public class ChannelJob extends AbstractJob {
         @Override
         public void transitionOutOf() {
             super.transitionOutOf();
-            // create a rock item
-            String itemTypeName = designation.getRegion().getMap().getBlock(position.add(0, 0, -1)).itemMined;
-
-            if (itemTypeName != null) {
-                ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
-                Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, getPlayer());
-                getPlayer().getStockManager().addItem(blockItem);
+            MapIndex downPosition = position.add(0, 0, -1);
+            String minedItemTypeName = designation.getRegion().getMap().getBlock(downPosition).itemMined;
+            if (minedItemTypeName != null) {
+                ItemType minedItemType = ItemTypeManager.getInstance().getItemType(minedItemTypeName);
+                Item minedItem = ItemTypeManager.getInstance().createItem(downPosition, minedItemType, getPlayer());
+                getPlayer().getStockManager().addItem(minedItem);
             }
-            // channel the block
-            designation.getRegion().getMap().channelBlock(position.add(0, 0, -1), null);
+            designation.getRegion().getMap().channelBlock(downPosition, blockType);
             miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             miner.releaseLock();
         }
