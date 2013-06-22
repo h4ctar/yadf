@@ -151,7 +151,7 @@ public class Item extends AbstractEntity {
      */
     public boolean canBeStored(final Set<ItemType> itemTypes) {
         boolean storable = false;
-        if (itemTypes.contains(itemType) && !getRemove() && !placed) {
+        if (itemTypes.contains(itemType) && !isDeleted() && !placed) {
             storable = true;
         }
         return storable;

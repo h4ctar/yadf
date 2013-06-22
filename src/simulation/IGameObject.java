@@ -14,5 +14,10 @@ public interface IGameObject {
      * Gets the removes the.
      * @return the removes the
      */
-    boolean getRemove();
+    boolean isDeleted();
+
+    /**
+     * Delete the game object.
+     */
+    void delete();
 }

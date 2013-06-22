@@ -91,7 +91,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item - itemType: " + item.getType());
         boolean itemAdded = false;
-        if (getRemove()) {
+        if (isDeleted()) {
             Logger.getInstance().log(this, "Stockpile has been deleted", true);
         } else {
             if (item.canBeStored(acceptableItemTypes)) {
@@ -187,7 +187,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     @Override
     public Item getUnusedItem(final String itemTypeName) {
         for (Item item : items) {
-            if (item.getType().name.equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+            if (item.getType().name.equals(itemTypeName) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
                 return item;
             }
             if (item instanceof ContainerItem) {
@@ -203,7 +203,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     @Override
     public Item getUnusedItemFromCategory(final String category) {
         for (Item item : items) {
-            if (item.getType().category.equals(category) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+            if (item.getType().category.equals(category) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
                 return item;
             }
             if (item instanceof ContainerItem) {
@@ -350,10 +350,11 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     /**
      * The stockpile has been deleted, clean up everything.
      */
+    @Override
     public void delete() {
+        super.delete();
         player.getStockManager().removeListener(this);
         player.getStockManager().removeStockpile(this);
-        setRemove();
         for (Item item : items) {
             player.getStockManager().addItem(item);
         }

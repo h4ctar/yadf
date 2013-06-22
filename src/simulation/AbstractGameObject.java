@@ -34,15 +34,15 @@ package simulation;
 import java.io.Serializable;
 
 /**
- * The Class GameObject.
+ * The AbstractGameObject class.
  */
 public abstract class AbstractGameObject implements IGameObject, Serializable {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 5321662116462424488L;
 
-    /** The remove. */
-    private boolean remove = false;
+    /** Has the entity been deleted. */
+    private boolean deleted = false;
 
     /** The id. */
     private final int id;
@@ -60,7 +60,6 @@ public abstract class AbstractGameObject implements IGameObject, Serializable {
 
     /**
      * Returns the id of this entity.
-     * 
      * @return The id of the entity
      */
     @Override
@@ -69,19 +68,19 @@ public abstract class AbstractGameObject implements IGameObject, Serializable {
     }
 
     /**
-     * Gets the removes the.
-     * 
-     * @return the removes the
+     * Has the entity been deleted.
+     * @return true if the entity has been deleted
      */
     @Override
-    public boolean getRemove() {
-        return remove;
+    public boolean isDeleted() {
+        return deleted;
     }
 
     /**
      * Sets the remove.
      */
-    protected void setRemove() {
-        this.remove = true;
+    @Override
+    public void delete() {
+        deleted = true;
     }
 }

@@ -120,13 +120,6 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
         for (Dwarf dwarf : dwarfs) {
             dwarf.update(region);
         }
-        // TODO: change this to something else
-        for (Dwarf dwarf : dwarfs.toArray(new Dwarf[0])) {
-            if (dwarf.getRemove()) {
-                dwarfs.remove(dwarf);
-                notifyDwarfRemoved(dwarf);
-            }
-        }
     }
 
     @Override
@@ -148,16 +141,6 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
     private void notifyDwarfAdded(final Dwarf dwarf) {
         for (IDwarfManagerListener listener : managerListeners) {
             listener.dwarfAdded(dwarf);
-        }
-    }
-
-    /**
-     * Notify all the listeners that a dwarf has been removed.
-     * @param dwarf the dwarf that was removed
-     */
-    private void notifyDwarfRemoved(final Dwarf dwarf) {
-        for (IDwarfManagerListener listener : managerListeners) {
-            listener.dwarfRemoved(dwarf);
         }
     }
 

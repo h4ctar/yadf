@@ -53,6 +53,7 @@ import simulation.Player;
 import simulation.recipe.Recipe;
 import simulation.recipe.RecipeManager;
 import simulation.workshop.Workshop;
+import userinterface.game.WorldCanvas;
 import userinterface.misc.ImagePanel;
 import controller.AbstractController;
 import controller.command.CancelOrderCommand;
@@ -100,12 +101,21 @@ public class WorkshopInterface extends JInternalFrame {
     /** The scroll pane. */
     private JScrollPane scrollPane;
 
+    /** Button to zoom to the workshop. */
+    private JButton zoomButton;
+
+    /** The canvas (required to zoom to the workshop). */
+    private final WorldCanvas worldCanvas;
+
     /**
      * Create the frame.
+     * @param worldCanvasTmp the canvas (required to zoom to the workshop)
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public WorkshopInterface(final Player playerTmp, final AbstractController controllerTmp) {
+    public WorkshopInterface(final WorldCanvas worldCanvasTmp, final Player playerTmp,
+            final AbstractController controllerTmp) {
+        worldCanvas = worldCanvasTmp;
         player = playerTmp;
         controller = controllerTmp;
         setupLayout();
@@ -119,32 +129,6 @@ public class WorkshopInterface extends JInternalFrame {
         workshop = workshopTmp;
         typeLabel.setText(workshop.getType().name);
         ordersListModel.setWorkshop(workshop);
-    }
-
-    /**
-     * Action listener for the cancel order button.
-     */
-    private class CancelOrderActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            int roomId = workshop.getId();
-            int orderIndex = ordersList.getSelectedIndex();
-            controller.addCommand(new CancelOrderCommand(player, roomId, orderIndex));
-        }
-    }
-
-    /**
-     * Action listener for the destroy workshop button.
-     */
-    private class DestroyWorkshopActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            int roomId = workshop.getId();
-            controller.addCommand(new DeleteRoomCommand(player, roomId));
-            setVisible(false);
-        }
     }
 
     /**
@@ -176,6 +160,43 @@ public class WorkshopInterface extends JInternalFrame {
     }
 
     /**
+     * Action listener for the cancel order button.
+     */
+    private class CancelOrderActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            int roomId = workshop.getId();
+            int orderIndex = ordersList.getSelectedIndex();
+            controller.addCommand(new CancelOrderCommand(player, roomId, orderIndex));
+        }
+    }
+
+    /**
+     * Action listener for the destroy workshop button.
+     */
+    private class DestroyWorkshopActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            int roomId = workshop.getId();
+            controller.addCommand(new DeleteRoomCommand(player, roomId));
+            setVisible(false);
+        }
+    }
+
+    /**
+     * Action listener for the zoom to workshop button.
+     */
+    private class ZoomButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            worldCanvas.zoomToArea(workshop.getArea());
+        }
+    }
+
+    /**
      * Setup the layout.
      */
     private void setupLayout() {
@@ -184,7 +205,7 @@ public class WorkshopInterface extends JInternalFrame {
         setResizable(true);
         setClosable(true);
         setTitle("Workshop Interface");
-        setBounds(100, 100, 450, 300);
+        setBounds(100, 100, 451, 300);
         getContentPane().setLayout(new BorderLayout(5, 5));
 
         JPanel panel = new ImagePanel();
@@ -232,6 +253,10 @@ public class WorkshopInterface extends JInternalFrame {
 
         cancelOrderButton = new JButton("Cancel Order");
         buttonPanel.add(cancelOrderButton);
+
+        zoomButton = new JButton("Zoom");
+        buttonPanel.add(zoomButton);
+        zoomButton.addActionListener(new ZoomButtonActionListener());
 
         destroyWorkshopButton = new JButton("Destroy Workshop");
         buttonPanel.add(destroyWorkshopButton);

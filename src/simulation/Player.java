@@ -253,25 +253,13 @@ public class Player extends AbstractGameObject implements IPlayer {
      * Update.
      */
     public void update() {
-        stockManager.update(this);
         dwarfManager.update(region);
-
+        // TODO: Don't update farms and workshops every step
         for (Farm farm : farms) {
             farm.update(this);
         }
         for (Workshop workshop : workshops) {
             workshop.update(this);
-        }
-
-        for (Room room : rooms.toArray(new Room[0])) {
-            if (room.getRemove()) {
-                rooms.remove(room);
-            }
-        }
-        for (Workshop workshop : workshops.toArray(new Workshop[0])) {
-            if (workshop.getRemove()) {
-                workshops.remove(workshop);
-            }
         }
     }
 

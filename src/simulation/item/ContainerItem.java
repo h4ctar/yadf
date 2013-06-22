@@ -92,7 +92,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
     public Item getUnusedItem(final String itemTypeName) {
         if (contentItemType != null && contentItemType.name.equals(itemTypeName)) {
             for (Item contentItem : contentItems) {
-                if (!contentItem.isUsed() && !contentItem.getRemove()) {
+                if (!contentItem.isUsed() && !contentItem.isDeleted()) {
                     return contentItem;
                 }
             }
@@ -104,7 +104,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
     public Item getUnusedItemFromCategory(final String category) {
         if (contentItemType != null && contentItemType.category.equals(category)) {
             for (Item contentItem : contentItems) {
-                if (!contentItem.isUsed() && !contentItem.getRemove()) {
+                if (!contentItem.isUsed() && !contentItem.isDeleted()) {
                     return contentItem;
                 }
             }
@@ -191,7 +191,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
     @Override
     public boolean canBeStored(final Set<ItemType> itemTypes) {
         boolean storable = false;
-        if (!getRemove() && !placed) {
+        if (!isDeleted() && !placed) {
             if (contentItemType == null && itemTypes.contains(itemType)) {
                 storable = true;
             } else if (itemTypes.contains(contentItemType)) {

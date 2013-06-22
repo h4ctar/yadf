@@ -31,8 +31,12 @@
  */
 package userinterface.game.workshop;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.AbstractListModel;
 
+import simulation.recipe.Recipe;
 import simulation.workshop.IWorkshopListener;
 import simulation.workshop.Workshop;
 
@@ -47,13 +51,12 @@ public class OrdersListModel extends AbstractListModel<String> implements IWorks
     /** The workshop. */
     private Workshop workshop;
 
+    /** A cache of all the orders. */
+    private List<String> orders;
+
     @Override
     public String getElementAt(final int row) {
-        if (workshop == null) {
-            return null;
-        }
-
-        return workshop.getOrders().get(row).toString();
+        return orders.get(row);
     }
 
     @Override
@@ -72,14 +75,21 @@ public class OrdersListModel extends AbstractListModel<String> implements IWorks
     public void setWorkshop(final Workshop workshopTmp) {
         workshop = workshopTmp;
         workshop.addListener(this);
-        workshopChanged();
+        orders = new ArrayList<>();
+        for (Recipe recipe : workshop.getOrders()) {
+            orders.add(recipe.toString());
+        }
     }
 
-    /**
-     * Update.
-     */
     @Override
-    public void workshopChanged() {
-        fireContentsChanged(this, 0, getSize() - 1);
+    public void orderAdded(final Recipe recipe, final int index) {
+        orders.add(index, recipe.toString());
+        fireContentsChanged(this, index, index);
+    }
+
+    @Override
+    public void orderRemoved(final Recipe recipe, final int index) {
+        orders.remove(index);
+        fireContentsChanged(this, index, index);
     }
 }

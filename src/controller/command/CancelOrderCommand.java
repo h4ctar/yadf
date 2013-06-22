@@ -66,5 +66,4 @@ public class CancelOrderCommand extends AbstractCommand {
         Workshop workshop = player.getWorkshop(workshopId);
         workshop.cancelOrder(orderIndex);
     }
-
 }

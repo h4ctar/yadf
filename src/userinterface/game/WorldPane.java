@@ -532,7 +532,7 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         worldCanvas.setPlayer(player);
         mainPopupMenu = new MainPopupMenu(this);
         roomInterface = new RoomInterface(player, controller);
-        workshopInterface = new WorkshopInterface(player, controller);
+        workshopInterface = new WorkshopInterface(worldCanvas, player, controller);
         stockpileInterface = new StockpileInterface(worldCanvas, player, controller);
         dwarfInterface = new DwarfInterface();
         itemInterface = new ItemInterface();

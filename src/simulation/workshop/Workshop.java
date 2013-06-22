@@ -33,9 +33,7 @@ package simulation.workshop;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import misc.MyRandom;
 import simulation.AbstractGameObject;
 import simulation.Player;
 import simulation.job.CraftJob;
@@ -129,25 +127,6 @@ public class Workshop extends AbstractGameObject {
     }
 
     /**
-     * Gets a random position inside a workshop.
-     * @param position the position of the workshop
-     * @return the random position
-     */
-    public static MapIndex getRandomPostition(final MapIndex position) {
-        Random random = MyRandom.getInstance();
-        return position.add(random.nextInt(WORKSHOP_SIZE), random.nextInt(WORKSHOP_SIZE), 0);
-    }
-
-    /**
-     * Get a random position within the workshop.
-     * @return a position within the workshop
-     */
-    public MapIndex getRandomPosition() {
-        Random random = MyRandom.getInstance();
-        return position.add(random.nextInt(WORKSHOP_SIZE), random.nextInt(WORKSHOP_SIZE), 0);
-    }
-
-    /**
      * Gets the type of the workshop.
      * @return the type
      */
@@ -175,7 +154,7 @@ public class Workshop extends AbstractGameObject {
     public void newOrder(final String recipeName) {
         Recipe recipe = RecipeManager.getInstance().getRecipe(recipeName);
         orders.add(recipe);
-        notifyListeners();
+        notifyListenersOfOrderAdded(recipe, orders.size() - 1);
     }
 
     /**
@@ -185,7 +164,6 @@ public class Workshop extends AbstractGameObject {
     public void setOccupied(final boolean occupiedTmp) {
         if (occupiedTmp != occupied) {
             occupied = occupiedTmp;
-            notifyListeners();
         }
     }
 
@@ -198,23 +176,35 @@ public class Workshop extends AbstractGameObject {
             if (!orders.isEmpty()) {
                 craftJob = new CraftJob(this, orders.get(0), player);
                 player.getJobManager().addJob(craftJob);
-                notifyListeners();
             }
         } else {
             if (craftJob.isDone()) {
-                orders.remove(0);
+                Recipe removedOrder = orders.remove(0);
+                notifyListenersOfOrderRemoved(removedOrder, 0);
                 craftJob = null;
-                notifyListeners();
             }
         }
     }
 
     /**
-     * Notify all the listeners that something has changed in the workshop.
+     * Notify all the listeners that an order has been added.
+     * @param recipe
+     * @param index
      */
-    private void notifyListeners() {
+    private void notifyListenersOfOrderAdded(Recipe recipe, int index) {
         for (IWorkshopListener listener : listeners) {
-            listener.workshopChanged();
+            listener.orderAdded(recipe, index);
+        }
+    }
+
+    /**
+     * Notify all the listeners that an order has been removed.
+     * @param recipe
+     * @param index
+     */
+    private void notifyListenersOfOrderRemoved(Recipe recipe, int index) {
+        for (IWorkshopListener listener : listeners) {
+            listener.orderRemoved(recipe, index);
         }
     }
 

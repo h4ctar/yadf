@@ -260,8 +260,8 @@ public class HaulJob extends AbstractJob {
                 hauler.releaseLock();
             }
             if (container != null) {
-                if (container.getRemove()) {
-                    Logger.getInstance().log(this, "Can't store item, container has been removed", true);
+                if (container.isDeleted()) {
+                    Logger.getInstance().log(this, "Can't store item, container has been deleted", true);
                     getPlayer().getStockManager().addItem(item);
                 } else {
                     if (!container.addItem(item)) {

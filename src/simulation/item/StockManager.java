@@ -40,7 +40,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
-import simulation.Player;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
@@ -183,7 +182,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
     public Item getUnstoredItem(final ItemType itemType) {
         for (Item item : items) {
             // TODO: move this into item
-            if (itemType.equals(item.getType()) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+            if (itemType.equals(item.getType()) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
                 return item;
             }
         }
@@ -199,7 +198,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
             }
         }
         for (Item item : items) {
-            if (item.getType().name.equals(itemTypeName) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+            if (item.getType().name.equals(itemTypeName) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
                 return item;
             }
             if (item instanceof IContainer) {
@@ -221,7 +220,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
             }
         }
         for (Item item : this.items) {
-            if (item.getType().category.equals(category) && !item.isUsed() && !item.getRemove() && !item.isPlaced()) {
+            if (item.getType().category.equals(category) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
                 return item;
             }
             if (item instanceof IContainer) {
@@ -304,17 +303,5 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
     @Override
     public Set<Stockpile> getStockpiles() {
         return stockpiles;
-    }
-
-    /**
-     * Updates all the stockpiles, and removes items that have been tagged for removal.
-     * @param player the player
-     */
-    public void update(final Player player) {
-        for (Item item : items.toArray(new Item[0])) {
-            if (item.getRemove()) {
-                items.remove(item);
-            }
-        }
     }
 }

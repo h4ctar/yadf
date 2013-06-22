@@ -153,7 +153,7 @@ public class ChopTreeJob extends AbstractJob {
         @Override
         public void transitionOutOf() {
             super.transitionOutOf();
-            if (tree == null || tree.getRemove()) {
+            if (tree == null || tree.isDeleted()) {
                 interrupt("Tree missing");
                 return;
             }
