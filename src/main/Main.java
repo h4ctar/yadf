@@ -31,12 +31,18 @@
  */
 package main;
 
+import javax.swing.JApplet;
+
 import userinterface.MainWindow;
 
 /**
  * The main class, launches the main window.
  */
-public final class Main {
+public final class Main extends JApplet {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -4044672929786417464L;
+
     /**
      * The entry for the program.
      * 
@@ -50,10 +56,12 @@ public final class Main {
         }
     }
 
-    /**
-     * Instantiates a new main.
-     */
-    private Main() {
-
+    @Override
+    public void init() {
+        try {
+            new MainWindow();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

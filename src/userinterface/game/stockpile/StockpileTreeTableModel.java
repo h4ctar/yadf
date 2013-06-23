@@ -87,7 +87,7 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
             }
         }
 
-        stockpile.addListener(this);
+        stockpile.addStockpileListener(this);
     }
 
     @Override

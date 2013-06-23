@@ -62,6 +62,7 @@ public class WorkshopType implements Serializable {
     /**
      * Instantiates a new workshop type.
      * @param workshopTypeElement the workshop type element
+     * @throws Exception something went wrong
      */
     public WorkshopType(final Element workshopTypeElement) throws Exception {
         name = workshopTypeElement.getAttribute("name");

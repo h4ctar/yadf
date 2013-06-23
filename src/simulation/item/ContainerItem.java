@@ -1,6 +1,6 @@
 package simulation.item;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import logger.Logger;
@@ -23,13 +23,13 @@ public class ContainerItem extends Item implements IContainer, IJobListener, ISt
     private static final long serialVersionUID = 4639675681496031393L;
 
     /** The contents of this item if it's a container. */
-    private final Set<Item> contentItems = new HashSet<>();
+    private final Set<Item> contentItems = new LinkedHashSet<>();
 
     /** The type of item that this item is storing if it's a container. */
     private ItemType contentItemType;
 
     /** The haul jobs created to haul content items to this item if it's a container. */
-    private final Set<HaulJob> haulJobs = new HashSet<>();
+    private final Set<HaulJob> haulJobs = new LinkedHashSet<>();
 
     /**
      * Constructor from a DOM element. This item will not belong to a player. Only useful for temporary items that can

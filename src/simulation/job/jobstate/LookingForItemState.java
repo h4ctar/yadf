@@ -73,7 +73,9 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
 
     @Override
     public void itemNowAvailable(final Item availableItem) {
-        if (!availableItem.isUsed()) {
+        if (!availableItem.isUsed()
+                && ((itemType != null && itemType.equals(availableItem.getType())) || (category != null && category
+                        .equals(availableItem.getType().category)))) {
             availableItem.setUsed(true);
             item = availableItem;
             getJob().stateDone(this);
@@ -86,5 +88,10 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
      */
     public Item getItem() {
         return item;
+    }
+
+    @Override
+    public void interrupt(final String message) {
+        getJob().getPlayer().getStockManager().removeListener(this);
     }
 }

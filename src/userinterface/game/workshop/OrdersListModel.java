@@ -54,9 +54,29 @@ public class OrdersListModel extends AbstractListModel<String> implements IWorks
     /** A cache of all the orders. */
     private List<String> orders;
 
+    /**
+     * Sets the workshop.
+     * @param workshopTmp the new workshop
+     */
+    public void setWorkshop(final Workshop workshopTmp) {
+        if (workshop != null) {
+            workshop.removeListener(this);
+        }
+        workshop = workshopTmp;
+        workshop.addListener(this);
+        orders = new ArrayList<>();
+        for (Recipe recipe : workshop.getOrders()) {
+            orders.add(recipe.toString());
+        }
+    }
+
     @Override
     public String getElementAt(final int row) {
-        return orders.get(row);
+        String element = null;
+        if (orders != null) {
+            element = orders.get(row);
+        }
+        return element;
     }
 
     @Override
@@ -64,21 +84,7 @@ public class OrdersListModel extends AbstractListModel<String> implements IWorks
         if (workshop == null) {
             return 0;
         }
-
         return workshop.getOrders().size();
-    }
-
-    /**
-     * Sets the workshop.
-     * @param workshopTmp the new workshop
-     */
-    public void setWorkshop(final Workshop workshopTmp) {
-        workshop = workshopTmp;
-        workshop.addListener(this);
-        orders = new ArrayList<>();
-        for (Recipe recipe : workshop.getOrders()) {
-            orders.add(recipe.toString());
-        }
     }
 
     @Override

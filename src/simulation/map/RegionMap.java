@@ -65,13 +65,22 @@ public class RegionMap implements Serializable {
     /** The path planner. */
     private final PathPlanner pathPlanner = new PathPlanner();
 
+    /** The listeners. */
     private final List<IMapListener> listeners = new CopyOnWriteArrayList<>();
 
+    /**
+     * Add a listener to the map.
+     * @param listener the listener to add
+     */
     public void addListener(final IMapListener listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(IMapListener listener) {
+    /**
+     * Remove a listener from the map.
+     * @param listener the listener to remove
+     */
+    public void removeListener(final IMapListener listener) {
         listeners.remove(listener);
     }
 
@@ -440,6 +449,10 @@ public class RegionMap implements Serializable {
         }
     }
 
+    /**
+     * Notify all the listeners that the map has changed.
+     * @param mapIndex the block that changed
+     */
     private void notifyListeners(final MapIndex mapIndex) {
         for (IMapListener listener : listeners) {
             listener.mapChanged(mapIndex);

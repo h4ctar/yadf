@@ -86,7 +86,6 @@ public abstract class AbstractJob implements IJob {
     public void stateInterrupted(final IJobState jobStateTmp, final String message) {
         assert jobState == jobStateTmp;
         interrupt(message);
-
     }
 
     @Override
@@ -97,7 +96,7 @@ public abstract class AbstractJob implements IJob {
     @Override
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been interrupted: " + message, true);
-        jobState.transitionOutOf();
+        jobState.interrupt(toString() + " was interrupted");
     }
 
     @Override

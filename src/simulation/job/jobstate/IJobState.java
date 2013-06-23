@@ -20,4 +20,6 @@ public interface IJobState {
      * @return the next job state
      */
     IJobState getNextState();
+
+    void interrupt(String message);
 }

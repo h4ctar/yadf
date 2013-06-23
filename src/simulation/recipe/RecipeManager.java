@@ -2,7 +2,7 @@ package simulation.recipe;
 
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,7 +81,7 @@ public final class RecipeManager {
             Recipe recipe = new Recipe(recipeElement);
             recipes.put(recipe.name, recipe);
             if (!recipesByWorkshop.containsKey(recipe.workshopType)) {
-                recipesByWorkshop.put(recipe.workshopType, new HashSet<Recipe>());
+                recipesByWorkshop.put(recipe.workshopType, new LinkedHashSet<Recipe>());
             }
             recipesByWorkshop.get(recipe.workshopType).add(recipe);
         }

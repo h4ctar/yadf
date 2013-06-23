@@ -31,7 +31,7 @@
  */
 package simulation.item;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import logger.Logger;
@@ -55,13 +55,13 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     private final boolean[][] used;
 
     /** A reference to the item at a particular position. */
-    private final Set<Item> items = new HashSet<>();
+    private final Set<Item> items = new LinkedHashSet<>();
 
     /** The area of the stockpile. */
     private final MapArea area;
 
     /** What item type the stockpile accepts. */
-    private final Set<ItemType> acceptableItemTypes = new HashSet<>();
+    private final Set<ItemType> acceptableItemTypes = new LinkedHashSet<>();
 
     /** The player that this stockpile belongs to. */
     private final Player player;
@@ -70,10 +70,13 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * An array of haul tasks that have been created for this stockpile, its remembered so they can be canceled if the
      * stockpile is deleted or its items to collect changes.
      */
-    private final Set<HaulJob> haulJobs = new HashSet<>();
+    private final Set<HaulJob> haulJobs = new LinkedHashSet<>();
 
-    /** The listeners that are notified of changes in the stockpile. */
-    private final Set<IStockpileListener> listeners = new HashSet<>();
+    /** The listeners that are notified of items being added or removed from the stockpile. */
+    private final Set<IStockpileListener> stockpileListeners = new LinkedHashSet<>();
+
+    /** The listeners that are notified of items being added or removed from the stockpile. */
+    private final Set<IItemAvailableListener> availableListeners = new LinkedHashSet<>();
 
     /**
      * Constructor for the stockpile.
@@ -98,8 +101,8 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
                 MapIndex pos = item.getPosition().sub(area.pos);
                 used[pos.x][pos.y] = true;
                 items.add(item);
-                notifyListeners();
                 itemAdded = true;
+                notifyStockpileListeners();
             } else {
                 Logger.getInstance().log(this, "Stockpile does not accept this item type", true);
             }
@@ -111,8 +114,16 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * Add a new listener to this stockpile.
      * @param listener the new listener
      */
-    public void addListener(final IStockpileListener listener) {
-        listeners.add(listener);
+    public void addStockpileListener(final IStockpileListener listener) {
+        stockpileListeners.add(listener);
+    }
+
+    public void addItemAvailableListener(final IItemAvailableListener listener) {
+        availableListeners.add(listener);
+    }
+
+    public void removeItemAvailableListener(final IItemAvailableListener listener) {
+        availableListeners.remove(listener);
     }
 
     /**
@@ -239,6 +250,9 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         Logger.getInstance().log(this,
                 "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
         haulJob.getItem().setUsed(false);
+        for (IItemAvailableListener listener : availableListeners) {
+            listener.itemAvailable(haulJob.getItem());
+        }
         haulJobs.remove(haulJob);
     }
 
@@ -258,7 +272,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
             }
         }
         if (itemRemoved) {
-            notifyListeners();
+            notifyStockpileListeners();
         }
         return itemRemoved;
     }
@@ -303,8 +317,8 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     /**
      * Notify the listeners that something has changed for the stockpile.
      */
-    private void notifyListeners() {
-        for (IStockpileListener listener : listeners) {
+    private void notifyStockpileListeners() {
+        for (IStockpileListener listener : stockpileListeners) {
             listener.update();
         }
     }

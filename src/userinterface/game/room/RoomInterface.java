@@ -104,13 +104,6 @@ public class RoomInterface extends JInternalFrame {
     }
 
     /**
-     * Update.
-     */
-    public void update() {
-        itemsListModel.update();
-    }
-
-    /**
      * Action listener for the destroy room button.
      */
     private class DestroyRoomActionListener implements ActionListener {

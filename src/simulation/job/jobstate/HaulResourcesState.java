@@ -1,7 +1,7 @@
 package simulation.job.jobstate;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,7 +29,7 @@ public abstract class HaulResourcesState extends AbstractJobState implements IJo
     private final Map<ItemType, Integer> resourceTypes;
 
     /** All the resources that need to be hauled. */
-    private final Set<Item> resources = new HashSet<>();
+    private final Set<Item> resources = new LinkedHashSet<>();
 
     /** The position to haul the resources to. */
     private final MapIndex position;
@@ -91,6 +91,14 @@ public abstract class HaulResourcesState extends AbstractJobState implements IJo
         }
         if (haulJobs.isEmpty()) {
             getJob().stateDone(this);
+        }
+    }
+
+    @Override
+    public void interrupt(final String message) {
+        for (IJob job : haulJobs) {
+            job.removeListener(this);
+            job.interrupt(message);
         }
     }
 }

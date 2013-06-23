@@ -32,7 +32,7 @@
 package simulation.item;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,13 +46,13 @@ import simulation.map.MapIndex;
 /**
  * The Class StockManager, manages items for a player including stockpiles.
  */
-public class StockManager extends AbstractGameObject implements IStockManager, Serializable {
+public class StockManager extends AbstractGameObject implements IStockManager, IItemAvailableListener, Serializable {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 2947690954735554619L;
 
     /** The stockpiles owned by this stock manager. */
-    private final Set<Stockpile> stockpiles = new HashSet<>();
+    private final Set<Stockpile> stockpiles = new LinkedHashSet<>();
 
     /** All the items looked after by this stock manager. */
     private final Set<Item> items = new CopyOnWriteArraySet<>();
@@ -63,9 +63,38 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
     @Override
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item: " + item.getType());
+        item.addListener(this);
         items.add(item);
         notifyListenersThatItemIsAvailable(item);
         return true;
+    }
+
+    @Override
+    public boolean removeItem(final Item item) {
+        Logger.getInstance().log(this, "Removing item: " + item.getType());
+        boolean itemRemoved = false;
+        itemRemoved = items.remove(item);
+        if (itemRemoved) {
+            item.removeListener(this);
+        } else {
+            // TODO: change this to loop through all stockpiles and ask them to remove item until it finds the right
+            // one.
+            Stockpile stockpile = getStockpile(item.getPosition());
+            if (stockpile != null) {
+                itemRemoved = stockpile.removeItem(item);
+            }
+            if (!itemRemoved) {
+                for (Item container : items) {
+                    if (container instanceof ContainerItem) {
+                        if (((ContainerItem) container).removeItem(item)) {
+                            itemRemoved = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return itemRemoved;
     }
 
     /**
@@ -234,43 +263,19 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
         return null;
     }
 
-    @Override
-    public boolean removeItem(final Item item) {
-        Logger.getInstance().log(this, "Removing item: " + item.getType());
-        boolean itemRemoved = false;
-        itemRemoved = items.remove(item);
-        if (!itemRemoved) {
-            // TODO: change this to loop through all stockpiles and ask them to remove item until it finds the right
-            // one.
-            Stockpile stockpile = getStockpile(item.getPosition());
-            if (stockpile != null) {
-                itemRemoved = stockpile.removeItem(item);
-            }
-        }
-        if (!itemRemoved) {
-            for (Item container : items) {
-                if (container instanceof ContainerItem) {
-                    if (((ContainerItem) container).removeItem(item)) {
-                        itemRemoved = true;
-                        break;
-                    }
-                }
-            }
-        }
-        return itemRemoved;
-    }
-
     /**
      * Adds a new stockpile to this stock manager.
      * @param stockpile The new stockpile
      */
     @Override
     public void addStockpile(final Stockpile stockpile) {
+        stockpile.addItemAvailableListener(this);
         stockpiles.add(stockpile);
     }
 
     @Override
     public void removeStockpile(final Stockpile stockpile) {
+        stockpile.removeItemAvailableListener(this);
         stockpiles.remove(stockpile);
     }
 
@@ -303,5 +308,10 @@ public class StockManager extends AbstractGameObject implements IStockManager, S
     @Override
     public Set<Stockpile> getStockpiles() {
         return stockpiles;
+    }
+
+    @Override
+    public void itemAvailable(final Item item) {
+        notifyListenersThatItemIsAvailable(item);
     }
 }

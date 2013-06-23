@@ -33,7 +33,7 @@ package simulation;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -108,7 +108,7 @@ public class Region implements Serializable {
     private final Set<Goblin> goblins = new CopyOnWriteArraySet<>();
 
     /** A vector of all the players in this region. */
-    private final Set<Player> players = new HashSet<>();
+    private final Set<Player> players = new LinkedHashSet<>();
 
     /** The time. */
     private long time;
@@ -480,15 +480,22 @@ public class Region implements Serializable {
         }
     }
 
-    public void addTimeListener(long duration, ITimeListener listener) {
+    public long addTimeListener(final long duration, final ITimeListener listener) {
         long notifyTime = time + duration;
         if (!timeListeners.containsKey(notifyTime)) {
-            timeListeners.put(notifyTime, new HashSet<ITimeListener>());
+            timeListeners.put(notifyTime, new LinkedHashSet<ITimeListener>());
         }
         timeListeners.get(notifyTime).add(listener);
+        return notifyTime;
     }
 
-    public void removeTree(Tree tree) {
+    public void removeTimeListener(final long notifyTime, final ITimeListener listener) {
+        if (timeListeners.containsKey(notifyTime)) {
+            timeListeners.get(notifyTime).remove(listener);
+        }
+    }
+
+    public void removeTree(final Tree tree) {
         trees.remove(tree);
     }
 }

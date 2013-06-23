@@ -72,7 +72,9 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
 
     @Override
     public void pickupHaulItem(final Item item) {
-        assert itemHauling == null;
+        if (itemHauling != null) {
+            dropHaulItem(true);
+        }
         itemHauling = item;
         itemHauling.setUsed(true);
         notifyListeners();

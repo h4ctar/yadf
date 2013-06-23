@@ -34,15 +34,13 @@ package simulation.item;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import logger.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -62,7 +60,7 @@ public final class ItemTypeManager {
     private static ItemTypeManager instance;
 
     /** The item types. */
-    private Set<ItemType> itemTypes = new HashSet<>();
+    private Set<ItemType> itemTypes = new LinkedHashSet<>();
 
     /** The item types, keyed by name. */
     private Map<String, ItemType> itemTypesByName = new HashMap<>();
@@ -71,7 +69,7 @@ public final class ItemTypeManager {
     private Map<String, Set<ItemType>> itemTypesByCategory = new HashMap<>();
 
     /** The embark items. */
-    private Set<Item> embarkItems = new HashSet<>();
+    private Set<Item> embarkItems = new LinkedHashSet<>();
 
     /**
      * Gets the single instance of ItemTypeManager.
@@ -106,6 +104,7 @@ public final class ItemTypeManager {
     public List<Item> getEmbarkItems(final Player player) {
         List<Item> copyOfEmbarkItems = new ArrayList<>();
         for (Item item : embarkItems) {
+            System.out.println(item.getType().name);
             Item copyItem = createItem(item, player);
             copyOfEmbarkItems.add(copyItem);
         }
@@ -127,9 +126,7 @@ public final class ItemTypeManager {
      */
     public ItemType getItemType(final String itemTypeName) {
         ItemType itemType = itemTypesByName.get(itemTypeName);
-        if (itemType == null) {
-            Logger.getInstance().log(null, "Item type does not exist - itemTypeName: " + itemTypeName, true);
-        }
+        assert itemType != null;
         return itemType;
     }
 
@@ -156,7 +153,7 @@ public final class ItemTypeManager {
      * @return the placeable items
      */
     public Set<ItemType> getPlaceableItems() {
-        Set<ItemType> placeableItemTypes = new HashSet<>();
+        Set<ItemType> placeableItemTypes = new LinkedHashSet<>();
         for (ItemType itemType : itemTypes) {
             if (itemType.placeable) {
                 placeableItemTypes.add(itemType);
@@ -196,7 +193,7 @@ public final class ItemTypeManager {
             Node categoryeNode = categoryNodes.item(i);
             Element categoryElement = (Element) categoryeNode;
             String category = categoryElement.getAttribute("name");
-            Set<ItemType> itemTypesInCategory = new HashSet<>();
+            Set<ItemType> itemTypesInCategory = new LinkedHashSet<>();
 
             NodeList itemTypeNodes = categoryElement.getElementsByTagName("itemType");
             for (int j = 0; j < itemTypeNodes.getLength(); j++) {
@@ -236,10 +233,10 @@ public final class ItemTypeManager {
      * Unload all the item types.
      */
     public void unload() {
-        itemTypes = new HashSet<>();
+        itemTypes = new LinkedHashSet<>();
         itemTypesByName = new HashMap<>();
         itemTypesByCategory = new HashMap<>();
-        embarkItems = new HashSet<>();
+        embarkItems = new LinkedHashSet<>();
     }
 
     /**

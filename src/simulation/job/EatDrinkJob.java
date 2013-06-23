@@ -126,6 +126,7 @@ public class EatDrinkJob extends AbstractJob {
 
         @Override
         public void transitionOutOf() {
+            super.transitionOutOf();
             foodDrinkItem = getItem();
         }
 
@@ -223,7 +224,7 @@ public class EatDrinkJob extends AbstractJob {
          * Constructor.
          */
         public HaulFoodDrinkToTableState() {
-            super(dwarf, foodDrinkItem, table.getPosition(), null, EatDrinkJob.this);
+            super(dwarf, foodDrinkItem, table.getPosition(), getPlayer().getStockManager(), EatDrinkJob.this);
         }
 
         @Override

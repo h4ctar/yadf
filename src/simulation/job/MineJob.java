@@ -112,6 +112,11 @@ public class MineJob extends AbstractJob {
         }
 
         @Override
+        public String toString() {
+            return "Waiting until the mine site is accessible";
+        }
+
+        @Override
         public void transitionInto() {
             BlockType[] neighbourTypes = new BlockType[8];
             getPlayer().getRegion().getMap().getNeighbourTypes(position, neighbourTypes);
@@ -147,6 +152,11 @@ public class MineJob extends AbstractJob {
                     && (mapIndex.y == position.y || mapIndex.y == position.y - 1 || mapIndex.y == position.y + 1)) {
                 getJob().stateDone(this);
             }
+        }
+
+        @Override
+        public void interrupt(final String message) {
+            getPlayer().getRegion().getMap().removeListener(this);
         }
     }
 

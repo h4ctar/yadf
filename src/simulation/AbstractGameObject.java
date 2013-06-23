@@ -33,6 +33,8 @@ package simulation;
 
 import java.io.Serializable;
 
+import logger.Logger;
+
 /**
  * The AbstractGameObject class.
  */
@@ -81,6 +83,7 @@ public abstract class AbstractGameObject implements IGameObject, Serializable {
      */
     @Override
     public void delete() {
+        Logger.getInstance().log(this, "Deleted");
         deleted = true;
     }
 }

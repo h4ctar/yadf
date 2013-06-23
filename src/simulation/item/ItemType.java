@@ -32,7 +32,7 @@
 package simulation.item;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.w3c.dom.Element;
@@ -64,7 +64,7 @@ public class ItemType implements Serializable {
     public final int capacity;
 
     /** The types of items that can be stored if it's a container. */
-    public final Set<String> contentItemTypeNames = new HashSet<>();
+    public final Set<String> contentItemTypeNames = new LinkedHashSet<>();
 
     /**
      * Instantiates a new item type.

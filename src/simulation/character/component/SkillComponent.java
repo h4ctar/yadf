@@ -32,7 +32,7 @@
 package simulation.character.component;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,7 +68,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
     public SkillComponent(final IGameCharacter character) {
         super(character);
         laborSkills = new HashMap<>();
-        enabledLabors = new HashSet<>();
+        enabledLabors = new LinkedHashSet<>();
         // Enable all labors by default
         for (LaborType laborType : LaborTypeManager.getInstance().getLaborTypes()) {
             enabledLabors.add(laborType);

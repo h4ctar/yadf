@@ -31,6 +31,7 @@
  */
 package simulation.item;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.w3c.dom.Element;
@@ -59,6 +60,8 @@ public class Item extends AbstractEntity {
 
     /** The player that this item belongs to. */
     protected final IPlayer player;
+
+    private final Set<IItemAvailableListener> listeners = new LinkedHashSet<>();
 
     /**
      * Create an item from a DOM element.
@@ -137,6 +140,11 @@ public class Item extends AbstractEntity {
      */
     public void setUsed(final boolean usedTmp) {
         used = usedTmp;
+        if (!used) {
+            for (IItemAvailableListener listener : listeners) {
+                listener.itemAvailable(this);
+            }
+        }
     }
 
     @Override
@@ -160,7 +168,16 @@ public class Item extends AbstractEntity {
     /**
      * Delete the item.
      */
+    @Override
     public void delete() {
         player.getStockManager().removeItem(this);
+    }
+
+    public void addListener(IItemAvailableListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(IItemAvailableListener listener) {
+        listeners.remove(listener);
     }
 }

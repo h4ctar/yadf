@@ -47,7 +47,6 @@ import simulation.item.ItemTypeManager;
 import simulation.item.StockManager;
 import simulation.job.JobManager;
 import simulation.map.MapIndex;
-import simulation.map.RegionMap;
 import simulation.room.Room;
 import simulation.workshop.Workshop;
 
@@ -246,12 +245,12 @@ public class Player extends AbstractGameObject implements IPlayer {
      * Setup.
      * @param embarkPosition the embark position
      * @param numberOfStartingDwarfs the number of starting dwarfs
-     * @param map the map to embark on
      */
-    public void setup(final MapIndex embarkPosition, final int numberOfStartingDwarfs, final RegionMap map) {
+    public void setup(final MapIndex embarkPosition, final int numberOfStartingDwarfs) {
         Logger.getInstance().log(this, "Setting up");
-        addEmbarkDwarfs(embarkPosition, numberOfStartingDwarfs);
+        System.out.println(MyRandom.getInstance().nextInt(5000));
         addEmbarkResources(embarkPosition);
+        addEmbarkDwarfs(embarkPosition, numberOfStartingDwarfs);
     }
 
     /**

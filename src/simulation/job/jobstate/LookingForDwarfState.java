@@ -51,9 +51,9 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
     public void characterAvailable(final IGameCharacter character) {
         assert character instanceof Dwarf;
         if (character.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && character.acquireLock()) {
+            getJob().getPlayer().getDwarfManager().removeListener(this);
             dwarf = (Dwarf) character;
             getJob().stateDone(this);
-            getJob().getPlayer().getDwarfManager().removeListener(this);
         }
     }
 
@@ -63,5 +63,10 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
      */
     public Dwarf getDwarf() {
         return dwarf;
+    }
+
+    @Override
+    public void interrupt(final String message) {
+        getJob().getPlayer().getDwarfManager().removeListener(this);
     }
 }

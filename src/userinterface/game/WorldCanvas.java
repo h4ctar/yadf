@@ -68,7 +68,9 @@ import userinterface.misc.Sprite;
 import userinterface.misc.SpriteManager;
 
 /**
- * The Class WorldCanvas.
+ * The WorldCanvas.
+ * 
+ * Draws everything, should be refactored massively, but meh, it works.
  */
 public class WorldCanvas extends JComponent implements IMapListener {
 
@@ -204,7 +206,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     @Override
     public void mapChanged(final MapIndex mapIndex) {
-        // TODO: make this only redraw the changed block
         drawBackgroundRequired = true;
     }
 
@@ -354,7 +355,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
      */
     private void drawBlocks() {
         if (region == null) {
-            // TODO: remove this check
             return;
         }
 
@@ -524,6 +524,13 @@ public class WorldCanvas extends JComponent implements IMapListener {
                 int y = (area.pos.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
                 g.setColor(ROOM_COLOUR);
                 g.fillRect(x, y, area.width * SpriteManager.SPRITE_SIZE, area.height * SpriteManager.SPRITE_SIZE);
+                for (Item item : room.getItems()) {
+                    MapIndex position = item.getPosition();
+                    int x2 = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
+                    int y2 = (position.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
+                    Sprite itemSprite = SpriteManager.getInstance().getItemSprite(item.getType().sprite);
+                    itemSprite.draw(g, x2, y2);
+                }
             }
         }
     }

@@ -66,4 +66,9 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
             getJob().stateInterrupted(this, "No path to position");
         }
     }
+
+    @Override
+    public void interrupt(final String message) {
+        walkComponent.removeListener(this);
+    }
 }

@@ -46,20 +46,25 @@ public final class MyRandom extends Random {
 
     /**
      * Gets the single instance of MyRandom.
-     * 
      * @return single instance of MyRandom
      */
     public static MyRandom getInstance() {
         if (instance == null) {
-            instance = new MyRandom();
+            instance = new MyRandom(0);
         }
         return instance;
     }
 
     /**
      * Instantiates a new my random.
+     * @param seed the seed
      */
-    private MyRandom() {
+    private MyRandom(final long seed) {
+        super(seed);
+    }
 
+    @Override
+    public void setSeed(final long seed) {
+        super.setSeed(seed);
     }
 }

@@ -100,9 +100,13 @@ public class MainMenuPanel extends ImagePanel {
         }
     }
 
+    /**
+     * Action listener for the how to play button.
+     */
     public class HowToPlayActionListener implements ActionListener {
+
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             mainWindow.showHowToPlay();
         }
     }

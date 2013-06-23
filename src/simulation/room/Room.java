@@ -31,7 +31,7 @@
  */
 package simulation.room;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import logger.Logger;
@@ -51,7 +51,7 @@ public class Room extends AbstractGameObject implements IContainer {
     private static final long serialVersionUID = -4517865861465305417L;
 
     /** The items. */
-    private final Set<Item> items = new HashSet<>();
+    private final Set<Item> items = new LinkedHashSet<>();
 
     /** The area. */
     private final MapArea area;
@@ -63,7 +63,7 @@ public class Room extends AbstractGameObject implements IContainer {
     private final IPlayer player;
 
     /** The listeners. */
-    private final Set<IRoomListener> listeners = new HashSet<>();
+    private final Set<IRoomListener> listeners = new LinkedHashSet<>();
 
     /**
      * Instantiates a new room.
@@ -144,7 +144,7 @@ public class Room extends AbstractGameObject implements IContainer {
      * @return all the found items
      */
     public Set<Item> getUnusedItems(final String itemTypeName) {
-        Set<Item> foundItems = new HashSet<>();
+        Set<Item> foundItems = new LinkedHashSet<>();
         for (Item item : items) {
             if (item.getType().name.equals(itemTypeName) && !item.isUsed()) {
                 foundItems.add(item);

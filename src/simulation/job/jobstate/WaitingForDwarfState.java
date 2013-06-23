@@ -50,4 +50,9 @@ public abstract class WaitingForDwarfState extends AbstractJobState implements I
             getJob().stateDone(this);
         }
     }
+
+    @Override
+    public void interrupt(final String message) {
+        dwarf.removeListener(this);
+    }
 }

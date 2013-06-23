@@ -17,6 +17,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.border.Border;
 
 import logger.Logger;
+import misc.MyRandom;
 import settings.Settings;
 import simulation.Player;
 import simulation.Region;
@@ -112,7 +113,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
 
             player = new Player(playerName, region);
-            player.setup(embarkPosition, numberOfStartingDwarfs, region.getMap());
+            player.setup(embarkPosition, numberOfStartingDwarfs);
             region.addPlayer(player);
 
             controller = new SinglePlayerController();
@@ -146,6 +147,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             WorkshopTypeManager.getInstance().load();
             LaborTypeManager.getInstance().load();
             RecipeManager.getInstance().load();
+            MyRandom.getInstance().setSeed(10);
 
             region = new Region();
             region.setup(regionSize);
@@ -155,11 +157,11 @@ public class GamePanel extends ImagePanel implements IGamePanel {
                 Player newPlayer = new Player(playerName, region);
                 int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
                 MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
+                newPlayer.setup(embarkPosition, numberOfStartingDwarfs);
                 region.addPlayer(newPlayer);
                 if (playerName.equals(playerNames.get(playerIndex))) {
                     player = newPlayer;
                 }
-                newPlayer.setup(embarkPosition, numberOfStartingDwarfs, region.getMap());
             }
 
             worldPane.setup(region, player, controller);
@@ -191,7 +193,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             region = (Region) objectInputStream.readObject();
             objectInputStream.close();
 
-            // TODO: Which player, perhaps dialog
+            // TODO: Which player, perhaps dialog...
             player = region.getPlayers().toArray(new Player[0])[0];
             controller = new SinglePlayerController();
 

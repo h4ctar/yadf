@@ -17,6 +17,8 @@ public abstract class WasteTimeState extends AbstractJobState implements ITimeLi
     /** The dwarf. */
     private final Dwarf dwarf;
 
+    private long notifyTime;
+
     /**
      * Constructor.
      * @param durationTmp how many simulation steps to wait
@@ -36,7 +38,7 @@ public abstract class WasteTimeState extends AbstractJobState implements ITimeLi
 
     @Override
     public void transitionInto() {
-        dwarf.getPlayer().getRegion().addTimeListener(duration, this);
+        notifyTime = dwarf.getPlayer().getRegion().addTimeListener(duration, this);
         dwarf.setComponent(IMovementComponent.class, new StillMovementComponent(dwarf));
     }
 
@@ -47,5 +49,10 @@ public abstract class WasteTimeState extends AbstractJobState implements ITimeLi
     @Override
     public void notifyTimeEvent() {
         getJob().stateDone(this);
+    }
+
+    @Override
+    public void interrupt(final String message) {
+        dwarf.getPlayer().getRegion().removeTimeListener(notifyTime, this);
     }
 }

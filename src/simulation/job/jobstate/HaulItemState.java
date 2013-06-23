@@ -121,4 +121,9 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     public Item getItem() {
         return item;
     }
+
+    @Override
+    public void interrupt(final String message) {
+        haulJob.interrupt(message);
+    }
 }

@@ -104,6 +104,7 @@ public enum BlockType {
     /** What item is produced when mined. */
     public final String itemMined;
 
+    /** The sprite. */
     public final int sprite;
 
     /**
@@ -114,6 +115,7 @@ public enum BlockType {
      * @param isClimbTmp the is climb
      * @param isMineableTmp the is mineable
      * @param itemMinedTmp the item mined
+     * @param spriteTmp the sprite
      */
     BlockType(final boolean isStandInTmp, final boolean isStandOnTmp, final boolean isClimbTmp,
             final boolean isMineableTmp, final String itemMinedTmp, final int spriteTmp) {

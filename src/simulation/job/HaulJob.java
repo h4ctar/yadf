@@ -133,7 +133,7 @@ public class HaulJob extends AbstractJob {
 
     @Override
     public String toString() {
-        return "Hauling " + item.getType().name;
+        return "Hauling " + item != null ? item.getType().name : itemType.name;
     }
 
     @Override
@@ -154,8 +154,11 @@ public class HaulJob extends AbstractJob {
         super.interrupt(message);
         if (needToReleaseLock && hauler != null) {
             hauler.releaseLock();
-        }
-        if (item != null) {
+            if (item != null) {
+                hauler.getComponent(IInventoryComponent.class).dropHaulItem(true);
+                getPlayer().getStockManager().addItem(item);
+            }
+        } else if (item != null) {
             item.setUsed(false);
         }
     }
