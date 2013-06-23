@@ -121,6 +121,11 @@ public class Player extends AbstractGameObject implements IPlayer {
         workshops.add(workshop);
     }
 
+    @Override
+    public void removeWorkshop(final Workshop workshop) {
+        workshops.remove(workshop);
+    }
+
     /**
      * Gets all the farms.
      * @return the farms
@@ -259,7 +264,7 @@ public class Player extends AbstractGameObject implements IPlayer {
             farm.update(this);
         }
         for (Workshop workshop : workshops) {
-            workshop.update(this);
+            workshop.update();
         }
     }
 

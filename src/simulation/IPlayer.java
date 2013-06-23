@@ -33,6 +33,8 @@ public interface IPlayer {
 
     void addWorkshop(Workshop workshop);
 
+    void removeWorkshop(Workshop workshop);
+
     Set<Room> getRooms();
 
     Room getRoom(MapIndex position);

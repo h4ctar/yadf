@@ -31,14 +31,19 @@
  */
 package userinterface.game.room;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.AbstractListModel;
 
+import simulation.item.Item;
+import simulation.room.IRoomListener;
 import simulation.room.Room;
 
 /**
  * The Class ItemListModel.
  */
-public class ItemListModel extends AbstractListModel<String> {
+public class ItemListModel extends AbstractListModel<String> implements IRoomListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -1108175675511497032L;
@@ -46,34 +51,49 @@ public class ItemListModel extends AbstractListModel<String> {
     /** The room. */
     private Room room;
 
+    /** An ordered cache set of the items. */
+    private List<Item> items;
+
+    /**
+     * Sets the room.
+     * @param roomTmp the new room
+     */
+    public void setRoom(final Room roomTmp) {
+        if (room != null) {
+            room.removeListener(this);
+        }
+        room = roomTmp;
+        room.addListener(this);
+        items = new ArrayList<>(room.getItems());
+    }
+
     @Override
     public String getElementAt(final int index) {
-        return room.getItems().get(index).toString();
+        return items.get(index).toString();
     }
 
     @Override
     public int getSize() {
-        if (room == null) {
-            return 0;
+        int size = 0;
+        if (room != null) {
+            size = items.size();
         }
-
-        return room.getItems().size();
+        return size;
     }
 
-    /**
-     * Sets the room.
-     * 
-     * @param roomTmp the new room
-     */
-    public void setRoom(final Room roomTmp) {
-        room = roomTmp;
-        update();
+    @Override
+    public void itemAdded(final Item item) {
+        assert !items.contains(item);
+        items.add(item);
+        int index = items.size() - 1;
+        fireContentsChanged(this, index, index);
     }
 
-    /**
-     * Update.
-     */
-    public void update() {
-        fireContentsChanged(this, 0, getSize() - 1);
+    @Override
+    public void itemRemoved(final Item item) {
+        assert items.contains(item);
+        int index = items.indexOf(item);
+        items.remove(item);
+        fireContentsChanged(this, index, index);
     }
 }

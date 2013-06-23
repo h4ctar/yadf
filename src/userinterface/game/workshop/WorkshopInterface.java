@@ -57,7 +57,7 @@ import userinterface.game.WorldCanvas;
 import userinterface.misc.ImagePanel;
 import controller.AbstractController;
 import controller.command.CancelOrderCommand;
-import controller.command.DeleteRoomCommand;
+import controller.command.DeleteWorkshopCommand;
 import controller.command.NewOrderCommand;
 
 /**
@@ -179,8 +179,8 @@ public class WorkshopInterface extends JInternalFrame {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            int roomId = workshop.getId();
-            controller.addCommand(new DeleteRoomCommand(player, roomId));
+            int workshopId = workshop.getId();
+            controller.addCommand(new DeleteWorkshopCommand(player, workshopId));
             setVisible(false);
         }
     }

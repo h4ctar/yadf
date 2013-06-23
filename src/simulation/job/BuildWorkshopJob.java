@@ -193,7 +193,7 @@ public class BuildWorkshopJob extends AbstractJob {
         @Override
         public void transitionOutOf() {
             super.transitionOutOf();
-            getPlayer().addWorkshop(new Workshop(workshopType, position));
+            getPlayer().addWorkshop(new Workshop(getPlayer(), workshopType, position));
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.releaseLock();
             for (Item resource : resources) {

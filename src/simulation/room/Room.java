@@ -31,13 +31,13 @@
  */
 package simulation.room;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import logger.Logger;
 import simulation.AbstractGameObject;
 import simulation.IPlayer;
+import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -45,13 +45,13 @@ import simulation.map.MapIndex;
 /**
  * The Class Room.
  */
-public class Room extends AbstractGameObject {
+public class Room extends AbstractGameObject implements IContainer {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -4517865861465305417L;
 
     /** The items. */
-    private final List<Item> items = new ArrayList<>();
+    private final Set<Item> items = new HashSet<>();
 
     /** The area. */
     private final MapArea area;
@@ -59,13 +59,17 @@ public class Room extends AbstractGameObject {
     /** The room type. */
     private final String roomType;
 
+    /** The player that this room belongs to. */
     private final IPlayer player;
+
+    /** The listeners. */
+    private final Set<IRoomListener> listeners = new HashSet<>();
 
     /**
      * Instantiates a new room.
-     * 
      * @param areaTmp the area
      * @param roomTypeTmp the room type
+     * @param playerTmp the player that this room belongs to
      */
     public Room(final MapArea areaTmp, final String roomTypeTmp, final IPlayer playerTmp) {
         area = areaTmp;
@@ -74,17 +78,22 @@ public class Room extends AbstractGameObject {
     }
 
     /**
-     * Adds the item.
-     * 
+     * Adds an item to this room.
      * @param item the item
+     * @return true if the item was successfully added
      */
-    public void addItem(final Item item) {
+    @Override
+    public boolean addItem(final Item item) {
+        Logger.getInstance().log(this, "Item added: " + item.getType().name);
         items.add(item);
+        for (IRoomListener listener : listeners) {
+            listener.itemAdded(item);
+        }
+        return true;
     }
 
     /**
-     * Gets the area.
-     * 
+     * Gets the area of the room.
      * @return the area
      */
     public MapArea getArea() {
@@ -93,16 +102,15 @@ public class Room extends AbstractGameObject {
 
     /**
      * Gets the items.
-     * 
      * @return the items
      */
-    public List<Item> getItems() {
+    @Override
+    public Set<Item> getItems() {
         return items;
     }
 
     /**
      * Gets the position.
-     * 
      * @return the position
      */
     public MapIndex getPosition() {
@@ -111,7 +119,6 @@ public class Room extends AbstractGameObject {
 
     /**
      * Gets the type.
-     * 
      * @return the type
      */
     public String getType() {
@@ -120,7 +127,6 @@ public class Room extends AbstractGameObject {
 
     /**
      * Checks for index.
-     * 
      * @param index the index
      * @return true, if successful
      */
@@ -132,7 +138,12 @@ public class Room extends AbstractGameObject {
         return false;
     }
 
-    public Set<Item> getUnusedItems(String itemTypeName) {
+    /**
+     * Gets all the unused items of a specific type.
+     * @param itemTypeName the type of item to get
+     * @return all the found items
+     */
+    public Set<Item> getUnusedItems(final String itemTypeName) {
         Set<Item> foundItems = new HashSet<>();
         for (Item item : items) {
             if (item.getType().name.equals(itemTypeName) && !item.isUsed()) {
@@ -142,7 +153,8 @@ public class Room extends AbstractGameObject {
         return foundItems;
     }
 
-    public Item getUnusedItem(String itemTypeName) {
+    @Override
+    public Item getUnusedItem(final String itemTypeName) {
         for (Item item : items) {
             if (item.getType().name.equals(itemTypeName) && !item.isUsed()) {
                 return item;
@@ -151,7 +163,50 @@ public class Room extends AbstractGameObject {
         return null;
     }
 
+    @Override
     public void delete() {
+        super.delete();
         player.removeRoom(this);
+        for (Item item : items) {
+            if (item.isPlaced()) {
+                item.setPlaced(false);
+            }
+            player.getStockManager().addItem(item);
+        }
+    }
+
+    @Override
+    public boolean removeItem(final Item item) {
+        Logger.getInstance().log(this, "Item removed: " + item.getType().name);
+        boolean removed = items.remove(item);
+        if (removed) {
+            for (IRoomListener listener : listeners) {
+                listener.itemRemoved(item);
+            }
+        }
+        return removed;
+    }
+
+    @Override
+    public Item getUnusedItemFromCategory(final String category) {
+        // TODO Auto-generated method stub
+        assert false;
+        return null;
+    }
+
+    /**
+     * Add a listener to this room that will be notified whenever an item is added or removed.
+     * @param listener the listener to add
+     */
+    public void addListener(final IRoomListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * Remove a listener from this room.
+     * @param listener the listener to remove
+     */
+    public void removeListener(final IRoomListener listener) {
+        listeners.remove(listener);
     }
 }

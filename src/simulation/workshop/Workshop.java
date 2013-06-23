@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import simulation.AbstractGameObject;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.job.CraftJob;
 import simulation.job.IJob;
 import simulation.map.MapArea;
@@ -72,14 +72,19 @@ public class Workshop extends AbstractGameObject {
     /** Listeners to changes of the workshop. */
     private final List<IWorkshopListener> listeners = new ArrayList<>();
 
+    /** The player that this workshop belongs to. */
+    private final IPlayer player;
+
     /**
      * Instantiates a new workshop.
+     * @param playerTmp the player that this workshop belongs to
      * @param workshopTypeTmp the workshop type
      * @param positionTmp the position
      */
-    public Workshop(final WorkshopType workshopTypeTmp, final MapIndex positionTmp) {
+    public Workshop(final IPlayer playerTmp, final WorkshopType workshopTypeTmp, final MapIndex positionTmp) {
         workshopType = workshopTypeTmp;
         position = positionTmp;
+        player = playerTmp;
     }
 
     /**
@@ -91,6 +96,14 @@ public class Workshop extends AbstractGameObject {
     }
 
     /**
+     * Removes a listener to changes to the workshop.
+     * @param listener the listener to remove
+     */
+    public void removeListener(final IWorkshopListener listener) {
+        listeners.remove(listener);
+    }
+
+    /**
      * Cancel an order.
      * @param orderIndex the order index
      */
@@ -98,7 +111,8 @@ public class Workshop extends AbstractGameObject {
         if (orderIndex == 0 && craftJob != null) {
             craftJob.interrupt("Order canceled");
         } else {
-            orders.remove(orderIndex);
+            Recipe removedOrder = orders.remove(orderIndex);
+            notifyListenersOfOrderRemoved(removedOrder, orderIndex);
         }
     }
 
@@ -169,9 +183,9 @@ public class Workshop extends AbstractGameObject {
 
     /**
      * Update.
-     * @param player the player
      */
-    public void update(final Player player) {
+    public void update() {
+        // TODO: Remove this method
         if (craftJob == null) {
             if (!orders.isEmpty()) {
                 craftJob = new CraftJob(this, orders.get(0), player);
@@ -188,10 +202,10 @@ public class Workshop extends AbstractGameObject {
 
     /**
      * Notify all the listeners that an order has been added.
-     * @param recipe
-     * @param index
+     * @param recipe the recipe that was added
+     * @param index the index of the recipe that was added
      */
-    private void notifyListenersOfOrderAdded(Recipe recipe, int index) {
+    private void notifyListenersOfOrderAdded(final Recipe recipe, final int index) {
         for (IWorkshopListener listener : listeners) {
             listener.orderAdded(recipe, index);
         }
@@ -199,10 +213,10 @@ public class Workshop extends AbstractGameObject {
 
     /**
      * Notify all the listeners that an order has been removed.
-     * @param recipe
-     * @param index
+     * @param recipe the recipe that was removed
+     * @param index the index of the recipe that was removed
      */
-    private void notifyListenersOfOrderRemoved(Recipe recipe, int index) {
+    private void notifyListenersOfOrderRemoved(final Recipe recipe, final int index) {
         for (IWorkshopListener listener : listeners) {
             listener.orderRemoved(recipe, index);
         }
@@ -214,5 +228,11 @@ public class Workshop extends AbstractGameObject {
      */
     public MapArea getArea() {
         return new MapArea(position, WORKSHOP_SIZE, WORKSHOP_SIZE);
+    }
+
+    @Override
+    public void delete() {
+        super.delete();
+        player.removeWorkshop(this);
     }
 }

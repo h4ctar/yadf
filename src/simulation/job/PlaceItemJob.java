@@ -56,6 +56,9 @@ public class PlaceItemJob extends AbstractJob {
     /** The position to place the item. */
     private final MapIndex position;
 
+    /** The room to place the item in. */
+    private Room room;
+
     /**
      * Instantiates a new place item job.
      * @param positionTmp the position
@@ -103,6 +106,7 @@ public class PlaceItemJob extends AbstractJob {
         public void transitionOutOf() {
             super.transitionOutOf();
             item = getItem();
+            room = getPlayer().getRoom(position);
         }
 
         @Override
@@ -120,17 +124,13 @@ public class PlaceItemJob extends AbstractJob {
          * Constructor.
          */
         public PlaceItemState() {
-            super(item, position, getPlayer().getStockManager(), PlaceItemJob.this);
+            super(item, position, room != null ? room : getPlayer().getStockManager(), PlaceItemJob.this);
         }
 
         @Override
         public void transitionOutOf() {
             item.setUsed(false);
             item.setPlaced(true);
-            Room room = getPlayer().getRoom(position);
-            if (room != null) {
-                room.addItem(item);
-            }
         }
 
         @Override
