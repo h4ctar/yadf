@@ -31,13 +31,13 @@
  */
 package simulation.job;
 
+import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
-import simulation.job.designation.ChannelDesignation;
 import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.LookingForDwarfState;
 import simulation.job.jobstate.WalkToPositionState;
@@ -46,6 +46,7 @@ import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.BlockType;
 import simulation.map.MapIndex;
+import simulation.map.RegionMap;
 
 /**
  * The Class ChannelJob.
@@ -64,27 +65,28 @@ public class ChannelJob extends AbstractJob {
     /** The position. */
     private final MapIndex position;
 
-    /** The designation. */
-    private final ChannelDesignation designation;
-
     /** The miner dwarf. */
-    private Dwarf miner;
+    private IGameCharacter miner;
 
     /** The type of block to replace the channeled block with, null to totally remove it. */
     private final BlockType blockType;
+
+    /** The map that will be channeled. */
+    final RegionMap map;
 
     /**
      * Instantiates a new channel job.
      * @param positionTmp the position
      * @param blockTypeTmp the type of block to replace the channeled block with, null to totally remove it
-     * @param designationTmp the designation
+     * @param mapTmp the map that the construction will be built in
+     * @param player the player that this designation belongs to
      */
-    public ChannelJob(final MapIndex positionTmp, final BlockType blockTypeTmp,
-            final ChannelDesignation designationTmp) {
-        super(designationTmp.getPlayer());
+    public ChannelJob(final MapIndex positionTmp, final BlockType blockTypeTmp, final RegionMap mapTmp,
+            final IPlayer player) {
+        super(player);
         position = positionTmp;
         blockType = blockTypeTmp;
-        designation = designationTmp;
+        map = mapTmp;
         setJobState(new LookingForMinerState());
     }
 
@@ -119,8 +121,7 @@ public class ChannelJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             miner = getDwarf();
         }
 
@@ -161,16 +162,15 @@ public class ChannelJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             MapIndex downPosition = position.add(0, 0, -1);
-            String minedItemTypeName = designation.getRegion().getMap().getBlock(downPosition).itemMined;
+            String minedItemTypeName = map.getBlock(downPosition).itemMined;
             if (minedItemTypeName != null) {
                 ItemType minedItemType = ItemTypeManager.getInstance().getItemType(minedItemTypeName);
                 Item minedItem = ItemTypeManager.getInstance().createItem(downPosition, minedItemType, getPlayer());
                 getPlayer().getStockManager().addItem(minedItem);
             }
-            designation.getRegion().getMap().channelBlock(downPosition, blockType);
+            map.channelBlock(downPosition, blockType);
             miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             miner.releaseLock();
         }

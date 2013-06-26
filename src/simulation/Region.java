@@ -42,9 +42,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import logger.Logger;
 import misc.MyRandom;
 import simulation.character.Animal;
-import simulation.character.Dwarf;
-import simulation.character.GameCharacter;
 import simulation.character.Goblin;
+import simulation.character.IGameCharacter;
 import simulation.farm.Farm;
 import simulation.item.Item;
 import simulation.item.Stockpile;
@@ -248,14 +247,14 @@ public class Region implements Serializable {
      * @param position the position
      * @return the closest dwarf
      */
-    public Dwarf getClosestDwarf(final MapIndex position) {
+    public IGameCharacter getClosestDwarf(final MapIndex position) {
         // TODO: make this actually return the closest dwarf, also move into player
         int minDistance = Integer.MAX_VALUE;
-        Dwarf minDwarf = null;
+        IGameCharacter minDwarf = null;
 
         for (Player player : players) {
-            Set<Dwarf> dwarfs = player.getDwarfManager().getDwarfs();
-            for (Dwarf dwarf : dwarfs) {
+            Set<IGameCharacter> dwarfs = player.getDwarfManager().getDwarfs();
+            for (IGameCharacter dwarf : dwarfs) {
                 if (!dwarf.isDead()) {
                     int distance = dwarf.getPosition().distance(position);
                     if (minDwarf == null || distance < minDistance) {
@@ -274,9 +273,9 @@ public class Region implements Serializable {
      * @param mouseIndex the mouse index
      * @return the dwarf
      */
-    public GameCharacter getDwarf(final MapIndex mouseIndex) {
+    public IGameCharacter getDwarf(final MapIndex mouseIndex) {
         for (Player player : players) {
-            for (GameCharacter dwarf : player.getDwarfManager().getDwarfs()) {
+            for (IGameCharacter dwarf : player.getDwarfManager().getDwarfs()) {
                 if (dwarf.getPosition().equals(mouseIndex)) {
                     return dwarf;
                 }
@@ -291,16 +290,16 @@ public class Region implements Serializable {
      * @param position the position
      * @return the game character
      */
-    public GameCharacter getGameCharacter(final MapIndex position) {
+    public IGameCharacter getGameCharacter(final MapIndex position) {
         for (Player player : players) {
-            Set<Dwarf> dwarfs = player.getDwarfManager().getDwarfs();
-            for (Dwarf dwarf : dwarfs) {
+            Set<IGameCharacter> dwarfs = player.getDwarfManager().getDwarfs();
+            for (IGameCharacter dwarf : dwarfs) {
                 if (dwarf.getPosition().equals(position)) {
                     return dwarf;
                 }
             }
         }
-        for (GameCharacter goblin : goblins) {
+        for (IGameCharacter goblin : goblins) {
             if (goblin.getPosition().equals(position)) {
                 return goblin;
             }
@@ -440,11 +439,11 @@ public class Region implements Serializable {
         for (Player player : players) {
             player.update();
         }
-        for (GameCharacter animal : animals) {
-            animal.update(this);
+        for (IGameCharacter animal : animals) {
+            animal.update();
         }
-        for (GameCharacter goblin : goblins) {
-            goblin.update(this);
+        for (IGameCharacter goblin : goblins) {
+            goblin.update();
         }
         // spawnGoblins();
     }
@@ -459,7 +458,7 @@ public class Region implements Serializable {
             position.x = random.nextInt(map.getMapSize().x);
             position.y = random.nextInt(map.getMapSize().y);
             position.z = map.getHeight(position.x, position.y);
-            animals.add(new Animal("Animal", position));
+            animals.add(new Animal("Animal", position, this));
         }
     }
 
@@ -475,7 +474,7 @@ public class Region implements Serializable {
                 position.x = random.nextInt(map.getMapSize().x);
                 position.y = random.nextInt(map.getMapSize().y);
                 position.z = map.getHeight(position.x, position.y);
-                goblins.add(new Goblin("Goblin", position));
+                goblins.add(new Goblin("Goblin", this, position));
             }
         }
     }

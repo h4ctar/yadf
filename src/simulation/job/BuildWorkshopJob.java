@@ -35,7 +35,7 @@ import java.util.Set;
 
 import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.job.jobstate.HaulResourcesState;
@@ -71,7 +71,7 @@ public class BuildWorkshopJob extends AbstractJob {
     private final WorkshopType workshopType;
 
     /** The dwarf that will do the building. */
-    private Dwarf builder;
+    private IGameCharacter builder;
 
     /** The hauled building resources. */
     private Set<Item> resources;
@@ -125,8 +125,7 @@ public class BuildWorkshopJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             resources = getResources();
         }
 
@@ -149,8 +148,7 @@ public class BuildWorkshopJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             builder = getDwarf();
         }
 
@@ -191,15 +189,13 @@ public class BuildWorkshopJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             getPlayer().addWorkshop(new Workshop(getPlayer(), workshopType, position));
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.releaseLock();
             for (Item resource : resources) {
                 resource.delete();
             }
-            super.transitionOutOf();
         }
 
         @Override

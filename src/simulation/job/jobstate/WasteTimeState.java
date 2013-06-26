@@ -1,7 +1,7 @@
 package simulation.job.jobstate;
 
 import simulation.ITimeListener;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.IMovementComponent;
 import simulation.character.component.StillMovementComponent;
 import simulation.job.AbstractJob;
@@ -15,8 +15,9 @@ public abstract class WasteTimeState extends AbstractJobState implements ITimeLi
     private final long duration;
 
     /** The dwarf. */
-    private final Dwarf dwarf;
+    private final IGameCharacter dwarf;
 
+    /** The time that the time should be up. */
     private long notifyTime;
 
     /**
@@ -25,7 +26,7 @@ public abstract class WasteTimeState extends AbstractJobState implements ITimeLi
      * @param dwarfTmp the dwarf
      * @param jobTmp the job that this state belongs to
      */
-    public WasteTimeState(final long durationTmp, final Dwarf dwarfTmp, final AbstractJob jobTmp) {
+    public WasteTimeState(final long durationTmp, final IGameCharacter dwarfTmp, final AbstractJob jobTmp) {
         super(jobTmp);
         dwarf = dwarfTmp;
         duration = durationTmp;
@@ -37,22 +38,18 @@ public abstract class WasteTimeState extends AbstractJobState implements ITimeLi
     }
 
     @Override
-    public void transitionInto() {
-        notifyTime = dwarf.getPlayer().getRegion().addTimeListener(duration, this);
+    public void start() {
+        notifyTime = dwarf.getRegion().addTimeListener(duration, this);
         dwarf.setComponent(IMovementComponent.class, new StillMovementComponent(dwarf));
     }
 
     @Override
-    public void transitionOutOf() {
-    }
-
-    @Override
     public void notifyTimeEvent() {
-        getJob().stateDone(this);
+        finishState();
     }
 
     @Override
     public void interrupt(final String message) {
-        dwarf.getPlayer().getRegion().removeTimeListener(notifyTime, this);
+        dwarf.getRegion().removeTimeListener(notifyTime, this);
     }
 }

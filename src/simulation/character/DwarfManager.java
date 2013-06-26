@@ -16,7 +16,7 @@ import simulation.map.MapIndex;
 public class DwarfManager implements IDwarfManager, ICharacterAvailableListener {
 
     /** The dwarfs. */
-    private final Set<Dwarf> dwarfs = new CopyOnWriteArraySet<>();
+    private final Set<IGameCharacter> dwarfs = new CopyOnWriteArraySet<>();
 
     /** The name generator. */
     private NameGenerator nameGenerator;
@@ -48,8 +48,8 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
      * Adds a new dwarf.
      * @param position the position of the new dwarf
      */
-    public void addNewDwarf(final MapIndex position) {
-        Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position, player);
+    public void addNewDwarf(final MapIndex position, final Region region) {
+        Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position, region, player);
         dwarf.addListener(this);
         dwarfs.add(dwarf);
         notifyDwarfAdded(dwarf);
@@ -61,8 +61,8 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
      * @return the dwarf
      */
     @Override
-    public Dwarf getDwarf(final int id) {
-        for (Dwarf dwarf : dwarfs) {
+    public IGameCharacter getDwarf(final int id) {
+        for (IGameCharacter dwarf : dwarfs) {
             if (dwarf.getId() == id) {
                 return dwarf;
             }
@@ -76,8 +76,8 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
      * @return the dwarf
      */
     @Override
-    public Dwarf getDwarf(final MapIndex position) {
-        for (Dwarf dwarf : dwarfs) {
+    public IGameCharacter getDwarf(final MapIndex position) {
+        for (IGameCharacter dwarf : dwarfs) {
             if (dwarf.getPosition().equals(position)) {
                 return dwarf;
             }
@@ -90,7 +90,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
      * @return the dwarfs
      */
     @Override
-    public Set<Dwarf> getDwarfs() {
+    public Set<IGameCharacter> getDwarfs() {
         return dwarfs;
     }
 
@@ -100,8 +100,8 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
      * @return the idle dwarf
      */
     @Override
-    public Dwarf getIdleDwarf(final LaborType requiredLabor) {
-        for (Dwarf dwarf : dwarfs) {
+    public IGameCharacter getIdleDwarf(final LaborType requiredLabor) {
+        for (IGameCharacter dwarf : dwarfs) {
             if (dwarf.isDead()) {
                 continue;
             }
@@ -114,11 +114,10 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
 
     /**
      * Update all the dwarfs.
-     * @param region the region
      */
-    public void update(final Region region) {
-        for (Dwarf dwarf : dwarfs) {
-            dwarf.update(region);
+    public void update() {
+        for (IGameCharacter dwarf : dwarfs) {
+            dwarf.update();
         }
     }
 

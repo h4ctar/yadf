@@ -61,6 +61,7 @@ public class Item extends AbstractEntity {
     /** The player that this item belongs to. */
     protected final IPlayer player;
 
+    /** Item available listeners. */
     private final Set<IItemAvailableListener> listeners = new LinkedHashSet<>();
 
     /**
@@ -173,11 +174,19 @@ public class Item extends AbstractEntity {
         player.getStockManager().removeItem(this);
     }
 
-    public void addListener(IItemAvailableListener listener) {
+    /**
+     * Add a new listener.
+     * @param listener the new listener
+     */
+    public void addListener(final IItemAvailableListener listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(IItemAvailableListener listener) {
+    /**
+     * Remove a listener.
+     * @param listener the listener to remove
+     */
+    public void removeListener(final IItemAvailableListener listener) {
         listeners.remove(listener);
     }
 }

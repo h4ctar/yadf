@@ -33,7 +33,7 @@ package simulation.job;
 
 import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.FarmPlot;
 import simulation.job.jobstate.IJobState;
@@ -62,7 +62,7 @@ public class TillJob extends AbstractJob {
     private final FarmPlot farmPlot;
 
     /** The farmer dwarf. */
-    private Dwarf farmer;
+    private IGameCharacter farmer;
 
     /**
      * Instantiates a new till job.
@@ -106,8 +106,7 @@ public class TillJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             farmer = getDwarf();
         }
 
@@ -148,8 +147,7 @@ public class TillJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             farmer.releaseLock();
         }

@@ -36,7 +36,7 @@ import simulation.map.MapIndex;
 /**
  * The Class Entity.
  */
-public abstract class AbstractEntity extends AbstractGameObject {
+public abstract class AbstractEntity extends AbstractGameObject implements IEntity {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -1522869275256512642L;
@@ -52,18 +52,12 @@ public abstract class AbstractEntity extends AbstractGameObject {
         position = new MapIndex(positionTmp);
     }
 
-    /**
-     * Gets the position of this entity.
-     * @return A reference to the position
-     */
+    @Override
     public MapIndex getPosition() {
         return new MapIndex(position);
     }
 
-    /**
-     * Sets the position.
-     * @param positionTmp the new position
-     */
+    @Override
     public void setPosition(final MapIndex positionTmp) {
         position.x = positionTmp.x;
         position.y = positionTmp.y;

@@ -118,10 +118,18 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         stockpileListeners.add(listener);
     }
 
+    /**
+     * Add a new item available listener.
+     * @param listener the new listener
+     */
     public void addItemAvailableListener(final IItemAvailableListener listener) {
         availableListeners.add(listener);
     }
 
+    /**
+     * Remove an item available listener.
+     * @param listener the listener to remove
+     */
     public void removeItemAvailableListener(final IItemAvailableListener listener) {
         availableListeners.remove(listener);
     }

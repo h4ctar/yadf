@@ -47,7 +47,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import simulation.character.Dwarf;
 import simulation.character.ICharacterListener;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ICharacterComponent;
@@ -98,7 +97,7 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
     private JTextField thirstTextField;
 
     /** The dwarf. */
-    private Dwarf dwarf;
+    private IGameCharacter dwarf;
 
     /** The lbl lock. */
     private JLabel lockLabel;
@@ -141,7 +140,7 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
      * @param dwarfTmp the dwarf
      * @param worldCanvas the world canvas
      */
-    public void setDwarf(final Dwarf dwarfTmp, final WorldCanvas worldCanvas) {
+    public void setDwarf(final IGameCharacter dwarfTmp, final WorldCanvas worldCanvas) {
         dwarf = dwarfTmp;
         dwarf.addListener(this);
         dwarf.getComponent(ISkillComponent.class).addListener(this);

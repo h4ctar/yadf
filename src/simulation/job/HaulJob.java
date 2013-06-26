@@ -176,8 +176,7 @@ public class HaulJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             item = super.getItem();
         }
 
@@ -206,8 +205,7 @@ public class HaulJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             hauler = getDwarf();
         }
 
@@ -230,8 +228,7 @@ public class HaulJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             getPlayer().getStockManager().removeItem(item);
             hauler.getComponent(IInventoryComponent.class).pickupHaulItem(item);
         }
@@ -256,8 +253,7 @@ public class HaulJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             hauler.getComponent(IInventoryComponent.class).dropHaulItem(false);
             if (needToReleaseLock) {
                 hauler.releaseLock();

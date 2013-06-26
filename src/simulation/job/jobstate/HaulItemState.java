@@ -1,6 +1,6 @@
 package simulation.job.jobstate;
 
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.item.IContainer;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -24,7 +24,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     private HaulJob haulJob;
 
     /** The dwarf to do the hauling, can be null if don't care who hauls. */
-    private Dwarf dwarf;
+    private IGameCharacter dwarf;
 
     /** The item to haul. */
     private Item item;
@@ -43,7 +43,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * @param containerTmp the container to put the item in once its hauled, could be null to leave the item nowhere
      * @param jobTmp the job that this state belong to
      */
-    public HaulItemState(final Dwarf dwarfTmp, final Item itemTmp, final MapIndex positionTmp,
+    public HaulItemState(final IGameCharacter dwarfTmp, final Item itemTmp, final MapIndex positionTmp,
             final IContainer containerTmp, final AbstractJob jobTmp) {
         super(jobTmp);
         dwarf = dwarfTmp;
@@ -88,7 +88,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     }
 
     @Override
-    public void transitionInto() {
+    public void start() {
         if (dwarf == null) {
             if (item == null) {
                 haulJob = new HaulJob(itemType, container, position, getJob().getPlayer());
@@ -102,16 +102,12 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     }
 
     @Override
-    public void transitionOutOf() {
-    }
-
-    @Override
     public void jobDone(final IJob job) {
         assert haulJob == job;
         assert job.isDone();
         item = ((HaulJob) job).getItem();
         job.removeListener(this);
-        getJob().stateDone(this);
+        finishState();
     }
 
     /**

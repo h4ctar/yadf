@@ -36,6 +36,7 @@ import javax.swing.table.AbstractTableModel;
 import simulation.Player;
 import simulation.character.Dwarf;
 import simulation.character.IDwarfManagerListener;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ICharacterComponent;
 import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.ISkillComponent;
@@ -68,7 +69,7 @@ public class LaborTableModel extends AbstractTableModel implements IDwarfManager
         player = playerTmp;
         controller = controllerTmp;
         player.getDwarfManager().addListener(this);
-        for (Dwarf dwarf : player.getDwarfManager().getDwarfs()) {
+        for (IGameCharacter dwarf : player.getDwarfManager().getDwarfs()) {
             dwarf.getComponent(ISkillComponent.class).addListener(this);
         }
     }

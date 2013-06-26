@@ -76,16 +76,9 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
         laborSkills.put(profession, Integer.valueOf(0));
     }
 
-    /**
-     * Can do job.
-     * @param requiredLabor the required labor
-     * @return true, if successful
-     */
     @Override
     public boolean canDoJob(final LaborType requiredLabor) {
-        if (requiredLabor == null) {
-            return true;
-        }
+        assert requiredLabor != null;
 
         // Does the dwarf have the labor enabled
         if (!isLaborEnabled(requiredLabor)) {

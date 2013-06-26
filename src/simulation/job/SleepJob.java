@@ -73,8 +73,7 @@ public class SleepJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             Set<Room> rooms = getPlayer().getRooms();
             for (Room room : rooms) {
                 // TODO: do I have my own room?
@@ -131,8 +130,7 @@ public class SleepJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             dwarf.getComponent(ISleepComponent.class).sleep();
             dwarf.releaseLock();
             if (bed != null) {

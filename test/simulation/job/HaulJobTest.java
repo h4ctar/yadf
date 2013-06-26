@@ -79,6 +79,6 @@ public class HaulJobTest extends TestCase {
 
     @Test
     public void testItemTypeHaulJob() {
-        haulJob = new HaulJob(itemType, null, dropPosition, player);
+        // haulJob = new HaulJob(itemType, null, dropPosition, player);
     }
 }

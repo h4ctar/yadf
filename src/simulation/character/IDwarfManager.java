@@ -15,27 +15,27 @@ public interface IDwarfManager {
      * @param id the dwarfs ID
      * @return the dwarf
      */
-    Dwarf getDwarf(int id);
+    IGameCharacter getDwarf(int id);
 
     /**
      * Gets an idle dwarf.
      * @param requiredLabor the labor that the dwarf needs to have, null if don't care
      * @return the dwarf
      */
-    Dwarf getIdleDwarf(LaborType requiredLabor);
+    IGameCharacter getIdleDwarf(LaborType requiredLabor);
 
     /**
      * Gets a dwarf at a specific map index.
      * @param mapIndex the map index
      * @return the dwarf
      */
-    Dwarf getDwarf(MapIndex mapIndex);
+    IGameCharacter getDwarf(MapIndex mapIndex);
 
     /**
      * Gets all the dwarfs.
      * @return the dwarfs
      */
-    Set<Dwarf> getDwarfs();
+    Set<IGameCharacter> getDwarfs();
 
     /**
      * Add a listener that will be notified when a dwarf is added or removed from the dwarf manager.

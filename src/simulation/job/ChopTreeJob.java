@@ -34,7 +34,7 @@ package simulation.job;
 import simulation.IPlayer;
 import simulation.Region;
 import simulation.Tree;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -65,7 +65,7 @@ public class ChopTreeJob extends AbstractJob {
     private final Tree tree;
 
     /** The dwarf. */
-    private Dwarf lumberjack;
+    private IGameCharacter lumberjack;
 
     /**
      * Instantiates a new chop tree job.
@@ -109,8 +109,7 @@ public class ChopTreeJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             lumberjack = getDwarf();
         }
 
@@ -151,10 +150,9 @@ public class ChopTreeJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             if (tree == null || tree.isDeleted()) {
-                interrupt("Tree missing");
+                ChopTreeJob.this.interrupt("Tree missing");
                 return;
             }
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Log");

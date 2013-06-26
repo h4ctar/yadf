@@ -33,7 +33,7 @@ package simulation.job;
 
 import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;
@@ -60,7 +60,7 @@ public class PlantJob extends AbstractJob {
     private static final long PLANT_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
 
     /** The farmer dwarf. */
-    private Dwarf farmer;
+    private IGameCharacter farmer;
 
     /** The seed. */
     private final Item seed;
@@ -115,8 +115,7 @@ public class PlantJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             farmer = getDwarf();
         }
 
@@ -157,8 +156,7 @@ public class PlantJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             seed.delete();
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             farmer.releaseLock();

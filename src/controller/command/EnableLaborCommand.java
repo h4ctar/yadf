@@ -32,7 +32,7 @@
 package controller.command;
 
 import simulation.Player;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 
 /**
@@ -69,7 +69,7 @@ public class EnableLaborCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        Dwarf dwarf = player.getDwarfManager().getDwarf(dwarfId);
+        IGameCharacter dwarf = player.getDwarfManager().getDwarf(dwarfId);
         dwarf.getComponent(ISkillComponent.class).setLaborEnabled(laborTypeName, enabled);
     }
 }

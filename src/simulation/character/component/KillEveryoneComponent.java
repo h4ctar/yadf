@@ -32,7 +32,6 @@
 package simulation.character.component;
 
 import simulation.Region;
-import simulation.character.GameCharacter;
 import simulation.character.IGameCharacter;
 
 /**
@@ -44,7 +43,7 @@ public class KillEveryoneComponent extends AbstractCharacterComponent implements
     // private static final int VIEW_DISTANCE = 20;
 
     /** The dwarf. */
-    private GameCharacter dwarf;
+    private IGameCharacter dwarf;
 
     /**
      * Constructor.

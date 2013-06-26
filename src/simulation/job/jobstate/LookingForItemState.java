@@ -47,7 +47,7 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
     }
 
     @Override
-    public void transitionInto() {
+    public void start() {
         if (itemType != null) {
             item = getJob().getPlayer().getStockManager().getUnusedItem(itemType.name);
         } else {
@@ -57,18 +57,13 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
             if (itemType != null) {
                 getJob().getPlayer().getStockManager().addListener(itemType, this);
             } else {
-                // TODO: add listener for all item types in category
+                // TODO: add listener for all item types in category rather that just all items
                 getJob().getPlayer().getStockManager().addListener(this);
             }
         } else {
             item.setUsed(true);
-            getJob().stateDone(this);
+            finishState();
         }
-    }
-
-    @Override
-    public void transitionOutOf() {
-        getJob().getPlayer().getStockManager().removeListener(this);
     }
 
     @Override
@@ -76,9 +71,9 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
         if (!availableItem.isUsed()
                 && ((itemType != null && itemType.equals(availableItem.getType())) || (category != null && category
                         .equals(availableItem.getType().category)))) {
-            availableItem.setUsed(true);
             item = availableItem;
-            getJob().stateDone(this);
+            item.setUsed(true);
+            finishState();
         }
     }
 

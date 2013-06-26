@@ -31,6 +31,7 @@
  */
 package simulation.character;
 
+import simulation.Region;
 import simulation.character.component.IFightComponent;
 import simulation.character.component.KillEveryoneComponent;
 import simulation.map.MapIndex;
@@ -46,10 +47,11 @@ public class Goblin extends GameCharacter {
     /**
      * Instantiates a new goblin.
      * @param name the name
+     * @param region the region that the goblin starts in
      * @param position the position
      */
-    public Goblin(final String name, final MapIndex position) {
-        super(name, position, null);
+    public Goblin(final String name, final Region region, final MapIndex position) {
+        super(name, position, region, null);
         setComponent(IFightComponent.class, new KillEveryoneComponent(this));
     }
 }

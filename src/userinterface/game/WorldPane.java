@@ -47,7 +47,7 @@ import javax.swing.KeyStroke;
 
 import simulation.Player;
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.item.Item;
 import simulation.item.Stockpile;
 import simulation.job.designation.DesignationType;
@@ -280,7 +280,7 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
             // Left mouse button
             case MouseEvent.BUTTON1:
                 // If click on dwarf, show the dwarf interface
-                Dwarf dwarf = player.getDwarfManager().getDwarf(mouseIndex);
+                IGameCharacter dwarf = player.getDwarfManager().getDwarf(mouseIndex);
                 if (dwarf != null) {
                     dwarfInterface.setDwarf(dwarf, worldCanvas);
                     dwarfInterface.setVisible(true);

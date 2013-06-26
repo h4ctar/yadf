@@ -103,8 +103,7 @@ public class PlaceItemJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             item = getItem();
             room = getPlayer().getRoom(position);
         }
@@ -128,7 +127,7 @@ public class PlaceItemJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
+        protected void doFinalActions() {
             item.setUsed(false);
             item.setPlaced(true);
         }

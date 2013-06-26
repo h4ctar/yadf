@@ -58,19 +58,22 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
     /** The map indicies. */
     protected List<MapIndex> mapIndicies = new ArrayList<>();
 
-    /**
-     * The player that this job belongs to.
-     */
+    /** The player that this job belongs to. */
     private final IPlayer player;
 
     /** The listeners to this job. */
     private final List<IJobListener> listeners = new CopyOnWriteArrayList<>();
 
+    /** The region that the designation is in. */
+    final Region region;
+
     /**
      * Constructor.
+     * @param regionTmp the region that the designation is in
      * @param playerTmp the player that this designation belongs to
      */
-    public AbstractDesignation(final IPlayer playerTmp) {
+    public AbstractDesignation(final Region regionTmp, final IPlayer playerTmp) {
+        region = regionTmp;
         player = playerTmp;
     }
 
@@ -181,14 +184,6 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
     }
 
     /**
-     * Get the region that this designation is within.
-     * @return the region that this designation is within
-     */
-    public Region getRegion() {
-        return player.getRegion();
-    }
-
-    /**
      * Get the player that this designation belongs to.
      * @return the player that this designation belongs to
      */
@@ -215,6 +210,14 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
     @Override
     public MapIndex getPosition() {
         return null;
+    }
+
+    /**
+     * Get the region that the designation is within.
+     * @return the region
+     */
+    protected Region getRegion() {
+        return region;
     }
 
     /**

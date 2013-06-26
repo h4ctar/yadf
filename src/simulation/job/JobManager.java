@@ -40,6 +40,7 @@ import java.util.Map;
 
 import logger.Logger;
 import simulation.IPlayer;
+import simulation.Region;
 import simulation.job.designation.AbstractDesignation;
 import simulation.job.designation.ChannelDesignation;
 import simulation.job.designation.ChopTreeDesignation;
@@ -67,22 +68,6 @@ public class JobManager implements IJobManager, Serializable, IJobListener {
 
     /** Listeners to be notified when something changes. */
     private final List<IJobManagerListener> listeners = new ArrayList<>();
-
-    /**
-     * The constructor, sets up the designations.
-     * @param player the player that the job manager belongs to
-     */
-    public JobManager(final IPlayer player) {
-        designations.put(DesignationType.MINE, new MineDesignation(player));
-        designations.put(DesignationType.CHANNEL, new ChannelDesignation(null, player));
-        designations.put(DesignationType.CHOP_TREE, new ChopTreeDesignation(player));
-        designations.put(DesignationType.BUILD_WALL, new ConstructionDesignation(BlockType.WALL, player));
-        designations.put(DesignationType.BUILD_RAMP, new ConstructionDesignation(BlockType.RAMP, player));
-        designations.put(DesignationType.CARVE_STAIR, new ChannelDesignation(BlockType.STAIR, player));
-        for (AbstractDesignation designation : designations.values()) {
-            jobs.add(designation);
-        }
-    }
 
     /**
      * Adds a new job.
@@ -139,5 +124,22 @@ public class JobManager implements IJobManager, Serializable, IJobListener {
      */
     public List<IJob> getJobs() {
         return jobs;
+    }
+
+    /**
+     * Add designations to this job manager.
+     * @param region the region to create designations for
+     * @param player the player that the job manager belongs to
+     */
+    public void addDesignations(final Region region, final IPlayer player) {
+        designations.put(DesignationType.MINE, new MineDesignation(region, player));
+        designations.put(DesignationType.CHANNEL, new ChannelDesignation(null, region, player));
+        designations.put(DesignationType.CHOP_TREE, new ChopTreeDesignation(region, player));
+        designations.put(DesignationType.BUILD_WALL, new ConstructionDesignation(BlockType.WALL, region, player));
+        designations.put(DesignationType.BUILD_RAMP, new ConstructionDesignation(BlockType.RAMP, region, player));
+        designations.put(DesignationType.CARVE_STAIR, new ChannelDesignation(BlockType.STAIR, region, player));
+        for (AbstractDesignation designation : designations.values()) {
+            jobs.add(designation);
+        }
     }
 }

@@ -62,7 +62,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     private final String name;
 
     /** The job manager. */
-    private final JobManager jobManager = new JobManager(this);
+    private final JobManager jobManager = new JobManager();
 
     /** The stock manager. */
     private final StockManager stockManager = new StockManager();
@@ -93,6 +93,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     public Player(final String playerName, final Region regionTmp) {
         name = playerName;
         region = regionTmp;
+        jobManager.addDesignations(region, this);
     }
 
     /**
@@ -248,7 +249,6 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     public void setup(final MapIndex embarkPosition, final int numberOfStartingDwarfs) {
         Logger.getInstance().log(this, "Setting up");
-        System.out.println(MyRandom.getInstance().nextInt(5000));
         addEmbarkResources(embarkPosition);
         addEmbarkDwarfs(embarkPosition, numberOfStartingDwarfs);
     }
@@ -257,7 +257,7 @@ public class Player extends AbstractGameObject implements IPlayer {
      * Update.
      */
     public void update() {
-        dwarfManager.update(region);
+        dwarfManager.update();
         // TODO: Don't update farms and workshops every step
         for (Farm farm : farms) {
             farm.update(this);
@@ -279,7 +279,7 @@ public class Player extends AbstractGameObject implements IPlayer {
             pos.x = embarkPosition.x + random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
             pos.y = embarkPosition.y + random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
             pos.z = region.getMap().getHeight(pos.x, pos.y);
-            dwarfManager.addNewDwarf(pos);
+            dwarfManager.addNewDwarf(pos, region);
         }
     }
 
@@ -307,10 +307,5 @@ public class Player extends AbstractGameObject implements IPlayer {
     @Override
     public IDwarfManager getDwarfManager() {
         return dwarfManager;
-    }
-
-    @Override
-    public Region getRegion() {
-        return region;
     }
 }

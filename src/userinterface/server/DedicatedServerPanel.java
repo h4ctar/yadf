@@ -159,6 +159,11 @@ public class DedicatedServerPanel extends JPanel {
         serverThread.close();
     }
 
+    /**
+     * Disconnect.
+     * 
+     * Stops and closes the thread then tells the main window.
+     */
     public void disconnect() {
         stop();
         close();

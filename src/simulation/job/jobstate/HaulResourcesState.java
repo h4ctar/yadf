@@ -61,7 +61,7 @@ public abstract class HaulResourcesState extends AbstractJobState implements IJo
     }
 
     @Override
-    public void transitionInto() {
+    public void start() {
         for (Entry<ItemType, Integer> entry : resourceTypes.entrySet()) {
             ItemType itemType = entry.getKey();
             for (int i = 0; i < entry.getValue().intValue(); i++) {
@@ -74,23 +74,15 @@ public abstract class HaulResourcesState extends AbstractJobState implements IJo
     }
 
     @Override
-    public void transitionOutOf() {
-        for (IJob job : haulJobs) {
-            job.removeListener(this);
-        }
-    }
-
-    @Override
     public void jobDone(final IJob job) {
         assert haulJobs.contains(job);
-
         if (job.isDone()) {
             job.removeListener(this);
             resources.add(((HaulJob) job).getItem());
             haulJobs.remove(job);
         }
         if (haulJobs.isEmpty()) {
-            getJob().stateDone(this);
+            finishState();
         }
     }
 

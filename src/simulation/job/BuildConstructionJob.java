@@ -35,7 +35,7 @@ import java.util.List;
 
 import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -49,6 +49,7 @@ import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.BlockType;
 import simulation.map.MapIndex;
+import simulation.map.RegionMap;
 import simulation.map.WalkableNode;
 
 /**
@@ -75,21 +76,27 @@ public class BuildConstructionJob extends AbstractJob {
     private final BlockType constructionType;
 
     /** The builder dwarf. */
-    private Dwarf builder;
+    private IGameCharacter builder;
 
     /** The building material. */
     private Item rock;
+
+    /** The map that the construction will be built in. */
+    final RegionMap map;
 
     /**
      * Instantiates a new build construction job.
      * @param positionTmp the position
      * @param constructionTypeTmp the construction type
+     * @param mapTmp the map that the construction will be built in
      * @param player the player that this job belongs to
      */
-    public BuildConstructionJob(final MapIndex positionTmp, final BlockType constructionTypeTmp, final IPlayer player) {
+    public BuildConstructionJob(final MapIndex positionTmp, final BlockType constructionTypeTmp,
+            final RegionMap mapTmp, final IPlayer player) {
         super(player);
         position = positionTmp;
         constructionType = constructionTypeTmp;
+        map = mapTmp;
         setJobState(new HaulBuildingMaterialsState());
     }
 
@@ -127,8 +134,7 @@ public class BuildConstructionJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        public void doFinalActions() {
             rock = getItem();
         }
 
@@ -151,8 +157,7 @@ public class BuildConstructionJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        public void doFinalActions() {
             builder = getDwarf();
         }
 
@@ -193,20 +198,19 @@ public class BuildConstructionJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        public void doFinalActions() {
             rock.delete();
             // Move items away from build area
             for (Item item : getPlayer().getStockManager().getItems()) {
                 if (item.getPosition().equals(position)) {
-                    List<WalkableNode> adjacencies = getPlayer().getRegion().getMap().getAdjacencies(position);
+                    List<WalkableNode> adjacencies = map.getAdjacencies(position);
 
                     if (!adjacencies.isEmpty()) {
                         item.setPosition(adjacencies.get(0));
                     }
                 }
             }
-            getPlayer().getRegion().getMap().setBlock(position, constructionType);
+            map.setBlock(position, constructionType);
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.releaseLock();
         }

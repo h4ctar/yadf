@@ -33,7 +33,7 @@ package simulation.job;
 
 import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.FarmPlot;
 import simulation.item.Item;
@@ -65,7 +65,7 @@ public class HarvestJob extends AbstractJob {
     private final FarmPlot farmPlot;
 
     /** The farmer dwarf. */
-    private Dwarf farmer;
+    private IGameCharacter farmer;
 
     /**
      * Instantiates a new harvest job.
@@ -109,8 +109,7 @@ public class HarvestJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             farmer = getDwarf();
         }
 
@@ -151,8 +150,7 @@ public class HarvestJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
             Item newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, getPlayer());
             getPlayer().getStockManager().addItem(newItem);

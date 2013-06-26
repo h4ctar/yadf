@@ -33,7 +33,7 @@ package simulation.job;
 
 import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -68,16 +68,21 @@ public class MineJob extends AbstractJob {
     private final MapIndex position;
 
     /** The miner dwarf. */
-    private Dwarf miner;
+    private IGameCharacter miner;
+
+    /** The map that will be mined. */
+    final RegionMap map;
 
     /**
      * Constructor for the mine task.
      * @param positionTmp the position to mine
+     * @param mapTmp the map that the construction will be built in
      * @param player the player
      */
-    public MineJob(final MapIndex positionTmp, final IPlayer player) {
+    public MineJob(final MapIndex positionTmp, final RegionMap mapTmp, final IPlayer player) {
         super(player);
         position = positionTmp;
+        map = mapTmp;
         setJobState(new WaitUntilAccessibleState());
     }
 
@@ -117,9 +122,9 @@ public class MineJob extends AbstractJob {
         }
 
         @Override
-        public void transitionInto() {
+        public void start() {
             BlockType[] neighbourTypes = new BlockType[8];
-            getPlayer().getRegion().getMap().getNeighbourTypes(position, neighbourTypes);
+            map.getNeighbourTypes(position, neighbourTypes);
             boolean accessible = false;
             for (BlockType blockType : neighbourTypes) {
                 if (blockType.isStandIn) {
@@ -130,13 +135,13 @@ public class MineJob extends AbstractJob {
             if (accessible) {
                 getJob().stateDone(this);
             } else {
-                getPlayer().getRegion().getMap().addListener(this);
+                map.addListener(this);
             }
         }
 
         @Override
-        public void transitionOutOf() {
-            getPlayer().getRegion().getMap().removeListener(this);
+        protected void doFinalActions() {
+            map.removeListener(this);
         }
 
         @Override
@@ -146,7 +151,7 @@ public class MineJob extends AbstractJob {
 
         @Override
         public void mapChanged(final MapIndex mapIndex) {
-            BlockType blockType = getPlayer().getRegion().getMap().getBlock(mapIndex);
+            BlockType blockType = map.getBlock(mapIndex);
             if (blockType.isStandIn
                     && (mapIndex.x == position.x || mapIndex.x == position.x - 1 || mapIndex.x == position.x + 1)
                     && (mapIndex.y == position.y || mapIndex.y == position.y - 1 || mapIndex.y == position.y + 1)) {
@@ -156,7 +161,7 @@ public class MineJob extends AbstractJob {
 
         @Override
         public void interrupt(final String message) {
-            getPlayer().getRegion().getMap().removeListener(this);
+            map.removeListener(this);
         }
     }
 
@@ -173,8 +178,7 @@ public class MineJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             miner = getDwarf();
         }
 
@@ -215,9 +219,7 @@ public class MineJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
-            RegionMap map = getPlayer().getRegion().getMap();
+        protected void doFinalActions() {
             String itemTypeName = map.getBlock(position).itemMined;
             if (itemTypeName != null) {
                 ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);

@@ -25,4 +25,19 @@ public abstract class AbstractJobState implements IJobState {
     protected AbstractJob getJob() {
         return job;
     }
+
+    /**
+     * Do the final actions and tell the job that the state is done.
+     */
+    protected void finishState() {
+        doFinalActions();
+        job.stateDone(this);
+    }
+
+    /**
+     * Called by the state when it's done.
+     */
+    protected void doFinalActions() {
+
+    }
 }

@@ -13,7 +13,7 @@ import simulation.labor.LaborType;
 public abstract class LookingForDwarfState extends AbstractJobState implements ICharacterAvailableListener {
 
     /** The found dwarf. */
-    private Dwarf dwarf;
+    private IGameCharacter dwarf;
 
     /** The required labor type. */
     private final LaborType requiredLabor;
@@ -34,17 +34,13 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
     }
 
     @Override
-    public void transitionInto() {
+    public void start() {
         dwarf = getJob().getPlayer().getDwarfManager().getIdleDwarf(requiredLabor);
         if (dwarf == null) {
             getJob().getPlayer().getDwarfManager().addListener(this);
         } else {
-            getJob().stateDone(this);
+            finishState();
         }
-    }
-
-    @Override
-    public void transitionOutOf() {
     }
 
     @Override
@@ -52,8 +48,8 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
         assert character instanceof Dwarf;
         if (character.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && character.acquireLock()) {
             getJob().getPlayer().getDwarfManager().removeListener(this);
-            dwarf = (Dwarf) character;
-            getJob().stateDone(this);
+            dwarf = character;
+            finishState();
         }
     }
 
@@ -61,7 +57,7 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
      * Gets the found dwarf.
      * @return the dwarf
      */
-    public Dwarf getDwarf() {
+    public IGameCharacter getDwarf() {
         return dwarf;
     }
 

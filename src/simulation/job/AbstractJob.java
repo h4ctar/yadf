@@ -47,7 +47,7 @@ public abstract class AbstractJob implements IJob {
      */
     protected void setJobState(final IJobState jobStateTmp) {
         jobState = jobStateTmp;
-        jobState.transitionInto();
+        jobState.start();
     }
 
     /**
@@ -65,12 +65,11 @@ public abstract class AbstractJob implements IJob {
     public void stateDone(final IJobState jobStateTmp) {
         Logger.getInstance().log(this, "Job state done: " + jobState.toString());
         assert jobState == jobStateTmp;
-        jobState.transitionOutOf();
         jobState = jobState.getNextState();
         if (jobState != null) {
             Logger.getInstance()
                     .log(this, "Transitioning: " + jobStateTmp.toString() + " -> " + jobState.toString());
-            jobState.transitionInto();
+            jobState.start();
         } else {
             Logger.getInstance().log(this, "Job done");
             done = true;

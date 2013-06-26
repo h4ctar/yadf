@@ -35,7 +35,7 @@ import java.util.Set;
 
 import simulation.IPlayer;
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.item.ItemTypeManager;
@@ -68,7 +68,7 @@ public class CraftJob extends AbstractJob {
     private final Recipe recipe;
 
     /** The dwarf. */
-    private Dwarf crafter;
+    private IGameCharacter crafter;
 
     /** The required labor type for this job. */
     private final LaborType requiredLabor;
@@ -127,8 +127,7 @@ public class CraftJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             resources = getResources();
         }
 
@@ -151,8 +150,7 @@ public class CraftJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             crafter = getDwarf();
         }
 
@@ -193,8 +191,7 @@ public class CraftJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             for (int i = 0; i < recipe.quantity; i++) {
                 Item newItem = ItemTypeManager.getInstance().createItem(workshop.getPosition(), recipe.itemType,
                         getPlayer());

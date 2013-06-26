@@ -46,9 +46,8 @@ import logger.Logger;
 import simulation.Player;
 import simulation.Region;
 import simulation.Tree;
-import simulation.character.Dwarf;
-import simulation.character.GameCharacter;
 import simulation.character.Goblin;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.Farm;
 import simulation.farm.FarmPlot;
@@ -338,7 +337,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
      */
     private void drawAnimals(final Graphics g) {
         Sprite animalSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.ANIMAL_SPRITE);
-        for (GameCharacter animal : region.getAnimals()) {
+        for (IGameCharacter animal : region.getAnimals()) {
             MapIndex position = animal.getPosition();
             if (position.z == viewPosition.z) {
                 int x = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
@@ -406,8 +405,8 @@ public class WorldCanvas extends JComponent implements IMapListener {
     private void drawDwarfs(final Graphics g) {
         Set<Player> players = region.getPlayers();
         for (Player playerTmp : players) {
-            Set<Dwarf> dwarfs = playerTmp.getDwarfManager().getDwarfs();
-            for (Dwarf dwarf : dwarfs) {
+            Set<IGameCharacter> dwarfs = playerTmp.getDwarfManager().getDwarfs();
+            for (IGameCharacter dwarf : dwarfs) {
                 MapIndex position = dwarf.getPosition();
                 if (position.z == viewPosition.z) {
                     int x = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;

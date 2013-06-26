@@ -104,7 +104,6 @@ public final class ItemTypeManager {
     public List<Item> getEmbarkItems(final Player player) {
         List<Item> copyOfEmbarkItems = new ArrayList<>();
         for (Item item : embarkItems) {
-            System.out.println(item.getType().name);
             Item copyItem = createItem(item, player);
             copyOfEmbarkItems.add(copyItem);
         }

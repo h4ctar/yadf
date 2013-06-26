@@ -32,6 +32,7 @@
 package simulation.job.designation;
 
 import simulation.IPlayer;
+import simulation.Region;
 import simulation.job.AbstractJob;
 import simulation.job.BuildConstructionJob;
 import simulation.map.BlockType;
@@ -51,10 +52,11 @@ public class ConstructionDesignation extends AbstractDesignation {
     /**
      * Instantiates a new construction designation.
      * @param blockTypeTmp the block type
+     * @param region the region that the designation is in
      * @param player the player that this designation belongs to
      */
-    public ConstructionDesignation(final BlockType blockTypeTmp, final IPlayer player) {
-        super(player);
+    public ConstructionDesignation(final BlockType blockTypeTmp, final Region region, final IPlayer player) {
+        super(region, player);
         blockType = blockTypeTmp;
     }
 
@@ -65,7 +67,7 @@ public class ConstructionDesignation extends AbstractDesignation {
 
     @Override
     protected AbstractJob createJob(final MapIndex mapIndex) {
-        return new BuildConstructionJob(mapIndex, blockType, getPlayer());
+        return new BuildConstructionJob(mapIndex, blockType, getRegion().getMap(), getPlayer());
     }
 
     @Override

@@ -31,15 +31,34 @@ public interface IPlayer {
      */
     IDwarfManager getDwarfManager();
 
+    /**
+     * Add a new workshop.
+     * @param workshop the new workshop
+     */
     void addWorkshop(Workshop workshop);
 
+    /**
+     * Remove a workshop.
+     * @param workshop the workshop to remove
+     */
     void removeWorkshop(Workshop workshop);
 
+    /**
+     * Get all the rooms.
+     * @return all the rooms
+     */
     Set<Room> getRooms();
 
+    /**
+     * Get the room at a specific map index.
+     * @param position the map index
+     * @return the room
+     */
     Room getRoom(MapIndex position);
 
-    Region getRegion();
-
+    /**
+     * Remove a room.
+     * @param room the room to remove
+     */
     void removeRoom(Room room);
 }

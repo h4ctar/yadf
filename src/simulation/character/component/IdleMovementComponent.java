@@ -49,10 +49,10 @@ public class IdleMovementComponent extends AbstractMoveComponent implements IMov
     private int simulationSteps = 0;
 
     /** Minimum number of simulation steps between walking steps. */
-    private static final long MIN_WALK_DURATION = Region.SIMULATION_STEPS_PER_MINUTE * 8;
+    private static final long MIN_WALK_DURATION = Region.SIMULATION_STEPS_PER_MINUTE * 12;
 
     /** Maximum number of simulation steps between walking steps. */
-    private static final long MAX_WALK_DURATION = Region.SIMULATION_STEPS_PER_MINUTE * 16;
+    private static final long MAX_WALK_DURATION = Region.SIMULATION_STEPS_PER_MINUTE * 24;
 
     /**
      * Constructor.

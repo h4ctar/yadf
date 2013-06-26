@@ -31,6 +31,7 @@
  */
 package simulation.character;
 
+import simulation.Region;
 import simulation.map.MapIndex;
 
 /**
@@ -46,7 +47,7 @@ public class Animal extends GameCharacter {
      * @param name the name of the animal
      * @param position the position of the animal
      */
-    public Animal(final String name, final MapIndex position) {
-        super(name, position, null);
+    public Animal(final String name, final MapIndex position, final Region region) {
+        super(name, position, region, null);
     }
 }

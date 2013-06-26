@@ -59,9 +59,10 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
     /** All the components. */
     private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new HashMap<>();
 
-    /** The list of listeners. */
+    /** The list of listeners that want to be notified when the dwarf becomes available. */
     private final List<ICharacterAvailableListener> availableListeners = new CopyOnWriteArrayList<>();
 
+    /** The listeners that want to be notified when anything changes. */
     private final List<ICharacterListener> changeListeners = new CopyOnWriteArrayList<>();
 
     /** The dead. */
@@ -76,26 +77,26 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
     /** The player that this character belongs to. */
     private final IPlayer player;
 
+    /** The region that the character is currently in. */
+    private final Region region;
+
     /**
      * Instantiates a new game character.
-     * 
      * @param nameTmp the name
      * @param position the position
+     * @param regionTmp the region that the character is currently in
      * @param playerTmp the player that this dwarf belongs to
      */
-    public GameCharacter(final String nameTmp, final MapIndex position, final IPlayer playerTmp) {
+    public GameCharacter(final String nameTmp, final MapIndex position, final Region regionTmp,
+            final IPlayer playerTmp) {
         super(position);
         name = nameTmp;
+        region = regionTmp;
         player = playerTmp;
         setComponent(IHealthComponent.class, new HealthComponent(this));
         setComponent(IMovementComponent.class, new IdleMovementComponent(this));
     }
 
-    /**
-     * Acquire lock.
-     * 
-     * @return true, if successful
-     */
     @Override
     public boolean acquireLock() {
         boolean lockAcquired = false;
@@ -126,24 +127,12 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
         changeListeners.remove(listener);
     }
 
-    /**
-     * Get a character component.
-     * @param <T> the interface that the component extends
-     * @param componentInterface the interface that the component extends
-     * @return the component
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ICharacterComponent> T getComponent(final Class<T> componentInterface) {
         return (T) components.get(componentInterface);
     }
 
-    /**
-     * Set a character component.
-     * @param <T> the interface that the component extends
-     * @param componentInterface the interface that the component extends
-     * @param component the component
-     */
     @Override
     public <T extends ICharacterComponent> void setComponent(final Class<T> componentInterface, final T component) {
         Logger.getInstance().log(
@@ -157,33 +146,21 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
      * Gets the name of the character.
      * @return the name
      */
+    @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * Checks if is dead.
-     * 
-     * @return true, if is dead
-     */
     @Override
     public boolean isDead() {
         return dead;
     }
 
-    /**
-     * Checks if is lock.
-     * 
-     * @return true, if is lock
-     */
     @Override
     public boolean isLocked() {
         return locked;
     }
 
-    /**
-     * Kill.
-     */
     @Override
     public void kill() {
         Logger.getInstance().log(this, "Character died");
@@ -191,9 +168,6 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
         dead = true;
     }
 
-    /**
-     * Release lock.
-     */
     @Override
     public void releaseLock() {
         if (locked) {
@@ -207,22 +181,20 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
         }
     }
 
-    /**
-     * Update all the components.
-     * @param region the region
-     */
-    public void update(final Region region) {
+    @Override
+    public void update() {
         for (ICharacterComponent component : components.values()) {
             component.update(region);
         }
     }
 
-    /**
-     * Get the player that this dwarf belongs to.
-     * @return the player that this dwarf belongs to
-     */
     @Override
     public IPlayer getPlayer() {
         return player;
+    }
+
+    @Override
+    public Region getRegion() {
+        return region;
     }
 }

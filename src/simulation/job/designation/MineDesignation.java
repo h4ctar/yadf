@@ -32,6 +32,7 @@
 package simulation.job.designation;
 
 import simulation.IPlayer;
+import simulation.Region;
 import simulation.job.AbstractJob;
 import simulation.job.MineJob;
 import simulation.map.MapIndex;
@@ -46,10 +47,11 @@ public class MineDesignation extends AbstractDesignation {
 
     /**
      * Constructor.
+     * @param region the region that the designation is in
      * @param player the player that this designation belongs to
      */
-    public MineDesignation(final IPlayer player) {
-        super(player);
+    public MineDesignation(final Region region, final IPlayer player) {
+        super(region, player);
     }
 
     @Override
@@ -64,6 +66,6 @@ public class MineDesignation extends AbstractDesignation {
 
     @Override
     protected AbstractJob createJob(final MapIndex mapIndex) {
-        return new MineJob(mapIndex, getPlayer());
+        return new MineJob(mapIndex, getRegion().getMap(), getPlayer());
     }
 }

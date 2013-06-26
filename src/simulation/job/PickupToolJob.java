@@ -117,8 +117,7 @@ public class PickupToolJob extends AbstractJob {
         }
 
         @Override
-        public void transitionOutOf() {
-            super.transitionOutOf();
+        protected void doFinalActions() {
             character.getComponent(IInventoryComponent.class).pickupTool(tool);
             character.releaseLock();
         }

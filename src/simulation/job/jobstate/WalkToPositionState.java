@@ -46,22 +46,18 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
     }
 
     @Override
-    public void transitionInto() {
+    public void start() {
         walkComponent = new WalkMovementComponent(character, position, oneOff);
         walkComponent.addListener(this);
         character.setComponent(IMovementComponent.class, walkComponent);
     }
 
     @Override
-    public void transitionOutOf() {
-        walkComponent.removeListener(this);
-    }
-
-    @Override
     public void componentChanged(final ICharacterComponent component) {
         assert component == walkComponent;
         if (walkComponent.isArrived()) {
-            getJob().stateDone(this);
+            walkComponent.removeListener(this);
+            finishState();
         } else if (walkComponent.isNoPath()) {
             getJob().stateInterrupted(this, "No path to position");
         }
