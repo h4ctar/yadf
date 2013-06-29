@@ -52,9 +52,6 @@ import simulation.map.MapIndex;
  */
 public class HarvestJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 220791158826975417L;
-
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
 

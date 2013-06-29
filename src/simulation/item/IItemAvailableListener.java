@@ -7,7 +7,8 @@ public interface IItemAvailableListener {
 
     /**
      * The item is available.
-     * @param item the item
+     * @param availableItem the item
+     * @param container the container that sent this notification, null if the item sent it
      */
-    void itemAvailable(Item item);
+    void itemAvailable(Item availableItem, IContainer container);
 }

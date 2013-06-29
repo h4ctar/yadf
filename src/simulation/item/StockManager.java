@@ -31,12 +31,8 @@
  */
 package simulation.item;
 
-import java.io.Serializable;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
@@ -46,53 +42,42 @@ import simulation.map.MapIndex;
 /**
  * The Class StockManager, manages items for a player including stockpiles.
  */
-public class StockManager extends AbstractGameObject implements IStockManager, IItemAvailableListener, Serializable {
+public class StockManager extends AbstractGameObject implements IStockManager {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 2947690954735554619L;
+    /** The container component; contains unstored items. */
+    private final ContainerComponent containerComponent = new ContainerComponent(this);
 
     /** The stockpiles owned by this stock manager. */
     private final Set<Stockpile> stockpiles = new LinkedHashSet<>();
 
-    /** All the items looked after by this stock manager. */
-    private final Set<Item> items = new CopyOnWriteArraySet<>();
-
-    /** Listeners to this stock manager. */
-    private final Map<ItemType, Set<IStockManagerListener>> listeners = new ConcurrentHashMap<>();
+    /** Listeners for add and remove of items and stockpiles. */
+    private final Set<IStockManagerListener> managerListeners = new LinkedHashSet<>();
 
     @Override
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item: " + item.getType());
-        item.addListener(this);
-        items.add(item);
-        notifyListenersThatItemIsAvailable(item);
-        return true;
+        boolean itemAdded = containerComponent.addItem(item);
+        if (itemAdded) {
+            notifyItemAdded(item);
+        }
+        return itemAdded;
     }
 
     @Override
     public boolean removeItem(final Item item) {
         Logger.getInstance().log(this, "Removing item: " + item.getType());
         boolean itemRemoved = false;
-        itemRemoved = items.remove(item);
-        if (itemRemoved) {
-            item.removeListener(this);
-        } else {
-            // TODO: change this to loop through all stockpiles and ask them to remove item until it finds the right
-            // one.
-            Stockpile stockpile = getStockpile(item.getPosition());
-            if (stockpile != null) {
+        itemRemoved = containerComponent.removeItem(item);
+        if (!itemRemoved) {
+            for (Stockpile stockpile : stockpiles) {
                 itemRemoved = stockpile.removeItem(item);
-            }
-            if (!itemRemoved) {
-                for (Item container : items) {
-                    if (container instanceof ContainerItem) {
-                        if (((ContainerItem) container).removeItem(item)) {
-                            itemRemoved = true;
-                            break;
-                        }
-                    }
+                if (itemRemoved) {
+                    break;
                 }
             }
+        }
+        if (itemRemoved) {
+            notifyItemRemoved(item);
         }
         return itemRemoved;
     }
@@ -103,12 +88,12 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
      */
     @Override
     public Set<Item> getItems() {
-        return items;
+        return containerComponent.getItems();
     }
 
     @Override
     public Item getItem(final MapIndex mapIndex) {
-        for (Item item : items) {
+        for (Item item : getItems()) {
             if (mapIndex.equals(item.getPosition())) {
                 return item;
             }
@@ -122,66 +107,74 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
         return null;
     }
 
-    @Override
-    public int getItemQuantity(final ItemType itemType) {
-        int count = 0;
-        for (Item item : items) {
-            if (item.getType().equals(itemType)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    @Override
-    public int getItemQuantity(final String category) {
-        int count = 0;
-        for (Item item : items) {
-            if (item.getType().category.equals(category)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    @Override
-    public void addListener(final ItemType itemType, final IStockManagerListener listener) {
-        if (!listeners.containsKey(itemType)) {
-            listeners.put(itemType, new CopyOnWriteArraySet<IStockManagerListener>());
-        }
-        listeners.get(itemType).add(listener);
-    }
-
+    // TODO: move this into container component...?
     @Override
     public void addListener(final IStockManagerListener listener) {
-        for (ItemType itemType : ItemTypeManager.getInstance().getItemTypes()) {
-            addListener(itemType, listener);
-        }
-    }
-
-    @Override
-    public void removeListener(final ItemType itemType, final IStockManagerListener listener) {
-        if (listeners.containsKey(itemType)) {
-            listeners.get(itemType).remove(listener);
-        }
+        managerListeners.add(listener);
     }
 
     @Override
     public void removeListener(final IStockManagerListener listener) {
-        for (Set<IStockManagerListener> listenersTmp : listeners.values()) {
-            listenersTmp.remove(listener);
+        managerListeners.remove(listener);
+    }
+
+    @Override
+    public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.addListener(itemType, listener);
+    }
+
+    @Override
+    public void addListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.addListener(category, listener);
+    }
+
+    @Override
+    public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.removeListener(itemType, listener);
+    }
+
+    @Override
+    public void removeListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.removeListener(category, listener);
+    }
+
+    /**
+     * Notify all the listeners that an item has been added.
+     * @param item the item that was added
+     */
+    private void notifyItemAdded(final Item item) {
+        for (IStockManagerListener managerListener : managerListeners) {
+            managerListener.itemAdded(item);
         }
     }
 
     /**
-     * Notify all listeners that something has changed in the stock manager.
-     * @param item the listeners of this item type will be notified with this item
+     * Notify all the listeners that an item was removed.
+     * @param item the item that was removed
      */
-    private void notifyListenersThatItemIsAvailable(final Item item) {
-        if (listeners.containsKey(item.getType())) {
-            for (IStockManagerListener listener : listeners.get(item.getType())) {
-                listener.itemNowAvailable(item);
-            }
+    private void notifyItemRemoved(final Item item) {
+        for (IStockManagerListener managerListener : managerListeners) {
+            managerListener.itemRemoved(item);
+        }
+    }
+
+    /**
+     * Notify all the listeners that a stockpile was added.
+     * @param stockpile the stockpile that was added
+     */
+    private void notifyStockpileAdded(final Stockpile stockpile) {
+        for (IStockManagerListener managerListener : managerListeners) {
+            managerListener.stockpileAdded(stockpile);
+        }
+    }
+
+    /**
+     * Notify all the listeners that a stockpile was removed.
+     * @param stockpile the stockpile that was removed
+     */
+    private void notifyStockpileRemoved(final Stockpile stockpile) {
+        for (IStockManagerListener managerListener : managerListeners) {
+            managerListener.stockpileRemoved(stockpile);
         }
     }
 
@@ -193,7 +186,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     @Override
     public Item getUnstoredItem(final Set<ItemType> itemTypes) {
         Item foundItem = null;
-        for (Item item : items) {
+        for (Item item : getItems()) {
             if (item.canBeStored(itemTypes) && !item.isUsed()) {
                 foundItem = item;
                 break;
@@ -209,8 +202,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
      */
     @Override
     public Item getUnstoredItem(final ItemType itemType) {
-        for (Item item : items) {
-            // TODO: move this into item
+        for (Item item : getItems()) {
             if (itemType.equals(item.getType()) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
                 return item;
             }
@@ -220,70 +212,51 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
 
     @Override
     public Item getUnusedItem(final String itemTypeName) {
-        for (Stockpile stockpile : stockpiles) {
-            Item item = stockpile.getUnusedItem(itemTypeName);
-            if (item != null) {
-                return item;
-            }
-        }
-        for (Item item : items) {
-            if (item.getType().name.equals(itemTypeName) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
-                return item;
-            }
-            if (item instanceof IContainer) {
-                Item contentItem = ((IContainer) item).getUnusedItem(itemTypeName);
-                if (contentItem != null) {
-                    return contentItem;
+        Item unusedItem = containerComponent.getUnusedItem(itemTypeName);
+        if (unusedItem == null) {
+            for (Stockpile stockpile : stockpiles) {
+                unusedItem = stockpile.getUnusedItem(itemTypeName);
+                if (unusedItem != null) {
+                    break;
                 }
             }
         }
-        return null;
+        return unusedItem;
     }
 
     @Override
     public Item getUnusedItemFromCategory(final String category) {
-        for (Stockpile stockpile : stockpiles) {
-            Item item = stockpile.getUnusedItemFromCategory(category);
-            if (item != null) {
-                return item;
-            }
-        }
-        for (Item item : this.items) {
-            if (item.getType().category.equals(category) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
-                return item;
-            }
-            if (item instanceof IContainer) {
-                Item contentItem = ((IContainer) item).getUnusedItemFromCategory(category);
-                if (contentItem != null) {
-                    return contentItem;
+        Item unusedItem = containerComponent.getUnusedItemFromCategory(category);
+        if (unusedItem == null) {
+            for (Stockpile stockpile : stockpiles) {
+                unusedItem = stockpile.getUnusedItemFromCategory(category);
+                if (unusedItem != null) {
+                    break;
                 }
             }
         }
-
-        return null;
+        return unusedItem;
     }
 
-    /**
-     * Adds a new stockpile to this stock manager.
-     * @param stockpile The new stockpile
-     */
     @Override
     public void addStockpile(final Stockpile stockpile) {
-        stockpile.addItemAvailableListener(this);
+        // The stockpile needs to listen to all item types
+        for (ItemType itemType : ItemTypeManager.getInstance().getItemTypes()) {
+            stockpile.addListener(itemType, containerComponent);
+        }
         stockpiles.add(stockpile);
+        notifyStockpileAdded(stockpile);
     }
 
     @Override
     public void removeStockpile(final Stockpile stockpile) {
-        stockpile.removeItemAvailableListener(this);
+        for (ItemType itemType : ItemTypeManager.getInstance().getItemTypes()) {
+            stockpile.removeListener(itemType, containerComponent);
+        }
         stockpiles.remove(stockpile);
+        notifyStockpileRemoved(stockpile);
     }
 
-    /**
-     * Gets the stockpile.
-     * @param stockpileId the stockpile id
-     * @return the stockpile
-     */
     @Override
     public Stockpile getStockpile(final int stockpileId) {
         for (Stockpile stockpile : stockpiles) {
@@ -311,7 +284,20 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     }
 
     @Override
-    public void itemAvailable(final Item item) {
-        notifyListenersThatItemIsAvailable(item);
+    public int getItemQuantity(final String category) {
+        int count = containerComponent.getItemQuantity(category);
+        for (Stockpile stockpile : stockpiles) {
+            count += stockpile.getItemQuantity(category);
+        }
+        return count;
+    }
+
+    @Override
+    public int getItemQuantity(final ItemType itemType) {
+        int count = containerComponent.getItemQuantity(itemType);
+        for (Stockpile stockpile : stockpiles) {
+            count += stockpile.getItemQuantity(itemType);
+        }
+        return count;
     }
 }

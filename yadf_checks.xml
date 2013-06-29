@@ -2,11 +2,16 @@
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
 <!--
+
     This configuration file was written by the eclipse-cs plugin configuration editor
+
 -->
 <!--
+
     Checkstyle-Configuration: yadf checks
+
     Description: none
+
 -->
 <module name="Checker">
   <property name="severity" value="warning"/>

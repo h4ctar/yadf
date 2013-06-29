@@ -44,9 +44,6 @@ import simulation.room.Room;
  */
 public class PlaceItemJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -7795181197544909062L;
-
     /** The item to place. */
     private Item item;
 

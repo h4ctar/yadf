@@ -31,7 +31,6 @@
  */
 package simulation.job;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -55,10 +54,7 @@ import simulation.map.BlockType;
  * This class is responsible for holding all the jobs, telling them to update and removing them when they are done, it
  * also contains the designations and launches jobs for them when required.
  */
-public class JobManager implements IJobManager, Serializable, IJobListener {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = -3697576654461518146L;
+public class JobManager implements IJobManager, IJobListener {
 
     /** The jobs. */
     private final List<IJob> jobs = new ArrayList<>();
@@ -114,6 +110,7 @@ public class JobManager implements IJobManager, Serializable, IJobListener {
      * Gets a reference to all the designations.
      * @return A reference to the designations array
      */
+    @Override
     public Collection<AbstractDesignation> getDesignations() {
         return designations.values();
     }

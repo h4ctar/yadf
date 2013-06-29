@@ -51,9 +51,6 @@ import simulation.room.Room;
  */
 public class EatDrinkJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -559977291069519592L;
-
     /** Amount of time to spend eating/drinking (simulation steps). */
     private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 

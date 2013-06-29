@@ -43,9 +43,6 @@ import simulation.map.MapIndex;
  */
 public class PickupToolJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -8533807757453770766L;
-
     /** The dwarf. */
     private final IGameCharacter character;
 

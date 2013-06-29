@@ -43,9 +43,6 @@ import simulation.map.MapIndex;
  */
 public class ChopTreeDesignation extends AbstractDesignation {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 498334310762797158L;
-
     /**
      * Constructor.
      * @param region the region that the designation is in

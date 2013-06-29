@@ -33,7 +33,6 @@ package simulation.map;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -46,18 +45,13 @@ import misc.Noise;
 /**
  * The Class RegionMap.
  */
-public class RegionMap implements Serializable {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = -7703563679963601586L;
-
-    // private List<MapChange> mapChanges;
+public class RegionMap {
 
     /** The block types. */
-    private transient BlockType[][][] blockTypes;
+    private BlockType[][][] blockTypes;
 
     /** The walkable nodes. */
-    private transient List<WalkableNode> walkableNodes;
+    private List<WalkableNode> walkableNodes;
 
     /** The map size. */
     private MapIndex mapSize;

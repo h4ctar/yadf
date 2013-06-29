@@ -53,9 +53,6 @@ import simulation.map.MapIndex;
  */
 public class HaulJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -1705328544980248473L;
-
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Hauling");
 

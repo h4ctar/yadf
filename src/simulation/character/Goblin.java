@@ -41,9 +41,6 @@ import simulation.map.MapIndex;
  */
 public class Goblin extends GameCharacter {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 5661614090710336119L;
-
     /**
      * Instantiates a new goblin.
      * @param name the name

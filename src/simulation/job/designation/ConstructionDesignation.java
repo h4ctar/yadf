@@ -43,9 +43,6 @@ import simulation.map.MapIndex;
  */
 public class ConstructionDesignation extends AbstractDesignation {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 6047600288514114030L;
-
     /** The block type. */
     private final BlockType blockType;
 

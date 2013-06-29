@@ -37,14 +37,15 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JComponent;
 
 import logger.Logger;
+import simulation.IPlayer;
 import simulation.Player;
 import simulation.Region;
 import simulation.Tree;
@@ -53,9 +54,10 @@ import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.Farm;
 import simulation.farm.FarmPlot;
+import simulation.item.IStockManagerListener;
 import simulation.item.Item;
 import simulation.item.Stockpile;
-import simulation.job.JobManager;
+import simulation.job.IJobManager;
 import simulation.job.designation.AbstractDesignation;
 import simulation.labor.LaborType;
 import simulation.map.BlockType;
@@ -67,16 +69,16 @@ import simulation.room.Room;
 import simulation.tree.ITreeManagerListener;
 import simulation.workshop.Workshop;
 import userinterface.game.graphicobject.IGraphicObject;
+import userinterface.game.graphicobject.ItemGraphicObject;
+import userinterface.game.graphicobject.StockpileGraphicObject;
 import userinterface.game.graphicobject.TreeGraphicObject;
 import userinterface.misc.Sprite;
 import userinterface.misc.SpriteManager;
 
 /**
  * The WorldCanvas.
- * 
- * Draws everything, should be refactored massively, but meh, it works.
  */
-public class WorldCanvas extends JComponent implements IMapListener, ITreeManagerListener {
+public class WorldCanvas extends JComponent implements IMapListener, ITreeManagerListener, IStockManagerListener {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -87,11 +89,8 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     /** The canvas height. */
     private int canvasHeight;
 
-    /** The view position. */
-    private MapIndex viewPosition = new MapIndex();
-
-    /** The view size. */
-    private MapIndex viewSize = new MapIndex();
+    /** The view area. */
+    private final MapArea viewArea = new MapArea();
 
     /** The selection. */
     private MapArea selection;
@@ -100,7 +99,7 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     private boolean selectionValid;
 
     /** The player. */
-    private Player player;
+    private IPlayer player;
 
     /** The region. */
     private Region region;
@@ -120,9 +119,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     /** The colour of a room. */
     private static final Color ROOM_COLOUR = new Color(0.7f, 0.7f, 0.7f, 0.4f);
 
-    /** The colour of a stockpile. */
-    private static final Color STOCKPILE_COLOUR = new Color(0.7f, 0.6f, 0.5f, 0.4f);
-
     /** The colour of the atmosphere. */
     private static final Color ATMOSPHERE_COLOUR = new Color(0.5f, 0.5f, 0.7f, 0.5f);
 
@@ -136,7 +132,7 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     private boolean drawBackgroundRequired;
 
     /** All the graphic objects. */
-    private final Map<Object, IGraphicObject> graphicObjects = new HashMap<>();
+    private final Map<Object, IGraphicObject> graphicObjects = new ConcurrentHashMap<>();
 
     /**
      * Instantiates a new world canvas.
@@ -151,11 +147,14 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
      * @param playerTmp the player
      * @param regionTmp the new region
      */
-    public void setup(final Player playerTmp, final Region regionTmp) {
+    public void setup(final IPlayer playerTmp, final Region regionTmp) {
         player = playerTmp;
         region = regionTmp;
         region.getMap().addListener(this);
         region.getTreeManager().addListener(this);
+        for (IPlayer player2 : region.getPlayers()) {
+            player2.getStockManager().addListener(this);
+        }
     }
 
     /**
@@ -163,14 +162,14 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
      * @param g the g
      */
     public void drawDesignations(final Graphics g) {
-        JobManager jobManager = player.getJobManager();
+        IJobManager jobManager = player.getJobManager();
         for (AbstractDesignation designation : jobManager.getDesignations()) {
             List<MapIndex> mapIndicies = new ArrayList<>(designation.getMapIndicies());
             for (MapIndex mapIndex : mapIndicies) {
-                if (mapIndex.z == viewPosition.z) {
+                if (viewArea.containesIndex(mapIndex)) {
                     g.setColor(DESIGNATION_COLOUR);
-                    g.fillRect((mapIndex.x - viewPosition.x) * SpriteManager.SPRITE_SIZE,
-                            (mapIndex.y - viewPosition.y) * SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE,
+                    g.fillRect((mapIndex.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE,
+                            (mapIndex.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE,
                             SpriteManager.SPRITE_SIZE);
                 }
             }
@@ -203,9 +202,9 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
             g.setColor(INVALID_SELECTION_COLOUR);
         }
 
-        g.fillRect((selection.pos.x - viewPosition.x) * SpriteManager.SPRITE_SIZE,
-                (selection.pos.y - viewPosition.y) * SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE
-                        * selection.width, SpriteManager.SPRITE_SIZE * selection.height);
+        g.fillRect((selection.pos.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE, (selection.pos.y - viewArea.pos.y)
+                * SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE * selection.width, SpriteManager.SPRITE_SIZE
+                * selection.height);
     }
 
     /**
@@ -215,7 +214,7 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
      * @return the mouse index
      */
     public MapIndex getMouseIndex(final int x, final int y) {
-        return viewPosition.add(x / SpriteManager.SPRITE_SIZE, y / SpriteManager.SPRITE_SIZE, 0);
+        return viewArea.pos.add(x / SpriteManager.SPRITE_SIZE, y / SpriteManager.SPRITE_SIZE, 0);
     }
 
     @Override
@@ -235,7 +234,7 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
      * @param z the z
      */
     public void moveView(final int x, final int y, final int z) {
-        viewPosition = viewPosition.add(x, y, z);
+        viewArea.pos = viewArea.pos.add(x, y, z);
         drawBackgroundRequired = true;
     }
 
@@ -244,9 +243,9 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
      * @param position where to zoom to
      */
     public void zoomToPosition(final MapIndex position) {
-        viewPosition.x = position.x - viewSize.x / 2;
-        viewPosition.y = position.y - viewSize.y / 2;
-        viewPosition.z = position.z;
+        viewArea.pos.x = position.x - viewArea.width / 2;
+        viewArea.pos.y = position.y - viewArea.height / 2;
+        viewArea.pos.z = position.z;
         drawBackgroundRequired = true;
     }
 
@@ -255,9 +254,9 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
      * @param area where to zoom to
      */
     public void zoomToArea(final MapArea area) {
-        viewPosition.x = area.pos.x + area.width / 2 - viewSize.x / 2;
-        viewPosition.y = area.pos.y + area.height / 2 - viewSize.y / 2;
-        viewPosition.z = area.pos.z;
+        viewArea.pos.x = area.pos.x + area.width / 2 - viewArea.width / 2;
+        viewArea.pos.y = area.pos.y + area.height / 2 - viewArea.height / 2;
+        viewArea.pos.z = area.pos.z;
         drawBackgroundRequired = true;
     }
 
@@ -272,14 +271,13 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         graphics.setColor(Color.BLACK);
         graphics.drawImage(backgroundImage, 0, 0, null);
         for (IGraphicObject graphicObject : graphicObjects.values()) {
-            graphicObject.render(graphics, viewPosition, viewSize);
+            graphicObject.render(graphics, viewArea);
         }
-        drawStockpiles(graphics);
+
         drawDesignations(graphics);
         drawFarms(graphics);
         drawRooms(graphics);
         drawWorkshops(graphics);
-        drawItems(graphics);
         drawAnimals(graphics);
         drawDwarfs(graphics);
         drawGoblins(graphics);
@@ -303,6 +301,7 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
 
     @Override
     public void setSize(final Dimension d) {
+        Logger.getInstance().log(this, "setSize (" + d.width + ", " + d.height + ")");
         super.setSize(d);
         canvasWidth = d.width;
         canvasHeight = d.height;
@@ -312,8 +311,14 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         if (canvasHeight <= 0) {
             canvasHeight = 1;
         }
-        viewSize = new MapIndex(canvasWidth / SpriteManager.SPRITE_SIZE + 1, canvasHeight
-                / SpriteManager.SPRITE_SIZE + 1, 0);
+        // To keep the view centered on the same location it is moved so the corner is where it use to be centered then
+        // moved back or something, does that make any sense?
+        viewArea.pos.x += viewArea.width / 2;
+        viewArea.pos.y += viewArea.height / 2;
+        viewArea.width = canvasWidth / SpriteManager.SPRITE_SIZE + 1;
+        viewArea.height = canvasHeight / SpriteManager.SPRITE_SIZE + 1;
+        viewArea.pos.x -= viewArea.width / 2;
+        viewArea.pos.y -= viewArea.height / 2;
         backgroundImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_ARGB);
         drawBackgroundRequired = true;
     }
@@ -335,9 +340,9 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         Sprite animalSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.ANIMAL_SPRITE);
         for (IGameCharacter animal : region.getAnimals()) {
             MapIndex position = animal.getPosition();
-            if (position.z == viewPosition.z) {
-                int x = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                int y = (position.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
+            if (position.z == viewArea.pos.z) {
+                int x = (position.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
+                int y = (position.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
                 if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
                     animalSprite.draw(g, x, y);
                 }
@@ -357,11 +362,11 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         RegionMap map = region.getMap();
         Sprite tile;
         Graphics g = backgroundImage.getGraphics();
-        for (int x = 0; x < viewSize.x; x++) {
-            for (int y = 0; y < viewSize.y; y++) {
-                BlockType block = map.getBlock(viewPosition.add(x, y, -1));
-                BlockType blockBelow = map.getBlock(viewPosition.add(x, y, -2));
-                BlockType blockAbove = map.getBlock(viewPosition.add(x, y, 0));
+        for (int x = 0; x < viewArea.width; x++) {
+            for (int y = 0; y < viewArea.height; y++) {
+                BlockType block = map.getBlock(viewArea.pos.add(x, y, -1));
+                BlockType blockBelow = map.getBlock(viewArea.pos.add(x, y, -2));
+                BlockType blockAbove = map.getBlock(viewArea.pos.add(x, y, 0));
 
                 if (blockBelow != BlockType.RAMP && blockBelow != BlockType.STAIR) {
                     tile = blockSprite(blockBelow);
@@ -404,9 +409,9 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
             Set<IGameCharacter> dwarfs = playerTmp.getDwarfManager().getDwarfs();
             for (IGameCharacter dwarf : dwarfs) {
                 MapIndex position = dwarf.getPosition();
-                if (position.z == viewPosition.z) {
-                    int x = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                    int y = (position.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
+                if (position.z == viewArea.pos.z) {
+                    int x = (position.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
+                    int y = (position.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
                     if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
                         Sprite dwarfSprite;
                         if (dwarf.isDead()) {
@@ -437,15 +442,15 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
             for (Farm farm : farms) {
                 MapArea area = farm.getArea();
 
-                if (viewPosition.z != area.pos.z) {
+                if (viewArea.pos.z != area.pos.z) {
                     continue;
                 }
 
                 List<FarmPlot> farmPlots = farm.getPlots();
                 for (FarmPlot farmPlot : farmPlots) {
                     MapIndex pos = farmPlot.getPosition();
-                    int x = (pos.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                    int y = (pos.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
+                    int x = (pos.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
+                    int y = (pos.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
 
                     if (farmPlot.getState() == FarmPlot.State.TILL) {
                         tillSprite.draw(g, x, y);
@@ -470,33 +475,11 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         Set<Goblin> goblins = region.getGoblins();
         for (Goblin goblin : goblins) {
             MapIndex position = goblin.getPosition();
-            if (position.z == viewPosition.z) {
-                int x = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                int y = (position.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
+            if (position.z == viewArea.pos.z) {
+                int x = (position.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
+                int y = (position.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
                 if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
                     goblinSprite.draw(g, x, y);
-                }
-            }
-        }
-    }
-
-    /**
-     * Draw items.
-     * @param g the graphics to draw on
-     */
-    private void drawItems(final Graphics g) {
-        Set<Player> players = region.getPlayers();
-        for (Player thisPlayer : players) {
-            Set<Item> items = thisPlayer.getStockManager().getItems();
-            for (Item item : items) {
-                MapIndex position = item.getPosition();
-                if (position.z == viewPosition.z) {
-                    int x = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                    int y = (position.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
-                    if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
-                        Sprite itemSprite = SpriteManager.getInstance().getItemSprite(item.getType().sprite);
-                        itemSprite.draw(g, x, y);
-                    }
                 }
             }
         }
@@ -512,56 +495,19 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
             Set<Room> rooms = thisPlayer.getRooms();
             for (Room room : rooms) {
                 MapArea area = room.getArea();
-                if (viewPosition.z != area.pos.z) {
+                if (viewArea.pos.z != area.pos.z) {
                     continue;
                 }
-                int x = (area.pos.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                int y = (area.pos.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
+                int x = (area.pos.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
+                int y = (area.pos.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
                 g.setColor(ROOM_COLOUR);
                 g.fillRect(x, y, area.width * SpriteManager.SPRITE_SIZE, area.height * SpriteManager.SPRITE_SIZE);
                 for (Item item : room.getItems()) {
                     MapIndex position = item.getPosition();
-                    int x2 = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                    int y2 = (position.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
+                    int x2 = (position.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
+                    int y2 = (position.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
                     Sprite itemSprite = SpriteManager.getInstance().getItemSprite(item.getType().sprite);
                     itemSprite.draw(g, x2, y2);
-                }
-            }
-        }
-    }
-
-    /**
-     * Draw stockpiles.
-     * @param g the graphics to draw on
-     */
-    private void drawStockpiles(final Graphics g) {
-        Set<Player> players = region.getPlayers();
-        for (Player thisPlayer : players) {
-            Set<Stockpile> stockpiles = thisPlayer.getStockManager().getStockpiles();
-            for (Stockpile stockpile : stockpiles) {
-                MapArea area = stockpile.getArea();
-
-                if (viewPosition.z != area.pos.z) {
-                    continue;
-                }
-
-                int x = (area.pos.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                int y = (area.pos.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
-
-                g.setColor(STOCKPILE_COLOUR);
-                g.fillRect(x, y, area.width * SpriteManager.SPRITE_SIZE, area.height * SpriteManager.SPRITE_SIZE);
-
-                Set<Item> items = stockpile.getItems();
-                for (Item item : items) {
-                    MapIndex position = item.getPosition();
-                    if (position.z == viewPosition.z) {
-                        int x2 = (position.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                        int y2 = (position.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
-                        if (x2 >= 0 && x2 < canvasWidth && y2 >= 0 && y2 < canvasHeight) {
-                            Sprite itemSprite = SpriteManager.getInstance().getItemSprite(item.getType().sprite);
-                            itemSprite.draw(g, x2, y2);
-                        }
-                    }
                 }
             }
         }
@@ -577,11 +523,11 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
             Set<Workshop> workshops = thisPlayer.getWorkshops();
             for (Workshop workshop : workshops) {
                 MapArea area = new MapArea(workshop.getPosition(), Workshop.WORKSHOP_SIZE, Workshop.WORKSHOP_SIZE);
-                if (viewPosition.z != area.pos.z) {
+                if (viewArea.pos.z != area.pos.z) {
                     continue;
                 }
-                int x = (area.pos.x - viewPosition.x) * SpriteManager.SPRITE_SIZE;
-                int y = (area.pos.y - viewPosition.y) * SpriteManager.SPRITE_SIZE;
+                int x = (area.pos.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
+                int y = (area.pos.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
                 Sprite workshopSprite = SpriteManager.getInstance().getWorkshopSprite(workshop.getType().sprite);
                 workshopSprite.draw(g, x, y);
             }
@@ -596,5 +542,25 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     @Override
     public void treeRemoved(final Tree tree) {
         graphicObjects.remove(tree);
+    }
+
+    @Override
+    public void itemAdded(final Item item) {
+        graphicObjects.put(item, new ItemGraphicObject(item));
+    }
+
+    @Override
+    public void itemRemoved(final Item item) {
+        graphicObjects.remove(item);
+    }
+
+    @Override
+    public void stockpileAdded(final Stockpile stockpile) {
+        graphicObjects.put(stockpile, new StockpileGraphicObject(stockpile));
+    }
+
+    @Override
+    public void stockpileRemoved(final Stockpile stockpile) {
+        graphicObjects.remove(stockpile);
     }
 }

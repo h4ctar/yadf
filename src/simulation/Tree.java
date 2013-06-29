@@ -39,9 +39,6 @@ import simulation.tree.TreeManager;
  */
 public class Tree extends AbstractEntity {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -2672289842428964769L;
-
     /** The tree manager that this tree belongs to. */
     private final TreeManager treeManager;
 

@@ -31,7 +31,6 @@
  */
 package simulation;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -45,7 +44,6 @@ import simulation.character.Animal;
 import simulation.character.Goblin;
 import simulation.character.IGameCharacter;
 import simulation.farm.Farm;
-import simulation.item.Item;
 import simulation.item.Stockpile;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -56,10 +54,7 @@ import simulation.workshop.Workshop;
 /**
  * Region Contains all the data for a region, including the map, players and trees.
  */
-public class Region implements Serializable {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = -5907933435638776825L;
+public class Region {
 
     /** The number of starting animals. */
     private static final int NUMBER_OF_ANIMALS = 10;
@@ -109,7 +104,19 @@ public class Region implements Serializable {
     /** The time. */
     private long time;
 
+    /** Listeners to be notified at a certain time. */
     private final Map<Long, Set<ITimeListener>> timeListeners = new HashMap<>();
+
+    /**
+     * Setup the region.
+     * @param regionSize the size of the region
+     */
+    public void setup(final MapIndex regionSize) {
+        Logger.getInstance().log(this, "Setting up");
+        map.generateMap(regionSize);
+        treeManager.addTrees();
+        addAnimals();
+    }
 
     /**
      * Adds the player.
@@ -214,49 +221,6 @@ public class Region implements Serializable {
     }
 
     /**
-     * Gets the closest dwarf.
-     * @param position the position
-     * @return the closest dwarf
-     */
-    public IGameCharacter getClosestDwarf(final MapIndex position) {
-        // TODO: make this actually return the closest dwarf, also move into player
-        int minDistance = Integer.MAX_VALUE;
-        IGameCharacter minDwarf = null;
-
-        for (Player player : players) {
-            Set<IGameCharacter> dwarfs = player.getDwarfManager().getDwarfs();
-            for (IGameCharacter dwarf : dwarfs) {
-                if (!dwarf.isDead()) {
-                    int distance = dwarf.getPosition().distance(position);
-                    if (minDwarf == null || distance < minDistance) {
-                        minDistance = distance;
-                        minDwarf = dwarf;
-                    }
-                }
-            }
-        }
-
-        return minDwarf;
-    }
-
-    /**
-     * Gets a reference to a dwarf at a particular location.
-     * @param mouseIndex the mouse index
-     * @return the dwarf
-     */
-    public IGameCharacter getDwarf(final MapIndex mouseIndex) {
-        for (Player player : players) {
-            for (IGameCharacter dwarf : player.getDwarfManager().getDwarfs()) {
-                if (dwarf.getPosition().equals(mouseIndex)) {
-                    return dwarf;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Gets the game character.
      * @param position the position
      * @return the game character
@@ -287,19 +251,11 @@ public class Region implements Serializable {
     }
 
     /**
-     * Gets a reference to an item at a particular location.
-     * @param mouseIndex the mouse index
-     * @return the item
+     * Get the tree manager.
+     * @return the tree manager
      */
-    public Item getItem(final MapIndex mouseIndex) {
-        for (Player player : players) {
-            for (Item item : player.getStockManager().getItems()) {
-                if (item.getPosition().equals(mouseIndex)) {
-                    return item;
-                }
-            }
-        }
-        return null;
+    public TreeManager getTreeManager() {
+        return treeManager;
     }
 
     /**
@@ -333,26 +289,6 @@ public class Region implements Serializable {
     }
 
     /**
-     * Find if a position has a stockpile on it.
-     * @param mapIndex The location you want to see if has a stockpile
-     * @return A reference to a stockpile
-     */
-    public Stockpile getStockpile(final MapIndex mapIndex) {
-        for (Player player : players) {
-            for (Stockpile stockpile : player.getStockManager().getStockpiles()) {
-                MapArea area = stockpile.getArea();
-                if (mapIndex.x < area.pos.x + area.width && mapIndex.x >= area.pos.x
-                        && mapIndex.y < area.pos.y + area.height && mapIndex.y >= area.pos.y
-                        && mapIndex.z == area.pos.z) {
-                    return stockpile;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Gets a string representing the current time.
      * @return the time string
      */
@@ -361,17 +297,6 @@ public class Region implements Serializable {
         long day = time / SIMULATION_STEPS_PER_DAY;
         long year = time / SIMULATION_STEPS_PER_YEAR;
         return "Year " + year + " Day " + (long) (day % DAYS_IN_A_YEAR) + " Hour " + hour % HOURS_IN_A_DAY;
-    }
-
-    /**
-     * Setup the region.
-     * @param regionSize the size of the region
-     */
-    public void setup(final MapIndex regionSize) {
-        Logger.getInstance().log(this, "Setting up");
-        map.generateMap(regionSize);
-        treeManager.addTrees();
-        addAnimals();
     }
 
     /**
@@ -409,6 +334,12 @@ public class Region implements Serializable {
         }
     }
 
+    /**
+     * Add a time listener.
+     * @param duration how long until they want to be notified
+     * @param listener the listener to add
+     * @return the time which they will be notified
+     */
     public long addTimeListener(final long duration, final ITimeListener listener) {
         long notifyTime = time + duration;
         if (!timeListeners.containsKey(notifyTime)) {
@@ -418,13 +349,14 @@ public class Region implements Serializable {
         return notifyTime;
     }
 
+    /**
+     * Remove a time listener.
+     * @param notifyTime the time which they were being notified
+     * @param listener the listener to remove
+     */
     public void removeTimeListener(final long notifyTime, final ITimeListener listener) {
         if (timeListeners.containsKey(notifyTime)) {
             timeListeners.get(notifyTime).remove(listener);
         }
-    }
-
-    public TreeManager getTreeManager() {
-        return treeManager;
     }
 }

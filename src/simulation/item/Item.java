@@ -46,9 +46,6 @@ import simulation.map.MapIndex;
  */
 public class Item extends AbstractEntity {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -4986933611301536209L;
-
     /** The type of the item. */
     protected final ItemType itemType;
 
@@ -143,7 +140,7 @@ public class Item extends AbstractEntity {
         used = usedTmp;
         if (!used) {
             for (IItemAvailableListener listener : listeners) {
-                listener.itemAvailable(this);
+                listener.itemAvailable(this, null);
             }
         }
     }

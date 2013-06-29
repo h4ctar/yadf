@@ -31,7 +31,6 @@
  */
 package simulation.map;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,10 +40,7 @@ import logger.Logger;
 /**
  * The Class PathPlanner.
  */
-class PathPlanner implements Serializable {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = 1549796322950588203L;
+class PathPlanner {
 
     /** How much it costs to walk straight north, south, east, west or up or down. */
     private static final int COST_OF_SQUARE_MOVEMENT = 10;

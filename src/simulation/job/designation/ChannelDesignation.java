@@ -45,9 +45,6 @@ import simulation.map.RegionMap;
  */
 public class ChannelDesignation extends AbstractDesignation {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 6420960356264271866L;
-
     /** The type of block to replace the channeled block with, null to totally remove it. */
     private final BlockType blockType;
 

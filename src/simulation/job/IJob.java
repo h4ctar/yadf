@@ -31,14 +31,12 @@
  */
 package simulation.job;
 
-import java.io.Serializable;
-
 import simulation.map.MapIndex;
 
 /**
  * Abstract class for a job, a job is just something that needs doing.
  */
-public interface IJob extends Serializable {
+public interface IJob {
 
     /**
      * Gets the current status of the job, used by the GUI.

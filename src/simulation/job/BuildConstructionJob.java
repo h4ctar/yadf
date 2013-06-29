@@ -57,9 +57,6 @@ import simulation.map.WalkableNode;
  */
 public class BuildConstructionJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -6711242158871047234L;
-
     /** Amount of time to spend building (simulation steps). */
     private static final long BUILD_DURATION = Region.SIMULATION_STEPS_PER_HOUR * 2;
 

@@ -1,6 +1,7 @@
 package simulation.job.jobstate;
 
-import simulation.item.IStockManagerListener;
+import simulation.item.IContainer;
+import simulation.item.IItemAvailableListener;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.job.AbstractJob;
@@ -8,7 +9,7 @@ import simulation.job.AbstractJob;
 /**
  * Generic looking for item job state.
  */
-public abstract class LookingForItemState extends AbstractJobState implements IStockManagerListener {
+public abstract class LookingForItemState extends AbstractJobState implements IItemAvailableListener {
 
     /** The required itemType. */
     private final ItemType itemType;
@@ -57,8 +58,7 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
             if (itemType != null) {
                 getJob().getPlayer().getStockManager().addListener(itemType, this);
             } else {
-                // TODO: add listener for all item types in category rather that just all items
-                getJob().getPlayer().getStockManager().addListener(this);
+                getJob().getPlayer().getStockManager().addListener(category, this);
             }
         } else {
             item.setUsed(true);
@@ -67,15 +67,19 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
     }
 
     @Override
-    public void itemNowAvailable(final Item availableItem) {
-        if (!availableItem.isUsed()
-                && ((itemType != null && itemType.equals(availableItem.getType())) || (category != null && category
-                        .equals(availableItem.getType().category)))) {
-            item = availableItem;
-            item.setUsed(true);
-            getJob().getPlayer().getStockManager().removeListener(this);
-            finishState();
+    public void itemAvailable(final Item availableItem, final IContainer container) {
+        assert !availableItem.isUsed();
+        assert container == getJob().getPlayer().getStockManager();
+        assert (itemType != null && itemType.equals(availableItem.getType()))
+                || (category != null && category.equals(availableItem.getType().category));
+        item = availableItem;
+        item.setUsed(true);
+        if (itemType != null) {
+            getJob().getPlayer().getStockManager().removeListener(itemType, this);
+        } else {
+            getJob().getPlayer().getStockManager().removeListener(category, this);
         }
+        finishState();
     }
 
     /**
@@ -88,6 +92,10 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
 
     @Override
     public void interrupt(final String message) {
-        getJob().getPlayer().getStockManager().removeListener(this);
+        if (itemType != null) {
+            getJob().getPlayer().getStockManager().removeListener(itemType, this);
+        } else {
+            getJob().getPlayer().getStockManager().removeListener(category, this);
+        }
     }
 }

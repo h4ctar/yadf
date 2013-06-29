@@ -46,10 +46,8 @@ import simulation.recipe.RecipeManager;
 /**
  * The Class Workshop.
  */
+// TODO: shoudl be a container
 public class Workshop extends AbstractGameObject {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = 6679458068681849511L;
 
     /** The position. */
     private final MapIndex position;

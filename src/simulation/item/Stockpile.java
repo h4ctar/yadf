@@ -46,16 +46,13 @@ import simulation.map.MapIndex;
 /**
  * The Class Stockpile.
  */
-public class Stockpile extends AbstractGameObject implements IContainer, IJobListener, IStockManagerListener {
+public class Stockpile extends AbstractGameObject implements IContainer, IJobListener, IItemAvailableListener {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 4376721656018948647L;
+    /** The container component; contains unstored items. */
+    private final ContainerComponent containerComponent = new ContainerComponent(this);
 
     /** Is the position in the stockpile used. */
     private final boolean[][] used;
-
-    /** A reference to the item at a particular position. */
-    private final Set<Item> items = new LinkedHashSet<>();
 
     /** The area of the stockpile. */
     private final MapArea area;
@@ -74,9 +71,6 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
 
     /** The listeners that are notified of items being added or removed from the stockpile. */
     private final Set<IStockpileListener> stockpileListeners = new LinkedHashSet<>();
-
-    /** The listeners that are notified of items being added or removed from the stockpile. */
-    private final Set<IItemAvailableListener> availableListeners = new LinkedHashSet<>();
 
     /**
      * Constructor for the stockpile.
@@ -99,10 +93,8 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         } else {
             if (item.canBeStored(acceptableItemTypes)) {
                 MapIndex pos = item.getPosition().sub(area.pos);
-                used[pos.x][pos.y] = true;
-                items.add(item);
-                itemAdded = true;
-                notifyStockpileListeners();
+                itemAdded = containerComponent.addItem(item);
+                used[pos.x][pos.y] = itemAdded;
             } else {
                 Logger.getInstance().log(this, "Stockpile does not accept this item type", true);
             }
@@ -110,28 +102,25 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         return itemAdded;
     }
 
+    @Override
+    public boolean removeItem(final Item item) {
+        Logger.getInstance().log(this, "Removing item - itemType: " + item.getType());
+        boolean itemRemoved = false;
+        itemRemoved = containerComponent.removeItem(item);
+        if (itemRemoved) {
+            MapIndex pos = item.getPosition().sub(area.pos);
+            used[pos.x][pos.y] = false;
+            notifyStockpileListeners();
+        }
+        return itemRemoved;
+    }
+
     /**
      * Add a new listener to this stockpile.
      * @param listener the new listener
      */
-    public void addStockpileListener(final IStockpileListener listener) {
+    public void addListener(final IStockpileListener listener) {
         stockpileListeners.add(listener);
-    }
-
-    /**
-     * Add a new item available listener.
-     * @param listener the new listener
-     */
-    public void addItemAvailableListener(final IItemAvailableListener listener) {
-        availableListeners.add(listener);
-    }
-
-    /**
-     * Remove an item available listener.
-     * @param listener the listener to remove
-     */
-    public void removeItemAvailableListener(final IItemAvailableListener listener) {
-        availableListeners.remove(listener);
     }
 
     /**
@@ -139,13 +128,15 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * @param itemTypeName the item type name
      * @return the accepts item type
      */
-    public boolean getAcceptsItemType(final String itemTypeName) {
+    public boolean isItemTypeAccepted(final String itemTypeName) {
+        boolean accepted = false;
         for (ItemType itemType : acceptableItemTypes) {
             if (itemType.name.equals(itemTypeName)) {
-                return true;
+                accepted = true;
+                break;
             }
         }
-        return false;
+        return accepted;
     }
 
     /**
@@ -157,42 +148,12 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     }
 
     /**
-     * Gets the item count.
-     * @param itemTypeName the item name
-     * @return the item count
-     */
-    public int getItemCount(final String itemTypeName) {
-        int count = 0;
-        for (Item item : items) {
-            if (item.getType().name.equals(itemTypeName)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    /**
-     * Gets the item count in category.
-     * @param categoryName the category name
-     * @return the item count in category
-     */
-    public int getItemCountInCategory(final String categoryName) {
-        int count = 0;
-        for (Item item : items) {
-            if (item.getType().category.equals(categoryName)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    /**
      * Gets all the stored items.
      * @return the items
      */
     @Override
     public Set<Item> getItems() {
-        return items;
+        return containerComponent.getItems();
     }
 
     /**
@@ -205,84 +166,37 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
 
     @Override
     public Item getUnusedItem(final String itemTypeName) {
-        for (Item item : items) {
-            if (item.getType().name.equals(itemTypeName) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
-                return item;
-            }
-            if (item instanceof ContainerItem) {
-                Item contentItem = ((ContainerItem) item).getUnusedItem(itemTypeName);
-                if (contentItem != null) {
-                    return contentItem;
-                }
-            }
-        }
-        return null;
+        return containerComponent.getUnusedItem(itemTypeName);
     }
 
     @Override
     public Item getUnusedItemFromCategory(final String category) {
-        for (Item item : items) {
-            if (item.getType().category.equals(category) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
-                return item;
-            }
-            if (item instanceof ContainerItem) {
-                Item contentItem = ((ContainerItem) item).getUnusedItemFromCategory(category);
-                if (contentItem != null) {
-                    return contentItem;
-                }
-            }
-        }
-        return null;
+        return containerComponent.getUnusedItemFromCategory(category);
     }
 
     /**
      * Checks for all item types in category.
-     * @param categoryName the category name
-     * @return true, if successful
+     * @param category the category
+     * @return true if it contains at least one of each item in the category
      */
-    public boolean hasAllItemTypesInCategory(final String categoryName) {
+    public boolean hasAllItemTypesInCategory(final String category) {
         int count = 0;
         for (ItemType itemType : acceptableItemTypes) {
-            if (itemType.category.equals(categoryName)) {
-                // assuming the same item type is not in there twice
+            if (itemType.category.equals(category)) {
                 count++;
             }
         }
-        return count == ItemTypeManager.getInstance().getNumberOfItemTypesInCategory(categoryName);
+        return count == ItemTypeManager.getInstance().getNumberOfItemTypesInCategory(category);
     }
 
     @Override
     public void jobDone(final IJob job) {
         assert job.isDone();
         HaulJob haulJob = (HaulJob) job;
-        Logger.getInstance().log(this,
-                "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
+        Logger.getInstance()
+                .log(this, "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
         haulJob.getItem().setUsed(false);
-        for (IItemAvailableListener listener : availableListeners) {
-            listener.itemAvailable(haulJob.getItem());
-        }
         haulJobs.remove(haulJob);
-    }
-
-    @Override
-    public boolean removeItem(final Item item) {
-        Logger.getInstance().log(this, "Removing item - itemType: " + item.getType());
-        boolean itemRemoved = false;
-        itemRemoved = items.remove(item);
-        if (itemRemoved) {
-            MapIndex pos = item.getPosition().sub(area.pos);
-            used[pos.x][pos.y] = false;
-        }
-        for (Item container : items) {
-            if (container instanceof ContainerItem && ((ContainerItem) container).removeItem(item)) {
-                itemRemoved = true;
-                break;
-            }
-        }
-        if (itemRemoved) {
-            notifyStockpileListeners();
-        }
-        return itemRemoved;
     }
 
     /**
@@ -311,9 +225,9 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
                 }
             }
             // Remove items from this stockpile that are no longer accepted
-            for (Item item : items.toArray(new Item[0])) {
+            for (Item item : getItems().toArray(new Item[0])) {
                 if (item.getType().equals(itemType)) {
-                    items.remove(item);
+                    getItems().remove(item);
                     player.getStockManager().addItem(item);
                     MapIndex pos = item.getPosition().sub(area.pos);
                     used[pos.x][pos.y] = false;
@@ -361,7 +275,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * @return the item, null if no item found
      */
     public Item getItem(final MapIndex index) {
-        for (Item item : items) {
+        for (Item item : getItems()) {
             if (index.equals(item.getPosition())) {
                 return item;
             }
@@ -375,9 +289,12 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     @Override
     public void delete() {
         super.delete();
-        player.getStockManager().removeListener(this);
+        containerComponent.delete();
         player.getStockManager().removeStockpile(this);
-        for (Item item : items) {
+        for (ItemType itemType : acceptableItemTypes) {
+            player.getStockManager().removeListener(itemType, this);
+        }
+        for (Item item : getItems()) {
             player.getStockManager().addItem(item);
         }
         for (HaulJob haulJob : haulJobs) {
@@ -385,8 +302,43 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         }
     }
 
+    /**
+     * If the notification came from the stock manager then the item is an unstored item so create a haul job for it,
+     * otherwise it's an item that is stored in this stockpile so notify the item available listeners. {@inheritDoc}
+     */
     @Override
-    public void itemNowAvailable(final Item availableItem) {
+    public void itemAvailable(final Item availableItem, final IContainer container) {
+        assert container == player.getStockManager();
         createHaulJobs();
+    }
+
+    @Override
+    public int getItemQuantity(final String category) {
+        return containerComponent.getItemQuantity(category);
+    }
+
+    @Override
+    public int getItemQuantity(final ItemType itemType) {
+        return containerComponent.getItemQuantity(itemType);
+    }
+
+    @Override
+    public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.addListener(itemType, listener);
+    }
+
+    @Override
+    public void addListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.addListener(category, listener);
+    }
+
+    @Override
+    public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.removeListener(itemType, listener);
+    }
+
+    @Override
+    public void removeListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.removeListener(category, listener);
     }
 }

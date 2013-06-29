@@ -43,7 +43,7 @@ public class KillEveryoneComponent extends AbstractCharacterComponent implements
     // private static final int VIEW_DISTANCE = 20;
 
     /** The dwarf. */
-    private IGameCharacter dwarf;
+    // private IGameCharacter dwarf;
 
     /**
      * Constructor.
@@ -60,35 +60,33 @@ public class KillEveryoneComponent extends AbstractCharacterComponent implements
 
     @Override
     public void update(final Region region) {
-        if (dwarf != null) {
-            if (dwarf.isDead()) {
-                dwarf = null;
-                // character.move = new IdleMoveComponent();
-                // character.attack = null;
-            }
-        }
-
-        if (dwarf == null) {
-            lookForDwarf(region);
-        }
+        // if (dwarf != null) {
+        // if (dwarf.isDead()) {
+        // dwarf = null;
+        // // character.move = new IdleMoveComponent();
+        // // character.attack = null;
+        // }
+        // }
+        // if (dwarf == null) {
+        // lookForDwarf(region);
+        // }
     }
 
     /**
      * Look for dwarf.
      * @param region the region
      */
-    private void lookForDwarf(final Region region) {
-        dwarf = region.getClosestDwarf(getCharacter().getPosition());
-
-        // if (dwarf != null) {
-        // int distance = dwarf.getPosition().distance(character.getPosition());
-        //
-        // if (distance < VIEW_DISTANCE) {
-        // character.move = new ChaseMoveComponent(dwarf);
-        // character.attack = new AttackComponent(dwarf);
-        // } else {
-        // dwarf = null;
-        // }
-        // }
-    }
+    // private void lookForDwarf(final Region region) {
+    // dwarf = region.getClosestDwarf(getCharacter().getPosition());
+    // if (dwarf != null) {
+    // int distance = dwarf.getPosition().distance(character.getPosition());
+    //
+    // if (distance < VIEW_DISTANCE) {
+    // character.move = new ChaseMoveComponent(dwarf);
+    // character.attack = new AttackComponent(dwarf);
+    // } else {
+    // dwarf = null;
+    // }
+    // }
+    // }
 }

@@ -42,9 +42,6 @@ import simulation.map.MapIndex;
  */
 public class MineDesignation extends AbstractDesignation {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 5078985398861947613L;
-
     /**
      * Constructor.
      * @param region the region that the designation is in

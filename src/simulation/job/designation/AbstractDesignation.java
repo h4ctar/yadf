@@ -49,9 +49,6 @@ import simulation.map.MapIndex;
  */
 public abstract class AbstractDesignation implements IJob, IJobListener {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -7914906499210843383L;
-
     /** The jobs. */
     protected List<IJob> jobs = new ArrayList<>();
 

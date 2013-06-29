@@ -55,9 +55,6 @@ import simulation.map.RegionMap;
  */
 public class MineJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -43625505095983333L;
-
     /** Amount of time to spend mining (simulation steps). */
     private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 

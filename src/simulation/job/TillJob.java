@@ -49,9 +49,6 @@ import simulation.map.MapIndex;
  */
 public class TillJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -8463713853261562676L;
-
     /** The Constant tillDuration. */
     private static final long TILL_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
 

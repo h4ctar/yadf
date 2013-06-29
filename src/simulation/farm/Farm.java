@@ -44,9 +44,6 @@ import simulation.map.MapIndex;
  */
 public class Farm extends AbstractGameObject {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 1L;
-
     /** The area. */
     private final MapArea area;
 

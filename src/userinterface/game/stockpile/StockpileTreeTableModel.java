@@ -87,7 +87,7 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
             }
         }
 
-        stockpile.addStockpileListener(this);
+        stockpile.addListener(this);
     }
 
     @Override
@@ -163,14 +163,14 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
             if (isCategory) {
                 acceptsItemType = stockpile.hasAllItemTypesInCategory(name);
             } else {
-                acceptsItemType = stockpile.getAcceptsItemType(name);
+                acceptsItemType = stockpile.isItemTypeAccepted(name);
             }
             return new Boolean(acceptsItemType);
         case 2:
             if (isCategory) {
-                return new Integer(stockpile.getItemCountInCategory(name));
+                return new Integer(stockpile.getItemQuantity(name));
             }
-            return new Integer(stockpile.getItemCount(name));
+            return new Integer(stockpile.getItemQuantity(ItemTypeManager.getInstance().getItemType(name)));
         default:
             return null;
         }

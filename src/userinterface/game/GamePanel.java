@@ -111,6 +111,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
 
             region = new Region();
             player = new Player();
+            region.addPlayer(player);
             controller = new SinglePlayerController();
 
             worldPane.setup(region, player, controller);
@@ -122,7 +123,6 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
             player.setup(playerName, region, embarkPosition, numberOfStartingDwarfs);
             worldPane.getWorldCanvas().zoomToPosition(embarkPosition);
-            region.addPlayer(player);
 
             gameLoop = new GameLoop(region, controller, this);
         } catch (Exception e) {

@@ -55,9 +55,6 @@ import simulation.workshop.WorkshopTypeManager;
  */
 public class BuildWorkshopJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 6619232211299027703L;
-
     /** How long it takes to build the workshop. */
     private static final long BUILD_DURATION = Region.SIMULATION_STEPS_PER_DAY;
 

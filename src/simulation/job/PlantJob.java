@@ -50,9 +50,6 @@ import simulation.map.MapIndex;
  */
 public class PlantJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -2033952601756317716L;
-
     /** The labor type required to plant a crop. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
 

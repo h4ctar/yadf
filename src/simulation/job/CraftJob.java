@@ -55,9 +55,6 @@ import simulation.workshop.Workshop;
  */
 public class CraftJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 8969989694678543875L;
-
     /** How long it takes to craft the item. */
     private static final long CRAFT_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
 

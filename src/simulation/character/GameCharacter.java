@@ -53,9 +53,6 @@ import simulation.map.MapIndex;
  */
 public class GameCharacter extends AbstractEntity implements IGameCharacter {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -6938089593424613235L;
-
     /** All the components. */
     private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new HashMap<>();
 

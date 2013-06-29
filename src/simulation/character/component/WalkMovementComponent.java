@@ -51,7 +51,7 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
     private boolean nextTo = false;
 
     /** The path that the dwarf is walking along. */
-    private transient List<MapIndex> path = null;
+    private List<MapIndex> path = null;
 
     /** How far along the path the dwarf is. */
     private int pathIndex = 0;

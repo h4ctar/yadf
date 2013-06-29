@@ -30,46 +30,6 @@ public interface IStockManager extends IContainer {
     Set<Stockpile> getStockpiles();
 
     /**
-     * Get the number of items in a category.
-     * @param category the category
-     * @return the number of items in the category
-     */
-    int getItemQuantity(String category);
-
-    /**
-     * Gets the item count.
-     * @param itemType the item type
-     * @return the item count
-     */
-    int getItemQuantity(ItemType itemType);
-
-    /**
-     * Add a listener to the container.
-     * @param itemType the type of item to be notified for
-     * @param listener the new listener
-     */
-    void addListener(final ItemType itemType, final IStockManagerListener listener);
-
-    /**
-     * Add a listener to the container that listens to all item types.
-     * @param listener the new listener
-     */
-    void addListener(IStockManagerListener listener);
-
-    /**
-     * Remove a listener from a particular item type.
-     * @param itemType the type of item to stop listening for
-     * @param listener the listener to remove
-     */
-    void removeListener(ItemType itemType, IStockManagerListener listener);
-
-    /**
-     * Remove a listener from listening to all item types.
-     * @param listener the listener to remove
-     */
-    void removeListener(IStockManagerListener listener);
-
-    /**
      * Get an item located at a specific map index.
      * @param mapIndex the map index
      * @return the item, null if no item found
@@ -101,4 +61,8 @@ public interface IStockManager extends IContainer {
      * @param stockpile the stockpile to remove
      */
     void removeStockpile(Stockpile stockpile);
+
+    void addListener(IStockManagerListener listener);
+
+    void removeListener(IStockManagerListener listener);
 }

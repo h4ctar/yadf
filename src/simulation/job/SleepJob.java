@@ -17,9 +17,6 @@ import simulation.room.Room;
  */
 public class SleepJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 6230915816367520292L;
-
     /** How many simulation steps the dwarf should sleep for. */
     private static final long SLEEP_DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 

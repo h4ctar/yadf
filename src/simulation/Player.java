@@ -55,9 +55,6 @@ import simulation.workshop.Workshop;
  */
 public class Player extends AbstractGameObject implements IPlayer {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -6334725429593228897L;
-
     /** The name of the player. */
     private String name;
 
@@ -115,7 +112,15 @@ public class Player extends AbstractGameObject implements IPlayer {
      * @param room the room
      */
     public void addRoom(final Room room) {
+        // TODO: why was the stockmanager listening to the room
+        // room.addListener(stockManager);
         rooms.add(room);
+    }
+
+    @Override
+    public void removeRoom(final Room room) {
+        // room.removeListener(stockManager);
+        rooms.remove(room);
     }
 
     /**
@@ -179,13 +184,14 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     @Override
     public Room getRoom(final MapIndex index) {
+        Room foundRoom = null;
         for (Room room : rooms) {
-            if (room.hasIndex(index)) {
-                return room;
+            if (room.getArea().containesIndex(index)) {
+                foundRoom = room;
+                break;
             }
         }
-
-        return null;
+        return foundRoom;
     }
 
     /**
@@ -195,11 +201,6 @@ public class Player extends AbstractGameObject implements IPlayer {
     @Override
     public Set<Room> getRooms() {
         return rooms;
-    }
-
-    @Override
-    public void removeRoom(final Room room) {
-        rooms.remove(room);
     }
 
     /**

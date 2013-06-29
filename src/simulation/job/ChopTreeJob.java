@@ -52,9 +52,6 @@ import simulation.map.MapIndex;
  */
 public class ChopTreeJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -7689577169283098909L;
-
     /** Amount of time to spend chopping down the tree (simulation steps). */
     private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 

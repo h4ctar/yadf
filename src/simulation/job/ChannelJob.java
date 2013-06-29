@@ -53,9 +53,6 @@ import simulation.map.RegionMap;
  */
 public class ChannelJob extends AbstractJob {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = 117706611556221325L;
-
     /** Amount of time to spend channeling (simulation steps). */
     private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 

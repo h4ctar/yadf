@@ -37,8 +37,11 @@ import java.util.Set;
 import logger.Logger;
 import simulation.AbstractGameObject;
 import simulation.IPlayer;
+import simulation.item.ContainerComponent;
 import simulation.item.IContainer;
+import simulation.item.IItemAvailableListener;
 import simulation.item.Item;
+import simulation.item.ItemType;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
@@ -47,11 +50,8 @@ import simulation.map.MapIndex;
  */
 public class Room extends AbstractGameObject implements IContainer {
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -4517865861465305417L;
-
-    /** The items. */
-    private final Set<Item> items = new LinkedHashSet<>();
+    /** The container component; contains unstored items. */
+    private final ContainerComponent containerComponent = new ContainerComponent(this);
 
     /** The area. */
     private final MapArea area;
@@ -77,19 +77,28 @@ public class Room extends AbstractGameObject implements IContainer {
         player = playerTmp;
     }
 
-    /**
-     * Adds an item to this room.
-     * @param item the item
-     * @return true if the item was successfully added
-     */
     @Override
     public boolean addItem(final Item item) {
-        Logger.getInstance().log(this, "Item added: " + item.getType().name);
-        items.add(item);
-        for (IRoomListener listener : listeners) {
-            listener.itemAdded(item);
+        Logger.getInstance().log(this, "Adding item: " + item.getType().name);
+        boolean itemAdded = containerComponent.addItem(item);
+        if (itemAdded) {
+            for (IRoomListener listener : listeners) {
+                listener.itemAdded(item);
+            }
         }
-        return true;
+        return itemAdded;
+    }
+
+    @Override
+    public boolean removeItem(final Item item) {
+        Logger.getInstance().log(this, "Removing item: " + item.getType().name);
+        boolean itemRemoved = containerComponent.removeItem(item);
+        if (itemRemoved) {
+            for (IRoomListener listener : listeners) {
+                listener.itemRemoved(item);
+            }
+        }
+        return itemRemoved;
     }
 
     /**
@@ -106,7 +115,7 @@ public class Room extends AbstractGameObject implements IContainer {
      */
     @Override
     public Set<Item> getItems() {
-        return items;
+        return containerComponent.getItems();
     }
 
     /**
@@ -126,26 +135,14 @@ public class Room extends AbstractGameObject implements IContainer {
     }
 
     /**
-     * Checks for index.
-     * @param index the index
-     * @return true, if successful
-     */
-    public boolean hasIndex(final MapIndex index) {
-        if (index.x >= area.pos.x && index.x <= area.pos.x + area.width - 1 && index.y >= area.pos.y
-                && index.y <= area.pos.y + area.height - 1 && area.pos.z == index.z) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Gets all the unused items of a specific type.
+     * Gets all the unused items of a specific type. This is used if the caller needs to make a decision about which
+     * item to take, e.g. the closest item.
      * @param itemTypeName the type of item to get
      * @return all the found items
      */
     public Set<Item> getUnusedItems(final String itemTypeName) {
         Set<Item> foundItems = new LinkedHashSet<>();
-        for (Item item : items) {
+        for (Item item : getItems()) {
             if (item.getType().name.equals(itemTypeName) && !item.isUsed()) {
                 foundItems.add(item);
             }
@@ -155,19 +152,14 @@ public class Room extends AbstractGameObject implements IContainer {
 
     @Override
     public Item getUnusedItem(final String itemTypeName) {
-        for (Item item : items) {
-            if (item.getType().name.equals(itemTypeName) && !item.isUsed()) {
-                return item;
-            }
-        }
-        return null;
+        return containerComponent.getUnusedItem(itemTypeName);
     }
 
     @Override
     public void delete() {
         super.delete();
         player.removeRoom(this);
-        for (Item item : items) {
+        for (Item item : getItems()) {
             if (item.isPlaced()) {
                 item.setPlaced(false);
             }
@@ -176,22 +168,8 @@ public class Room extends AbstractGameObject implements IContainer {
     }
 
     @Override
-    public boolean removeItem(final Item item) {
-        Logger.getInstance().log(this, "Item removed: " + item.getType().name);
-        boolean removed = items.remove(item);
-        if (removed) {
-            for (IRoomListener listener : listeners) {
-                listener.itemRemoved(item);
-            }
-        }
-        return removed;
-    }
-
-    @Override
     public Item getUnusedItemFromCategory(final String category) {
-        // TODO Auto-generated method stub
-        assert false;
-        return null;
+        return containerComponent.getUnusedItemFromCategory(category);
     }
 
     /**
@@ -208,5 +186,35 @@ public class Room extends AbstractGameObject implements IContainer {
      */
     public void removeListener(final IRoomListener listener) {
         listeners.remove(listener);
+    }
+
+    @Override
+    public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.addListener(itemType, listener);
+    }
+
+    @Override
+    public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.removeListener(itemType, listener);
+    }
+
+    @Override
+    public int getItemQuantity(final String category) {
+        return containerComponent.getItemQuantity(category);
+    }
+
+    @Override
+    public int getItemQuantity(final ItemType itemType) {
+        return containerComponent.getItemQuantity(itemType);
+    }
+
+    @Override
+    public void addListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.addListener(category, listener);
+    }
+
+    @Override
+    public void removeListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.removeListener(category, listener);
     }
 }

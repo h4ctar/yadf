@@ -31,17 +31,12 @@
  */
 package simulation;
 
-import java.io.Serializable;
-
 import logger.Logger;
 
 /**
  * The AbstractGameObject class.
  */
-public abstract class AbstractGameObject implements IGameObject, Serializable {
-
-    /** The serial version UID. */
-    private static final long serialVersionUID = 5321662116462424488L;
+public abstract class AbstractGameObject implements IGameObject {
 
     /** Has the entity been deleted. */
     private boolean deleted = false;
