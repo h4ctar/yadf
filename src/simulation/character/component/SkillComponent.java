@@ -155,7 +155,9 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
 
     @Override
     public void kill() {
-        pickupToolJob = null;
+        if (pickupToolJob != null) {
+            pickupToolJob.interrupt("Character died");
+        }
     }
 
     /**

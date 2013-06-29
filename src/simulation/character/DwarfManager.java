@@ -11,7 +11,7 @@ import simulation.labor.LaborType;
 import simulation.map.MapIndex;
 
 /**
- * The dwarf manager.
+ * The dwarf manager. There should be one dwarf manager per player per region.
  */
 public class DwarfManager implements IDwarfManager, ICharacterAvailableListener {
 
@@ -47,6 +47,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
     /**
      * Adds a new dwarf.
      * @param position the position of the new dwarf
+     * @param region the region the dwarf is in
      */
     public void addNewDwarf(final MapIndex position, final Region region) {
         Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position, region, player);

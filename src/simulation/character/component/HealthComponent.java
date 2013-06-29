@@ -66,7 +66,7 @@ public class HealthComponent extends AbstractCharacterComponent implements IHeal
 
     @Override
     public void kill() {
-        /* do nothing */
+        // do nothing
     }
 
     @Override

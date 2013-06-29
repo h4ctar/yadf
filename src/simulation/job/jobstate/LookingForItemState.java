@@ -73,6 +73,7 @@ public abstract class LookingForItemState extends AbstractJobState implements IS
                         .equals(availableItem.getType().category)))) {
             item = availableItem;
             item.setUsed(true);
+            getJob().getPlayer().getStockManager().removeListener(this);
             finishState();
         }
     }

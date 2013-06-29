@@ -45,6 +45,9 @@ public class SleepComponent extends AbstractCharacterComponent implements ISleep
 
     @Override
     public void kill() {
+        if (sleepJob != null) {
+            sleepJob.interrupt("Character died");
+        }
     }
 
     @Override

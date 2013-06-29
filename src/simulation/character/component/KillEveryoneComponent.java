@@ -55,7 +55,7 @@ public class KillEveryoneComponent extends AbstractCharacterComponent implements
 
     @Override
     public void kill() {
-        /* do nothing */
+        // do nothing
     }
 
     @Override

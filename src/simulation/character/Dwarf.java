@@ -55,6 +55,7 @@ public class Dwarf extends GameCharacter {
      * Instantiates a new dwarf.
      * @param name the name of the dwarf
      * @param position the position of the dwarf
+     * @param region the region the dwarf is in
      * @param player the player that the dwarf belongs to
      */
     public Dwarf(final String name, final MapIndex position, final Region region, final IPlayer player) {

@@ -44,7 +44,7 @@ import simulation.map.WalkableNode;
 public class ChaseMovementComponent extends AbstractMoveComponent implements IMovementComponent {
 
     /** The pursuee. */
-    private IGameCharacter pursuee;
+    private final IGameCharacter pursuee;
 
     /** How many simulation steps since last walking step taken. */
     private int simulationSteps = 0;
@@ -64,7 +64,7 @@ public class ChaseMovementComponent extends AbstractMoveComponent implements IMo
 
     @Override
     public void kill() {
-        pursuee = null;
+        // do nothing
     }
 
     @Override

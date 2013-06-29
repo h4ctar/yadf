@@ -32,6 +32,7 @@
 package simulation;
 
 import simulation.map.MapIndex;
+import simulation.tree.TreeManager;
 
 /**
  * The Class Tree.
@@ -41,21 +42,21 @@ public class Tree extends AbstractEntity {
     /** The serial version UID. */
     private static final long serialVersionUID = -2672289842428964769L;
 
-    /** The region that this tree belongs to. */
-    private final Region region;
+    /** The tree manager that this tree belongs to. */
+    private final TreeManager treeManager;
 
     /**
      * Instantiates a new tree.
      * @param position the position
-     * @param regionTmp the region that this tree belongs to
+     * @param treeManagerTmp the tree manager that this tree belongs to
      */
-    public Tree(final MapIndex position, final Region regionTmp) {
+    public Tree(final MapIndex position, final TreeManager treeManagerTmp) {
         super(position);
-        region = regionTmp;
+        treeManager = treeManagerTmp;
     }
 
     @Override
     public void delete() {
-        region.removeTree(this);
+        treeManager.removeTree(this);
     }
 }

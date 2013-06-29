@@ -62,13 +62,13 @@ public class ChopTreeDesignation extends AbstractDesignation {
 
     @Override
     public boolean valid(final MapIndex mapIndex) {
-        Tree tree = getRegion().getTree(mapIndex);
+        Tree tree = getRegion().getTreeManager().getTree(mapIndex);
         return tree != null;
     }
 
     @Override
     protected AbstractJob createJob(final MapIndex mapIndex) {
-        Tree tree = getRegion().getTree(mapIndex);
+        Tree tree = getRegion().getTreeManager().getTree(mapIndex);
 
         if (tree != null) {
             return new ChopTreeJob(tree, getPlayer());

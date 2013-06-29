@@ -51,7 +51,7 @@ import simulation.room.Room;
 import simulation.workshop.Workshop;
 
 /**
- * The Class Player.
+ * The player.
  */
 public class Player extends AbstractGameObject implements IPlayer {
 
@@ -59,7 +59,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     private static final long serialVersionUID = -6334725429593228897L;
 
     /** The name of the player. */
-    private final String name;
+    private String name;
 
     /** The job manager. */
     private final JobManager jobManager = new JobManager();
@@ -80,20 +80,26 @@ public class Player extends AbstractGameObject implements IPlayer {
     private final Set<Farm> farms = new CopyOnWriteArraySet<>();
 
     /** The region that this player is in. */
-    private final Region region;
+    private Region region;
 
     /** The size of the embark area. */
     private static final int EMBARK_SIZE = 10;
 
     /**
-     * Instantiates a new player.
+     * Setup.
      * @param playerName the players name
      * @param regionTmp the region that this player is in
+     * @param embarkPosition the embark position
+     * @param numberOfStartingDwarfs the number of starting dwarfs
      */
-    public Player(final String playerName, final Region regionTmp) {
+    public void setup(final String playerName, final Region regionTmp, final MapIndex embarkPosition,
+            final int numberOfStartingDwarfs) {
+        Logger.getInstance().log(this, "Setting up");
         name = playerName;
         region = regionTmp;
         jobManager.addDesignations(region, this);
+        addEmbarkResources(embarkPosition);
+        addEmbarkDwarfs(embarkPosition, numberOfStartingDwarfs);
     }
 
     /**
@@ -240,17 +246,6 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     public Set<Workshop> getWorkshops() {
         return workshops;
-    }
-
-    /**
-     * Setup.
-     * @param embarkPosition the embark position
-     * @param numberOfStartingDwarfs the number of starting dwarfs
-     */
-    public void setup(final MapIndex embarkPosition, final int numberOfStartingDwarfs) {
-        Logger.getInstance().log(this, "Setting up");
-        addEmbarkResources(embarkPosition);
-        addEmbarkDwarfs(embarkPosition, numberOfStartingDwarfs);
     }
 
     /**

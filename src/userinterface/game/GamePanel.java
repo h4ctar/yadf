@@ -106,22 +106,23 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             LaborTypeManager.getInstance().load();
             RecipeManager.getInstance().load();
 
-            region = new Region();
-            region.setup(regionSize);
-
             int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
             MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
 
-            player = new Player(playerName, region);
-            player.setup(embarkPosition, numberOfStartingDwarfs);
-            region.addPlayer(player);
-
+            region = new Region();
+            player = new Player();
             controller = new SinglePlayerController();
 
             worldPane.setup(region, player, controller);
             jobsPane.setup(player.getJobManager());
             laborsPane.setup(player, controller);
             stocksPane.setup(player);
+
+            region.setup(regionSize);
+            embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
+            player.setup(playerName, region, embarkPosition, numberOfStartingDwarfs);
+            worldPane.getWorldCanvas().zoomToPosition(embarkPosition);
+            region.addPlayer(player);
 
             gameLoop = new GameLoop(region, controller, this);
         } catch (Exception e) {
@@ -154,10 +155,10 @@ public class GamePanel extends ImagePanel implements IGamePanel {
 
             for (String playerName : playerNames) {
                 Logger.getInstance().log(this, "Adding player " + playerName);
-                Player newPlayer = new Player(playerName, region);
+                Player newPlayer = new Player();
                 int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
                 MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
-                newPlayer.setup(embarkPosition, numberOfStartingDwarfs);
+                newPlayer.setup(playerName, region, embarkPosition, numberOfStartingDwarfs);
                 region.addPlayer(newPlayer);
                 if (playerName.equals(playerNames.get(playerIndex))) {
                     player = newPlayer;

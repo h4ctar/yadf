@@ -46,6 +46,7 @@ public class Animal extends GameCharacter {
      * Instantiates a new animal.
      * @param name the name of the animal
      * @param position the position of the animal
+     * @param region the region the animal is in
      */
     public Animal(final String name, final MapIndex position, final Region region) {
         super(name, position, region, null);

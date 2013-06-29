@@ -48,7 +48,7 @@ public class MapIndex implements Serializable {
      * Instantiates a new map index, (0, 0, 0).
      */
     public MapIndex() {
-        /* do nothing. */
+        // do nothing
     }
 
     /**

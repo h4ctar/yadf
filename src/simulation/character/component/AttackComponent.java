@@ -40,7 +40,7 @@ import simulation.character.IGameCharacter;
 public class AttackComponent extends AbstractCharacterComponent implements IAttackComponent {
 
     /** The enemy. */
-    private IGameCharacter enemy;
+    private final IGameCharacter enemy;
 
     /**
      * Instantiates a new attack component.
@@ -62,7 +62,7 @@ public class AttackComponent extends AbstractCharacterComponent implements IAtta
 
     @Override
     public void kill() {
-        enemy = null;
+        // do nothing
     }
 
     @Override

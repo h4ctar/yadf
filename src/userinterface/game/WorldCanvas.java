@@ -37,7 +37,9 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JComponent;
@@ -62,7 +64,10 @@ import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.room.Room;
+import simulation.tree.ITreeManagerListener;
 import simulation.workshop.Workshop;
+import userinterface.game.graphicobject.IGraphicObject;
+import userinterface.game.graphicobject.TreeGraphicObject;
 import userinterface.misc.Sprite;
 import userinterface.misc.SpriteManager;
 
@@ -71,7 +76,7 @@ import userinterface.misc.SpriteManager;
  * 
  * Draws everything, should be refactored massively, but meh, it works.
  */
-public class WorldCanvas extends JComponent implements IMapListener {
+public class WorldCanvas extends JComponent implements IMapListener, ITreeManagerListener {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -130,12 +135,27 @@ public class WorldCanvas extends JComponent implements IMapListener {
     /** Does the background need to be redrawn. */
     private boolean drawBackgroundRequired;
 
+    /** All the graphic objects. */
+    private final Map<Object, IGraphicObject> graphicObjects = new HashMap<>();
+
     /**
      * Instantiates a new world canvas.
      */
     public WorldCanvas() {
         setIgnoreRepaint(true);
         setDoubleBuffered(true);
+    }
+
+    /**
+     * Sets the canvas.
+     * @param playerTmp the player
+     * @param regionTmp the new region
+     */
+    public void setup(final Player playerTmp, final Region regionTmp) {
+        player = playerTmp;
+        region = regionTmp;
+        region.getMap().addListener(this);
+        region.getTreeManager().addListener(this);
     }
 
     /**
@@ -242,52 +262,33 @@ public class WorldCanvas extends JComponent implements IMapListener {
     }
 
     @Override
-    public void paint(final Graphics g) {
+    public void paint(final Graphics graphics) {
         if (region == null) {
             return;
         }
-
         if (drawBackgroundRequired) {
             drawBlocks();
         }
-
-        g.setColor(Color.BLACK);
-        g.drawImage(backgroundImage, 0, 0, null);
-
-        drawTrees(g);
-        drawStockpiles(g);
-        drawDesignations(g);
-        drawFarms(g);
-        drawRooms(g);
-        drawWorkshops(g);
-        drawItems(g);
-        drawAnimals(g);
-        drawDwarfs(g);
-        drawGoblins(g);
+        graphics.setColor(Color.BLACK);
+        graphics.drawImage(backgroundImage, 0, 0, null);
+        for (IGraphicObject graphicObject : graphicObjects.values()) {
+            graphicObject.render(graphics, viewPosition, viewSize);
+        }
+        drawStockpiles(graphics);
+        drawDesignations(graphics);
+        drawFarms(graphics);
+        drawRooms(graphics);
+        drawWorkshops(graphics);
+        drawItems(graphics);
+        drawAnimals(graphics);
+        drawDwarfs(graphics);
+        drawGoblins(graphics);
 
         if (selection != null) {
-            drawSelection(g);
+            drawSelection(graphics);
         } else {
-            drawMouse(g);
+            drawMouse(graphics);
         }
-    }
-
-    /**
-     * Sets the player.
-     * @param playerTmp the player
-     */
-    public void setPlayer(final Player playerTmp) {
-        player = playerTmp;
-    }
-
-    /**
-     * Sets the region.
-     * @param regionTmp the new region
-     */
-    public void setRegion(final Region regionTmp) {
-        region = regionTmp;
-        region.getMap().addListener(this);
-        setSize(getSize());
     }
 
     /**
@@ -302,6 +303,7 @@ public class WorldCanvas extends JComponent implements IMapListener {
 
     @Override
     public void setSize(final Dimension d) {
+        super.setSize(d);
         canvasWidth = d.width;
         canvasHeight = d.height;
         if (canvasWidth <= 0) {
@@ -312,12 +314,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
         }
         viewSize = new MapIndex(canvasWidth / SpriteManager.SPRITE_SIZE + 1, canvasHeight
                 / SpriteManager.SPRITE_SIZE + 1, 0);
-        if (region != null) {
-            MapIndex mapSize = region.getMap().getMapSize();
-            viewPosition = new MapIndex((mapSize.x - viewSize.x) / 2, (mapSize.y - viewSize.y) / 2, 0);
-            viewPosition.z = region.getMap().getHeight(mapSize.x / 2, mapSize.y / 2);
-        }
-        super.setSize(d);
         backgroundImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_ARGB);
         drawBackgroundRequired = true;
     }
@@ -572,25 +568,6 @@ public class WorldCanvas extends JComponent implements IMapListener {
     }
 
     /**
-     * Draw the trees.
-     * @param g the graphics to draw on
-     */
-    private void drawTrees(final Graphics g) {
-        Sprite treeSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.TREE_SPRITE);
-        Set<Tree> trees = region.getTrees();
-        for (Tree tree : trees) {
-            MapIndex position = tree.getPosition();
-            if (position.z == viewPosition.z) {
-                int x = position.x - viewPosition.x;
-                int y = position.y - viewPosition.y;
-                if (x >= 0 && x < viewSize.x && y >= 0 && y < viewSize.y) {
-                    treeSprite.draw(g, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
-                }
-            }
-        }
-    }
-
-    /**
      * Draw workshops.
      * @param g the graphics to draw on
      */
@@ -609,5 +586,15 @@ public class WorldCanvas extends JComponent implements IMapListener {
                 workshopSprite.draw(g, x, y);
             }
         }
+    }
+
+    @Override
+    public void treeAdded(final Tree tree) {
+        graphicObjects.put(tree, new TreeGraphicObject(tree));
+    }
+
+    @Override
+    public void treeRemoved(final Tree tree) {
+        graphicObjects.remove(tree);
     }
 }

@@ -47,10 +47,10 @@ import simulation.character.IGameCharacter;
 import simulation.farm.Farm;
 import simulation.item.Item;
 import simulation.item.Stockpile;
-import simulation.map.BlockType;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
+import simulation.tree.TreeManager;
 import simulation.workshop.Workshop;
 
 /**
@@ -63,9 +63,6 @@ public class Region implements Serializable {
 
     /** The number of starting animals. */
     private static final int NUMBER_OF_ANIMALS = 10;
-
-    /** The probability that a tile will have a tree. */
-    private static final double TREE_PROBABILITY = 0.1;
 
     /** How many hours in one day. */
     private static final int HOURS_IN_A_DAY = 24;
@@ -97,8 +94,8 @@ public class Region implements Serializable {
     /** The Map of this region. */
     private final RegionMap map = new RegionMap();
 
-    /** A vector of the trees on the map. */
-    private final Set<Tree> trees = new CopyOnWriteArraySet<>();
+    /** The tree manager for this region. */
+    private final TreeManager treeManager = new TreeManager(this);
 
     /** The animals. */
     private final Set<Animal> animals = new CopyOnWriteArraySet<>();
@@ -121,26 +118,6 @@ public class Region implements Serializable {
     public void addPlayer(final Player player) {
         Logger.getInstance().log(this, "Adding player " + player.getName());
         players.add(player);
-    }
-
-    /**
-     * Adds the trees.
-     */
-    public void addTrees() {
-        Random random = MyRandom.getInstance();
-        for (int x = 0; x < map.getMapSize().x; x++) {
-            for (int y = 0; y < map.getMapSize().y; y++) {
-                int z = map.getHeight(x, y);
-
-                if (map.getBlock(x, y, z + 1) == BlockType.RAMP) {
-                    continue;
-                }
-
-                if (random.nextDouble() < TREE_PROBABILITY) {
-                    trees.add(new Tree(new MapIndex(x, y, z), this));
-                }
-            }
-        }
     }
 
     /**
@@ -170,11 +147,8 @@ public class Region implements Serializable {
                 }
             }
         }
-        // Check that area is free of trees
-        for (Tree tree : trees) {
-            if (area.containesIndex(tree.getPosition())) {
-                return false;
-            }
+        if (!treeManager.getTrees(area).isEmpty()) {
+            return false;
         }
         for (int x = area.pos.x; x < area.pos.x + area.width; x++) {
             for (int y = area.pos.y; y < area.pos.y + area.height; y++) {
@@ -217,11 +191,8 @@ public class Region implements Serializable {
                 }
             }
         }
-        // Check that area is free of trees
-        for (Tree tree : trees) {
-            if (tree.getPosition().equals(mapIndex)) {
-                return false;
-            }
+        if (treeManager.getTree(mapIndex) != null) {
+            return false;
         }
         // Must be able to stand on the block below
         if (!map.isWalkable(mapIndex)) {
@@ -393,36 +364,13 @@ public class Region implements Serializable {
     }
 
     /**
-     * Returns a tree at a specific location if it exists.
-     * @param mapIndex The location you want to get a tree from
-     * @return A reference to the tree at the location
-     */
-    public Tree getTree(final MapIndex mapIndex) {
-        for (Tree tree : trees) {
-            if (tree.getPosition().equals(mapIndex)) {
-                return tree;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets all the trees.
-     * @return the trees
-     */
-    public Set<Tree> getTrees() {
-        return trees;
-    }
-
-    /**
      * Setup the region.
      * @param regionSize the size of the region
      */
     public void setup(final MapIndex regionSize) {
         Logger.getInstance().log(this, "Setting up");
         map.generateMap(regionSize);
-        addTrees();
+        treeManager.addTrees();
         addAnimals();
     }
 
@@ -445,7 +393,6 @@ public class Region implements Serializable {
         for (IGameCharacter goblin : goblins) {
             goblin.update();
         }
-        // spawnGoblins();
     }
 
     /**
@@ -459,23 +406,6 @@ public class Region implements Serializable {
             position.y = random.nextInt(map.getMapSize().y);
             position.z = map.getHeight(position.x, position.y);
             animals.add(new Animal("Animal", position, this));
-        }
-    }
-
-    /**
-     * Spawn goblins.
-     */
-    private void spawnGoblins() {
-        Random random = MyRandom.getInstance();
-        if (time % 1000 == 0) {
-            Logger.getInstance().log(this, "Goblin seige!");
-            for (int i = 0; i < 4; i++) {
-                MapIndex position = new MapIndex();
-                position.x = random.nextInt(map.getMapSize().x);
-                position.y = random.nextInt(map.getMapSize().y);
-                position.z = map.getHeight(position.x, position.y);
-                goblins.add(new Goblin("Goblin", this, position));
-            }
         }
     }
 
@@ -494,7 +424,7 @@ public class Region implements Serializable {
         }
     }
 
-    public void removeTree(final Tree tree) {
-        trees.remove(tree);
+    public TreeManager getTreeManager() {
+        return treeManager;
     }
 }

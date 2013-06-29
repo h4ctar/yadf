@@ -90,6 +90,7 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
     public GameCharacter(final String nameTmp, final MapIndex position, final Region regionTmp,
             final IPlayer playerTmp) {
         super(position);
+        Logger.getInstance().log(this, "Character created");
         name = nameTmp;
         region = regionTmp;
         player = playerTmp;

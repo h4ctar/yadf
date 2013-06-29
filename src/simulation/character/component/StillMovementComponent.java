@@ -50,7 +50,7 @@ public class StillMovementComponent extends AbstractMoveComponent implements IMo
 
     @Override
     public void kill() {
-        /* do nothing */
+        // do nothing
     }
 
     @Override

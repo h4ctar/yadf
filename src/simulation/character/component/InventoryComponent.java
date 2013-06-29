@@ -93,7 +93,9 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
 
     @Override
     public void pickupTool(final Item tool) {
-        assert toolHolding == null;
+        if (toolHolding != null) {
+            dropTool();
+        }
         toolHolding = tool;
         getCharacter().getPlayer().getStockManager().removeItem(toolHolding);
         notifyListeners();

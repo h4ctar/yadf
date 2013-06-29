@@ -230,12 +230,41 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         add(worldCanvas, BorderLayout.CENTER);
     }
 
-    @Override
-    public void componentHidden(final ComponentEvent e) { /* do nothing */
+    /**
+     * Setup.
+     * @param regionTmp the region
+     * @param playerTmp the player
+     * @param controllerTmp the controller
+     */
+    public void setup(final Region regionTmp, final Player playerTmp, final AbstractController controllerTmp) {
+        region = regionTmp;
+        player = playerTmp;
+        controller = controllerTmp;
+        worldCanvas.setup(player, region);
+        mainPopupMenu = new MainPopupMenu(this);
+        roomInterface = new RoomInterface(player, controller);
+        workshopInterface = new WorkshopInterface(worldCanvas, player, controller);
+        stockpileInterface = new StockpileInterface(worldCanvas, player, controller);
+        dwarfInterface = new DwarfInterface();
+        itemInterface = new ItemInterface();
+        add(mainPopupMenu);
+        add(roomInterface);
+        add(workshopInterface);
+        add(stockpileInterface);
+        add(dwarfInterface);
+        add(itemInterface);
+    }
+
+    public WorldCanvas getWorldCanvas() {
+        return worldCanvas;
     }
 
     @Override
-    public void componentMoved(final ComponentEvent e) { /* do nothing */
+    public void componentHidden(final ComponentEvent e) { // do nothing
+    }
+
+    @Override
+    public void componentMoved(final ComponentEvent e) { // do nothing
     }
 
     @Override
@@ -244,7 +273,7 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
     }
 
     @Override
-    public void componentShown(final ComponentEvent e) { /* do nothing */
+    public void componentShown(final ComponentEvent e) { // do nothing
     }
 
     /**
@@ -516,32 +545,6 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         if (guiState == GuiState.NORMAL) {
             drawSelection = false;
         }
-    }
-
-    /**
-     * Setup.
-     * @param regionTmp the region
-     * @param playerTmp the player
-     * @param controllerTmp the controller
-     */
-    public void setup(final Region regionTmp, final Player playerTmp, final AbstractController controllerTmp) {
-        region = regionTmp;
-        player = playerTmp;
-        controller = controllerTmp;
-        worldCanvas.setRegion(region);
-        worldCanvas.setPlayer(player);
-        mainPopupMenu = new MainPopupMenu(this);
-        roomInterface = new RoomInterface(player, controller);
-        workshopInterface = new WorkshopInterface(worldCanvas, player, controller);
-        stockpileInterface = new StockpileInterface(worldCanvas, player, controller);
-        dwarfInterface = new DwarfInterface();
-        itemInterface = new ItemInterface();
-        add(mainPopupMenu);
-        add(roomInterface);
-        add(workshopInterface);
-        add(stockpileInterface);
-        add(dwarfInterface);
-        add(itemInterface);
     }
 
     /**

@@ -106,7 +106,7 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
 
     @Override
     public void kill() {
-        /* do nothing */
+        // do nothing
     }
 
     @Override
