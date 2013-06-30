@@ -51,9 +51,4 @@ public class Tree extends AbstractEntity {
         super(position);
         treeManager = treeManagerTmp;
     }
-
-    @Override
-    public void delete() {
-        treeManager.removeTree(this);
-    }
 }

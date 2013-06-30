@@ -20,4 +20,8 @@ public interface IGameObject {
      * Delete the game object.
      */
     void delete();
+
+    void addGameObjectListener(IGameObjectListener listener);
+
+    void removeGameObjectListener(IGameObjectListener listener);
 }

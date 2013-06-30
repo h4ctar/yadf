@@ -271,7 +271,6 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     public void delete() {
         super.delete();
         containerComponent.delete();
-        player.getStockManager().removeStockpile(this);
         for (ItemType itemType : acceptableItemTypes) {
             player.getStockManager().removeListener(itemType, this);
         }

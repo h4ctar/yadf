@@ -36,13 +36,15 @@ import java.util.Set;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
+import simulation.IGameObject;
+import simulation.IGameObjectListener;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
 /**
  * The Class StockManager, manages items for a player including stockpiles.
  */
-public class StockManager extends AbstractGameObject implements IStockManager {
+public class StockManager extends AbstractGameObject implements IStockManager, IGameObjectListener {
 
     /** The container component; contains unstored items. */
     private final ContainerComponent containerComponent = new ContainerComponent(this);
@@ -188,6 +190,7 @@ public class StockManager extends AbstractGameObject implements IStockManager {
         }
         stockpiles.add(stockpile);
         notifyStockpileAdded(stockpile);
+        stockpile.addGameObjectListener(this);
     }
 
     @Override
@@ -197,6 +200,7 @@ public class StockManager extends AbstractGameObject implements IStockManager {
         }
         stockpiles.remove(stockpile);
         notifyStockpileRemoved(stockpile);
+        stockpile.removeGameObjectListener(this);
     }
 
     @Override
@@ -283,5 +287,11 @@ public class StockManager extends AbstractGameObject implements IStockManager {
     @Override
     public void removeListener(final String category, final IItemAvailableListener listener) {
         containerComponent.removeListener(category, listener);
+    }
+
+    @Override
+    public void gameObjectDeleted(final IGameObject gameObject) {
+        assert stockpiles.contains(gameObject);
+        removeStockpile((Stockpile) gameObject);
     }
 }

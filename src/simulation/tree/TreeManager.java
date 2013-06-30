@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import misc.MyRandom;
+import simulation.IGameObject;
+import simulation.IGameObjectListener;
 import simulation.Region;
 import simulation.Tree;
 import simulation.map.BlockType;
@@ -16,7 +18,8 @@ import simulation.map.MapIndex;
 /**
  * The tree manager.
  */
-public class TreeManager {
+// TODO: add tree manager interface
+public class TreeManager implements IGameObjectListener {
 
     /** The probability that a tile will have a tree. */
     private static final double TREE_PROBABILITY = 0.1;
@@ -57,6 +60,7 @@ public class TreeManager {
                     for (ITreeManagerListener listener : listeners) {
                         listener.treeAdded(tree);
                     }
+                    tree.addGameObjectListener(this);
                 }
             }
         }
@@ -71,6 +75,7 @@ public class TreeManager {
         for (ITreeManagerListener listener : listeners) {
             listener.treeRemoved(tree);
         }
+        tree.removeGameObjectListener(this);
     }
 
     /**
@@ -108,5 +113,11 @@ public class TreeManager {
      */
     public void addListener(final ITreeManagerListener listener) {
         listeners.add(listener);
+    }
+
+    @Override
+    public void gameObjectDeleted(final IGameObject gameObject) {
+        assert trees.contains(gameObject);
+        removeTree((Tree) gameObject);
     }
 }

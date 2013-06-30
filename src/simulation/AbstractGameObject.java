@@ -31,6 +31,9 @@
  */
 package simulation;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import logger.Logger;
 
 /**
@@ -47,38 +50,41 @@ public abstract class AbstractGameObject implements IGameObject {
     /** The count. */
     private static int count = 0;
 
-    /**
-     * Instantiates a new game object.
-     */
+    private Set<IGameObjectListener> listeners = new LinkedHashSet<>();
+
     public AbstractGameObject() {
         id = count;
         count++;
     }
 
-    /**
-     * Returns the id of this entity.
-     * @return The id of the entity
-     */
     @Override
     public int getId() {
         return id;
     }
 
-    /**
-     * Has the entity been deleted.
-     * @return true if the entity has been deleted
-     */
     @Override
     public boolean isDeleted() {
         return deleted;
     }
 
-    /**
-     * Sets the remove.
-     */
     @Override
     public void delete() {
         Logger.getInstance().log(this, "Deleted");
         deleted = true;
+        for (IGameObjectListener listener : listeners) {
+            listener.gameObjectDeleted(this);
+        }
+    }
+
+    @Override
+    public void addGameObjectListener(final IGameObjectListener listener) {
+        assert !listeners.contains(listener);
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeGameObjectListener(final IGameObjectListener listener) {
+        assert listeners.contains(listener);
+        listeners.add(listener);
     }
 }

@@ -50,10 +50,10 @@ import simulation.map.MapIndex;
 public abstract class AbstractDesignation implements IJob, IJobListener {
 
     /** The jobs. */
-    protected List<IJob> jobs = new ArrayList<>();
+    private List<IJob> jobs = new ArrayList<>();
 
     /** The map indicies. */
-    protected List<MapIndex> mapIndicies = new ArrayList<>();
+    private List<MapIndex> mapIndicies = new ArrayList<>();
 
     /** The player that this job belongs to. */
     private final IPlayer player;
@@ -62,14 +62,14 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
     private final List<IJobListener> listeners = new CopyOnWriteArrayList<>();
 
     /** The region that the designation is in. */
-    final Region region;
+    private final Region region;
 
     /**
      * Constructor.
      * @param regionTmp the region that the designation is in
      * @param playerTmp the player that this designation belongs to
      */
-    public AbstractDesignation(final Region regionTmp, final IPlayer playerTmp) {
+    AbstractDesignation(final Region regionTmp, final IPlayer playerTmp) {
         region = regionTmp;
         player = playerTmp;
     }

@@ -71,7 +71,7 @@ import controller.command.PlaceItemCommand;
 /**
  * The Class WorldPane.
  */
-public class WorldPane extends JDesktopPane implements ComponentListener, MouseListener, MouseMotionListener {
+class WorldPane extends JDesktopPane implements ComponentListener, MouseListener, MouseMotionListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 5495536352766170664L;

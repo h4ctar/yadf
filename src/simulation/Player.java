@@ -56,7 +56,7 @@ import simulation.workshop.Workshop;
 /**
  * The player.
  */
-public class Player extends AbstractGameObject implements IPlayer {
+public class Player extends AbstractGameObject implements IPlayer, IGameObjectListener {
 
     /** The size of the embark area. */
     private static final int EMBARK_SIZE = 10;
@@ -152,11 +152,13 @@ public class Player extends AbstractGameObject implements IPlayer {
      */
     @Override
     public void addWorkshop(final Workshop workshop) {
+        assert !workshops.contains(workshop);
         workshops.add(workshop);
     }
 
     @Override
     public void removeWorkshop(final Workshop workshop) {
+        assert workshops.contains(workshop);
         workshops.remove(workshop);
     }
 
@@ -228,5 +230,10 @@ public class Player extends AbstractGameObject implements IPlayer {
             item.setPosition(position);
             stockManager.addItem(item);
         }
+    }
+
+    @Override
+    public void gameObjectDeleted(final IGameObject gameObject) {
+        removeWorkshop((Workshop) gameObject);
     }
 }

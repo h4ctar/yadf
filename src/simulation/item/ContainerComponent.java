@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import simulation.AbstractGameObject;
+import simulation.IGameObject;
+import simulation.IGameObjectListener;
 
 /**
  * This is a component that will contain an implementation of the IContainer interface, other classes that implement the
@@ -14,7 +16,8 @@ import simulation.AbstractGameObject;
  * <p>
  * This is basically a hack to get around no multiple inheritance.
  */
-public class ContainerComponent extends AbstractGameObject implements IContainer, IItemAvailableListener {
+public class ContainerComponent extends AbstractGameObject implements IContainer, IItemAvailableListener,
+        IGameObjectListener {
 
     /** The content items. */
     private final Set<Item> items = new LinkedHashSet<>();
@@ -40,11 +43,12 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     public boolean addItem(final Item item) {
         boolean itemAdded = items.add(item);
         if (itemAdded) {
-            item.addListener(this);
             notifyItemAdded(item);
             if (!item.used) {
                 notifyItemAvailable(item);
             }
+            item.addListener(this);
+            item.addGameObjectListener(this);
         }
         return itemAdded;
     }
@@ -56,6 +60,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
             // Only notify when an item is directly removed from this container, not if its removed from any of the sub
             // containers
             item.removeListener(this);
+            item.removeGameObjectListener(this);
             notifyItemRemoved(item);
         }
         if (!itemRemoved) {
@@ -229,5 +234,11 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
                 }
             }
         }
+    }
+
+    @Override
+    public void gameObjectDeleted(final IGameObject gameObject) {
+        assert items.contains(gameObject);
+        removeItem((Item) gameObject);
     }
 }

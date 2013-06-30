@@ -43,7 +43,7 @@ import controller.Connection;
 /**
  * A thread of a server that is listening to one of many clients.
  */
-public class ServerThread implements Runnable {
+class ServerThread implements Runnable {
 
     /** The connection. */
     private Connection connection;
@@ -61,7 +61,7 @@ public class ServerThread implements Runnable {
      * Instantiates a new server thread.
      * @param lobbyServerTmp the lobby server
      */
-    public ServerThread(final ILobbyServer lobbyServerTmp) {
+    ServerThread(final ILobbyServer lobbyServerTmp) {
         lobbyServer = lobbyServerTmp;
     }
 

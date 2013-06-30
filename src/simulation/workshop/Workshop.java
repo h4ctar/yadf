@@ -46,7 +46,7 @@ import simulation.recipe.RecipeManager;
 /**
  * The Class Workshop.
  */
-// TODO: shoudl be a container
+// TODO: should be a container
 public class Workshop extends AbstractGameObject {
 
     /** The position. */
@@ -226,11 +226,5 @@ public class Workshop extends AbstractGameObject {
      */
     public MapArea getArea() {
         return new MapArea(position, WORKSHOP_SIZE, WORKSHOP_SIZE);
-    }
-
-    @Override
-    public void delete() {
-        super.delete();
-        player.removeWorkshop(this);
     }
 }

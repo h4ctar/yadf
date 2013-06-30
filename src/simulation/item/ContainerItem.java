@@ -34,7 +34,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
      * @param itemElement the DOM element to get attributes from
      * @throws Exception something went wrong
      */
-    public ContainerItem(final Element itemElement) throws Exception {
+    ContainerItem(final Element itemElement) throws Exception {
         super(itemElement);
         String contentTypeName = itemElement.getAttribute("contentType");
         if (!"".equals(contentTypeName)) {
@@ -54,7 +54,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
      * @param itemTypeTmp the type of the new item
      * @param player the player that the item will belong to
      */
-    public ContainerItem(final MapIndex position, final ItemType itemTypeTmp, final IPlayer player) {
+    ContainerItem(final MapIndex position, final ItemType itemTypeTmp, final IPlayer player) {
         super(position, itemTypeTmp, player);
         contentItemType = null;
         listenForAllContentItemTypes();
@@ -65,7 +65,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
      * @param item the item to clone
      * @param playerTmp the player that the new item will belong to
      */
-    public ContainerItem(final ContainerItem item, final Player playerTmp) {
+    ContainerItem(final ContainerItem item, final Player playerTmp) {
         super(item, playerTmp);
         for (Item contentItem : item.getItems()) {
             Item newContentItem = new Item(contentItem, playerTmp);

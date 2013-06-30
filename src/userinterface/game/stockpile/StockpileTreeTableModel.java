@@ -51,7 +51,7 @@ import controller.command.SetStockpileCommand;
 /**
  * The Class StockpileTreeTableModel.
  */
-public class StockpileTreeTableModel extends AbstractTreeTableModel implements IContainerListener {
+class StockpileTreeTableModel extends AbstractTreeTableModel implements IContainerListener {
 
     /** The stockpile. */
     private final Stockpile stockpile;
@@ -71,7 +71,7 @@ public class StockpileTreeTableModel extends AbstractTreeTableModel implements I
      * @param controllerTmp the controller
      * @param playerTmp the player
      */
-    public StockpileTreeTableModel(final Stockpile stockpileTmp, final AbstractController controllerTmp,
+    StockpileTreeTableModel(final Stockpile stockpileTmp, final AbstractController controllerTmp,
             final Player playerTmp) {
         stockpile = stockpileTmp;
         controller = controllerTmp;

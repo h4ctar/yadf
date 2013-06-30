@@ -81,7 +81,7 @@ public class FarmPlot {
      * 
      * @param positionTmp the position
      */
-    public FarmPlot(final MapIndex positionTmp) {
+    FarmPlot(final MapIndex positionTmp) {
         position = positionTmp;
     }
 

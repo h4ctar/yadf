@@ -41,9 +41,6 @@ import java.util.Random;
  */
 public final class Noise {
 
-    /** The seed. */
-    public static int seed = 100;
-
     /** The Constant P. */
     private static final int P = 16;
 

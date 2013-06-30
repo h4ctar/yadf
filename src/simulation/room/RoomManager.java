@@ -4,12 +4,14 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import simulation.IGameObject;
+import simulation.IGameObjectListener;
 import simulation.map.MapIndex;
 
 /**
  * The room manager.
  */
-public class RoomManager implements IRoomManager {
+public class RoomManager implements IRoomManager, IGameObjectListener {
 
     /** The rooms. */
     private final Set<Room> rooms = new CopyOnWriteArraySet<>();
@@ -19,18 +21,22 @@ public class RoomManager implements IRoomManager {
 
     @Override
     public void addRoom(final Room room) {
+        assert !rooms.contains(room);
         rooms.add(room);
         for (IRoomManagerListener listener : listeners) {
             listener.roomAdded(room);
         }
+        room.addGameObjectListener(this);
     }
 
     @Override
     public void removeRoom(final Room room) {
+        assert rooms.contains(room);
         rooms.remove(room);
         for (IRoomManagerListener listener : listeners) {
             listener.roomRemoved(room);
         }
+        room.removeGameObjectListener(this);
     }
 
     @Override
@@ -70,5 +76,11 @@ public class RoomManager implements IRoomManager {
     public void removeListener(final IRoomManagerListener listener) {
         assert listeners.contains(listener);
         listeners.remove(listener);
+    }
+
+    @Override
+    public void gameObjectDeleted(IGameObject gameObject) {
+        assert rooms.contains(gameObject);
+        removeRoom((Room) gameObject);
     }
 }

@@ -13,7 +13,7 @@ import simulation.Region;
 /**
  * The status bar.
  */
-public class StatusBar extends JPanel {
+class StatusBar extends JPanel {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 1L;
@@ -57,7 +57,7 @@ public class StatusBar extends JPanel {
      * @param region the region (to get the time)
      * @param worldPane the world pane (to get the GUI state)
      */
-    public void update(final GameLoop gameLoop, final Region region, final WorldPane worldPane) {
+    void update(final GameLoop gameLoop, final Region region, final WorldPane worldPane) {
         fpsLabel.setText("FPS:" + Long.toString(gameLoop.getFps()));
         dateLabel.setText(region.getTimeString());
         stateLabel.setText(worldPane.getStateString());

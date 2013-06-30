@@ -39,7 +39,7 @@ import javax.swing.table.AbstractTableModel;
 /**
  * The Class PlayerTableModel.
  */
-public class PlayerTableModel extends AbstractTableModel {
+class PlayerTableModel extends AbstractTableModel {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -3374765986710593510L;
@@ -49,15 +49,6 @@ public class PlayerTableModel extends AbstractTableModel {
 
     /** The player index. */
     private int playerIndex;
-
-    /**
-     * Adds the player.
-     * @param string the string
-     */
-    public void addPlayer(final String string) {
-        playerNames.add(string);
-        fireTableDataChanged();
-    }
 
     @Override
     public int getColumnCount() {

@@ -164,14 +164,6 @@ public class Item extends AbstractEntity {
     }
 
     /**
-     * Delete the item.
-     */
-    @Override
-    public void delete() {
-        player.getStockManager().removeItem(this);
-    }
-
-    /**
      * Add a new listener.
      * @param listener the new listener
      */

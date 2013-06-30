@@ -56,7 +56,7 @@ public abstract class AbstractCommand implements Serializable {
      * The default constructor.
      * @param playerTmp The player that this command is applied to
      */
-    public AbstractCommand(final Player playerTmp) {
+    AbstractCommand(final Player playerTmp) {
         player = playerTmp;
         playerId = player.getId();
     }

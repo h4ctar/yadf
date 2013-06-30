@@ -45,7 +45,7 @@ import simulation.item.ItemTypeManager;
 /**
  * The Class StockTreeTableModel.
  */
-public class StockTreeTableModel extends AbstractTreeTableModel {
+class StockTreeTableModel extends AbstractTreeTableModel {
 
     /** The stock manager. */
     private final IStockManager stockManager;
@@ -57,7 +57,7 @@ public class StockTreeTableModel extends AbstractTreeTableModel {
      * Instantiates a new stock tree table model.
      * @param stockManagerTmp the stock manager
      */
-    public StockTreeTableModel(final IStockManager stockManagerTmp) {
+    StockTreeTableModel(final IStockManager stockManagerTmp) {
         stockManager = stockManagerTmp;
 
         Set<String> categoryNames = ItemTypeManager.getInstance().getCategoryNames();

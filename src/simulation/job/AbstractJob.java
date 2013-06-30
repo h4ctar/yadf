@@ -28,7 +28,7 @@ public abstract class AbstractJob implements IJob {
      * Constructor.
      * @param playerTmp the player that this job belongs to
      */
-    public AbstractJob(final IPlayer playerTmp) {
+    AbstractJob(final IPlayer playerTmp) {
         Logger.getInstance().log(this, "Job created: " + toString());
         player = playerTmp;
     }
