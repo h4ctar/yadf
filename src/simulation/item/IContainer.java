@@ -57,7 +57,19 @@ public interface IContainer extends IGameObject {
     int getItemQuantity(ItemType itemType);
 
     /**
-     * Add a listener to the stockmanager that will be notified when an item of a specific type becomes available.
+     * Add a listener to the container that will be notified whenever an item is added or removed.
+     * @param listener the listener to add
+     */
+    void addListener(final IContainerListener listener);
+
+    /**
+     * Remove a listener from the container that was be notified whenever an item is added or removed.
+     * @param listener the listener to remove
+     */
+    void removeListener(final IContainerListener listener);
+
+    /**
+     * Add a listener to the container that will be notified when an item of a specific type becomes available.
      * @param itemType the type of item to be notified for
      * @param listener the new listener
      */

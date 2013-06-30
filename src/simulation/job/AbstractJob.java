@@ -29,7 +29,7 @@ public abstract class AbstractJob implements IJob {
      * @param playerTmp the player that this job belongs to
      */
     public AbstractJob(final IPlayer playerTmp) {
-        Logger.getInstance().log(this, "Job created");
+        Logger.getInstance().log(this, "Job created: " + toString());
         player = playerTmp;
     }
 
@@ -64,8 +64,7 @@ public abstract class AbstractJob implements IJob {
         assert jobState == jobStateTmp;
         jobState = jobState.getNextState();
         if (jobState != null) {
-            Logger.getInstance()
-                    .log(this, "Transitioning: " + jobStateTmp.toString() + " -> " + jobState.toString());
+            Logger.getInstance().log(this, "Transitioning: " + jobStateTmp.toString() + " -> " + jobState.toString());
             jobState.start();
         } else {
             Logger.getInstance().log(this, "Job done");

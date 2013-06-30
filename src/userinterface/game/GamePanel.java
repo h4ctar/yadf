@@ -1,20 +1,14 @@
 package userinterface.game;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.border.Border;
 
 import logger.Logger;
 import misc.MyRandom;
@@ -71,18 +65,8 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     /** The stocks pane. */
     private StocksPane stocksPane;
 
-    // TODO: have class that is the status panel
-    /** The status panel. */
-    private JPanel statusPanel;
-
-    /** The fps label. */
-    private JLabel fpsLabel;
-
-    /** The date label. */
-    private JLabel dateLabel;
-
-    /** The state label. */
-    private JLabel stateLabel;
+    /** The status bar. */
+    private StatusBar statusBar;
 
     /**
      * Constructor.
@@ -219,7 +203,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream("myobject.data");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(region);
+            // objectOutputStream.writeObject(region);
             objectOutputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -231,9 +215,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     @Override
     public void update() {
         worldPane.update();
-        fpsLabel.setText("FPS:" + Long.toString(gameLoop.getFps()));
-        dateLabel.setText(region.getTimeString());
-        stateLabel.setText(worldPane.getStateString());
+        statusBar.update(gameLoop, region, worldPane);
     }
 
     @Override
@@ -255,26 +237,8 @@ public class GamePanel extends ImagePanel implements IGamePanel {
         add(tabbedPane, BorderLayout.CENTER);
 
         // Create the status bar
-        Border paddingBorder = BorderFactory.createEmptyBorder(2, 10, 2, 10);
-        statusPanel = new JPanel();
-        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
-        statusPanel.setOpaque(false);
-        add(statusPanel, BorderLayout.SOUTH);
-
-        fpsLabel = new JLabel("FPS");
-        fpsLabel.setBorder(paddingBorder);
-        fpsLabel.setForeground(Color.WHITE);
-        statusPanel.add(fpsLabel);
-
-        dateLabel = new JLabel("Date");
-        dateLabel.setBorder(paddingBorder);
-        dateLabel.setForeground(Color.WHITE);
-        statusPanel.add(dateLabel);
-
-        stateLabel = new JLabel("State");
-        stateLabel.setBorder(paddingBorder);
-        stateLabel.setForeground(Color.WHITE);
-        statusPanel.add(stateLabel);
+        statusBar = new StatusBar();
+        add(statusBar, BorderLayout.SOUTH);
 
         // The world pane contains the main game canvas
         worldPane = new WorldPane();

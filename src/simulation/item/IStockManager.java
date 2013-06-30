@@ -62,7 +62,15 @@ public interface IStockManager extends IContainer {
      */
     void removeStockpile(Stockpile stockpile);
 
+    /**
+     * Add a listener that will be notified whenever a stockpile is added or removed.
+     * @param listener the listener to add
+     */
     void addListener(IStockManagerListener listener);
 
+    /**
+     * Remove a listener that was be notified whenever a stockpile is added or removed.
+     * @param listener the listener to remove
+     */
     void removeListener(IStockManagerListener listener);
 }

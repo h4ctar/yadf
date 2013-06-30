@@ -20,7 +20,6 @@ import simulation.character.component.WalkMovementComponent;
 import simulation.item.ContainerItem;
 import simulation.item.IStockManager;
 import simulation.item.Item;
-import simulation.item.ItemType;
 import simulation.map.MapIndex;
 
 public class HaulJobTest extends TestCase {
@@ -47,7 +46,7 @@ public class HaulJobTest extends TestCase {
 
     private final MapIndex dropPosition = new MapIndex(10, 0, 0);
 
-    private ItemType itemType;
+    // private ItemType itemType;
 
     @Override
     @Before

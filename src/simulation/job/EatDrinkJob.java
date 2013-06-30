@@ -33,7 +33,6 @@ package simulation.job;
 
 import java.util.Set;
 
-import logger.Logger;
 import simulation.Region;
 import simulation.character.Dwarf;
 import simulation.character.component.IEatDrinkComponent;
@@ -76,7 +75,6 @@ public class EatDrinkJob extends AbstractJob {
      */
     public EatDrinkJob(final Dwarf dwarfTmp, final boolean eatTmp) {
         super(dwarfTmp.getPlayer());
-        Logger.getInstance().log(this, "New eat drink job");
         eat = eatTmp;
         dwarf = dwarfTmp;
         setJobState(new LookingForFoodDrinkState());
@@ -163,7 +161,6 @@ public class EatDrinkJob extends AbstractJob {
                                 chair = chairTmp;
                                 table = tableTmp;
                                 chair.setUsed(true);
-                                // They can share the table
                                 break;
                             }
                         }

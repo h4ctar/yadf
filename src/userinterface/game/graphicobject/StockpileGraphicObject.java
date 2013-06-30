@@ -11,13 +11,21 @@ import simulation.map.MapIndex;
 import userinterface.misc.Sprite;
 import userinterface.misc.SpriteManager;
 
+/**
+ * Graphic object to render a stockpile, including all the items inside the stockpile.
+ */
 public class StockpileGraphicObject implements IGraphicObject {
 
     /** The colour of a stockpile. */
     private static final Color STOCKPILE_COLOUR = new Color(0.7f, 0.6f, 0.5f, 0.4f);
 
+    /** The stockpile. */
     private final Stockpile stockpile;
 
+    /**
+     * Constructor.
+     * @param stockpileTmp the stockpile
+     */
     public StockpileGraphicObject(final Stockpile stockpileTmp) {
         stockpile = stockpileTmp;
     }

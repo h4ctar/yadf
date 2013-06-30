@@ -39,6 +39,7 @@ import simulation.AbstractGameObject;
 import simulation.IPlayer;
 import simulation.item.ContainerComponent;
 import simulation.item.IContainer;
+import simulation.item.IContainerListener;
 import simulation.item.IItemAvailableListener;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -62,9 +63,6 @@ public class Room extends AbstractGameObject implements IContainer {
     /** The player that this room belongs to. */
     private final IPlayer player;
 
-    /** The listeners. */
-    private final Set<IRoomListener> listeners = new LinkedHashSet<>();
-
     /**
      * Instantiates a new room.
      * @param areaTmp the area
@@ -81,24 +79,13 @@ public class Room extends AbstractGameObject implements IContainer {
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item: " + item.getType().name);
         boolean itemAdded = containerComponent.addItem(item);
-        if (itemAdded) {
-            for (IRoomListener listener : listeners) {
-                listener.itemAdded(item);
-            }
-        }
         return itemAdded;
     }
 
     @Override
     public boolean removeItem(final Item item) {
         Logger.getInstance().log(this, "Removing item: " + item.getType().name);
-        boolean itemRemoved = containerComponent.removeItem(item);
-        if (itemRemoved) {
-            for (IRoomListener listener : listeners) {
-                listener.itemRemoved(item);
-            }
-        }
-        return itemRemoved;
+        return containerComponent.removeItem(item);
     }
 
     /**
@@ -172,20 +159,14 @@ public class Room extends AbstractGameObject implements IContainer {
         return containerComponent.getUnusedItemFromCategory(category);
     }
 
-    /**
-     * Add a listener to this room that will be notified whenever an item is added or removed.
-     * @param listener the listener to add
-     */
-    public void addListener(final IRoomListener listener) {
-        listeners.add(listener);
+    @Override
+    public void addListener(final IContainerListener listener) {
+        containerComponent.addListener(listener);
     }
 
-    /**
-     * Remove a listener from this room.
-     * @param listener the listener to remove
-     */
-    public void removeListener(final IRoomListener listener) {
-        listeners.remove(listener);
+    @Override
+    public void removeListener(final IContainerListener listener) {
+        containerComponent.removeListener(listener);
     }
 
     @Override

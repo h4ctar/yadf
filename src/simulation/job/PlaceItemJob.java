@@ -71,7 +71,13 @@ public class PlaceItemJob extends AbstractJob {
 
     @Override
     public String toString() {
-        return "Place " + itemType.name;
+        String string = "Place ";
+        if (itemType != null) {
+            string += itemType.name;
+        } else {
+            string += "item";
+        }
+        return string;
     }
 
     @Override

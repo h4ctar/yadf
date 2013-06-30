@@ -34,8 +34,8 @@ package userinterface.game.job;
 import javax.swing.table.AbstractTableModel;
 
 import simulation.job.IJob;
+import simulation.job.IJobManager;
 import simulation.job.IJobManagerListener;
-import simulation.job.JobManager;
 
 /**
  * The Class JobsTableModel.
@@ -46,14 +46,14 @@ public class JobsTableModel extends AbstractTableModel implements IJobManagerLis
     private static final long serialVersionUID = 4018365907743267846L;
 
     /** The job manager. */
-    private final JobManager jobManager;
+    private final IJobManager jobManager;
 
     /**
      * Instantiates a new jobs table model.
      * 
      * @param jobManagerTmp the job manager
      */
-    public JobsTableModel(final JobManager jobManagerTmp) {
+    public JobsTableModel(final IJobManager jobManagerTmp) {
         jobManager = jobManagerTmp;
         jobManager.addListener(this);
     }

@@ -97,28 +97,17 @@ public class JobManager implements IJobManager, IJobListener {
         listeners.add(listener);
     }
 
-    /**
-     * Gets a reference to a particular designation.
-     * @param type The designation type that the caller wants
-     * @return A reference to the designation
-     */
+    @Override
     public AbstractDesignation getDesignation(final DesignationType type) {
         return designations.get(type);
     }
 
-    /**
-     * Gets a reference to all the designations.
-     * @return A reference to the designations array
-     */
     @Override
     public Collection<AbstractDesignation> getDesignations() {
         return designations.values();
     }
 
-    /**
-     * Gets all the jobs.
-     * @return the jobs
-     */
+    @Override
     public List<IJob> getJobs() {
         return jobs;
     }

@@ -69,9 +69,6 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      */
     private final Set<HaulJob> haulJobs = new LinkedHashSet<>();
 
-    /** The listeners that are notified of items being added or removed from the stockpile. */
-    private final Set<IStockpileListener> stockpileListeners = new LinkedHashSet<>();
-
     /**
      * Constructor for the stockpile.
      * @param areaTmp The area the stockpile will occupy
@@ -110,17 +107,8 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         if (itemRemoved) {
             MapIndex pos = item.getPosition().sub(area.pos);
             used[pos.x][pos.y] = false;
-            notifyStockpileListeners();
         }
         return itemRemoved;
-    }
-
-    /**
-     * Add a new listener to this stockpile.
-     * @param listener the new listener
-     */
-    public void addListener(final IStockpileListener listener) {
-        stockpileListeners.add(listener);
     }
 
     /**
@@ -237,15 +225,6 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     }
 
     /**
-     * Notify the listeners that something has changed for the stockpile.
-     */
-    private void notifyStockpileListeners() {
-        for (IStockpileListener listener : stockpileListeners) {
-            listener.update();
-        }
-    }
-
-    /**
      * Create haul tasks to fill up the stockpile.
      */
     private void createHaulJobs() {
@@ -320,6 +299,16 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     @Override
     public int getItemQuantity(final ItemType itemType) {
         return containerComponent.getItemQuantity(itemType);
+    }
+
+    @Override
+    public void addListener(final IContainerListener listener) {
+        containerComponent.addListener(listener);
+    }
+
+    @Override
+    public void removeListener(final IContainerListener listener) {
+        containerComponent.removeListener(listener);
     }
 
     @Override

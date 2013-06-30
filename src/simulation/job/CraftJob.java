@@ -90,7 +90,13 @@ public class CraftJob extends AbstractJob {
 
     @Override
     public String toString() {
-        return "Crafting " + recipe.itemType.name;
+        String string = "Crafting ";
+        if (recipe != null) {
+            string += recipe.itemType.name;
+        } else {
+            string += "item";
+        }
+        return string;
     }
 
     @Override

@@ -8,11 +8,19 @@ import simulation.map.MapIndex;
 import userinterface.misc.Sprite;
 import userinterface.misc.SpriteManager;
 
+/**
+ * Graphic object to render an item.
+ */
 public class ItemGraphicObject implements IGraphicObject {
 
+    /** The item. */
     private final Item item;
 
-    public ItemGraphicObject(Item itemTmp) {
+    /**
+     * Constructor.
+     * @param itemTmp the item
+     */
+    public ItemGraphicObject(final Item itemTmp) {
         item = itemTmp;
     }
 

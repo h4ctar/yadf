@@ -107,37 +107,6 @@ public class StockManager extends AbstractGameObject implements IStockManager {
         return null;
     }
 
-    // TODO: move this into container component...?
-    @Override
-    public void addListener(final IStockManagerListener listener) {
-        managerListeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(final IStockManagerListener listener) {
-        managerListeners.remove(listener);
-    }
-
-    @Override
-    public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.addListener(itemType, listener);
-    }
-
-    @Override
-    public void addListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.addListener(category, listener);
-    }
-
-    @Override
-    public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.removeListener(itemType, listener);
-    }
-
-    @Override
-    public void removeListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.removeListener(category, listener);
-    }
-
     /**
      * Notify all the listeners that an item has been added.
      * @param item the item that was added
@@ -299,5 +268,47 @@ public class StockManager extends AbstractGameObject implements IStockManager {
             count += stockpile.getItemQuantity(itemType);
         }
         return count;
+    }
+
+    // TODO: move this into container component...?
+    // is a stockpile an item?
+    @Override
+    public void addListener(final IStockManagerListener listener) {
+        managerListeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(final IStockManagerListener listener) {
+        managerListeners.remove(listener);
+    }
+
+    @Override
+    public void addListener(final IContainerListener listener) {
+        containerComponent.addListener(listener);
+    }
+
+    @Override
+    public void removeListener(final IContainerListener listener) {
+        containerComponent.removeListener(listener);
+    }
+
+    @Override
+    public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.addListener(itemType, listener);
+    }
+
+    @Override
+    public void addListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.addListener(category, listener);
+    }
+
+    @Override
+    public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.removeListener(itemType, listener);
+    }
+
+    @Override
+    public void removeListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.removeListener(category, listener);
     }
 }

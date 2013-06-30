@@ -38,7 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import simulation.job.JobManager;
+import simulation.job.IJobManager;
 
 /**
  * The Class JobsPane.
@@ -86,7 +86,7 @@ public class JobsPane extends JPanel {
      * 
      * @param jobManager the new up
      */
-    public void setup(final JobManager jobManager) {
+    public void setup(final IJobManager jobManager) {
         jobsTableModel = new JobsTableModel(jobManager);
         jobsTable.setModel(jobsTableModel);
     }

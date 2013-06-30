@@ -130,7 +130,13 @@ public class HaulJob extends AbstractJob {
 
     @Override
     public String toString() {
-        return "Hauling " + item != null ? item.getType().name : itemType.name;
+        String string = "Hauling ";
+        if (item != null) {
+            string += item.getType().name;
+        } else if (itemType != null) {
+            string += itemType.name;
+        }
+        return string;
     }
 
     @Override

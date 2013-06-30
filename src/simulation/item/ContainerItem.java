@@ -284,6 +284,16 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
     }
 
     @Override
+    public void addListener(final IContainerListener listener) {
+        containerComponent.addListener(listener);
+    }
+
+    @Override
+    public void removeListener(final IContainerListener listener) {
+        containerComponent.removeListener(listener);
+    }
+
+    @Override
     public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
         containerComponent.addListener(itemType, listener);
     }

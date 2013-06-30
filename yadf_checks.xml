@@ -2,16 +2,11 @@
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
 <!--
-
     This configuration file was written by the eclipse-cs plugin configuration editor
-
 -->
 <!--
-
     Checkstyle-Configuration: yadf checks
-
     Description: none
-
 -->
 <module name="Checker">
   <property name="severity" value="warning"/>
@@ -70,7 +65,9 @@
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
     <module name="MagicNumber">
+      <property name="severity" value="ignore"/>
       <property name="ignoreNumbers" value="-1, 0, 1, 2, 100, 1000"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
     <module name="MissingSwitchDefault">
       <property name="severity" value="ignore"/>

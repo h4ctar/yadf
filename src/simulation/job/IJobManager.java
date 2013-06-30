@@ -1,8 +1,10 @@
 package simulation.job;
 
 import java.util.Collection;
+import java.util.List;
 
 import simulation.job.designation.AbstractDesignation;
+import simulation.job.designation.DesignationType;
 
 /**
  * Interface for a job manager.
@@ -15,5 +17,28 @@ public interface IJobManager {
      */
     void addJob(IJob job);
 
+    /**
+     * Gets a reference to all the designations.
+     * @return A reference to the designations array
+     */
     Collection<AbstractDesignation> getDesignations();
+
+    /**
+     * Gets a reference to a particular designation.
+     * @param designateType the designation type that the caller wants
+     * @return a reference to the designation
+     */
+    AbstractDesignation getDesignation(DesignationType designateType);
+
+    /**
+     * Add a new listener to be notified when jobs change.
+     * @param listener the listener to add.
+     */
+    void addListener(IJobManagerListener listener);
+
+    /**
+     * Gets all the jobs.
+     * @return the jobs
+     */
+    List<IJob> getJobs();
 }

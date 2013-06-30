@@ -88,7 +88,11 @@ public class BuildWorkshopJob extends AbstractJob {
 
     @Override
     public String toString() {
-        return "Building " + workshopType.name;
+        String string = "Building ";
+        if (workshopType != null) {
+            string += workshopType;
+        }
+        return string;
     }
 
     @Override

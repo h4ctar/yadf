@@ -153,8 +153,7 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "LEFT");
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "RIGHT");
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0, false), "UP_Z");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "DOWN_Z");
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "DOWN_Z");
 
         getActionMap().put("SHIFT_UP", new AbstractAction() {
 
@@ -255,6 +254,10 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
         add(itemInterface);
     }
 
+    /**
+     * Get the world canvas.
+     * @return the world canvas
+     */
     public WorldCanvas getWorldCanvas() {
         return worldCanvas;
     }

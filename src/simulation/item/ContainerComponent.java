@@ -9,19 +9,29 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import simulation.AbstractGameObject;
 
 /**
- * This is a component that will contain an implementation fo the IContainer interface, other classes that implement the
+ * This is a component that will contain an implementation of the IContainer interface, other classes that implement the
  * IContainer interface can contain a field of this type and delegate all the methods to it.
+ * <p>
+ * This is basically a hack to get around no multiple inheritance.
  */
 public class ContainerComponent extends AbstractGameObject implements IContainer, IItemAvailableListener {
 
     /** The content items. */
     private final Set<Item> items = new LinkedHashSet<>();
 
+    /** The container that this component belongs to. */
     private final IContainer container;
+
+    /** Listeners for item additions and removals. */
+    private final Set<IContainerListener> containerListeners = new LinkedHashSet<>();
 
     /** Listeners for available items. */
     private final Map<ItemType, Set<IItemAvailableListener>> itemAvailableListeners = new ConcurrentHashMap<>();
 
+    /**
+     * Constructor.
+     * @param containerTmp the container that this component belongs to
+     */
     public ContainerComponent(final IContainer containerTmp) {
         container = containerTmp;
     }
@@ -31,6 +41,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
         boolean itemAdded = items.add(item);
         if (itemAdded) {
             item.addListener(this);
+            notifyItemAdded(item);
             if (!item.used) {
                 notifyItemAvailable(item);
             }
@@ -42,9 +53,9 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     public boolean removeItem(final Item item) {
         boolean itemRemoved = items.remove(item);
         if (!itemRemoved) {
-            for (Item container : getItems()) {
-                if (container instanceof ContainerItem) {
-                    if (((ContainerItem) container).removeItem(item)) {
+            for (Item containerTmp : getItems()) {
+                if (containerTmp instanceof ContainerItem) {
+                    if (((ContainerItem) containerTmp).removeItem(item)) {
                         itemRemoved = true;
                         break;
                     }
@@ -53,6 +64,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
         }
         if (itemRemoved) {
             item.removeListener(this);
+            notifyItemRemoved(item);
         }
         return itemRemoved;
     }
@@ -127,10 +139,23 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     }
 
     @Override
+    public void addListener(final IContainerListener listener) {
+        assert !containerListeners.contains(listener);
+        containerListeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(final IContainerListener listener) {
+        assert containerListeners.contains(listener);
+        containerListeners.remove(listener);
+    }
+
+    @Override
     public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
         if (!itemAvailableListeners.containsKey(itemType)) {
             itemAvailableListeners.put(itemType, new CopyOnWriteArraySet<IItemAvailableListener>());
         }
+        assert !itemAvailableListeners.get(itemType).contains(listener);
         itemAvailableListeners.get(itemType).add(listener);
     }
 
@@ -145,12 +170,12 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
 
     @Override
     public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
-        if (itemAvailableListeners.containsKey(itemType)) {
-            Set<IItemAvailableListener> listeners = itemAvailableListeners.get(itemType);
-            listeners.remove(listener);
-            if (listeners.isEmpty()) {
-                itemAvailableListeners.remove(itemType);
-            }
+        assert itemAvailableListeners.containsKey(itemType);
+        assert itemAvailableListeners.get(itemType).contains(listener);
+        Set<IItemAvailableListener> listeners = itemAvailableListeners.get(itemType);
+        listeners.remove(listener);
+        if (listeners.isEmpty()) {
+            itemAvailableListeners.remove(itemType);
         }
     }
 
@@ -159,6 +184,31 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
         Set<ItemType> itemTypes = ItemTypeManager.getInstance().getItemTypesFromCategory(category);
         for (ItemType itemType : itemTypes) {
             removeListener(itemType, listener);
+        }
+    }
+
+    @Override
+    public void itemAvailable(final Item availableItem, final IContainer containerTmp) {
+        notifyItemAvailable(availableItem);
+    }
+
+    /**
+     * Notify listeners that an item has been added.
+     * @param item the new item
+     */
+    private void notifyItemAdded(final Item item) {
+        for (IContainerListener listener : containerListeners) {
+            listener.itemAdded(item);
+        }
+    }
+
+    /**
+     * Notify listeners that an item has been removed.
+     * @param item the removed item
+     */
+    private void notifyItemRemoved(final Item item) {
+        for (IContainerListener listener : containerListeners) {
+            listener.itemRemoved(item);
         }
     }
 
@@ -175,10 +225,5 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
                 }
             }
         }
-    }
-
-    @Override
-    public void itemAvailable(final Item availableItem, final IContainer container) {
-        notifyItemAvailable(availableItem);
     }
 }

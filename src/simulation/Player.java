@@ -45,6 +45,7 @@ import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemTypeManager;
 import simulation.item.StockManager;
+import simulation.job.IJobManager;
 import simulation.job.JobManager;
 import simulation.map.MapIndex;
 import simulation.room.Room;
@@ -150,7 +151,7 @@ public class Player extends AbstractGameObject implements IPlayer {
      * @return the job manager
      */
     @Override
-    public JobManager getJobManager() {
+    public IJobManager getJobManager() {
         return jobManager;
     }
 

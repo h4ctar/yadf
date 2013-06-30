@@ -27,6 +27,7 @@ public class TreeManager {
     /** The region that this tree manager is managing trees for. */
     private final Region region;
 
+    /** The tree manager listeners, will be notified when a tree is added or removed. */
     private final Set<ITreeManagerListener> listeners = new HashSet<>();
 
     /**
@@ -101,6 +102,10 @@ public class TreeManager {
         return treesTmp;
     }
 
+    /**
+     * Add a new tree manager listener that will be notified when a tree is added or removed.
+     * @param listener the tree manager listener
+     */
     public void addListener(final ITreeManagerListener listener) {
         listeners.add(listener);
     }
