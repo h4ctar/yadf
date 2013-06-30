@@ -58,7 +58,7 @@ public class DeleteRoomCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        Room room = player.getRoom(roomId);
+        Room room = player.getRoomManager().getRoom(roomId);
         room.delete();
     }
 }

@@ -41,7 +41,7 @@ import javax.swing.table.TableCellRenderer;
 /**
  * The Class LaborRenderer.
  */
-public class LaborRenderer extends JCheckBox implements TableCellRenderer {
+class LaborRenderer extends JCheckBox implements TableCellRenderer {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2029038227766583757L;

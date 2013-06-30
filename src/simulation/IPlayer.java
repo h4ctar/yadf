@@ -1,13 +1,10 @@
 package simulation;
 
-import java.util.Set;
-
 import simulation.character.IDwarfManager;
 import simulation.farm.IFarmManager;
 import simulation.item.IStockManager;
 import simulation.job.IJobManager;
-import simulation.map.MapIndex;
-import simulation.room.Room;
+import simulation.room.IRoomManager;
 import simulation.workshop.Workshop;
 
 /**
@@ -39,6 +36,12 @@ public interface IPlayer {
     IFarmManager getFarmManager();
 
     /**
+     * Get the room manager.
+     * @return the room manager
+     */
+    IRoomManager getRoomManager();
+
+    /**
      * Add a new workshop.
      * @param workshop the new workshop
      */
@@ -49,23 +52,4 @@ public interface IPlayer {
      * @param workshop the workshop to remove
      */
     void removeWorkshop(Workshop workshop);
-
-    /**
-     * Get all the rooms.
-     * @return all the rooms
-     */
-    Set<Room> getRooms();
-
-    /**
-     * Get the room at a specific map index.
-     * @param position the map index
-     * @return the room
-     */
-    Room getRoom(MapIndex position);
-
-    /**
-     * Remove a room.
-     * @param room the room to remove
-     */
-    void removeRoom(Room room);
 }

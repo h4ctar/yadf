@@ -145,7 +145,7 @@ public class Room extends AbstractGameObject implements IContainer {
     @Override
     public void delete() {
         super.delete();
-        player.removeRoom(this);
+        player.getRoomManager().removeRoom(this);
         for (Item item : getItems()) {
             if (item.isPlaced()) {
                 item.setPlaced(false);

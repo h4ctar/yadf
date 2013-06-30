@@ -49,13 +49,17 @@ import simulation.item.StockManager;
 import simulation.job.IJobManager;
 import simulation.job.JobManager;
 import simulation.map.MapIndex;
-import simulation.room.Room;
+import simulation.room.IRoomManager;
+import simulation.room.RoomManager;
 import simulation.workshop.Workshop;
 
 /**
  * The player.
  */
 public class Player extends AbstractGameObject implements IPlayer {
+
+    /** The size of the embark area. */
+    private static final int EMBARK_SIZE = 10;
 
     /** The name of the player. */
     private String name = null;
@@ -72,17 +76,14 @@ public class Player extends AbstractGameObject implements IPlayer {
     /** The farm manager. */
     private final IFarmManager farmManager = new FarmManager();
 
-    /** The rooms. */
-    private final Set<Room> rooms = new CopyOnWriteArraySet<>();
+    /** The room manager. */
+    private final IRoomManager roomManager = new RoomManager();
 
     /** The workshops. */
     private final Set<Workshop> workshops = new CopyOnWriteArraySet<>();
 
     /** The region that this player is in. */
     private Region region;
-
-    /** The size of the embark area. */
-    private static final int EMBARK_SIZE = 10;
 
     /**
      * Setup.
@@ -129,6 +130,11 @@ public class Player extends AbstractGameObject implements IPlayer {
         return farmManager;
     }
 
+    @Override
+    public IRoomManager getRoomManager() {
+        return roomManager;
+    }
+
     /**
      * Update.
      */
@@ -138,22 +144,6 @@ public class Player extends AbstractGameObject implements IPlayer {
         for (Workshop workshop : workshops) {
             workshop.update();
         }
-    }
-
-    /**
-     * Adds a room.
-     * @param room the room
-     */
-    public void addRoom(final Room room) {
-        // TODO: why was the stockmanager listening to the room
-        // room.addListener(stockManager);
-        rooms.add(room);
-    }
-
-    @Override
-    public void removeRoom(final Room room) {
-        // room.removeListener(stockManager);
-        rooms.remove(room);
     }
 
     /**
@@ -168,46 +158,6 @@ public class Player extends AbstractGameObject implements IPlayer {
     @Override
     public void removeWorkshop(final Workshop workshop) {
         workshops.remove(workshop);
-    }
-
-    /**
-     * Gets the room.
-     * @param roomId the room id
-     * @return the room
-     */
-    public Room getRoom(final int roomId) {
-        for (Room room : rooms) {
-            if (room.getId() == roomId) {
-                return room;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Gets the room.
-     * @param index the index
-     * @return the room
-     */
-    @Override
-    public Room getRoom(final MapIndex index) {
-        Room foundRoom = null;
-        for (Room room : rooms) {
-            if (room.getArea().containesIndex(index)) {
-                foundRoom = room;
-                break;
-            }
-        }
-        return foundRoom;
-    }
-
-    /**
-     * Gets the rooms.
-     * @return the rooms
-     */
-    @Override
-    public Set<Room> getRooms() {
-        return rooms;
     }
 
     /**

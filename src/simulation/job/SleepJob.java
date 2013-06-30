@@ -71,7 +71,7 @@ public class SleepJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            Set<Room> rooms = getPlayer().getRooms();
+            Set<Room> rooms = getPlayer().getRoomManager().getRooms();
             for (Room room : rooms) {
                 // TODO: do I have my own room?
                 if (room.getType().equals("Dormitory")) {

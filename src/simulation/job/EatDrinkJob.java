@@ -144,7 +144,7 @@ public class EatDrinkJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            Set<Room> rooms = getPlayer().getRooms();
+            Set<Room> rooms = getPlayer().getRoomManager().getRooms();
             for (Room room : rooms) {
                 if (room.getType().equals("Dining room")) {
                     Set<Item> tables = room.getUnusedItems("Table");

@@ -108,7 +108,7 @@ public class PlaceItemJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             item = getItem();
-            room = getPlayer().getRoom(position);
+            room = getPlayer().getRoomManager().getRoom(position);
         }
 
         @Override

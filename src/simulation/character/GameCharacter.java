@@ -51,7 +51,7 @@ import simulation.map.MapIndex;
 /**
  * The Class GameCharacter.
  */
-public class GameCharacter extends AbstractEntity implements IGameCharacter {
+class GameCharacter extends AbstractEntity implements IGameCharacter {
 
     /** All the components. */
     private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new HashMap<>();
@@ -63,10 +63,10 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
     private final List<ICharacterListener> changeListeners = new CopyOnWriteArrayList<>();
 
     /** The dead. */
-    protected boolean dead;
+    private boolean dead;
 
     /** The name. */
-    protected String name;
+    private String name;
 
     /** The lock. */
     private boolean locked;
@@ -133,10 +133,10 @@ public class GameCharacter extends AbstractEntity implements IGameCharacter {
 
     @Override
     public <T extends ICharacterComponent> void setComponent(final Class<T> componentInterface, final T component) {
-        Logger.getInstance().log(
-                this,
-                "Set component: " + componentInterface.getSimpleName() + " = "
-                        + component.getClass().getSimpleName());
+        Logger.getInstance()
+                .log(this,
+                        "Set component: " + componentInterface.getSimpleName() + " = "
+                                + component.getClass().getSimpleName());
         components.put(componentInterface, component);
     }
 

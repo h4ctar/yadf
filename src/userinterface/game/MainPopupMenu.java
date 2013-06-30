@@ -52,77 +52,7 @@ import simulation.workshop.WorkshopTypeManager;
  * 
  * @author Ben Smith (bensmith87@gmail.com)
  */
-public class MainPopupMenu extends JPopupMenu {
-
-    /**
-     * Action listener for the build farm menu item.
-     */
-    private class BuildFarmActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.BUILD_FARM);
-        }
-    }
-
-    /**
-     * Action listener for the build workshop menu item.
-     */
-    private class BuildWorkshopActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.BUILD_WORKSHOP);
-            worldPane.setWorkshopType(actionEvent.getActionCommand());
-        }
-    }
-
-    /**
-     * Action listener for the create room menu item.
-     */
-    private class CreateRoomActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.CREATE_ROOM);
-            worldPane.setRoomType(actionEvent.getActionCommand());
-        }
-    }
-
-    /**
-     * Action listener for the create stockpile menu item.
-     */
-    private class CreateStockpileActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.BUILD_STOCKPILE);
-        }
-    }
-
-    /**
-     * Action listener for the designation menu item.
-     */
-    private class DesignationActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.DESIGNATION);
-            worldPane.setDesignationType(DesignationType.valueOf(actionEvent.getActionCommand()));
-        }
-    }
-
-    /**
-     * Action listener for the place item menu item.
-     */
-    private class PlaceItemActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.PLACE_ITEM);
-            worldPane.setItemType(actionEvent.getActionCommand());
-        }
-    }
+class MainPopupMenu extends JPopupMenu {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -134,7 +64,7 @@ public class MainPopupMenu extends JPopupMenu {
      * Instantiates a new main popup menu.
      * @param worldPaneTmp the world pane
      */
-    public MainPopupMenu(final WorldPane worldPaneTmp) {
+    MainPopupMenu(final WorldPane worldPaneTmp) {
         super("General Menu");
 
         worldPane = worldPaneTmp;
@@ -220,5 +150,75 @@ public class MainPopupMenu extends JPopupMenu {
         }
 
         return placeItemMenu;
+    }
+
+    /**
+     * Action listener for the build farm menu item.
+     */
+    private class BuildFarmActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent actionEvent) {
+            worldPane.setState(GuiState.BUILD_FARM);
+        }
+    }
+
+    /**
+     * Action listener for the build workshop menu item.
+     */
+    private class BuildWorkshopActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent actionEvent) {
+            worldPane.setState(GuiState.BUILD_WORKSHOP);
+            worldPane.setWorkshopType(actionEvent.getActionCommand());
+        }
+    }
+
+    /**
+     * Action listener for the create room menu item.
+     */
+    private class CreateRoomActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent actionEvent) {
+            worldPane.setState(GuiState.CREATE_ROOM);
+            worldPane.setRoomType(actionEvent.getActionCommand());
+        }
+    }
+
+    /**
+     * Action listener for the create stockpile menu item.
+     */
+    private class CreateStockpileActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent actionEvent) {
+            worldPane.setState(GuiState.BUILD_STOCKPILE);
+        }
+    }
+
+    /**
+     * Action listener for the designation menu item.
+     */
+    private class DesignationActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent actionEvent) {
+            worldPane.setState(GuiState.DESIGNATION);
+            worldPane.setDesignationType(DesignationType.valueOf(actionEvent.getActionCommand()));
+        }
+    }
+
+    /**
+     * Action listener for the place item menu item.
+     */
+    private class PlaceItemActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent actionEvent) {
+            worldPane.setState(GuiState.PLACE_ITEM);
+            worldPane.setItemType(actionEvent.getActionCommand());
+        }
     }
 }

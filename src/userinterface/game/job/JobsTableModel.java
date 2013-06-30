@@ -40,7 +40,7 @@ import simulation.job.IJobManagerListener;
 /**
  * The Class JobsTableModel.
  */
-public class JobsTableModel extends AbstractTableModel implements IJobManagerListener {
+class JobsTableModel extends AbstractTableModel implements IJobManagerListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 4018365907743267846L;
@@ -53,7 +53,7 @@ public class JobsTableModel extends AbstractTableModel implements IJobManagerLis
      * 
      * @param jobManagerTmp the job manager
      */
-    public JobsTableModel(final IJobManager jobManagerTmp) {
+    JobsTableModel(final IJobManager jobManagerTmp) {
         jobManager = jobManagerTmp;
         jobManager.addListener(this);
     }

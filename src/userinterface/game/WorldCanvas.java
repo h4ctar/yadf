@@ -65,12 +65,14 @@ import simulation.map.IMapListener;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
+import simulation.room.IRoomManagerListener;
 import simulation.room.Room;
 import simulation.tree.ITreeManagerListener;
 import simulation.workshop.Workshop;
 import userinterface.game.graphicobject.FarmGraphicObject;
 import userinterface.game.graphicobject.IGraphicObject;
 import userinterface.game.graphicobject.ItemGraphicObject;
+import userinterface.game.graphicobject.RoomGraphicObject;
 import userinterface.game.graphicobject.StockpileGraphicObject;
 import userinterface.game.graphicobject.TreeGraphicObject;
 import userinterface.misc.Sprite;
@@ -80,10 +82,28 @@ import userinterface.misc.SpriteManager;
  * The WorldCanvas.
  */
 public class WorldCanvas extends JComponent implements IMapListener, ITreeManagerListener, IStockManagerListener,
-        IFarmManagerListener {
+        IFarmManagerListener, IRoomManagerListener {
 
-    /** The Constant serialVersionUID. */
+    /** The serial version UID. */
     private static final long serialVersionUID = 1L;
+
+    /** The colour of designations. */
+    private static final Color DESIGNATION_COLOUR = new Color(0.8f, 0.5f, 0.5f, 0.4f);
+
+    /** The colour of the mouse. */
+    private static final Color MOUSE_COLOUR = new Color(0.5f, 0.5f, 0.8f, 0.8f);
+
+    /** The colour of a valid selection. */
+    private static final Color VALID_SELECTION_COLOUR = new Color(0.5f, 0.8f, 0.5f, 0.6f);
+
+    /** The colour of an invalid selection. */
+    private static final Color INVALID_SELECTION_COLOUR = new Color(0.8f, 0.5f, 0.5f, 0.6f);
+
+    /** The colour of the atmosphere. */
+    private static final Color ATMOSPHERE_COLOUR = new Color(0.5f, 0.5f, 0.7f, 0.5f);
+
+    /** The colour of a block that is under ground. */
+    private static final Color UNDER_GROUND_COLOUR = new Color(0.0f, 0.0f, 0.0f, 0.9f);
 
     /** The canvas width. */
     private int canvasWidth;
@@ -106,27 +126,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     /** The region. */
     private Region region;
 
-    /** The colour of designations. */
-    private static final Color DESIGNATION_COLOUR = new Color(0.8f, 0.5f, 0.5f, 0.4f);
-
-    /** The colour of the mouse. */
-    private static final Color MOUSE_COLOUR = new Color(0.5f, 0.5f, 0.8f, 0.8f);
-
-    /** The colour of a valid selection. */
-    private static final Color VALID_SELECTION_COLOUR = new Color(0.5f, 0.8f, 0.5f, 0.6f);
-
-    /** The colour of an invalid selection. */
-    private static final Color INVALID_SELECTION_COLOUR = new Color(0.8f, 0.5f, 0.5f, 0.6f);
-
-    /** The colour of a room. */
-    private static final Color ROOM_COLOUR = new Color(0.7f, 0.7f, 0.7f, 0.4f);
-
-    /** The colour of the atmosphere. */
-    private static final Color ATMOSPHERE_COLOUR = new Color(0.5f, 0.5f, 0.7f, 0.5f);
-
-    /** The colour of a block that is under ground. */
-    private static final Color UNDER_GROUND_COLOUR = new Color(0.0f, 0.0f, 0.0f, 0.9f);
-
     /** The background image. */
     private BufferedImage backgroundImage = null;
 
@@ -145,8 +144,8 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     }
 
     /**
-     * Sets the canvas.
-     * @param playerTmp the player
+     * Setup the canvas.
+     * @param playerTmp the current player (so we can only see the designations and jobs of this player)
      * @param regionTmp the new region
      */
     public void setup(final IPlayer playerTmp, final Region regionTmp) {
@@ -157,6 +156,7 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         for (IPlayer player2 : region.getPlayers()) {
             player2.getStockManager().addListener(this);
             player2.getFarmManager().addListener(this);
+            player2.getRoomManager().addListener(this);
         }
     }
 
@@ -278,7 +278,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         }
 
         drawDesignations(graphics);
-        drawRooms(graphics);
         drawWorkshops(graphics);
         drawAnimals(graphics);
         drawDwarfs(graphics);
@@ -449,34 +448,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     }
 
     /**
-     * Draw rooms.
-     * @param g the graphics to draw on
-     */
-    private void drawRooms(final Graphics g) {
-        Set<Player> players = region.getPlayers();
-        for (Player thisPlayer : players) {
-            Set<Room> rooms = thisPlayer.getRooms();
-            for (Room room : rooms) {
-                MapArea area = room.getArea();
-                if (viewArea.pos.z != area.pos.z) {
-                    continue;
-                }
-                int x = (area.pos.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
-                int y = (area.pos.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
-                g.setColor(ROOM_COLOUR);
-                g.fillRect(x, y, area.width * SpriteManager.SPRITE_SIZE, area.height * SpriteManager.SPRITE_SIZE);
-                for (Item item : room.getItems()) {
-                    MapIndex position = item.getPosition();
-                    int x2 = (position.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
-                    int y2 = (position.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
-                    Sprite itemSprite = SpriteManager.getInstance().getItemSprite(item.getType().sprite);
-                    itemSprite.draw(g, x2, y2);
-                }
-            }
-        }
-    }
-
-    /**
      * Draw workshops.
      * @param g the graphics to draw on
      */
@@ -543,5 +514,17 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     public void farmRemoved(final Farm farm) {
         assert graphicObjects.containsKey(farm);
         graphicObjects.remove(farm);
+    }
+
+    @Override
+    public void roomAdded(final Room room) {
+        assert !graphicObjects.containsKey(room);
+        graphicObjects.put(room, new RoomGraphicObject(room));
+    }
+
+    @Override
+    public void roomRemoved(final Room room) {
+        assert graphicObjects.containsKey(room);
+        graphicObjects.remove(room);
     }
 }

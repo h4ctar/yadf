@@ -6,7 +6,7 @@ import controller.AbstractController;
 /**
  * The Game Loop.
  */
-public class GameLoop implements Runnable {
+class GameLoop implements Runnable {
     /** How many ms in one second. */
     private static final long MS_IN_A_SECOND = 1000;
 

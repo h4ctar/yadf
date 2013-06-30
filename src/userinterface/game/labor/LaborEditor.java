@@ -42,7 +42,7 @@ import javax.swing.table.TableCellEditor;
 /**
  * The Class LaborEditor.
  */
-public class LaborEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
+class LaborEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -1762119570759441760L;

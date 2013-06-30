@@ -41,13 +41,13 @@ import simulation.map.WalkableNode;
 /**
  * The Class MoveComponent.
  */
-public abstract class AbstractMoveComponent extends AbstractCharacterComponent {
+abstract class AbstractMoveComponent extends AbstractCharacterComponent {
 
     /**
      * Constructor.
      * @param characterTmp the character that this component belongs to
      */
-    public AbstractMoveComponent(final IGameCharacter characterTmp) {
+    AbstractMoveComponent(final IGameCharacter characterTmp) {
         super(characterTmp);
     }
 

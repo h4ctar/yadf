@@ -33,16 +33,15 @@ package userinterface.multiplayer.client;
 
 import java.net.Socket;
 
-import controller.Connection;
-
 import logger.Logger;
 import userinterface.multiplayer.LobbyMessage;
 import userinterface.multiplayer.LobbyMessageType;
+import controller.Connection;
 
 /**
  * A thread of a client that is listening to messages from the server.
  */
-public class ClientThread implements Runnable {
+class ClientThread implements Runnable {
 
     /** The connection. */
     private Connection connection;
@@ -60,14 +59,14 @@ public class ClientThread implements Runnable {
      * Instantiates a new client thread.
      * @param lobbyClientTmp the lobby client
      */
-    public ClientThread(final ILobbyClient lobbyClientTmp) {
+    ClientThread(final ILobbyClient lobbyClientTmp) {
         lobbyClient = lobbyClientTmp;
     }
 
     /**
      * Close.
      */
-    public void close() {
+    void close() {
         Logger.getInstance().log(this, "close()");
         connection.close();
     }
@@ -86,7 +85,7 @@ public class ClientThread implements Runnable {
      * @param port the port
      * @return true, if successful
      */
-    public boolean init(final String ip, final int port) {
+    boolean init(final String ip, final int port) {
         boolean ok = true;
 
         try {
@@ -136,7 +135,7 @@ public class ClientThread implements Runnable {
      * @param playerName the player name
      * @param text the text
      */
-    public void sendChat(final String playerName, final String text) {
+    void sendChat(final String playerName, final String text) {
         Logger.getInstance().log(this, "sendChat(" + playerName + ", " + text + ")");
         LobbyMessage message = new LobbyMessage(LobbyMessageType.CHAT);
         message.playerName = playerName;
@@ -154,7 +153,7 @@ public class ClientThread implements Runnable {
     /**
      * Start.
      */
-    public synchronized void start() {
+    synchronized void start() {
         Logger.getInstance().log(this, "start()");
         running = true;
         thread = new Thread(this, "ClientThread");
@@ -164,7 +163,7 @@ public class ClientThread implements Runnable {
     /**
      * Stop.
      */
-    public synchronized void stop() {
+    synchronized void stop() {
         Logger.getInstance().log(this, "stop()");
         running = false;
     }

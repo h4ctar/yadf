@@ -336,7 +336,7 @@ public class WorldPane extends JDesktopPane implements ComponentListener, MouseL
                 }
 
                 // If left click on a room, show the room interface
-                Room room = player.getRoom(mouseIndex);
+                Room room = player.getRoomManager().getRoom(mouseIndex);
                 if (room != null) {
                     roomInterface.setRoom(room);
                     roomInterface.setVisible(true);

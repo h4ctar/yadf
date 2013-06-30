@@ -37,7 +37,7 @@ import java.net.Socket;
 /**
  * The Class NewClientAcceptorThread.
  */
-public class NewClientAcceptorThread implements Runnable {
+class NewClientAcceptorThread implements Runnable {
 
     /** The server socket. */
     private ServerSocket serverSocket;
@@ -55,14 +55,14 @@ public class NewClientAcceptorThread implements Runnable {
      * Instantiates a new new client acceptor thread.
      * @param lobbyServerTmp the lobby server
      */
-    public NewClientAcceptorThread(final ILobbyServer lobbyServerTmp) {
+    NewClientAcceptorThread(final ILobbyServer lobbyServerTmp) {
         lobbyServer = lobbyServerTmp;
     }
 
     /**
      * Close.
      */
-    public void close() {
+    void close() {
         try {
             serverSocket.close();
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class NewClientAcceptorThread implements Runnable {
      * @param port the port
      * @return true, if successful
      */
-    public boolean init(final int port) {
+    boolean init(final int port) {
         boolean ok = true;
 
         try {
@@ -113,14 +113,14 @@ public class NewClientAcceptorThread implements Runnable {
      * Running.
      * @return true, if successful
      */
-    public synchronized boolean running() {
+    private synchronized boolean running() {
         return running;
     }
 
     /**
      * Start.
      */
-    public synchronized void start() {
+    synchronized void start() {
         running = true;
         thread = new Thread(this, "NewClientAcceptorThread");
         thread.start();
@@ -129,7 +129,7 @@ public class NewClientAcceptorThread implements Runnable {
     /**
      * Stop.
      */
-    public synchronized void stop() {
+    synchronized void stop() {
         running = false;
     }
 }

@@ -43,7 +43,7 @@ import simulation.room.Room;
 /**
  * The Class ItemListModel.
  */
-public class ItemListModel extends AbstractListModel<String> implements IContainerListener {
+class ItemListModel extends AbstractListModel<String> implements IContainerListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -1108175675511497032L;

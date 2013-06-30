@@ -48,8 +48,7 @@ import controller.command.EnableLaborCommand;
 /**
  * The Class LaborTableModel.
  */
-public class LaborTableModel extends AbstractTableModel implements IDwarfManagerListener,
-        ICharacterComponentListener {
+class LaborTableModel extends AbstractTableModel implements IDwarfManagerListener, ICharacterComponentListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2428815575025895385L;
@@ -65,7 +64,7 @@ public class LaborTableModel extends AbstractTableModel implements IDwarfManager
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public LaborTableModel(final Player playerTmp, final AbstractController controllerTmp) {
+    LaborTableModel(final Player playerTmp, final AbstractController controllerTmp) {
         player = playerTmp;
         controller = controllerTmp;
         player.getDwarfManager().addListener(this);

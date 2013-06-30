@@ -39,7 +39,7 @@ import simulation.character.IGameCharacter;
 /**
  * The Interface ICharacterComponent.
  */
-public abstract class AbstractCharacterComponent implements ICharacterComponent {
+abstract class AbstractCharacterComponent implements ICharacterComponent {
 
     /** The character that this component belongs to. */
     private final IGameCharacter character;
@@ -48,7 +48,7 @@ public abstract class AbstractCharacterComponent implements ICharacterComponent 
      * Constructor.
      * @param characterTmp the character that this component belongs to
      */
-    public AbstractCharacterComponent(final IGameCharacter characterTmp) {
+    AbstractCharacterComponent(final IGameCharacter characterTmp) {
         character = characterTmp;
     }
 
