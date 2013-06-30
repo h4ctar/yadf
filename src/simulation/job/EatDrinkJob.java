@@ -116,7 +116,7 @@ public class EatDrinkJob extends AbstractJob {
          * Constructor.
          */
         public LookingForFoodDrinkState() {
-            super(eat ? "Food" : "Drink", EatDrinkJob.this);
+            super(eat ? "Food" : "Drink", false, false, EatDrinkJob.this);
         }
 
         @Override

@@ -130,7 +130,7 @@ public class MineJob extends AbstractJob {
                 }
             }
             if (accessible) {
-                getJob().stateDone(this);
+                finishState();
             } else {
                 map.addListener(this);
             }
@@ -152,7 +152,7 @@ public class MineJob extends AbstractJob {
             if (blockType.isStandIn
                     && (mapIndex.x == position.x || mapIndex.x == position.x - 1 || mapIndex.x == position.x + 1)
                     && (mapIndex.y == position.y || mapIndex.y == position.y - 1 || mapIndex.y == position.y + 1)) {
-                getJob().stateDone(this);
+                finishState();
             }
         }
 

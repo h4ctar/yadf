@@ -44,11 +44,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
         }
     }
 
-    /**
-     * Adds a new dwarf.
-     * @param position the position of the new dwarf
-     * @param region the region the dwarf is in
-     */
+    @Override
     public void addNewDwarf(final MapIndex position, final Region region) {
         Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position, region, player);
         dwarf.addListener(this);
@@ -56,11 +52,6 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
         notifyDwarfAdded(dwarf);
     }
 
-    /**
-     * Gets a dwarf with specific ID.
-     * @param id the ID of the dwarf
-     * @return the dwarf
-     */
     @Override
     public IGameCharacter getDwarf(final int id) {
         for (IGameCharacter dwarf : dwarfs) {
@@ -71,11 +62,6 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
         return null;
     }
 
-    /**
-     * Gets the dwarf at a specific position.
-     * @param position the position
-     * @return the dwarf
-     */
     @Override
     public IGameCharacter getDwarf(final MapIndex position) {
         for (IGameCharacter dwarf : dwarfs) {
@@ -113,9 +99,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
         return null;
     }
 
-    /**
-     * Update all the dwarfs.
-     */
+    @Override
     public void update() {
         for (IGameCharacter dwarf : dwarfs) {
             dwarf.update();
@@ -132,6 +116,23 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
     public void removeListener(final IDwarfManagerListener listener) {
         assert managerListeners.contains(listener);
         managerListeners.remove(listener);
+    }
+
+    @Override
+    public void characterAvailable(final IGameCharacter character) {
+        notifyDwarfNowIdle(character);
+    }
+
+    @Override
+    public void addListener(final ICharacterAvailableListener listener) {
+        assert !availableListeners.contains(listener);
+        availableListeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(final ICharacterAvailableListener listener) {
+        assert availableListeners.contains(listener);
+        availableListeners.remove(listener);
     }
 
     /**
@@ -155,22 +156,5 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
                 break;
             }
         }
-    }
-
-    @Override
-    public void characterAvailable(final IGameCharacter character) {
-        notifyDwarfNowIdle(character);
-    }
-
-    @Override
-    public void addListener(final ICharacterAvailableListener listener) {
-        assert !availableListeners.contains(listener);
-        availableListeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(final ICharacterAvailableListener listener) {
-        assert availableListeners.contains(listener);
-        availableListeners.remove(listener);
     }
 }

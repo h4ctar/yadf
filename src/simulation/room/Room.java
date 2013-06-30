@@ -138,8 +138,8 @@ public class Room extends AbstractGameObject implements IContainer {
     }
 
     @Override
-    public Item getUnusedItem(final String itemTypeName) {
-        return containerComponent.getUnusedItem(itemTypeName);
+    public Item getItem(final String itemTypeName, final boolean used, final boolean placed) {
+        return containerComponent.getItem(itemTypeName, used, placed);
     }
 
     @Override
@@ -155,8 +155,8 @@ public class Room extends AbstractGameObject implements IContainer {
     }
 
     @Override
-    public Item getUnusedItemFromCategory(final String category) {
-        return containerComponent.getUnusedItemFromCategory(category);
+    public Item getItemFromCategory(final String category, final boolean used, final boolean placed) {
+        return containerComponent.getItemFromCategory(category, used, placed);
     }
 
     @Override

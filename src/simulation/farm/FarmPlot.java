@@ -31,7 +31,7 @@
  */
 package simulation.farm;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 import simulation.item.Item;
 import simulation.job.HarvestJob;
@@ -107,7 +107,7 @@ public class FarmPlot {
      * Update.
      * @param player the player
      */
-    public void update(final Player player) {
+    public void update(final IPlayer player) {
         // TODO: the farm should listen to the jobs
         switch (state) {
         case START:
@@ -126,7 +126,7 @@ public class FarmPlot {
 
         case PLANT:
             if (job == null) {
-                Item seed = player.getStockManager().getUnusedItem("Seed");
+                Item seed = player.getStockManager().getItem("Seed", false, false);
                 if (seed != null) {
                     player.getStockManager().removeItem(seed);
                     seed.setUsed(true);

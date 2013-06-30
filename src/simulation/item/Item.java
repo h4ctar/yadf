@@ -176,6 +176,7 @@ public class Item extends AbstractEntity {
      * @param listener the new listener
      */
     public void addListener(final IItemAvailableListener listener) {
+        assert !listeners.contains(listener);
         listeners.add(listener);
     }
 
@@ -184,6 +185,7 @@ public class Item extends AbstractEntity {
      * @param listener the listener to remove
      */
     public void removeListener(final IItemAvailableListener listener) {
+        assert listeners.contains(listener);
         listeners.remove(listener);
     }
 }

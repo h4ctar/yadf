@@ -75,7 +75,7 @@ public class SleepJob extends AbstractJob {
             for (Room room : rooms) {
                 // TODO: do I have my own room?
                 if (room.getType().equals("Dormitory")) {
-                    bed = room.getUnusedItem("Bed");
+                    bed = room.getItem("Bed", false, true);
                     if (bed != null) {
                         bed.setUsed(true);
                         break;

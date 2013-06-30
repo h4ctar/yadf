@@ -148,7 +148,7 @@ public class Region {
                 }
             }
             // Check that the area is free from farms
-            for (Farm farm : player.getFarms()) {
+            for (Farm farm : player.getFarmManager().getFarms()) {
                 if (area.operlapsArea(farm.getArea())) {
                     return false;
                 }
@@ -192,7 +192,7 @@ public class Region {
                 }
             }
             // Check that the area is free from farms
-            for (Farm farm : player.getFarms()) {
+            for (Farm farm : player.getFarmManager().getFarms()) {
                 if (farm.getArea().containesIndex(mapIndex)) {
                     return false;
                 }

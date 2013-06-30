@@ -151,19 +151,19 @@ public class ContainerItemTest {
         assertEquals(2, containerItem.getItems().size());
 
         // Get an item that is unused and exists
-        Item item3 = containerItem.getUnusedItem("Bread");
+        Item item3 = containerItem.getItem("Bread", false, false);
         assertSame(item1, item3);
         assertEquals(2, containerItem.getItems().size());
 
         // Get an item that does not exist
-        Item item4 = containerItem.getUnusedItem("Pizza");
+        Item item4 = containerItem.getItem("Pizza", false, false);
         assertNull(item4);
         assertEquals(2, containerItem.getItems().size());
 
         // Get an item that is already marked as used
         containerItem.removeItem(item3);
         assertEquals(1, containerItem.getItems().size());
-        Item item5 = containerItem.getUnusedItem("Bread");
+        Item item5 = containerItem.getItem("Bread", false, false);
         assertNull(item5);
         assertEquals(1, containerItem.getItems().size());
     }
@@ -186,19 +186,19 @@ public class ContainerItemTest {
         assertEquals(2, containerItem.getItems().size());
 
         // Get an item that is unused and exists
-        Item item3 = containerItem.getUnusedItemFromCategory("Food");
+        Item item3 = containerItem.getItemFromCategory("Food", false, false);
         assertSame(item1, item3);
         assertEquals(2, containerItem.getItems().size());
 
         // Get an item that does not exist
-        Item item4 = containerItem.getUnusedItemFromCategory("Drink");
+        Item item4 = containerItem.getItemFromCategory("Drink", false, false);
         assertNull(item4);
         assertEquals(2, containerItem.getItems().size());
 
         // Get an item that is already marked as used
         containerItem.removeItem(item3);
         assertEquals(1, containerItem.getItems().size());
-        Item item5 = containerItem.getUnusedItemFromCategory("Food");
+        Item item5 = containerItem.getItemFromCategory("Food", false, false);
         assertNull(item5);
         assertEquals(1, containerItem.getItems().size());
     }

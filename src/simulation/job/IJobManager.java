@@ -3,6 +3,8 @@ package simulation.job;
 import java.util.Collection;
 import java.util.List;
 
+import simulation.IPlayer;
+import simulation.Region;
 import simulation.job.designation.AbstractDesignation;
 import simulation.job.designation.DesignationType;
 
@@ -16,6 +18,13 @@ public interface IJobManager {
      * @param job the job to add
      */
     void addJob(IJob job);
+
+    /**
+     * Add designations to this job manager.
+     * @param region the region to create designations for
+     * @param player the player that the job manager belongs to
+     */
+    void addDesignations(Region region, IPlayer player);
 
     /**
      * Gets a reference to all the designations.

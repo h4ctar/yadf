@@ -102,7 +102,7 @@ public class PlaceItemJob extends AbstractJob {
          * Constructor.
          */
         public LookingForItemState() {
-            super(itemType, PlaceItemJob.this);
+            super(itemType, false, false, PlaceItemJob.this);
         }
 
         @Override

@@ -59,6 +59,6 @@ public class CreateFarmCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.addFarm(new Farm(area));
+        player.getFarmManager().addFarm(new Farm(area));
     }
 }

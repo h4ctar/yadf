@@ -2,6 +2,7 @@ package simulation.character;
 
 import java.util.Set;
 
+import simulation.Region;
 import simulation.labor.LaborType;
 import simulation.map.MapIndex;
 
@@ -9,6 +10,13 @@ import simulation.map.MapIndex;
  * Interface for the dwarf manager.
  */
 public interface IDwarfManager {
+
+    /**
+     * Adds a new dwarf.
+     * @param position the position of the new dwarf
+     * @param region the region the dwarf is in
+     */
+    void addNewDwarf(MapIndex position, Region region);
 
     /**
      * Get a dwarf with a specific ID.
@@ -61,4 +69,9 @@ public interface IDwarfManager {
      * @param listener the listener to remove
      */
     void removeListener(ICharacterAvailableListener listener);
+
+    /**
+     * Update all the dwarfs.
+     */
+    void update();
 }

@@ -53,7 +53,7 @@ import simulation.character.Goblin;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.Farm;
-import simulation.farm.FarmPlot;
+import simulation.farm.IFarmManagerListener;
 import simulation.item.IStockManagerListener;
 import simulation.item.Item;
 import simulation.item.Stockpile;
@@ -68,6 +68,7 @@ import simulation.map.RegionMap;
 import simulation.room.Room;
 import simulation.tree.ITreeManagerListener;
 import simulation.workshop.Workshop;
+import userinterface.game.graphicobject.FarmGraphicObject;
 import userinterface.game.graphicobject.IGraphicObject;
 import userinterface.game.graphicobject.ItemGraphicObject;
 import userinterface.game.graphicobject.StockpileGraphicObject;
@@ -78,7 +79,8 @@ import userinterface.misc.SpriteManager;
 /**
  * The WorldCanvas.
  */
-public class WorldCanvas extends JComponent implements IMapListener, ITreeManagerListener, IStockManagerListener {
+public class WorldCanvas extends JComponent implements IMapListener, ITreeManagerListener, IStockManagerListener,
+        IFarmManagerListener {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -154,6 +156,7 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         region.getTreeManager().addListener(this);
         for (IPlayer player2 : region.getPlayers()) {
             player2.getStockManager().addListener(this);
+            player2.getFarmManager().addListener(this);
         }
     }
 
@@ -275,7 +278,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         }
 
         drawDesignations(graphics);
-        drawFarms(graphics);
         drawRooms(graphics);
         drawWorkshops(graphics);
         drawAnimals(graphics);
@@ -428,45 +430,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     }
 
     /**
-     * Draw farms.
-     * @param g the graphics to draw on
-     */
-    private void drawFarms(final Graphics g) {
-        Sprite tillSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.TILL_SPRITE);
-        Sprite plantSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.PLANT_SPRITE);
-        Sprite growSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.GROW_SPRITE);
-        Sprite harvestSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.HARVEST_SPRITE);
-        Set<Player> players = region.getPlayers();
-        for (Player thisPlayer : players) {
-            Set<Farm> farms = thisPlayer.getFarms();
-            for (Farm farm : farms) {
-                MapArea area = farm.getArea();
-
-                if (viewArea.pos.z != area.pos.z) {
-                    continue;
-                }
-
-                List<FarmPlot> farmPlots = farm.getPlots();
-                for (FarmPlot farmPlot : farmPlots) {
-                    MapIndex pos = farmPlot.getPosition();
-                    int x = (pos.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
-                    int y = (pos.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
-
-                    if (farmPlot.getState() == FarmPlot.State.TILL) {
-                        tillSprite.draw(g, x, y);
-                    } else if (farmPlot.getState() == FarmPlot.State.PLANT) {
-                        plantSprite.draw(g, x, y);
-                    } else if (farmPlot.getState() == FarmPlot.State.GROW) {
-                        growSprite.draw(g, x, y);
-                    } else if (farmPlot.getState() == FarmPlot.State.HARVEST) {
-                        harvestSprite.draw(g, x, y);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * Draw goblins.
      * @param g the graphics to draw on
      */
@@ -536,31 +499,49 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
 
     @Override
     public void treeAdded(final Tree tree) {
+        assert !graphicObjects.containsKey(tree);
         graphicObjects.put(tree, new TreeGraphicObject(tree));
     }
 
     @Override
     public void treeRemoved(final Tree tree) {
+        assert graphicObjects.containsKey(tree);
         graphicObjects.remove(tree);
     }
 
     @Override
     public void itemAdded(final Item item) {
+        assert !graphicObjects.containsKey(item);
         graphicObjects.put(item, new ItemGraphicObject(item));
     }
 
     @Override
     public void itemRemoved(final Item item) {
+        assert graphicObjects.containsKey(item);
         graphicObjects.remove(item);
     }
 
     @Override
     public void stockpileAdded(final Stockpile stockpile) {
+        assert !graphicObjects.containsKey(stockpile);
         graphicObjects.put(stockpile, new StockpileGraphicObject(stockpile));
     }
 
     @Override
     public void stockpileRemoved(final Stockpile stockpile) {
+        assert graphicObjects.containsKey(stockpile);
         graphicObjects.remove(stockpile);
+    }
+
+    @Override
+    public void farmAdded(final Farm farm) {
+        assert !graphicObjects.containsKey(farm);
+        graphicObjects.put(farm, new FarmGraphicObject(farm));
+    }
+
+    @Override
+    public void farmRemoved(final Farm farm) {
+        assert graphicObjects.containsKey(farm);
+        graphicObjects.remove(farm);
     }
 }

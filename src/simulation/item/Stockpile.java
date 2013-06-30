@@ -106,7 +106,9 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         itemRemoved = containerComponent.removeItem(item);
         if (itemRemoved) {
             MapIndex pos = item.getPosition().sub(area.pos);
-            used[pos.x][pos.y] = false;
+            if (getItem(item.getPosition()) == null) {
+                used[pos.x][pos.y] = false;
+            }
         }
         return itemRemoved;
     }
@@ -153,13 +155,13 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     }
 
     @Override
-    public Item getUnusedItem(final String itemTypeName) {
-        return containerComponent.getUnusedItem(itemTypeName);
+    public Item getItem(final String itemTypeName, final boolean usedTmp, final boolean placed) {
+        return containerComponent.getItem(itemTypeName, usedTmp, placed);
     }
 
     @Override
-    public Item getUnusedItemFromCategory(final String category) {
-        return containerComponent.getUnusedItemFromCategory(category);
+    public Item getItemFromCategory(final String category, final boolean usedTmp, final boolean placed) {
+        return containerComponent.getItemFromCategory(category, usedTmp, placed);
     }
 
     /**

@@ -175,7 +175,7 @@ public class HaulJob extends AbstractJob {
          * Constructor.
          */
         public LookingForHaulItemState() {
-            super(itemType, HaulJob.this);
+            super(itemType, false, false, HaulJob.this);
         }
 
         @Override

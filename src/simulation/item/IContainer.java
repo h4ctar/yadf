@@ -29,18 +29,22 @@ public interface IContainer extends IGameObject {
     Set<Item> getItems();
 
     /**
-     * Finds an item that is unused but does not remove it from the container. Does not set the item as used.
+     * Finds an item but does not remove it from the container and does not set the item as used.
      * @param itemTypeName the type of item to find
+     * @param used true to only find used items
+     * @param placed true to only find placed items
      * @return a reference to the found item, will be null if none could be found
      */
-    Item getUnusedItem(String itemTypeName);
+    Item getItem(String itemTypeName, boolean used, boolean placed);
 
     /**
-     * Finds an item from a category. Does not set the item as used.
+     * Finds an item from a category but does not remove it from the container and does not set the item as used.
      * @param category the category name
+     * @param used true to only find used items
+     * @param placed true to only find placed items
      * @return the item from category
      */
-    Item getUnusedItemFromCategory(String category);
+    Item getItemFromCategory(String category, boolean used, boolean placed);
 
     /**
      * Get the number of items in a category. From this container and any sub containers.

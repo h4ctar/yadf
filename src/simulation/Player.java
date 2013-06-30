@@ -40,7 +40,8 @@ import logger.Logger;
 import misc.MyRandom;
 import simulation.character.DwarfManager;
 import simulation.character.IDwarfManager;
-import simulation.farm.Farm;
+import simulation.farm.FarmManager;
+import simulation.farm.IFarmManager;
 import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemTypeManager;
@@ -57,25 +58,25 @@ import simulation.workshop.Workshop;
 public class Player extends AbstractGameObject implements IPlayer {
 
     /** The name of the player. */
-    private String name;
+    private String name = null;
 
     /** The job manager. */
-    private final JobManager jobManager = new JobManager();
+    private final IJobManager jobManager = new JobManager();
 
     /** The stock manager. */
-    private final StockManager stockManager = new StockManager();
+    private final IStockManager stockManager = new StockManager();
 
     /** The dwarf manager. */
-    private final DwarfManager dwarfManager = new DwarfManager(this);
+    private final IDwarfManager dwarfManager = new DwarfManager(this);
+
+    /** The farm manager. */
+    private final IFarmManager farmManager = new FarmManager();
 
     /** The rooms. */
     private final Set<Room> rooms = new CopyOnWriteArraySet<>();
 
     /** The workshops. */
     private final Set<Workshop> workshops = new CopyOnWriteArraySet<>();
-
-    /** The farms. */
-    private final Set<Farm> farms = new CopyOnWriteArraySet<>();
 
     /** The region that this player is in. */
     private Region region;
@@ -101,11 +102,42 @@ public class Player extends AbstractGameObject implements IPlayer {
     }
 
     /**
-     * Adds a farm.
-     * @param farm the farm
+     * Gets the name of the player.
+     * @return the name of the player
      */
-    public void addFarm(final Farm farm) {
-        farms.add(farm);
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public IDwarfManager getDwarfManager() {
+        return dwarfManager;
+    }
+
+    @Override
+    public IJobManager getJobManager() {
+        return jobManager;
+    }
+
+    @Override
+    public IStockManager getStockManager() {
+        return stockManager;
+    }
+
+    @Override
+    public IFarmManager getFarmManager() {
+        return farmManager;
+    }
+
+    /**
+     * Update.
+     */
+    public void update() {
+        dwarfManager.update();
+        farmManager.update(this);
+        for (Workshop workshop : workshops) {
+            workshop.update();
+        }
     }
 
     /**
@@ -139,31 +171,6 @@ public class Player extends AbstractGameObject implements IPlayer {
     }
 
     /**
-     * Gets all the farms.
-     * @return the farms
-     */
-    public Set<Farm> getFarms() {
-        return farms;
-    }
-
-    /**
-     * Gets the job manager.
-     * @return the job manager
-     */
-    @Override
-    public IJobManager getJobManager() {
-        return jobManager;
-    }
-
-    /**
-     * Gets the name of the player.
-     * @return the name of the player
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * Gets the room.
      * @param roomId the room id
      * @return the room
@@ -174,7 +181,6 @@ public class Player extends AbstractGameObject implements IPlayer {
                 return room;
             }
         }
-
         return null;
     }
 
@@ -202,15 +208,6 @@ public class Player extends AbstractGameObject implements IPlayer {
     @Override
     public Set<Room> getRooms() {
         return rooms;
-    }
-
-    /**
-     * Gets the stock manager.
-     * @return the stock manager
-     */
-    @Override
-    public IStockManager getStockManager() {
-        return stockManager;
     }
 
     /**
@@ -251,20 +248,6 @@ public class Player extends AbstractGameObject implements IPlayer {
     }
 
     /**
-     * Update.
-     */
-    public void update() {
-        dwarfManager.update();
-        // TODO: Don't update farms and workshops every step
-        for (Farm farm : farms) {
-            farm.update(this);
-        }
-        for (Workshop workshop : workshops) {
-            workshop.update();
-        }
-    }
-
-    /**
      * Add the starting dwarfs.
      * @param embarkPosition the position to embark
      * @param numberOfStartingDwarfs the number of starting dwarfs
@@ -295,14 +278,5 @@ public class Player extends AbstractGameObject implements IPlayer {
             item.setPosition(position);
             stockManager.addItem(item);
         }
-    }
-
-    /**
-     * Gets the dwarf manager.
-     * @return the dwarf manager
-     */
-    @Override
-    public IDwarfManager getDwarfManager() {
-        return dwarfManager;
     }
 }

@@ -3,6 +3,7 @@ package simulation;
 import java.util.Set;
 
 import simulation.character.IDwarfManager;
+import simulation.farm.IFarmManager;
 import simulation.item.IStockManager;
 import simulation.job.IJobManager;
 import simulation.map.MapIndex;
@@ -30,6 +31,12 @@ public interface IPlayer {
      * @return the dwarf manager
      */
     IDwarfManager getDwarfManager();
+
+    /**
+     * Get the farm manager.
+     * @return the farm manager
+     */
+    IFarmManager getFarmManager();
 
     /**
      * Add a new workshop.

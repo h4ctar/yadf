@@ -32,7 +32,7 @@ public abstract class WaitingForDwarfState extends AbstractJobState implements I
     @Override
     public void start() {
         if (dwarf.acquireLock()) {
-            getJob().stateDone(this);
+            finishState();
         } else {
             dwarf.addListener(this);
         }

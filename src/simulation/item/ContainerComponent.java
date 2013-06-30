@@ -52,6 +52,12 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     @Override
     public boolean removeItem(final Item item) {
         boolean itemRemoved = items.remove(item);
+        if (itemRemoved) {
+            // Only notify when an item is directly removed from this container, not if its removed from any of the sub
+            // containers
+            item.removeListener(this);
+            notifyItemRemoved(item);
+        }
         if (!itemRemoved) {
             for (Item containerTmp : getItems()) {
                 if (containerTmp instanceof ContainerItem) {
@@ -62,10 +68,6 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
                 }
             }
         }
-        if (itemRemoved) {
-            item.removeListener(this);
-            notifyItemRemoved(item);
-        }
         return itemRemoved;
     }
 
@@ -75,15 +77,16 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     }
 
     @Override
-    public Item getUnusedItem(final String itemTypeName) {
+    public Item getItem(final String itemTypeName, final boolean used, final boolean placed) {
         Item foundItem = null;
         for (Item item : items) {
-            if (item.getType().name.equals(itemTypeName) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
+            if (item.getType().name.equals(itemTypeName) && item.isUsed() == used && item.isPlaced() == placed
+                    && !item.isDeleted()) {
                 foundItem = item;
                 break;
             }
             if (item instanceof IContainer) {
-                Item contentItem = ((IContainer) item).getUnusedItem(itemTypeName);
+                Item contentItem = ((IContainer) item).getItem(itemTypeName, used, placed);
                 if (contentItem != null) {
                     return contentItem;
                 }
@@ -93,15 +96,16 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     }
 
     @Override
-    public Item getUnusedItemFromCategory(final String category) {
+    public Item getItemFromCategory(final String category, final boolean used, final boolean placed) {
         Item foundItem = null;
         for (Item item : items) {
-            if (item.getType().category.equals(category) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
+            if (item.getType().category.equals(category) && !item.isDeleted() && item.isUsed() == used
+                    && item.isPlaced() == placed) {
                 foundItem = item;
                 break;
             }
             if (item instanceof IContainer) {
-                Item contentItem = ((IContainer) item).getUnusedItemFromCategory(category);
+                Item contentItem = ((IContainer) item).getItemFromCategory(category, used, placed);
                 if (contentItem != null) {
                     return contentItem;
                 }

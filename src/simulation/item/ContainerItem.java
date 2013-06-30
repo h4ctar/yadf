@@ -81,13 +81,21 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
     }
 
     @Override
-    public Item getUnusedItem(final String itemTypeName) {
-        return containerComponent.getUnusedItem(itemTypeName);
+    public Item getItem(final String itemTypeName, final boolean used, final boolean placed) {
+        Item foundItem = null;
+        if (!used) {
+            foundItem = containerComponent.getItem(itemTypeName, used, placed);
+        }
+        return foundItem;
     }
 
     @Override
-    public Item getUnusedItemFromCategory(final String category) {
-        return containerComponent.getUnusedItemFromCategory(category);
+    public Item getItemFromCategory(final String category, final boolean used, final boolean placed) {
+        Item foundItem = null;
+        if (!used) {
+            foundItem = containerComponent.getItemFromCategory(category, used, placed);
+        }
+        return foundItem;
     }
 
     @Override
@@ -130,6 +138,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
                 player.getStockManager().addListener(contentItemType, this);
             }
             if (isEmpty()) {
+                player.getStockManager().removeListener(contentItemType, this);
                 contentItemType = null;
                 listenForAllContentItemTypes();
             }

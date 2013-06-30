@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import simulation.AbstractGameObject;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
@@ -83,7 +83,7 @@ public class Farm extends AbstractGameObject {
      * Update.
      * @param player the player
      */
-    public void update(final Player player) {
+    public void update(final IPlayer player) {
         for (FarmPlot farmPlot : farmPlots) {
             farmPlot.update(player);
         }

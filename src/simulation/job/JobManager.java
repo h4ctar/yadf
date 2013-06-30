@@ -112,11 +112,6 @@ public class JobManager implements IJobManager, IJobListener {
         return jobs;
     }
 
-    /**
-     * Add designations to this job manager.
-     * @param region the region to create designations for
-     * @param player the player that the job manager belongs to
-     */
     public void addDesignations(final Region region, final IPlayer player) {
         designations.put(DesignationType.MINE, new MineDesignation(region, player));
         designations.put(DesignationType.CHANNEL, new ChannelDesignation(null, region, player));

@@ -168,7 +168,7 @@ public class SinglePlayerMenuPanel extends ImagePanel {
 
         regionSizeComboBox = new JComboBox<>();
         regionSizeComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Small", "Medium", "Large" }));
-        regionSizeComboBox.setSelectedIndex(1);
+        regionSizeComboBox.setSelectedIndex(0);
         GridBagConstraints regionSizeComboBoxConstraints = new GridBagConstraints();
         regionSizeComboBoxConstraints.insets = new Insets(5, 5, 5, 5);
         regionSizeComboBoxConstraints.fill = GridBagConstraints.HORIZONTAL;

@@ -12,6 +12,7 @@ import userinterface.misc.SpriteManager;
  * Graphic object to render a tree.
  */
 public class TreeGraphicObject implements IGraphicObject {
+    private final Sprite treeSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.TREE_SPRITE);
 
     /** The tree. */
     private final Tree tree;
@@ -26,7 +27,6 @@ public class TreeGraphicObject implements IGraphicObject {
 
     @Override
     public void render(final Graphics graphics, final MapArea viewArea) {
-        Sprite treeSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.TREE_SPRITE);
         MapIndex position = tree.getPosition();
         if (viewArea.containesIndex(position)) {
             int x = position.x - viewArea.pos.x;

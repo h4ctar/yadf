@@ -56,11 +56,7 @@ public class StockManager extends AbstractGameObject implements IStockManager {
     @Override
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item: " + item.getType());
-        boolean itemAdded = containerComponent.addItem(item);
-        if (itemAdded) {
-            notifyItemAdded(item);
-        }
-        return itemAdded;
+        return containerComponent.addItem(item);
     }
 
     @Override
@@ -75,9 +71,6 @@ public class StockManager extends AbstractGameObject implements IStockManager {
                     break;
                 }
             }
-        }
-        if (itemRemoved) {
-            notifyItemRemoved(item);
         }
         return itemRemoved;
     }
@@ -105,26 +98,6 @@ public class StockManager extends AbstractGameObject implements IStockManager {
             }
         }
         return null;
-    }
-
-    /**
-     * Notify all the listeners that an item has been added.
-     * @param item the item that was added
-     */
-    private void notifyItemAdded(final Item item) {
-        for (IStockManagerListener managerListener : managerListeners) {
-            managerListener.itemAdded(item);
-        }
-    }
-
-    /**
-     * Notify all the listeners that an item was removed.
-     * @param item the item that was removed
-     */
-    private void notifyItemRemoved(final Item item) {
-        for (IStockManagerListener managerListener : managerListeners) {
-            managerListener.itemRemoved(item);
-        }
     }
 
     /**
@@ -180,11 +153,11 @@ public class StockManager extends AbstractGameObject implements IStockManager {
     }
 
     @Override
-    public Item getUnusedItem(final String itemTypeName) {
-        Item unusedItem = containerComponent.getUnusedItem(itemTypeName);
+    public Item getItem(final String itemTypeName, final boolean used, final boolean placed) {
+        Item unusedItem = containerComponent.getItem(itemTypeName, used, placed);
         if (unusedItem == null) {
             for (Stockpile stockpile : stockpiles) {
-                unusedItem = stockpile.getUnusedItem(itemTypeName);
+                unusedItem = stockpile.getItem(itemTypeName, used, placed);
                 if (unusedItem != null) {
                     break;
                 }
@@ -194,11 +167,11 @@ public class StockManager extends AbstractGameObject implements IStockManager {
     }
 
     @Override
-    public Item getUnusedItemFromCategory(final String category) {
-        Item unusedItem = containerComponent.getUnusedItemFromCategory(category);
+    public Item getItemFromCategory(final String category, final boolean used, final boolean placed) {
+        Item unusedItem = containerComponent.getItemFromCategory(category, used, placed);
         if (unusedItem == null) {
             for (Stockpile stockpile : stockpiles) {
-                unusedItem = stockpile.getUnusedItemFromCategory(category);
+                unusedItem = stockpile.getItemFromCategory(category, used, placed);
                 if (unusedItem != null) {
                     break;
                 }
@@ -270,16 +243,16 @@ public class StockManager extends AbstractGameObject implements IStockManager {
         return count;
     }
 
-    // TODO: move this into container component...?
-    // is a stockpile an item?
     @Override
     public void addListener(final IStockManagerListener listener) {
         managerListeners.add(listener);
+        containerComponent.addListener(listener);
     }
 
     @Override
     public void removeListener(final IStockManagerListener listener) {
         managerListeners.remove(listener);
+        containerComponent.removeListener(listener);
     }
 
     @Override
