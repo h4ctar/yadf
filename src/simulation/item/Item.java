@@ -38,7 +38,6 @@ import org.w3c.dom.Element;
 
 import simulation.AbstractEntity;
 import simulation.IPlayer;
-import simulation.Player;
 import simulation.map.MapIndex;
 
 /**
@@ -77,12 +76,12 @@ public class Item extends AbstractEntity {
      * The constructor for the item.
      * @param position The initial position of the item
      * @param itemTypeTmp the item type name
-     * @param player2 the player that this item belongs to
+     * @param playerTmp the player that this item belongs to
      */
-    public Item(final MapIndex position, final ItemType itemTypeTmp, final IPlayer player2) {
+    public Item(final MapIndex position, final ItemType itemTypeTmp, final IPlayer playerTmp) {
         super(position);
         itemType = itemTypeTmp;
-        player = player2;
+        player = playerTmp;
     }
 
     /**
@@ -90,7 +89,7 @@ public class Item extends AbstractEntity {
      * @param item the item to clone
      * @param playerTmp if null, will use original items player otherwise it will use the passed player
      */
-    public Item(final Item item, final Player playerTmp) {
+    public Item(final Item item, final IPlayer playerTmp) {
         super(item.position);
         itemType = item.getType();
         if (playerTmp == null) {

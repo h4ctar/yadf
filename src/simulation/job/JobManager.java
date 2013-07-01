@@ -39,7 +39,7 @@ import java.util.Map;
 
 import logger.Logger;
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.job.designation.AbstractDesignation;
 import simulation.job.designation.ChannelDesignation;
 import simulation.job.designation.ChopTreeDesignation;
@@ -112,7 +112,12 @@ public class JobManager implements IJobManager, IJobListener {
         return jobs;
     }
 
-    public void addDesignations(final Region region, final IPlayer player) {
+    /**
+     * Add all the designations.
+     * @param region the region
+     * @param player the player
+     */
+    public void addDesignations(final IRegion region, final IPlayer player) {
         designations.put(DesignationType.MINE, new MineDesignation(region, player));
         designations.put(DesignationType.CHANNEL, new ChannelDesignation(null, region, player));
         designations.put(DesignationType.CHOP_TREE, new ChopTreeDesignation(region, player));

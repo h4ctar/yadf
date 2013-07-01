@@ -45,16 +45,14 @@ import simulation.item.Stockpile;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
+import simulation.tree.ITreeManager;
 import simulation.tree.TreeManager;
 import simulation.workshop.Workshop;
 
 /**
  * Region Contains all the data for a region, including the map, players and trees.
  */
-public class Region {
-
-    /** The number of starting animals. */
-    private static final int NUMBER_OF_ANIMALS = 10;
+public class Region implements IRegion {
 
     /** How many hours in one day. */
     private static final int HOURS_IN_A_DAY = 24;
@@ -207,28 +205,6 @@ public class Region {
     }
 
     /**
-     * Gets the game character.
-     * @param position the position
-     * @return the game character
-     */
-    public IGameCharacter getGameCharacter(final MapIndex position) {
-        for (Player player : players) {
-            Set<IGameCharacter> dwarfs = player.getDwarfManager().getDwarfs();
-            for (IGameCharacter dwarf : dwarfs) {
-                if (dwarf.getPosition().equals(position)) {
-                    return dwarf;
-                }
-            }
-        }
-        for (IGameCharacter goblin : goblins) {
-            if (goblin.getPosition().equals(position)) {
-                return goblin;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Gets the goblins.
      * @return the goblins
      */
@@ -236,18 +212,12 @@ public class Region {
         return goblins;
     }
 
-    /**
-     * Get the tree manager.
-     * @return the tree manager
-     */
-    public TreeManager getTreeManager() {
+    @Override
+    public ITreeManager getTreeManager() {
         return treeManager;
     }
 
-    /**
-     * Gets the map.
-     * @return the map
-     */
+    @Override
     public RegionMap getMap() {
         return map;
     }

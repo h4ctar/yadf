@@ -64,25 +64,25 @@ public class Player extends AbstractGameObject implements IPlayer {
     private String name = null;
 
     /** The job manager. */
-    private final IJobManager jobManager = new JobManager();
+    private final JobManager jobManager = new JobManager();
 
     /** The stock manager. */
-    private final IStockManager stockManager = new StockManager();
+    private final StockManager stockManager = new StockManager();
 
     /** The dwarf manager. */
-    private final IDwarfManager dwarfManager = new DwarfManager(this);
+    private final DwarfManager dwarfManager = new DwarfManager(this);
 
     /** The farm manager. */
-    private final IFarmManager farmManager = new FarmManager();
+    private final FarmManager farmManager = new FarmManager();
 
     /** The room manager. */
-    private final IRoomManager roomManager = new RoomManager();
+    private final RoomManager roomManager = new RoomManager();
 
     /** The workshop manager. */
-    private final IWorkshopManager workshopManager = new WorkshopManager();
+    private final WorkshopManager workshopManager = new WorkshopManager();
 
     /** The region that this player is in. */
-    private Region region;
+    private IRegion region;
 
     /**
      * Setup.
@@ -91,7 +91,7 @@ public class Player extends AbstractGameObject implements IPlayer {
      * @param embarkPosition the embark position
      * @param numberOfStartingDwarfs the number of starting dwarfs
      */
-    public void setup(final String playerName, final Region regionTmp, final MapIndex embarkPosition,
+    public void setup(final String playerName, final IRegion regionTmp, final MapIndex embarkPosition,
             final int numberOfStartingDwarfs) {
         Logger.getInstance().log(this, "Setting up");
         name = playerName;

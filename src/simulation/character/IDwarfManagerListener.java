@@ -9,11 +9,11 @@ public interface IDwarfManagerListener {
      * A new dwarf has been added to the dwarf manager.
      * @param newDwarf the new dwarf
      */
-    void dwarfAdded(Dwarf newDwarf);
+    void dwarfAdded(IGameCharacter newDwarf);
 
     /**
      * A dwarf has been removed from the dwarf manager.
      * @param removedDwarf the removed dwarf
      */
-    void dwarfRemoved(Dwarf removedDwarf);
+    void dwarfRemoved(IGameCharacter removedDwarf);
 }

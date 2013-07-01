@@ -37,7 +37,6 @@ import simulation.Player;
 import simulation.character.Dwarf;
 import simulation.character.IDwarfManagerListener;
 import simulation.character.IGameCharacter;
-import simulation.character.component.ICharacterComponent;
 import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.ISkillComponent;
 import simulation.labor.LaborType;
@@ -74,7 +73,7 @@ class LaborTableModel extends AbstractTableModel implements IDwarfManagerListene
     }
 
     @Override
-    public void componentChanged(final ICharacterComponent component) {
+    public void componentChanged(final Object component) {
         assert component instanceof ISkillComponent;
         fireTableRowsUpdated(0, getRowCount() - 1);
     }
@@ -150,13 +149,13 @@ class LaborTableModel extends AbstractTableModel implements IDwarfManagerListene
     }
 
     @Override
-    public void dwarfAdded(final Dwarf dwarf) {
+    public void dwarfAdded(final IGameCharacter dwarf) {
         dwarf.getComponent(ISkillComponent.class).addListener(this);
         fireTableDataChanged();
     }
 
     @Override
-    public void dwarfRemoved(final Dwarf dwarf) {
+    public void dwarfRemoved(final IGameCharacter dwarf) {
         dwarf.getComponent(ISkillComponent.class).removeListener(this);
     }
 }

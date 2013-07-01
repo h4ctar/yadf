@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import simulation.AbstractGameObject;
-import simulation.IGameObject;
 import simulation.IGameObjectListener;
 
 /**
@@ -65,8 +64,8 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
         }
         if (!itemRemoved) {
             for (Item containerTmp : getItems()) {
-                if (containerTmp instanceof ContainerItem) {
-                    if (((ContainerItem) containerTmp).removeItem(item)) {
+                if (containerTmp instanceof IContainer) {
+                    if (((IContainer) containerTmp).removeItem(item)) {
                         itemRemoved = true;
                         break;
                     }
@@ -237,7 +236,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     }
 
     @Override
-    public void gameObjectDeleted(final IGameObject gameObject) {
+    public void gameObjectDeleted(final Object gameObject) {
         assert items.contains(gameObject);
         removeItem((Item) gameObject);
     }

@@ -7,9 +7,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import misc.MyRandom;
-import simulation.IGameObject;
 import simulation.IGameObjectListener;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.Tree;
 import simulation.map.BlockType;
 import simulation.map.MapArea;
@@ -18,8 +17,7 @@ import simulation.map.MapIndex;
 /**
  * The tree manager.
  */
-// TODO: add tree manager interface
-public class TreeManager implements IGameObjectListener {
+public class TreeManager implements ITreeManager, IGameObjectListener {
 
     /** The probability that a tile will have a tree. */
     private static final double TREE_PROBABILITY = 0.1;
@@ -28,7 +26,7 @@ public class TreeManager implements IGameObjectListener {
     private final Set<Tree> trees = new CopyOnWriteArraySet<>();
 
     /** The region that this tree manager is managing trees for. */
-    private final Region region;
+    private final IRegion region;
 
     /** The tree manager listeners, will be notified when a tree is added or removed. */
     private final Set<ITreeManagerListener> listeners = new HashSet<>();
@@ -37,7 +35,7 @@ public class TreeManager implements IGameObjectListener {
      * Constructor.
      * @param regionTmp the region that this tree manager is managing trees for
      */
-    public TreeManager(final Region regionTmp) {
+    public TreeManager(final IRegion regionTmp) {
         region = regionTmp;
     }
 
@@ -55,7 +53,7 @@ public class TreeManager implements IGameObjectListener {
                 }
 
                 if (random.nextDouble() < TREE_PROBABILITY) {
-                    Tree tree = new Tree(new MapIndex(x, y, z), this);
+                    Tree tree = new Tree(new MapIndex(x, y, z));
                     trees.add(tree);
                     for (ITreeManagerListener listener : listeners) {
                         listener.treeAdded(tree);
@@ -78,11 +76,7 @@ public class TreeManager implements IGameObjectListener {
         tree.removeGameObjectListener(this);
     }
 
-    /**
-     * Returns a tree at a specific location if it exists.
-     * @param mapIndex The location you want to get a tree from
-     * @return A reference to the tree at the location
-     */
+    @Override
     public Tree getTree(final MapIndex mapIndex) {
         for (Tree tree : trees) {
             if (tree.getPosition().equals(mapIndex)) {
@@ -107,16 +101,14 @@ public class TreeManager implements IGameObjectListener {
         return treesTmp;
     }
 
-    /**
-     * Add a new tree manager listener that will be notified when a tree is added or removed.
-     * @param listener the tree manager listener
-     */
+    @Override
     public void addListener(final ITreeManagerListener listener) {
+        assert !listeners.contains(listener);
         listeners.add(listener);
     }
 
     @Override
-    public void gameObjectDeleted(final IGameObject gameObject) {
+    public void gameObjectDeleted(final Object gameObject) {
         assert trees.contains(gameObject);
         removeTree((Tree) gameObject);
     }

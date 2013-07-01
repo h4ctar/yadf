@@ -31,7 +31,7 @@
  */
 package simulation.character.component;
 
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 
 /**
@@ -59,7 +59,7 @@ public class KillEveryoneComponent extends AbstractCharacterComponent implements
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         // if (dwarf != null) {
         // if (dwarf.isDead()) {
         // dwarf = null;

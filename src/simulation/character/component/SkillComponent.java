@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.item.Item;
 import simulation.job.PickupToolJob;
@@ -182,7 +182,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         IPlayer player = getCharacter().getPlayer();
 
         // If dwarf is holding a tool that he no longer needs, drop it

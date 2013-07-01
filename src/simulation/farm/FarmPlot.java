@@ -43,7 +43,7 @@ import simulation.map.MapIndex;
 /**
  * The Class FarmPlot.
  */
-public class FarmPlot {
+public class FarmPlot implements IFarmPlot {
 
     /**
      * The State of the farm plot.

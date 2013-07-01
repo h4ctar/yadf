@@ -33,7 +33,7 @@ package simulation.character.component;
 
 import java.util.List;
 
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.map.RegionMap;
 import simulation.map.WalkableNode;
@@ -68,7 +68,7 @@ public class ChaseMovementComponent extends AbstractMoveComponent implements IMo
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         RegionMap map = region.getMap();
 
         fallDown(map);
@@ -84,10 +84,6 @@ public class ChaseMovementComponent extends AbstractMoveComponent implements IMo
             int bestDistance = Integer.MAX_VALUE;
 
             for (WalkableNode node : adjacencies) {
-                if (region.getGameCharacter(node) != null) {
-                    continue;
-                }
-
                 int distance = node.distance(pursuee.getPosition());
 
                 if (bestNode == null) {

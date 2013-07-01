@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import simulation.IGameObject;
 import simulation.IGameObjectListener;
 import simulation.map.MapIndex;
 
@@ -72,11 +71,6 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     }
 
     @Override
-    public void gameObjectDeleted(final IGameObject gameObject) {
-        removeWorkshop((Workshop) gameObject);
-    }
-
-    @Override
     public void addListener(final IWorkshopManagerListener listener) {
         assert !listeners.contains(listener);
         listeners.add(listener);
@@ -86,5 +80,11 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     public void removeListener(final IWorkshopManagerListener listener) {
         assert listeners.contains(listener);
         listeners.remove(listener);
+    }
+
+    @Override
+    public void gameObjectDeleted(final Object gameObject) {
+        assert workshops.contains(gameObject);
+        removeWorkshop((Workshop) gameObject);
     }
 }

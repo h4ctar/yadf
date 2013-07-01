@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.job.IJob;
 import simulation.job.IJobListener;
 import simulation.map.MapArea;
@@ -62,14 +62,14 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
     private final List<IJobListener> listeners = new CopyOnWriteArrayList<>();
 
     /** The region that the designation is in. */
-    private final Region region;
+    private final IRegion region;
 
     /**
      * Constructor.
      * @param regionTmp the region that the designation is in
      * @param playerTmp the player that this designation belongs to
      */
-    AbstractDesignation(final Region regionTmp, final IPlayer playerTmp) {
+    AbstractDesignation(final IRegion regionTmp, final IPlayer playerTmp) {
         region = regionTmp;
         player = playerTmp;
     }
@@ -213,7 +213,7 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
      * Get the region that the designation is within.
      * @return the region
      */
-    protected Region getRegion() {
+    protected IRegion getRegion() {
         return region;
     }
 

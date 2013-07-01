@@ -8,7 +8,6 @@ import logger.Logger;
 import org.w3c.dom.Element;
 
 import simulation.IPlayer;
-import simulation.Player;
 import simulation.job.HaulJob;
 import simulation.job.IJob;
 import simulation.job.IJobListener;
@@ -65,7 +64,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
      * @param item the item to clone
      * @param playerTmp the player that the new item will belong to
      */
-    ContainerItem(final ContainerItem item, final Player playerTmp) {
+    ContainerItem(final ContainerItem item, final IPlayer playerTmp) {
         super(item, playerTmp);
         for (Item contentItem : item.getItems()) {
             Item newContentItem = new Item(contentItem, playerTmp);

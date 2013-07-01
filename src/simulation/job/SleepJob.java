@@ -3,7 +3,7 @@ package simulation.job;
 import java.util.Set;
 
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.ISleepComponent;
 import simulation.item.Item;
 import simulation.job.jobstate.IJobState;
@@ -21,7 +21,7 @@ public class SleepJob extends AbstractJob {
     private static final long SLEEP_DURATION = Region.SIMULATION_STEPS_PER_HOUR;
 
     /** The dwarf that wants to sleep. */
-    private final Dwarf dwarf;
+    private final IGameCharacter dwarf;
 
     /** The bed that the dwarf sleeps in, null if he can't find one. */
     private Item bed;
@@ -30,7 +30,7 @@ public class SleepJob extends AbstractJob {
      * Constructor.
      * @param dwarfTmp the dwarf that want's to sleep
      */
-    public SleepJob(final Dwarf dwarfTmp) {
+    public SleepJob(final IGameCharacter dwarfTmp) {
         super(dwarfTmp.getPlayer());
         dwarf = dwarfTmp;
         setJobState(new WaitingForDwarfState());

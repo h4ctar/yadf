@@ -2,7 +2,7 @@ package simulation.character;
 
 import java.util.Set;
 
-import simulation.Region;
+import simulation.IRegion;
 import simulation.labor.LaborType;
 import simulation.map.MapIndex;
 
@@ -16,7 +16,7 @@ public interface IDwarfManager {
      * @param position the position of the new dwarf
      * @param region the region the dwarf is in
      */
-    void addNewDwarf(MapIndex position, Region region);
+    void addNewDwarf(MapIndex position, IRegion region);
 
     /**
      * Get a dwarf with a specific ID.

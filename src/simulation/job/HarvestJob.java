@@ -35,7 +35,7 @@ import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
-import simulation.farm.FarmPlot;
+import simulation.farm.IFarmPlot;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
@@ -59,7 +59,7 @@ public class HarvestJob extends AbstractJob {
     private static final long HARVEST_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
 
     /** The farm plot. */
-    private final FarmPlot farmPlot;
+    private final IFarmPlot farmPlot;
 
     /** The farmer dwarf. */
     private IGameCharacter farmer;
@@ -69,7 +69,7 @@ public class HarvestJob extends AbstractJob {
      * @param farmPlotTmp the farm plot
      * @param player the player that this job belongs to
      */
-    public HarvestJob(final FarmPlot farmPlotTmp, final IPlayer player) {
+    public HarvestJob(final IFarmPlot farmPlotTmp, final IPlayer player) {
         super(player);
         farmPlot = farmPlotTmp;
         setJobState(new LookingForFarmerState());

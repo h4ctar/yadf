@@ -36,7 +36,6 @@ import java.util.Set;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
-import simulation.IGameObject;
 import simulation.IGameObjectListener;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -290,7 +289,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     }
 
     @Override
-    public void gameObjectDeleted(final IGameObject gameObject) {
+    public void gameObjectDeleted(final Object gameObject) {
         assert stockpiles.contains(gameObject);
         removeStockpile((Stockpile) gameObject);
     }

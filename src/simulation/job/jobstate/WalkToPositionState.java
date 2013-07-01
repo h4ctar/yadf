@@ -1,7 +1,6 @@
 package simulation.job.jobstate;
 
 import simulation.character.IGameCharacter;
-import simulation.character.component.ICharacterComponent;
 import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.IMovementComponent;
 import simulation.character.component.WalkMovementComponent;
@@ -53,7 +52,7 @@ public abstract class WalkToPositionState extends AbstractJobState implements IC
     }
 
     @Override
-    public void componentChanged(final ICharacterComponent component) {
+    public void componentChanged(final Object component) {
         assert component == walkComponent;
         if (walkComponent.isArrived()) {
             walkComponent.removeListener(this);

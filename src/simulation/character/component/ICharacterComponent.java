@@ -1,6 +1,6 @@
 package simulation.character.component;
 
-import simulation.Region;
+import simulation.IRegion;
 
 /**
  * Interface that all character components must implement.
@@ -11,7 +11,7 @@ public interface ICharacterComponent {
      * Update the component.
      * @param region the region
      */
-    void update(Region region);
+    void update(IRegion region);
 
     /**
      * Add a listener to the component that will be notified whenever it changes.

@@ -2,7 +2,7 @@ package simulation.character;
 
 import simulation.IEntity;
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.component.ICharacterComponent;
 
 /**
@@ -99,5 +99,5 @@ public interface IGameCharacter extends IEntity {
      * Get the region that this game character is currently in.
      * @return the region
      */
-    Region getRegion();
+    IRegion getRegion();
 }

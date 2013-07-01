@@ -5,7 +5,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import misc.NameGenerator;
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.component.ISkillComponent;
 import simulation.labor.LaborType;
 import simulation.map.MapIndex;
@@ -45,7 +45,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
     }
 
     @Override
-    public void addNewDwarf(final MapIndex position, final Region region) {
+    public void addNewDwarf(final MapIndex position, final IRegion region) {
         Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position, region, player);
         dwarf.addListener(this);
         dwarfs.add(dwarf);

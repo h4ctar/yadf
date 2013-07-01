@@ -31,7 +31,7 @@
  */
 package simulation.character.component;
 
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 
 /**
@@ -66,7 +66,7 @@ public class AttackComponent extends AbstractCharacterComponent implements IAtta
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         int distance = getCharacter().getPosition().distance(enemy.getPosition());
         if (distance <= 1) {
             enemy.getComponent(IHealthComponent.class).decrementHealth();

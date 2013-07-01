@@ -35,7 +35,7 @@ import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
-import simulation.farm.FarmPlot;
+import simulation.farm.IFarmPlot;
 import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.LookingForDwarfState;
 import simulation.job.jobstate.WalkToPositionState;
@@ -56,7 +56,7 @@ public class TillJob extends AbstractJob {
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
 
     /** The farm plot. */
-    private final FarmPlot farmPlot;
+    private final IFarmPlot farmPlot;
 
     /** The farmer dwarf. */
     private IGameCharacter farmer;
@@ -66,7 +66,7 @@ public class TillJob extends AbstractJob {
      * @param farmPlotTmp the farm plot
      * @param player the player that this job belongs to
      */
-    public TillJob(final FarmPlot farmPlotTmp, final IPlayer player) {
+    public TillJob(final IFarmPlot farmPlotTmp, final IPlayer player) {
         super(player);
         farmPlot = farmPlotTmp;
         setJobState(new LookingForFarmerState());

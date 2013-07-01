@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Random;
 
 import misc.MyRandom;
+import simulation.IRegion;
 import simulation.Region;
 import simulation.character.IGameCharacter;
 import simulation.map.RegionMap;
@@ -68,7 +69,7 @@ public class IdleMovementComponent extends AbstractMoveComponent implements IMov
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         RegionMap map = region.getMap();
         Random random = MyRandom.getInstance();
 
@@ -80,10 +81,8 @@ public class IdleMovementComponent extends AbstractMoveComponent implements IMov
             List<WalkableNode> adjacencies = map.getAdjacencies(getCharacter().getPosition());
             if (!adjacencies.isEmpty()) {
                 WalkableNode node = adjacencies.get(random.nextInt(adjacencies.size()));
-                if (region.getGameCharacter(node) == null) {
-                    getCharacter().setPosition(node);
-                    simulationSteps = 0;
-                }
+                getCharacter().setPosition(node);
+                simulationSteps = 0;
             }
         }
     }

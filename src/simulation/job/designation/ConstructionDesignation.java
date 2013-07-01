@@ -32,7 +32,7 @@
 package simulation.job.designation;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.job.AbstractJob;
 import simulation.job.BuildConstructionJob;
 import simulation.map.BlockType;
@@ -52,7 +52,7 @@ public class ConstructionDesignation extends AbstractDesignation {
      * @param region the region that the designation is in
      * @param player the player that this designation belongs to
      */
-    public ConstructionDesignation(final BlockType blockTypeTmp, final Region region, final IPlayer player) {
+    public ConstructionDesignation(final BlockType blockTypeTmp, final IRegion region, final IPlayer player) {
         super(region, player);
         blockType = blockTypeTmp;
     }

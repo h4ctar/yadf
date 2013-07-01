@@ -39,7 +39,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import logger.Logger;
 import simulation.AbstractEntity;
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.component.HealthComponent;
 import simulation.character.component.ICharacterComponent;
 import simulation.character.component.IHealthComponent;
@@ -75,7 +75,7 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
     private final IPlayer player;
 
     /** The region that the character is currently in. */
-    private final Region region;
+    private final IRegion region;
 
     /**
      * Instantiates a new game character.
@@ -84,7 +84,7 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
      * @param regionTmp the region that the character is currently in
      * @param playerTmp the player that this dwarf belongs to
      */
-    public GameCharacter(final String nameTmp, final MapIndex position, final Region regionTmp,
+    public GameCharacter(final String nameTmp, final MapIndex position, final IRegion regionTmp,
             final IPlayer playerTmp) {
         super(position);
         Logger.getInstance().log(this, "Character created");
@@ -192,7 +192,7 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
     }
 
     @Override
-    public Region getRegion() {
+    public IRegion getRegion() {
         return region;
     }
 }

@@ -2,8 +2,6 @@ package simulation.farm;
 
 import java.util.Set;
 
-import simulation.IPlayer;
-
 /**
  * The farm manager.
  */
@@ -14,12 +12,6 @@ public interface IFarmManager {
      * @param farm the farm
      */
     void addFarm(final Farm farm);
-
-    /**
-     * Update all the farms.
-     * @param player the player
-     */
-    void update(IPlayer player);
 
     /**
      * Gets all the farms.

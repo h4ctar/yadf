@@ -32,23 +32,17 @@
 package simulation;
 
 import simulation.map.MapIndex;
-import simulation.tree.TreeManager;
 
 /**
  * The Class Tree.
  */
 public class Tree extends AbstractEntity {
 
-    /** The tree manager that this tree belongs to. */
-    private final TreeManager treeManager;
-
     /**
      * Instantiates a new tree.
      * @param position the position
-     * @param treeManagerTmp the tree manager that this tree belongs to
      */
-    public Tree(final MapIndex position, final TreeManager treeManagerTmp) {
+    public Tree(final MapIndex position) {
         super(position);
-        treeManager = treeManagerTmp;
     }
 }

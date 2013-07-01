@@ -32,7 +32,7 @@
 package simulation.job.designation;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.Tree;
 import simulation.job.AbstractJob;
 import simulation.job.ChopTreeJob;
@@ -48,7 +48,7 @@ public class ChopTreeDesignation extends AbstractDesignation {
      * @param region the region that the designation is in
      * @param player the player that this designation belongs to
      */
-    public ChopTreeDesignation(final Region region, final IPlayer player) {
+    public ChopTreeDesignation(final IRegion region, final IPlayer player) {
         super(region, player);
     }
 

@@ -31,7 +31,7 @@
  */
 package simulation.character.component;
 
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.map.RegionMap;
 
@@ -54,7 +54,7 @@ public class StillMovementComponent extends AbstractMoveComponent implements IMo
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         RegionMap map = region.getMap();
         fallDown(map);
         checkBlocked(map);

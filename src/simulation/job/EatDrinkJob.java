@@ -34,7 +34,7 @@ package simulation.job;
 import java.util.Set;
 
 import simulation.Region;
-import simulation.character.Dwarf;
+import simulation.character.IGameCharacter;
 import simulation.character.component.IEatDrinkComponent;
 import simulation.item.Item;
 import simulation.job.jobstate.HaulItemState;
@@ -57,7 +57,7 @@ public class EatDrinkJob extends AbstractJob {
     private final boolean eat;
 
     /** The dwarf doing this job. */
-    private final Dwarf dwarf;
+    private final IGameCharacter dwarf;
 
     /** Food or drink item. */
     private Item foodDrinkItem;
@@ -73,7 +73,7 @@ public class EatDrinkJob extends AbstractJob {
      * @param dwarfTmp the dwarf
      * @param eatTmp the eat
      */
-    public EatDrinkJob(final Dwarf dwarfTmp, final boolean eatTmp) {
+    public EatDrinkJob(final IGameCharacter dwarfTmp, final boolean eatTmp) {
         super(dwarfTmp.getPlayer());
         eat = eatTmp;
         dwarf = dwarfTmp;

@@ -35,7 +35,7 @@ import simulation.IPlayer;
 import simulation.Region;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
-import simulation.farm.FarmPlot;
+import simulation.farm.IFarmPlot;
 import simulation.item.Item;
 import simulation.job.jobstate.HaulItemState;
 import simulation.job.jobstate.IJobState;
@@ -63,7 +63,7 @@ public class PlantJob extends AbstractJob {
     private final Item seed;
 
     /** The farm plot. */
-    private final FarmPlot farmPlot;
+    private final IFarmPlot farmPlot;
 
     /**
      * Instantiates a new plant job.
@@ -71,7 +71,7 @@ public class PlantJob extends AbstractJob {
      * @param farmPlotTmp the farm plot
      * @param player the player that this job belongs to
      */
-    public PlantJob(final Item seedTmp, final FarmPlot farmPlotTmp, final IPlayer player) {
+    public PlantJob(final Item seedTmp, final IFarmPlot farmPlotTmp, final IPlayer player) {
         super(player);
         seed = seedTmp;
         farmPlot = farmPlotTmp;

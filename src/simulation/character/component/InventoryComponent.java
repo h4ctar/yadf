@@ -31,7 +31,7 @@
  */
 package simulation.character.component;
 
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.item.Item;
 
@@ -111,7 +111,7 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         if (itemHauling != null) {
             itemHauling.setPosition(getCharacter().getPosition());
         }

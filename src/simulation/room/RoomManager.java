@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import simulation.IGameObject;
 import simulation.IGameObjectListener;
 import simulation.map.MapIndex;
 
@@ -79,7 +78,7 @@ public class RoomManager implements IRoomManager, IGameObjectListener {
     }
 
     @Override
-    public void gameObjectDeleted(IGameObject gameObject) {
+    public void gameObjectDeleted(final Object gameObject) {
         assert rooms.contains(gameObject);
         removeRoom((Room) gameObject);
     }

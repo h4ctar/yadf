@@ -1,7 +1,7 @@
 package simulation.character.component;
 
+import simulation.IRegion;
 import simulation.Region;
-import simulation.character.Dwarf;
 import simulation.character.IGameCharacter;
 import simulation.job.IJobManager;
 import simulation.job.SleepJob;
@@ -29,12 +29,12 @@ public class SleepComponent extends AbstractCharacterComponent implements ISleep
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         IJobManager jobManager = getCharacter().getPlayer().getJobManager();
 
         sleepiness++;
         if (sleepiness > SLEEP_THRESHOLD && sleepJob == null) {
-            sleepJob = new SleepJob((Dwarf) getCharacter());
+            sleepJob = new SleepJob(getCharacter());
             jobManager.addJob(sleepJob);
         }
 

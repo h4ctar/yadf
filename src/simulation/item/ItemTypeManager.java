@@ -48,7 +48,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import simulation.IPlayer;
-import simulation.Player;
 import simulation.map.MapIndex;
 
 /**
@@ -101,7 +100,7 @@ public final class ItemTypeManager {
      * @param player the player that the items need to belong to
      * @return the embark items
      */
-    public List<Item> getEmbarkItems(final Player player) {
+    public List<Item> getEmbarkItems(final IPlayer player) {
         List<Item> copyOfEmbarkItems = new ArrayList<>();
         for (Item item : embarkItems) {
             Item copyItem = createItem(item, player);
@@ -279,7 +278,7 @@ public final class ItemTypeManager {
      * @param player the player that the new item will belong to
      * @return the new item
      */
-    public Item createItem(final Item item, final Player player) {
+    public Item createItem(final Item item, final IPlayer player) {
         Item newItem;
         if (item.itemType.capacity > 0) {
             newItem = new ContainerItem((ContainerItem) item, player);

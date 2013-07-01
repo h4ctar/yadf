@@ -32,8 +32,8 @@
 package simulation.character.component;
 
 import simulation.IPlayer;
+import simulation.IRegion;
 import simulation.Region;
-import simulation.character.Dwarf;
 import simulation.character.IGameCharacter;
 import simulation.job.EatDrinkJob;
 
@@ -110,19 +110,19 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         IPlayer player = getCharacter().getPlayer();
 
         hunger++;
         thirst++;
 
         if (hunger > HUNGER_EAT_THRESHOLD && eatJob == null) {
-            eatJob = new EatDrinkJob((Dwarf) getCharacter(), true);
+            eatJob = new EatDrinkJob(getCharacter(), true);
             player.getJobManager().addJob(eatJob);
         }
 
         if (thirst > THIRST_DRINK_THRESHOLD && drinkJob == null) {
-            drinkJob = new EatDrinkJob((Dwarf) getCharacter(), false);
+            drinkJob = new EatDrinkJob(getCharacter(), false);
             player.getJobManager().addJob(drinkJob);
         }
 

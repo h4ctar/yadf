@@ -32,7 +32,7 @@
 package simulation.character;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.component.EatDrinkComponent;
 import simulation.character.component.IEatDrinkComponent;
 import simulation.character.component.IInventoryComponent;
@@ -55,7 +55,7 @@ public class Dwarf extends GameCharacter {
      * @param region the region the dwarf is in
      * @param player the player that the dwarf belongs to
      */
-    Dwarf(final String name, final MapIndex position, final Region region, final IPlayer player) {
+    Dwarf(final String name, final MapIndex position, final IRegion region, final IPlayer player) {
         super(name, position, region, player);
         setComponent(ISkillComponent.class, new SkillComponent(this));
         setComponent(ISleepComponent.class, new SleepComponent(this));

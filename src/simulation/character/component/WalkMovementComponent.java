@@ -33,6 +33,7 @@ package simulation.character.component;
 
 import java.util.List;
 
+import simulation.IRegion;
 import simulation.Region;
 import simulation.character.IGameCharacter;
 import simulation.map.MapIndex;
@@ -110,15 +111,13 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
     }
 
     @Override
-    public void update(final Region region) {
+    public void update(final IRegion region) {
         if (isDone()) {
             return;
         }
 
         RegionMap map = region.getMap();
-
         fallDown(map);
-
         checkBlocked(map);
 
         if (checkArrived()) {
