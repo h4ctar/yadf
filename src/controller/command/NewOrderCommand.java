@@ -62,7 +62,7 @@ public class NewOrderCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        Workshop workshop = player.getWorkshop(workshopId);
+        Workshop workshop = player.getWorkshopManager().getWorkshop(workshopId);
         workshop.newOrder(recipeName);
     }
 

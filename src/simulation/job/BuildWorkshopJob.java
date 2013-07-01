@@ -191,7 +191,7 @@ public class BuildWorkshopJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            getPlayer().addWorkshop(new Workshop(getPlayer(), workshopType, position));
+            getPlayer().getWorkshopManager().addWorkshop(new Workshop(getPlayer(), workshopType, position));
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.releaseLock();
             for (Item resource : resources) {

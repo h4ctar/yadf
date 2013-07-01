@@ -150,7 +150,7 @@ public class RegionMap {
         for (int x = 0; x < mapSize.x; x++) {
             for (int y = 0; y < mapSize.y; y++) {
                 for (int z = 0; z < mapSize.z; z++) {
-                    int height = (int) ((Noise.noise((double) x / 100, (double) y / 100) + 9) / 10 * mapSize.z);
+                    int height = (int) ((Noise.noise((double) x / 100, (double) y / 100) + 8) / 10 * mapSize.z);
                     if (z < height) {
                         blockTypes[x][y][z] = BlockType.values()[random.nextInt(5) + 2];
                     } else if (z == height) {

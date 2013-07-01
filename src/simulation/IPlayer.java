@@ -5,7 +5,7 @@ import simulation.farm.IFarmManager;
 import simulation.item.IStockManager;
 import simulation.job.IJobManager;
 import simulation.room.IRoomManager;
-import simulation.workshop.Workshop;
+import simulation.workshop.IWorkshopManager;
 
 /**
  * Interface of a player.
@@ -42,14 +42,8 @@ public interface IPlayer {
     IRoomManager getRoomManager();
 
     /**
-     * Add a new workshop.
-     * @param workshop the new workshop
+     * Get the workshop manager.
+     * @return the workshop manager
      */
-    void addWorkshop(Workshop workshop);
-
-    /**
-     * Remove a workshop.
-     * @param workshop the workshop to remove
-     */
-    void removeWorkshop(Workshop workshop);
+    IWorkshopManager getWorkshopManager();
 }

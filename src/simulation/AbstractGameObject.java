@@ -85,6 +85,6 @@ public abstract class AbstractGameObject implements IGameObject {
     @Override
     public void removeGameObjectListener(final IGameObjectListener listener) {
         assert listeners.contains(listener);
-        listeners.add(listener);
+        listeners.remove(listener);
     }
 }

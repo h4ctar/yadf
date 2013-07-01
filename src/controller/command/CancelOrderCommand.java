@@ -63,7 +63,7 @@ public class CancelOrderCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        Workshop workshop = player.getWorkshop(workshopId);
+        Workshop workshop = player.getWorkshopManager().getWorkshop(workshopId);
         workshop.cancelOrder(orderIndex);
     }
 }

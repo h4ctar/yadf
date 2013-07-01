@@ -34,13 +34,10 @@ package simulation;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
-import misc.MyRandom;
-import simulation.character.Animal;
 import simulation.character.Goblin;
 import simulation.character.IGameCharacter;
 import simulation.farm.Farm;
@@ -92,10 +89,8 @@ public class Region {
     /** The tree manager for this region. */
     private final TreeManager treeManager = new TreeManager(this);
 
-    /** The animals. */
-    private final Set<Animal> animals = new CopyOnWriteArraySet<>();
-
     /** The goblins. */
+    // TODO: move into a player
     private final Set<Goblin> goblins = new CopyOnWriteArraySet<>();
 
     /** A vector of all the players in this region. */
@@ -115,7 +110,6 @@ public class Region {
         Logger.getInstance().log(this, "Setting up");
         map.generateMap(regionSize);
         treeManager.addTrees();
-        addAnimals();
     }
 
     /**
@@ -142,7 +136,7 @@ public class Region {
                 }
             }
             // Check that the area is free from workshops
-            for (Workshop workshop : player.getWorkshops()) {
+            for (Workshop workshop : player.getWorkshopManager().getWorkshops()) {
                 if (area.operlapsArea(workshop.getArea())) {
                     return false;
                 }
@@ -186,7 +180,7 @@ public class Region {
                 }
             }
             // Check that the area is free from workshops
-            for (Workshop workshop : player.getWorkshops()) {
+            for (Workshop workshop : player.getWorkshopManager().getWorkshops()) {
                 if (workshop.getArea().containesIndex(mapIndex)) {
                     return false;
                 }
@@ -210,14 +204,6 @@ public class Region {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Gets the animals.
-     * @return the animals
-     */
-    public Set<Animal> getAnimals() {
-        return animals;
     }
 
     /**
@@ -312,25 +298,8 @@ public class Region {
         for (Player player : players) {
             player.update();
         }
-        for (IGameCharacter animal : animals) {
-            animal.update();
-        }
         for (IGameCharacter goblin : goblins) {
             goblin.update();
-        }
-    }
-
-    /**
-     * Add animals to the region.
-     */
-    private void addAnimals() {
-        Random random = MyRandom.getInstance();
-        for (int i = 0; i < NUMBER_OF_ANIMALS; i++) {
-            MapIndex position = new MapIndex();
-            position.x = random.nextInt(map.getMapSize().x);
-            position.y = random.nextInt(map.getMapSize().y);
-            position.z = map.getHeight(position.x, position.y);
-            animals.add(new Animal("Animal", position, this));
         }
     }
 

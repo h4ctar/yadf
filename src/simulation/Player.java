@@ -33,8 +33,6 @@ package simulation;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
 import misc.MyRandom;
@@ -51,12 +49,13 @@ import simulation.job.JobManager;
 import simulation.map.MapIndex;
 import simulation.room.IRoomManager;
 import simulation.room.RoomManager;
-import simulation.workshop.Workshop;
+import simulation.workshop.IWorkshopManager;
+import simulation.workshop.WorkshopManager;
 
 /**
  * The player.
  */
-public class Player extends AbstractGameObject implements IPlayer, IGameObjectListener {
+public class Player extends AbstractGameObject implements IPlayer {
 
     /** The size of the embark area. */
     private static final int EMBARK_SIZE = 10;
@@ -79,8 +78,8 @@ public class Player extends AbstractGameObject implements IPlayer, IGameObjectLi
     /** The room manager. */
     private final IRoomManager roomManager = new RoomManager();
 
-    /** The workshops. */
-    private final Set<Workshop> workshops = new CopyOnWriteArraySet<>();
+    /** The workshop manager. */
+    private final IWorkshopManager workshopManager = new WorkshopManager();
 
     /** The region that this player is in. */
     private Region region;
@@ -135,68 +134,18 @@ public class Player extends AbstractGameObject implements IPlayer, IGameObjectLi
         return roomManager;
     }
 
+    @Override
+    public IWorkshopManager getWorkshopManager() {
+        return workshopManager;
+    }
+
     /**
      * Update.
      */
     public void update() {
         dwarfManager.update();
         farmManager.update(this);
-        for (Workshop workshop : workshops) {
-            workshop.update();
-        }
-    }
-
-    /**
-     * Adds a workshop.
-     * @param workshop the workshop
-     */
-    @Override
-    public void addWorkshop(final Workshop workshop) {
-        assert !workshops.contains(workshop);
-        workshops.add(workshop);
-    }
-
-    @Override
-    public void removeWorkshop(final Workshop workshop) {
-        assert workshops.contains(workshop);
-        workshops.remove(workshop);
-    }
-
-    /**
-     * Gets the workshop.
-     * @param workshopId the workshop id
-     * @return the workshop
-     */
-    public Workshop getWorkshop(final int workshopId) {
-        for (Workshop workshop : workshops) {
-            if (workshop.getId() == workshopId) {
-                return workshop;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get a workshop at a specific index.
-     * @param index the index to look for a workshop
-     * @return the workshop
-     */
-    public Workshop getWorkshop(final MapIndex index) {
-        for (Workshop workshop : workshops) {
-            if (workshop.hasIndex(index)) {
-                return workshop;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Gets the workshops.
-     * @return the workshops
-     */
-    public Set<Workshop> getWorkshops() {
-        return workshops;
+        workshopManager.update();
     }
 
     /**
@@ -230,10 +179,5 @@ public class Player extends AbstractGameObject implements IPlayer, IGameObjectLi
             item.setPosition(position);
             stockManager.addItem(item);
         }
-    }
-
-    @Override
-    public void gameObjectDeleted(final IGameObject gameObject) {
-        removeWorkshop((Workshop) gameObject);
     }
 }

@@ -27,7 +27,7 @@ public class DeleteWorkshopCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        Workshop workshop = player.getWorkshop(workshopId);
+        Workshop workshop = player.getWorkshopManager().getWorkshop(workshopId);
         workshop.delete();
     }
 }

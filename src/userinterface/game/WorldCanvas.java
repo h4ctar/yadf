@@ -68,6 +68,7 @@ import simulation.map.RegionMap;
 import simulation.room.IRoomManagerListener;
 import simulation.room.Room;
 import simulation.tree.ITreeManagerListener;
+import simulation.workshop.IWorkshopManagerListener;
 import simulation.workshop.Workshop;
 import userinterface.game.graphicobject.FarmGraphicObject;
 import userinterface.game.graphicobject.IGraphicObject;
@@ -75,6 +76,7 @@ import userinterface.game.graphicobject.ItemGraphicObject;
 import userinterface.game.graphicobject.RoomGraphicObject;
 import userinterface.game.graphicobject.StockpileGraphicObject;
 import userinterface.game.graphicobject.TreeGraphicObject;
+import userinterface.game.graphicobject.WorkshopGraphicObject;
 import userinterface.misc.Sprite;
 import userinterface.misc.SpriteManager;
 
@@ -82,7 +84,7 @@ import userinterface.misc.SpriteManager;
  * The WorldCanvas.
  */
 public class WorldCanvas extends JComponent implements IMapListener, ITreeManagerListener, IStockManagerListener,
-        IFarmManagerListener, IRoomManagerListener {
+        IFarmManagerListener, IRoomManagerListener, IWorkshopManagerListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 1L;
@@ -157,6 +159,7 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
             player2.getStockManager().addListener(this);
             player2.getFarmManager().addListener(this);
             player2.getRoomManager().addListener(this);
+            player2.getWorkshopManager().addListener(this);
         }
     }
 
@@ -278,8 +281,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         }
 
         drawDesignations(graphics);
-        drawWorkshops(graphics);
-        drawAnimals(graphics);
         drawDwarfs(graphics);
         drawGoblins(graphics);
 
@@ -331,24 +332,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
      */
     private Sprite blockSprite(final BlockType block) {
         return SpriteManager.getInstance().getBlockSprite(block.sprite);
-    }
-
-    /**
-     * Draw animals.
-     * @param g the graphics to draw on
-     */
-    private void drawAnimals(final Graphics g) {
-        Sprite animalSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.ANIMAL_SPRITE);
-        for (IGameCharacter animal : region.getAnimals()) {
-            MapIndex position = animal.getPosition();
-            if (position.z == viewArea.pos.z) {
-                int x = (position.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
-                int y = (position.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
-                if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
-                    animalSprite.draw(g, x, y);
-                }
-            }
-        }
     }
 
     /**
@@ -447,27 +430,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         }
     }
 
-    /**
-     * Draw workshops.
-     * @param g the graphics to draw on
-     */
-    private void drawWorkshops(final Graphics g) {
-        Set<Player> players = region.getPlayers();
-        for (Player thisPlayer : players) {
-            Set<Workshop> workshops = thisPlayer.getWorkshops();
-            for (Workshop workshop : workshops) {
-                MapArea area = new MapArea(workshop.getPosition(), Workshop.WORKSHOP_SIZE, Workshop.WORKSHOP_SIZE);
-                if (viewArea.pos.z != area.pos.z) {
-                    continue;
-                }
-                int x = (area.pos.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
-                int y = (area.pos.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
-                Sprite workshopSprite = SpriteManager.getInstance().getWorkshopSprite(workshop.getType().sprite);
-                workshopSprite.draw(g, x, y);
-            }
-        }
-    }
-
     @Override
     public void treeAdded(final Tree tree) {
         assert !graphicObjects.containsKey(tree);
@@ -526,5 +488,17 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     public void roomRemoved(final Room room) {
         assert graphicObjects.containsKey(room);
         graphicObjects.remove(room);
+    }
+
+    @Override
+    public void workshopAdded(final Workshop workshop) {
+        assert !graphicObjects.containsKey(workshop);
+        graphicObjects.put(workshop, new WorkshopGraphicObject(workshop));
+    }
+
+    @Override
+    public void workshopRemoved(final Workshop workshop) {
+        assert graphicObjects.containsKey(workshop);
+        graphicObjects.remove(workshop);
     }
 }

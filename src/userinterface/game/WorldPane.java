@@ -344,7 +344,7 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
                 }
 
                 // If left click on a workshop, show the room interface
-                Workshop workshop = player.getWorkshop(mouseIndex);
+                Workshop workshop = player.getWorkshopManager().getWorkshop(mouseIndex);
                 if (workshop != null) {
                     workshopInterface.setWorkshop(workshop);
                     workshopInterface.setVisible(true);

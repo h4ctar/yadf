@@ -60,7 +60,7 @@ public class HaulJob extends AbstractJob {
     private IGameCharacter hauler;
 
     /** The item to be hauled. */
-    private Item item;
+    private Item item = null;
 
     /** If not null, the item should be stored here. */
     private final IContainer container;
