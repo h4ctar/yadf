@@ -7,6 +7,9 @@ import simulation.map.MapIndex;
  */
 public interface IFarmPlot {
 
+    /**
+     * Get the position of the farm plot.
+     * @return the position
+     */
     MapIndex getPosition();
-
 }

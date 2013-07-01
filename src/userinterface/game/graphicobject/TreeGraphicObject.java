@@ -12,7 +12,9 @@ import userinterface.misc.SpriteManager;
  * Graphic object to render a tree.
  */
 public class TreeGraphicObject implements IGraphicObject {
-    private final Sprite treeSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.TREE_SPRITE);
+
+    /** The tree sprite. */
+    private static final Sprite TREE_SPRITE = SpriteManager.getInstance().getItemSprite(SpriteManager.TREE_SPRITE);
 
     /** The tree. */
     private final Tree tree;
@@ -31,7 +33,7 @@ public class TreeGraphicObject implements IGraphicObject {
         if (viewArea.containesIndex(position)) {
             int x = position.x - viewArea.pos.x;
             int y = position.y - viewArea.pos.y;
-            treeSprite.draw(graphics, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
+            TREE_SPRITE.draw(graphics, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
         }
     }
 }

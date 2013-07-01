@@ -63,6 +63,78 @@ public class RegionMap {
     private final List<IMapListener> listeners = new CopyOnWriteArrayList<>();
 
     /**
+     * Generates the map.
+     * @param mapSizeTmp the size of the map
+     */
+    public void generateMap(final MapIndex mapSizeTmp) {
+        mapSize = mapSizeTmp;
+        Random random = MyRandom.getInstance();
+        Noise.init();
+
+        blockTypes = new BlockType[mapSize.x][mapSize.y][mapSize.z];
+
+        for (int x = 0; x < mapSize.x; x++) {
+            for (int y = 0; y < mapSize.y; y++) {
+                for (int z = 0; z < mapSize.z; z++) {
+                    int height = (int) ((Noise.noise((double) x / 100, (double) y / 100) + 8) / 10 * mapSize.z);
+                    if (z < height) {
+                        blockTypes[x][y][z] = BlockType.values()[random.nextInt(5) + 2];
+                    } else if (z == height) {
+                        blockTypes[x][y][z] = BlockType.GRASS;
+                    } else {
+                        blockTypes[x][y][z] = BlockType.EMPTY;
+                    }
+                }
+            }
+        }
+
+        addRamps();
+
+        setupWalkableNodes();
+    }
+
+    /**
+     * Setup walkable nodes.
+     */
+    private void setupWalkableNodes() {
+        walkableNodes = new ArrayList<>();
+
+        // Create the walkable nodes
+        for (int x = 0; x < mapSize.x; x++) {
+            for (int y = 0; y < mapSize.y; y++) {
+                int z = getHeight(x, y);
+                walkableNodes.add(new WalkableNode(new MapIndex(x, y, z)));
+
+                // If the block can be stood on, add a node above it (this is
+                // for the ramps on hills)
+                if (getBlock(x, y, z).isStandOn) {
+                    walkableNodes.add(new WalkableNode(new MapIndex(x, y, z + 1)));
+                }
+            }
+        }
+
+        // Setup the adjacencies (Very brute force, but its only during loading)
+        for (int i = 0; i < walkableNodes.size(); i++) {
+            for (int j = i + 1; j < walkableNodes.size(); j++) {
+                WalkableNode nodeI = walkableNodes.get(i);
+                WalkableNode nodeJ = walkableNodes.get(j);
+
+                MapIndex diff = nodeI.sub(nodeJ);
+                if (Math.abs(diff.x) <= 1 && Math.abs(diff.y) <= 1) {
+                    if (diff.z == 0 || // Its on the same level
+                            (diff.z == 1 && getBlock(nodeJ).isClimb) || // Its
+                                                                        // below
+                            (diff.z == -1 && getBlock(nodeI).isClimb)) { // Its
+                                                                         // above
+                        nodeI.adjacencies.add(nodeJ);
+                        nodeJ.adjacencies.add(nodeI);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Add a listener to the map.
      * @param listener the listener to add
      */
@@ -134,37 +206,6 @@ public class RegionMap {
         }
 
         return pathPlanner.findPath(positionNode, targetNode);
-    }
-
-    /**
-     * Generates the map.
-     * @param mapSizeTmp the size of the map
-     */
-    public void generateMap(final MapIndex mapSizeTmp) {
-        mapSize = mapSizeTmp;
-        Random random = MyRandom.getInstance();
-        Noise.init();
-
-        blockTypes = new BlockType[mapSize.x][mapSize.y][mapSize.z];
-
-        for (int x = 0; x < mapSize.x; x++) {
-            for (int y = 0; y < mapSize.y; y++) {
-                for (int z = 0; z < mapSize.z; z++) {
-                    int height = (int) ((Noise.noise((double) x / 100, (double) y / 100) + 8) / 10 * mapSize.z);
-                    if (z < height) {
-                        blockTypes[x][y][z] = BlockType.values()[random.nextInt(5) + 2];
-                    } else if (z == height) {
-                        blockTypes[x][y][z] = BlockType.GRASS;
-                    } else {
-                        blockTypes[x][y][z] = BlockType.EMPTY;
-                    }
-                }
-            }
-        }
-
-        addRamps();
-
-        setupWalkableNodes();
     }
 
     /**
@@ -316,22 +357,13 @@ public class RegionMap {
         return null;
     }
 
-    // TODO: this can use walkablenodes
     /**
      * Checks if is walkable.
      * @param mapIndex the map index
      * @return true, if is walkable
      */
     public boolean isWalkable(final MapIndex mapIndex) {
-        if (!getBlock(mapIndex.add(0, 0, -1)).isStandOn) {
-            return false;
-        }
-
-        if (!getBlock(mapIndex).isStandIn) {
-            return false;
-        }
-
-        return true;
+        return walkableNodes.contains(mapIndex);
     }
 
     /**
@@ -497,47 +529,6 @@ public class RegionMap {
             // ramp
             if (remove) {
                 setBlock(neighbour, BlockType.EMPTY);
-            }
-        }
-    }
-
-    /**
-     * Setup walkable nodes.
-     */
-    private void setupWalkableNodes() {
-        walkableNodes = new ArrayList<>();
-
-        // Create the walkable nodes
-        for (int x = 0; x < mapSize.x; x++) {
-            for (int y = 0; y < mapSize.y; y++) {
-                int z = getHeight(x, y);
-                walkableNodes.add(new WalkableNode(new MapIndex(x, y, z)));
-
-                // If the block can be stood on, add a node above it (this is
-                // for the ramps on hills)
-                if (getBlock(x, y, z).isStandOn) {
-                    walkableNodes.add(new WalkableNode(new MapIndex(x, y, z + 1)));
-                }
-            }
-        }
-
-        // Setup the adjacencies (Very brute force, but its only during loading)
-        for (int i = 0; i < walkableNodes.size(); i++) {
-            for (int j = i + 1; j < walkableNodes.size(); j++) {
-                WalkableNode nodeI = walkableNodes.get(i);
-                WalkableNode nodeJ = walkableNodes.get(j);
-
-                MapIndex diff = nodeI.sub(nodeJ);
-                if (Math.abs(diff.x) <= 1 && Math.abs(diff.y) <= 1) {
-                    if (diff.z == 0 || // Its on the same level
-                            (diff.z == 1 && getBlock(nodeJ).isClimb) || // Its
-                                                                        // below
-                            (diff.z == -1 && getBlock(nodeI).isClimb)) { // Its
-                                                                         // above
-                        nodeI.adjacencies.add(nodeJ);
-                        nodeJ.adjacencies.add(nodeI);
-                    }
-                }
             }
         }
     }

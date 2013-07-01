@@ -119,12 +119,8 @@ public class Region implements IRegion {
         players.add(player);
     }
 
-    /**
-     * Checks if the location is valid for a new stockpile or building or similar thing that needs a flat area without
-     * trees or items.
-     * @param area The area that the new stockpile will occupy
-     * @return True if the area is a valid location else false
-     */
+    // TODO: both these check methods need to be refactored to off load the work to the proper responsibles
+    @Override
     public boolean checkAreaValid(final MapArea area) {
         for (Player player : players) {
             // Check if overlap with stockpile
@@ -164,11 +160,7 @@ public class Region implements IRegion {
         return true;
     }
 
-    /**
-     * Check index valid.
-     * @param mapIndex the map index
-     * @return true, if successful
-     */
+    @Override
     public boolean checkIndexValid(final MapIndex mapIndex) {
         for (Player player : players) {
             // Check if overlap with stockpile
@@ -273,12 +265,7 @@ public class Region implements IRegion {
         }
     }
 
-    /**
-     * Add a time listener.
-     * @param duration how long until they want to be notified
-     * @param listener the listener to add
-     * @return the time which they will be notified
-     */
+    @Override
     public long addTimeListener(final long duration, final ITimeListener listener) {
         long notifyTime = time + duration;
         if (!timeListeners.containsKey(notifyTime)) {
@@ -288,11 +275,7 @@ public class Region implements IRegion {
         return notifyTime;
     }
 
-    /**
-     * Remove a time listener.
-     * @param notifyTime the time which they were being notified
-     * @param listener the listener to remove
-     */
+    @Override
     public void removeTimeListener(final long notifyTime, final ITimeListener listener) {
         if (timeListeners.containsKey(notifyTime)) {
             timeListeners.get(notifyTime).remove(listener);

@@ -50,8 +50,12 @@ public abstract class AbstractGameObject implements IGameObject {
     /** The count. */
     private static int count = 0;
 
+    /** The listeners. */
     private Set<IGameObjectListener> listeners = new LinkedHashSet<>();
 
+    /**
+     * Constructor.
+     */
     public AbstractGameObject() {
         id = count;
         count++;
