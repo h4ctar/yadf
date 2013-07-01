@@ -33,7 +33,7 @@ package simulation.job;
 
 import java.util.Set;
 
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.IEatDrinkComponent;
 import simulation.item.Item;
@@ -51,7 +51,7 @@ import simulation.room.Room;
 public class EatDrinkJob extends AbstractJob {
 
     /** Amount of time to spend eating/drinking (simulation steps). */
-    private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
+    private static final long DURATION = IRegion.SIMULATION_STEPS_PER_HOUR;
 
     /** True if the job is to eat, false if the job is to drink. */
     private final boolean eat;

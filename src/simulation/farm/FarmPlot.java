@@ -32,7 +32,7 @@
 package simulation.farm;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.item.Item;
 import simulation.job.HarvestJob;
 import simulation.job.IJob;
@@ -62,7 +62,7 @@ public class FarmPlot implements IFarmPlot {
     }
 
     /** The Constant growDuration. */
-    private static final long GROW_DURATION = Region.SIMULATION_STEPS_PER_WEEK;
+    private static final long GROW_DURATION = IRegion.SIMULATION_STEPS_PER_WEEK;
 
     /** The state. */
     private State state = State.START;

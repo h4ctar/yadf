@@ -34,11 +34,11 @@ package simulation.job;
 import java.util.Set;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
-import simulation.item.ItemTypeManager;
+import simulation.item.ItemFactory;
 import simulation.job.jobstate.HaulResourcesState;
 import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.LookingForDwarfState;
@@ -48,7 +48,7 @@ import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
 import simulation.recipe.Recipe;
-import simulation.workshop.Workshop;
+import simulation.workshop.IWorkshop;
 
 /**
  * The Class CraftJob.
@@ -56,10 +56,10 @@ import simulation.workshop.Workshop;
 public class CraftJob extends AbstractJob {
 
     /** How long it takes to craft the item. */
-    private static final long CRAFT_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
+    private static final long CRAFT_DURATION = 2 * IRegion.SIMULATION_STEPS_PER_HOUR;
 
     /** The workshop. */
-    private final Workshop workshop;
+    private final IWorkshop workshop;
 
     /** The recipe. */
     private final Recipe recipe;
@@ -79,7 +79,7 @@ public class CraftJob extends AbstractJob {
      * @param recipeTmp the recipe
      * @param player the player that this job belongs to
      */
-    public CraftJob(final Workshop workshopTmp, final Recipe recipeTmp, final IPlayer player) {
+    public CraftJob(final IWorkshop workshopTmp, final Recipe recipeTmp, final IPlayer player) {
         super(player);
         workshop = workshopTmp;
         recipe = recipeTmp;
@@ -196,8 +196,7 @@ public class CraftJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             for (int i = 0; i < recipe.quantity; i++) {
-                Item newItem = ItemTypeManager.getInstance().createItem(workshop.getPosition(), recipe.itemType,
-                        getPlayer());
+                Item newItem = ItemFactory.createItem(workshop.getPosition(), recipe.itemType, getPlayer());
                 getPlayer().getStockManager().addItem(newItem);
             }
             workshop.setOccupied(false);

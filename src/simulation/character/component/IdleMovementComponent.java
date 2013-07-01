@@ -36,7 +36,6 @@ import java.util.Random;
 
 import misc.MyRandom;
 import simulation.IRegion;
-import simulation.Region;
 import simulation.character.IGameCharacter;
 import simulation.map.RegionMap;
 import simulation.map.WalkableNode;
@@ -50,10 +49,10 @@ public class IdleMovementComponent extends AbstractMoveComponent implements IMov
     private int simulationSteps = 0;
 
     /** Minimum number of simulation steps between walking steps. */
-    private static final long MIN_WALK_DURATION = Region.SIMULATION_STEPS_PER_MINUTE * 12;
+    private static final long MIN_WALK_DURATION = IRegion.SIMULATION_STEPS_PER_MINUTE * 12;
 
     /** Maximum number of simulation steps between walking steps. */
-    private static final long MAX_WALK_DURATION = Region.SIMULATION_STEPS_PER_MINUTE * 24;
+    private static final long MAX_WALK_DURATION = IRegion.SIMULATION_STEPS_PER_MINUTE * 24;
 
     /**
      * Constructor.

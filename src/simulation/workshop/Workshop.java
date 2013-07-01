@@ -47,7 +47,7 @@ import simulation.recipe.RecipeManager;
  * The Class Workshop.
  */
 // TODO: should be a container
-public class Workshop extends AbstractGameObject {
+public class Workshop extends AbstractGameObject implements IWorkshop {
 
     /** The position. */
     private final MapIndex position;
@@ -85,26 +85,17 @@ public class Workshop extends AbstractGameObject {
         player = playerTmp;
     }
 
-    /**
-     * Add a listener to changes to the workshop.
-     * @param listener the listener to add
-     */
+    @Override
     public void addListener(final IWorkshopListener listener) {
         listeners.add(listener);
     }
 
-    /**
-     * Removes a listener to changes to the workshop.
-     * @param listener the listener to remove
-     */
+    @Override
     public void removeListener(final IWorkshopListener listener) {
         listeners.remove(listener);
     }
 
-    /**
-     * Cancel an order.
-     * @param orderIndex the order index
-     */
+    @Override
     public void cancelOrder(final int orderIndex) {
         if (orderIndex == 0 && craftJob != null) {
             craftJob.interrupt("Order canceled");
@@ -122,35 +113,22 @@ public class Workshop extends AbstractGameObject {
         return occupied;
     }
 
-    /**
-     * Gets the orders.
-     * @return the orders
-     */
+    @Override
     public List<Recipe> getOrders() {
         return orders;
     }
 
-    /**
-     * Gets the position of the workshop.
-     * @return the position
-     */
+    @Override
     public MapIndex getPosition() {
         return position;
     }
 
-    /**
-     * Gets the type of the workshop.
-     * @return the type
-     */
+    @Override
     public WorkshopType getType() {
         return workshopType;
     }
 
-    /**
-     * Checks if a map index is within the workshop.
-     * @param index the index
-     * @return true, if successful
-     */
+    @Override
     public boolean hasIndex(final MapIndex index) {
         if (index.x >= position.x && index.x <= position.x + WORKSHOP_SIZE - 1 && index.y >= position.y
                 && index.y <= position.y + WORKSHOP_SIZE - 1 && position.z == index.z) {
@@ -159,29 +137,21 @@ public class Workshop extends AbstractGameObject {
         return false;
     }
 
-    /**
-     * New order.
-     * @param recipeName the recipe name
-     */
+    @Override
     public void newOrder(final String recipeName) {
         Recipe recipe = RecipeManager.getInstance().getRecipe(recipeName);
         orders.add(recipe);
         notifyListenersOfOrderAdded(recipe, orders.size() - 1);
     }
 
-    /**
-     * Sets if the room is occupied.
-     * @param occupiedTmp the new occupied
-     */
+    @Override
     public void setOccupied(final boolean occupiedTmp) {
         if (occupiedTmp != occupied) {
             occupied = occupiedTmp;
         }
     }
 
-    /**
-     * Update.
-     */
+    @Override
     public void update() {
         // TODO: Remove this method
         if (craftJob == null) {
@@ -220,10 +190,7 @@ public class Workshop extends AbstractGameObject {
         }
     }
 
-    /**
-     * Get the area of the workshop.
-     * @return the area
-     */
+    @Override
     public MapArea getArea() {
         return new MapArea(position, WORKSHOP_SIZE, WORKSHOP_SIZE);
     }

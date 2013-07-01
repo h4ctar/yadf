@@ -34,7 +34,6 @@ package simulation.character.component;
 import java.util.List;
 
 import simulation.IRegion;
-import simulation.Region;
 import simulation.character.IGameCharacter;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
@@ -67,7 +66,7 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
     private int simulationSteps = 0;
 
     /** How many simulation steps between walking steps. */
-    private final long walkSpeed = Region.SIMULATION_STEPS_PER_MINUTE * 4;
+    private final long walkSpeed = IRegion.SIMULATION_STEPS_PER_MINUTE * 4;
 
     /**
      * Instantiates a new walk move component.

@@ -32,11 +32,12 @@
 package simulation.job;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.Tree;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
+import simulation.item.ItemFactory;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
 import simulation.job.jobstate.IJobState;
@@ -53,7 +54,7 @@ import simulation.map.MapIndex;
 public class ChopTreeJob extends AbstractJob {
 
     /** Amount of time to spend chopping down the tree (simulation steps). */
-    private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
+    private static final long DURATION = IRegion.SIMULATION_STEPS_PER_HOUR;
 
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Wood cutting");
@@ -153,7 +154,7 @@ public class ChopTreeJob extends AbstractJob {
                 return;
             }
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Log");
-            Item log = ItemTypeManager.getInstance().createItem(tree.getPosition(), itemType, getPlayer());
+            Item log = ItemFactory.createItem(tree.getPosition(), itemType, getPlayer());
             getPlayer().getStockManager().addItem(log);
             tree.delete();
             lumberjack.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);

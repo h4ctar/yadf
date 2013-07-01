@@ -32,11 +32,12 @@
 package simulation.job;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.IFarmPlot;
 import simulation.item.Item;
+import simulation.item.ItemFactory;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
 import simulation.job.jobstate.IJobState;
@@ -56,7 +57,7 @@ public class HarvestJob extends AbstractJob {
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
 
     /** The Constant harvestDuration. */
-    private static final long HARVEST_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
+    private static final long HARVEST_DURATION = 2 * IRegion.SIMULATION_STEPS_PER_HOUR;
 
     /** The farm plot. */
     private final IFarmPlot farmPlot;
@@ -149,10 +150,10 @@ public class HarvestJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
-            Item newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, getPlayer());
+            Item newItem = ItemFactory.createItem(farmPlot.getPosition(), itemType, getPlayer());
             getPlayer().getStockManager().addItem(newItem);
             itemType = ItemTypeManager.getInstance().getItemType("Seed");
-            newItem = ItemTypeManager.getInstance().createItem(farmPlot.getPosition(), itemType, getPlayer());
+            newItem = ItemFactory.createItem(farmPlot.getPosition(), itemType, getPlayer());
             getPlayer().getStockManager().addItem(newItem);
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             farmer.releaseLock();

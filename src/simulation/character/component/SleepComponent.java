@@ -1,7 +1,6 @@
 package simulation.character.component;
 
 import simulation.IRegion;
-import simulation.Region;
 import simulation.character.IGameCharacter;
 import simulation.job.IJobManager;
 import simulation.job.SleepJob;
@@ -12,7 +11,7 @@ import simulation.job.SleepJob;
 public class SleepComponent extends AbstractCharacterComponent implements ISleepComponent {
 
     /** How many simulation steps before the dwarf will want to sleep. */
-    private static final long SLEEP_THRESHOLD = Region.SIMULATION_STEPS_PER_DAY;
+    private static final long SLEEP_THRESHOLD = IRegion.SIMULATION_STEPS_PER_DAY;
 
     /** How tired the dwarf is. */
     private int sleepiness;

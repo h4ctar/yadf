@@ -34,7 +34,7 @@ package simulation.job;
 import java.util.List;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
@@ -58,7 +58,7 @@ import simulation.map.WalkableNode;
 public class BuildConstructionJob extends AbstractJob {
 
     /** Amount of time to spend building (simulation steps). */
-    private static final long BUILD_DURATION = Region.SIMULATION_STEPS_PER_HOUR * 2;
+    private static final long BUILD_DURATION = IRegion.SIMULATION_STEPS_PER_HOUR * 2;
 
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Building");

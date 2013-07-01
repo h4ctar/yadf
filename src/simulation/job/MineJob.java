@@ -32,10 +32,11 @@
 package simulation.job;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
+import simulation.item.ItemFactory;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
 import simulation.job.jobstate.AbstractJobState;
@@ -56,7 +57,7 @@ import simulation.map.RegionMap;
 public class MineJob extends AbstractJob {
 
     /** Amount of time to spend mining (simulation steps). */
-    private static final long DURATION = Region.SIMULATION_STEPS_PER_HOUR;
+    private static final long DURATION = IRegion.SIMULATION_STEPS_PER_HOUR;
 
     /** The labor type required for this job. */
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Mining");
@@ -220,7 +221,7 @@ public class MineJob extends AbstractJob {
             String itemTypeName = map.getBlock(position).itemMined;
             if (itemTypeName != null) {
                 ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
-                Item blockItem = ItemTypeManager.getInstance().createItem(position, itemType, getPlayer());
+                Item blockItem = ItemFactory.createItem(position, itemType, getPlayer());
                 getPlayer().getStockManager().addItem(blockItem);
             }
             map.mineBlock(position);

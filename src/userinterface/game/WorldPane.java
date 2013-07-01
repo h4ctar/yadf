@@ -54,6 +54,7 @@ import simulation.job.designation.DesignationType;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.room.Room;
+import simulation.workshop.IWorkshop;
 import simulation.workshop.Workshop;
 import userinterface.game.dwarf.DwarfInterface;
 import userinterface.game.item.ItemInterface;
@@ -344,7 +345,7 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
                 }
 
                 // If left click on a workshop, show the room interface
-                Workshop workshop = player.getWorkshopManager().getWorkshop(mouseIndex);
+                IWorkshop workshop = player.getWorkshopManager().getWorkshop(mouseIndex);
                 if (workshop != null) {
                     workshopInterface.setWorkshop(workshop);
                     workshopInterface.setVisible(true);

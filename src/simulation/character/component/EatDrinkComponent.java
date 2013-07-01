@@ -33,7 +33,6 @@ package simulation.character.component;
 
 import simulation.IPlayer;
 import simulation.IRegion;
-import simulation.Region;
 import simulation.character.IGameCharacter;
 import simulation.job.EatDrinkJob;
 
@@ -43,19 +42,19 @@ import simulation.job.EatDrinkJob;
 public class EatDrinkComponent extends AbstractCharacterComponent implements IEatDrinkComponent {
 
     /** How many simulation steps before the dwarf will want to eat. */
-    private static final long HUNGER_EAT_THRESHOLD = Region.SIMULATION_STEPS_PER_DAY;
+    private static final long HUNGER_EAT_THRESHOLD = IRegion.SIMULATION_STEPS_PER_DAY;
 
     /** How many simulation steps before the dwarf start getting sick. */
-    private static final long HUNGER_SICK_THRESHOLD = Region.SIMULATION_STEPS_PER_WEEK;
+    private static final long HUNGER_SICK_THRESHOLD = IRegion.SIMULATION_STEPS_PER_WEEK;
 
     /** How many simulation steps since the dwarf last drank. */
     private int thirst = 0;
 
     /** How many simulation steps before the dwarf will want to drink. */
-    private static final long THIRST_DRINK_THRESHOLD = Region.SIMULATION_STEPS_PER_DAY;
+    private static final long THIRST_DRINK_THRESHOLD = IRegion.SIMULATION_STEPS_PER_DAY;
 
     /** How many simulation steps before the dwarf will start getting sick. */
-    private static final long THIRST_SICK_THRESHOLD = Region.SIMULATION_STEPS_PER_WEEK;
+    private static final long THIRST_SICK_THRESHOLD = IRegion.SIMULATION_STEPS_PER_WEEK;
 
     /** How many simulation steps since the dwarf last ate. */
     private int hunger = 0;

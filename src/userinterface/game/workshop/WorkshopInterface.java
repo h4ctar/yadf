@@ -52,7 +52,7 @@ import javax.swing.WindowConstants;
 import simulation.Player;
 import simulation.recipe.Recipe;
 import simulation.recipe.RecipeManager;
-import simulation.workshop.Workshop;
+import simulation.workshop.IWorkshop;
 import userinterface.game.WorldCanvas;
 import userinterface.misc.ImagePanel;
 import controller.AbstractController;
@@ -93,7 +93,7 @@ public class WorkshopInterface extends JInternalFrame {
     private final Player player;
 
     /** The workshop. */
-    private Workshop workshop;
+    private IWorkshop workshop;
 
     /** The button panel. */
     private JPanel buttonPanel;
@@ -125,7 +125,7 @@ public class WorkshopInterface extends JInternalFrame {
      * Sets the workshop that the interface is for.
      * @param workshopTmp the workshop
      */
-    public void setWorkshop(final Workshop workshopTmp) {
+    public void setWorkshop(final IWorkshop workshopTmp) {
         workshop = workshopTmp;
         typeLabel.setText(workshop.getType().name);
         ordersListModel.setWorkshop(workshop);

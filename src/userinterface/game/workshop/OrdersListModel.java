@@ -37,8 +37,8 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 
 import simulation.recipe.Recipe;
+import simulation.workshop.IWorkshop;
 import simulation.workshop.IWorkshopListener;
-import simulation.workshop.Workshop;
 
 /**
  * The Class OrdersListModel.
@@ -49,7 +49,7 @@ class OrdersListModel extends AbstractListModel<String> implements IWorkshopList
     private static final long serialVersionUID = -221041635977890239L;
 
     /** The workshop. */
-    private Workshop workshop;
+    private IWorkshop workshop;
 
     /** A cache of all the orders. */
     private List<String> orders;
@@ -58,7 +58,7 @@ class OrdersListModel extends AbstractListModel<String> implements IWorkshopList
      * Sets the workshop.
      * @param workshopTmp the new workshop
      */
-    public void setWorkshop(final Workshop workshopTmp) {
+    public void setWorkshop(final IWorkshop workshopTmp) {
         if (workshop != null) {
             workshop.removeListener(this);
         }

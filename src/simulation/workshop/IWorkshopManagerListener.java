@@ -9,11 +9,11 @@ public interface IWorkshopManagerListener {
      * A new workshop has been added.
      * @param workshop the new workshop
      */
-    void workshopAdded(Workshop workshop);
+    void workshopAdded(IWorkshop workshop);
 
     /**
      * A workshop has been removed.
      * @param workshop the removed workshop
      */
-    void workshopRemoved(Workshop workshop);
+    void workshopRemoved(IWorkshop workshop);
 }

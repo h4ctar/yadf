@@ -2,7 +2,7 @@ package simulation.job;
 
 import java.util.Set;
 
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISleepComponent;
 import simulation.item.Item;
@@ -18,7 +18,7 @@ import simulation.room.Room;
 public class SleepJob extends AbstractJob {
 
     /** How many simulation steps the dwarf should sleep for. */
-    private static final long SLEEP_DURATION = Region.SIMULATION_STEPS_PER_HOUR;
+    private static final long SLEEP_DURATION = IRegion.SIMULATION_STEPS_PER_HOUR;
 
     /** The dwarf that wants to sleep. */
     private final IGameCharacter dwarf;

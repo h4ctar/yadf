@@ -48,7 +48,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import simulation.IPlayer;
-import simulation.map.MapIndex;
 
 /**
  * The Class ItemTypeManager.
@@ -103,7 +102,7 @@ public final class ItemTypeManager {
     public List<Item> getEmbarkItems(final IPlayer player) {
         List<Item> copyOfEmbarkItems = new ArrayList<>();
         for (Item item : embarkItems) {
-            Item copyItem = createItem(item, player);
+            Item copyItem = ItemFactory.createItem(item, player);
             copyOfEmbarkItems.add(copyItem);
         }
         return copyOfEmbarkItems;
@@ -221,7 +220,7 @@ public final class ItemTypeManager {
             String tempString = itemElement.getAttribute("quantity");
             int quantity = "".equals(tempString) ? 1 : Integer.parseInt(tempString);
             for (int j = 0; j < quantity; j++) {
-                Item item = createItem(itemElement);
+                Item item = ItemFactory.createItem(itemElement);
                 embarkItems.add(item);
             }
         }
@@ -235,56 +234,5 @@ public final class ItemTypeManager {
         itemTypesByName = new HashMap<>();
         itemTypesByCategory = new HashMap<>();
         embarkItems = new LinkedHashSet<>();
-    }
-
-    /**
-     * Factory method to create the correct item.
-     * @param itemElement The DOM element to get attributes from
-     * @return the new item
-     * @throws Exception something went wrong
-     */
-    public Item createItem(final Element itemElement) throws Exception {
-        Item item;
-        String itemTypeName = itemElement.getAttribute("type");
-        ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
-        if (itemType.capacity > 0) {
-            item = new ContainerItem(itemElement);
-        } else {
-            item = new Item(itemElement);
-        }
-        return item;
-    }
-
-    /**
-     * Create an item from an item type.
-     * @param position the position of the new item
-     * @param itemType the type of the new item
-     * @param player the player that the new item will belong to
-     * @return the new item
-     */
-    public Item createItem(final MapIndex position, final ItemType itemType, final IPlayer player) {
-        Item item;
-        if (itemType.capacity > 0) {
-            item = new ContainerItem(position, itemType, player);
-        } else {
-            item = new Item(position, itemType, player);
-        }
-        return item;
-    }
-
-    /**
-     * Create an item from another item.
-     * @param item the item to clone
-     * @param player the player that the new item will belong to
-     * @return the new item
-     */
-    public Item createItem(final Item item, final IPlayer player) {
-        Item newItem;
-        if (item.itemType.capacity > 0) {
-            newItem = new ContainerItem((ContainerItem) item, player);
-        } else {
-            newItem = new Item(item, player);
-        }
-        return newItem;
     }
 }

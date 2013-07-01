@@ -13,13 +13,13 @@ import simulation.map.MapIndex;
 public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
 
     /** The workshops. */
-    private final Set<Workshop> workshops = new CopyOnWriteArraySet<>();
+    private final Set<IWorkshop> workshops = new CopyOnWriteArraySet<>();
 
     /** The workshop manager listeners. */
     private final Set<IWorkshopManagerListener> listeners = new LinkedHashSet<>();
 
     @Override
-    public void addWorkshop(final Workshop workshop) {
+    public void addWorkshop(final IWorkshop workshop) {
         assert !workshops.contains(workshop);
         workshop.addGameObjectListener(this);
         workshops.add(workshop);
@@ -29,7 +29,7 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     }
 
     @Override
-    public void removeWorkshop(final Workshop workshop) {
+    public void removeWorkshop(final IWorkshop workshop) {
         assert workshops.contains(workshop);
         workshop.removeGameObjectListener(this);
         workshops.remove(workshop);
@@ -39,8 +39,8 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     }
 
     @Override
-    public Workshop getWorkshop(final int workshopId) {
-        for (Workshop workshop : workshops) {
+    public IWorkshop getWorkshop(final int workshopId) {
+        for (IWorkshop workshop : workshops) {
             if (workshop.getId() == workshopId) {
                 return workshop;
             }
@@ -49,8 +49,8 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     }
 
     @Override
-    public Workshop getWorkshop(final MapIndex index) {
-        for (Workshop workshop : workshops) {
+    public IWorkshop getWorkshop(final MapIndex index) {
+        for (IWorkshop workshop : workshops) {
             if (workshop.hasIndex(index)) {
                 return workshop;
             }
@@ -59,13 +59,13 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     }
 
     @Override
-    public Set<Workshop> getWorkshops() {
+    public Set<IWorkshop> getWorkshops() {
         return workshops;
     }
 
     @Override
     public void update() {
-        for (Workshop workshop : workshops) {
+        for (IWorkshop workshop : workshops) {
             workshop.update();
         }
     }

@@ -13,33 +13,33 @@ public interface IWorkshopManager {
      * Add a new workshop.
      * @param workshop the new workshop
      */
-    void addWorkshop(Workshop workshop);
+    void addWorkshop(IWorkshop workshop);
 
     /**
      * Remove a workshop.
      * @param workshop the workshop to remove
      */
-    void removeWorkshop(Workshop workshop);
+    void removeWorkshop(IWorkshop workshop);
 
     /**
      * Gets the workshops.
      * @return the workshops
      */
-    Set<Workshop> getWorkshops();
+    Set<IWorkshop> getWorkshops();
 
     /**
      * Gets the workshop.
      * @param workshopId the workshop id
      * @return the workshop
      */
-    Workshop getWorkshop(final int workshopId);
+    IWorkshop getWorkshop(final int workshopId);
 
     /**
      * Get a workshop at a specific index.
      * @param index the index to look for a workshop
      * @return the workshop
      */
-    Workshop getWorkshop(final MapIndex index);
+    IWorkshop getWorkshop(final MapIndex index);
 
     /**
      * Update all the workshops.

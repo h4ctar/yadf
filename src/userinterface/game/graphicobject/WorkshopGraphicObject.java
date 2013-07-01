@@ -3,6 +3,7 @@ package userinterface.game.graphicobject;
 import java.awt.Graphics;
 
 import simulation.map.MapArea;
+import simulation.workshop.IWorkshop;
 import simulation.workshop.Workshop;
 import userinterface.misc.Sprite;
 import userinterface.misc.SpriteManager;
@@ -13,13 +14,13 @@ import userinterface.misc.SpriteManager;
 public class WorkshopGraphicObject implements IGraphicObject {
 
     /** The workshop. */
-    private final Workshop workshop;
+    private final IWorkshop workshop;
 
     /**
      * Constructor.
      * @param workshopTmp the workshop
      */
-    public WorkshopGraphicObject(final Workshop workshopTmp) {
+    public WorkshopGraphicObject(final IWorkshop workshopTmp) {
         workshop = workshopTmp;
     }
 

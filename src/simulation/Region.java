@@ -35,11 +35,8 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
-import simulation.character.Goblin;
-import simulation.character.IGameCharacter;
 import simulation.farm.Farm;
 import simulation.item.Stockpile;
 import simulation.map.MapArea;
@@ -47,49 +44,18 @@ import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.tree.ITreeManager;
 import simulation.tree.TreeManager;
-import simulation.workshop.Workshop;
+import simulation.workshop.IWorkshop;
 
 /**
  * Region Contains all the data for a region, including the map, players and trees.
  */
 public class Region implements IRegion {
 
-    /** How many hours in one day. */
-    private static final int HOURS_IN_A_DAY = 24;
-
-    /** How many days in one year. */
-    private static final double DAYS_IN_A_YEAR = 365.242;
-
-    /** The number of simulation steps in one minute. */
-    public static final long SIMULATION_STEPS_PER_MINUTE = 1;
-
-    /** The number of simulation steps in one hour. */
-    public static final long SIMULATION_STEPS_PER_HOUR = SIMULATION_STEPS_PER_MINUTE * 60;
-
-    /** The number of simulation steps in one day. */
-    public static final long SIMULATION_STEPS_PER_DAY = SIMULATION_STEPS_PER_HOUR * 24;
-
-    /** The number of simulation steps in one week. */
-    public static final long SIMULATION_STEPS_PER_WEEK = SIMULATION_STEPS_PER_DAY * 7;
-
-    /** The number of simulation steps in one month. */
-    public static final long SIMULATION_STEPS_PER_MONTH = (long) (SIMULATION_STEPS_PER_DAY * 30.4368);
-
-    /** The number of simulation steps in one season. */
-    public static final long SIMULATION_STEPS_PER_SEASON = (long) (SIMULATION_STEPS_PER_DAY * 91.3105);
-
-    /** The number of simulation steps in one year. */
-    public static final long SIMULATION_STEPS_PER_YEAR = (long) (SIMULATION_STEPS_PER_DAY * DAYS_IN_A_YEAR);
-
     /** The Map of this region. */
     private final RegionMap map = new RegionMap();
 
     /** The tree manager for this region. */
     private final TreeManager treeManager = new TreeManager(this);
-
-    /** The goblins. */
-    // TODO: move into a player
-    private final Set<Goblin> goblins = new CopyOnWriteArraySet<>();
 
     /** A vector of all the players in this region. */
     private final Set<Player> players = new LinkedHashSet<>();
@@ -130,7 +96,7 @@ public class Region implements IRegion {
                 }
             }
             // Check that the area is free from workshops
-            for (Workshop workshop : player.getWorkshopManager().getWorkshops()) {
+            for (IWorkshop workshop : player.getWorkshopManager().getWorkshops()) {
                 if (area.operlapsArea(workshop.getArea())) {
                     return false;
                 }
@@ -170,7 +136,7 @@ public class Region implements IRegion {
                 }
             }
             // Check that the area is free from workshops
-            for (Workshop workshop : player.getWorkshopManager().getWorkshops()) {
+            for (IWorkshop workshop : player.getWorkshopManager().getWorkshops()) {
                 if (workshop.getArea().containesIndex(mapIndex)) {
                     return false;
                 }
@@ -194,14 +160,6 @@ public class Region implements IRegion {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Gets the goblins.
-     * @return the goblins
-     */
-    public Set<Goblin> getGoblins() {
-        return goblins;
     }
 
     @Override
@@ -259,9 +217,6 @@ public class Region implements IRegion {
         }
         for (Player player : players) {
             player.update();
-        }
-        for (IGameCharacter goblin : goblins) {
-            goblin.update();
         }
     }
 

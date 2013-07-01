@@ -49,7 +49,6 @@ import simulation.IPlayer;
 import simulation.Player;
 import simulation.Region;
 import simulation.Tree;
-import simulation.character.Goblin;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.Farm;
@@ -68,8 +67,8 @@ import simulation.map.RegionMap;
 import simulation.room.IRoomManagerListener;
 import simulation.room.Room;
 import simulation.tree.ITreeManagerListener;
+import simulation.workshop.IWorkshop;
 import simulation.workshop.IWorkshopManagerListener;
-import simulation.workshop.Workshop;
 import userinterface.game.graphicobject.FarmGraphicObject;
 import userinterface.game.graphicobject.IGraphicObject;
 import userinterface.game.graphicobject.ItemGraphicObject;
@@ -282,7 +281,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
 
         drawDesignations(graphics);
         drawDwarfs(graphics);
-        drawGoblins(graphics);
 
         if (selection != null) {
             drawSelection(graphics);
@@ -411,25 +409,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         }
     }
 
-    /**
-     * Draw goblins.
-     * @param g the graphics to draw on
-     */
-    private void drawGoblins(final Graphics g) {
-        Sprite goblinSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.GOBLIN_SPRITE);
-        Set<Goblin> goblins = region.getGoblins();
-        for (Goblin goblin : goblins) {
-            MapIndex position = goblin.getPosition();
-            if (position.z == viewArea.pos.z) {
-                int x = (position.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
-                int y = (position.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
-                if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
-                    goblinSprite.draw(g, x, y);
-                }
-            }
-        }
-    }
-
     @Override
     public void treeAdded(final Tree tree) {
         assert !graphicObjects.containsKey(tree);
@@ -491,13 +470,13 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     }
 
     @Override
-    public void workshopAdded(final Workshop workshop) {
+    public void workshopAdded(final IWorkshop workshop) {
         assert !graphicObjects.containsKey(workshop);
         graphicObjects.put(workshop, new WorkshopGraphicObject(workshop));
     }
 
     @Override
-    public void workshopRemoved(final Workshop workshop) {
+    public void workshopRemoved(final IWorkshop workshop) {
         assert graphicObjects.containsKey(workshop);
         graphicObjects.remove(workshop);
     }

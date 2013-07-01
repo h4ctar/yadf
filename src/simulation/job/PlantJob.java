@@ -32,7 +32,7 @@
 package simulation.job;
 
 import simulation.IPlayer;
-import simulation.Region;
+import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.IFarmPlot;
@@ -54,7 +54,7 @@ public class PlantJob extends AbstractJob {
     private static final LaborType REQUIRED_LABOR = LaborTypeManager.getInstance().getLaborType("Farming");
 
     /** How many simulation steps to plant. */
-    private static final long PLANT_DURATION = 2 * Region.SIMULATION_STEPS_PER_HOUR;
+    private static final long PLANT_DURATION = 2 * IRegion.SIMULATION_STEPS_PER_HOUR;
 
     /** The farmer dwarf. */
     private IGameCharacter farmer;
