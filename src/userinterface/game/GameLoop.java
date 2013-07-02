@@ -74,15 +74,13 @@ class GameLoop implements Runnable {
                     Thread.sleep(sleepTime);
                 }
 
-                if (region != null && controller != null) {
-                    if (simulationSteps++ > SIMULATION_STEPS_SEND_COMMAND) {
-                        controller.doCommands(region);
-                        simulationSteps = 0;
-                    }
-
-                    region.update();
-                    gamePanel.update();
+                if (simulationSteps++ > SIMULATION_STEPS_SEND_COMMAND) {
+                    controller.doCommands(region);
+                    simulationSteps = 0;
                 }
+
+                region.update();
+                gamePanel.update();
             }
         } catch (Exception e) {
             e.printStackTrace();

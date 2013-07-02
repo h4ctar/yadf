@@ -35,10 +35,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import controller.Connection;
-
 import logger.Logger;
 import userinterface.multiplayer.ILobbyPanel;
+import controller.Connection;
 
 /**
  * The lobby server class.
@@ -143,9 +142,9 @@ public class LobbyServer implements ILobbyServer {
         Logger.getInstance().log(this, "receiveStartGame()");
         startGamesReceived++;
         if (startGamesReceived == serverThreads.size()) {
-            lobbyPanel.startServer();
             stop();
             newClientAcceptorThread.close();
+            lobbyPanel.startServer();
         }
     }
 

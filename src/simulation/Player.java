@@ -61,7 +61,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     private static final int EMBARK_SIZE = 10;
 
     /** The name of the player. */
-    private String name = null;
+    private final String name;
 
     /** The job manager. */
     private final JobManager jobManager = new JobManager();
@@ -85,16 +85,22 @@ public class Player extends AbstractGameObject implements IPlayer {
     private IRegion region;
 
     /**
+     * Constructor.
+     * @param playerName the players name
+     */
+    public Player(final String playerName) {
+        name = playerName;
+    }
+
+    /**
      * Setup.
      * @param playerName the players name
      * @param regionTmp the region that this player is in
      * @param embarkPosition the embark position
      * @param numberOfStartingDwarfs the number of starting dwarfs
      */
-    public void setup(final String playerName, final IRegion regionTmp, final MapIndex embarkPosition,
-            final int numberOfStartingDwarfs) {
+    public void setup(final IRegion regionTmp, final MapIndex embarkPosition, final int numberOfStartingDwarfs) {
         Logger.getInstance().log(this, "Setting up");
-        name = playerName;
         region = regionTmp;
         jobManager.addDesignations(region, this);
         addEmbarkResources(embarkPosition);

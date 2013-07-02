@@ -31,7 +31,7 @@
  */
 package simulation.character;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -54,7 +54,7 @@ import simulation.map.MapIndex;
 class GameCharacter extends AbstractEntity implements IGameCharacter {
 
     /** All the components. */
-    private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new HashMap<>();
+    private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new LinkedHashMap<>();
 
     /** The list of listeners that want to be notified when the dwarf becomes available. */
     private final List<ICharacterAvailableListener> availableListeners = new CopyOnWriteArrayList<>();

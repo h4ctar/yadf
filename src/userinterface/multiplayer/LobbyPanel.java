@@ -71,41 +71,6 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
     /** The serial version UID. */
     private static final long serialVersionUID = -5926430872507395857L;
 
-    /**
-     * Cancel the session, could be called if client or server.
-     */
-    private class CancelActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            lobby.stop();
-            lobby.close();
-            cancel();
-        }
-    }
-
-    /**
-     * Sends a chat test.
-     */
-    private class ChatActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            sendChat();
-        }
-    }
-
-    /**
-     * Start game action, this action will only ever be called by a server lobby.
-     */
-    private class StartGameActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            ((LobbyServer) lobby).startGame();
-        }
-    }
-
     /** The type of the lobby. */
     private final LobbyType lobbyType;
 
@@ -207,7 +172,6 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         List<String> playerNames = playerTableModel.getPlayerNames();
         int playerIndex = playerTableModel.getPlayerIndex();
         MapIndex regionSize = Utility.getRegionSize(regionSizeComboBox);
-
         mainWindow.startMultiplayerGame(connection, playerNames, playerIndex, regionSize);
     }
 
@@ -280,7 +244,7 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
 
         regionSizeComboBox = new JComboBox<>();
         regionSizeComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Small", "Medium", "Large" }));
-        regionSizeComboBox.setSelectedIndex(1);
+        regionSizeComboBox.setSelectedIndex(0);
         GridBagConstraints regionSizeComboBoxConstraints = new GridBagConstraints();
         regionSizeComboBoxConstraints.insets = new Insets(5, 5, 5, 5);
         regionSizeComboBoxConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -389,5 +353,40 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         chatTextField.setColumns(10);
         chatTextField.addActionListener(new ChatActionListener());
         // CHECKSTYLE:ON
+    }
+
+    /**
+     * Cancel the session, could be called if client or server.
+     */
+    private class CancelActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            lobby.stop();
+            lobby.close();
+            cancel();
+        }
+    }
+
+    /**
+     * Sends a chat test.
+     */
+    private class ChatActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            sendChat();
+        }
+    }
+
+    /**
+     * Start game action, this action will only ever be called by a server lobby.
+     */
+    private class StartGameActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            ((LobbyServer) lobby).startGame();
+        }
     }
 }

@@ -302,7 +302,7 @@ public class NameGenerator implements Serializable {
         int expecting = 0; // 1 for Vowel, 2 for consonant
         int last = 0; // 1 for Vowel, 2 for consonant
         String name;
-        int a = (int) (Math.random() * pre.size());
+        int a = (int) (MyRandom.getInstance().nextDouble() * pre.size());
 
         if (vowelLast(pureSyl(pre.get(a)))) {
             last = 1;
@@ -363,7 +363,7 @@ public class NameGenerator implements Serializable {
         for (int i = 0; i < b.length - 2; i++) {
 
             do {
-                b[i] = (int) (Math.random() * mid.size());
+                b[i] = (int) (MyRandom.getInstance().nextDouble() * mid.size());
             } while (expecting == 1 && vowelFirst(pureSyl(mid.get(b[i]))) == false || expecting == 2
                     && consonantFirst(pureSyl(mid.get(b[i]))) == false || last == 1
                     && hatesPreviousVowels(mid.get(b[i])) || last == 2 && hatesPreviousConsonants(mid.get(b[i])));
@@ -436,7 +436,7 @@ public class NameGenerator implements Serializable {
 
         int c;
         do {
-            c = (int) (Math.random() * sur.size());
+            c = (int) (MyRandom.getInstance().nextDouble() * sur.size());
         } while (expecting == 1 && vowelFirst(pureSyl(sur.get(c))) == false || expecting == 2
                 && consonantFirst(pureSyl(sur.get(c))) == false || last == 1 && hatesPreviousVowels(sur.get(c))
                 || last == 2 && hatesPreviousConsonants(sur.get(c)));

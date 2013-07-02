@@ -89,12 +89,13 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             WorkshopTypeManager.getInstance().load();
             LaborTypeManager.getInstance().load();
             RecipeManager.getInstance().load();
+            MyRandom.getInstance().setSeed(10);
 
             int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
             MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
 
             region = new Region();
-            player = new Player();
+            player = new Player(playerName);
             region.addPlayer(player);
             controller = new SinglePlayerController();
 
@@ -105,7 +106,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
-            player.setup(playerName, region, embarkPosition, numberOfStartingDwarfs);
+            player.setup(region, embarkPosition, numberOfStartingDwarfs);
             worldPane.getWorldCanvas().zoomToPosition(embarkPosition);
 
             gameLoop = new GameLoop(region, controller, this);
@@ -134,25 +135,30 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             RecipeManager.getInstance().load();
             MyRandom.getInstance().setSeed(10);
 
-            region = new Region();
-            region.setup(regionSize);
+            int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
+            MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
 
+            region = new Region();
             for (String playerName : playerNames) {
-                Logger.getInstance().log(this, "Adding player " + playerName);
-                Player newPlayer = new Player();
-                int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
-                MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
-                newPlayer.setup(playerName, region, embarkPosition, numberOfStartingDwarfs);
+                Player newPlayer = new Player(playerName);
                 region.addPlayer(newPlayer);
                 if (playerName.equals(playerNames.get(playerIndex))) {
                     player = newPlayer;
                 }
             }
+            controller = new ClientController(connection, this);
 
             worldPane.setup(region, player, controller);
             jobsPane.setup(player.getJobManager());
             laborsPane.setup(player, controller);
             stocksPane.setup(player);
+
+            region.setup(regionSize);
+            embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
+            for (Player playerTmp : region.getPlayers()) {
+                playerTmp.setup(region, embarkPosition, numberOfStartingDwarfs);
+            }
+            worldPane.getWorldCanvas().zoomToPosition(embarkPosition);
 
             gameLoop = new GameLoop(region, controller, this);
         } catch (Exception e) {

@@ -1,6 +1,5 @@
 package simulation.tree;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
@@ -29,7 +28,7 @@ public class TreeManager implements ITreeManager, IGameObjectListener {
     private final IRegion region;
 
     /** The tree manager listeners, will be notified when a tree is added or removed. */
-    private final Set<ITreeManagerListener> listeners = new HashSet<>();
+    private final Set<ITreeManagerListener> listeners = new LinkedHashSet<>();
 
     /**
      * Constructor.

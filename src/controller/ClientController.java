@@ -69,7 +69,6 @@ public class ClientController extends AbstractController {
     public synchronized void doCommands(final Region region) {
         try {
             connection.writeObject(localCommands);
-
             @SuppressWarnings("unchecked")
             List<AbstractCommand> commands = (List<AbstractCommand>) connection.readObject();
 
@@ -78,7 +77,6 @@ public class ClientController extends AbstractController {
                 command.updatePlayer(region);
                 command.doCommand();
             }
-
             localCommands = new ArrayList<>();
         } catch (Exception e) {
             e.printStackTrace();

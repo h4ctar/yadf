@@ -56,72 +56,6 @@ public class MainMenuPanel extends ImagePanel {
     /** The serial version UID. */
     private static final long serialVersionUID = 2916881211506400113L;
 
-    /**
-     * Action listener for the host multiplayer game button.
-     */
-    private class HostMultiplayerGameActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            mainWindow.setupHostMultiplayerGame();
-        }
-    }
-
-    /**
-     * Action listener for the join multiplayer game button.
-     */
-    private class JoinMultiplayerGameActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            mainWindow.setupJoinMultiplayerGame();
-        }
-    }
-
-    /**
-     * Action listener for the load single player game button.
-     */
-    private class LoadSinglePlayerGameActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            mainWindow.loadSinglePlayerGame();
-        }
-    }
-
-    /**
-     * Action listener for the quit button.
-     */
-    private class QuitActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            mainWindow.quit();
-        }
-    }
-
-    /**
-     * Action listener for the how to play button.
-     */
-    public class HowToPlayActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            mainWindow.showHowToPlay();
-        }
-    }
-
-    /**
-     * Action listener for the single player game button.
-     */
-    private class SinglePlayerGameActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            mainWindow.setupSinglePlayerGame();
-        }
-    }
-
     /** The listener. */
     private final IMainWindow mainWindow;
 
@@ -215,5 +149,71 @@ public class MainMenuPanel extends ImagePanel {
         panel.add(quitButton, quitButtonConstraints);
         quitButton.addActionListener(new QuitActionListener());
         // CHECKSTYLE:ON
+    }
+
+    /**
+     * Action listener for the host multiplayer game button.
+     */
+    private class HostMultiplayerGameActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            mainWindow.setupHostMultiplayerGame();
+        }
+    }
+
+    /**
+     * Action listener for the join multiplayer game button.
+     */
+    private class JoinMultiplayerGameActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            mainWindow.setupJoinMultiplayerGame();
+        }
+    }
+
+    /**
+     * Action listener for the load single player game button.
+     */
+    private class LoadSinglePlayerGameActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            mainWindow.loadSinglePlayerGame();
+        }
+    }
+
+    /**
+     * Action listener for the quit button.
+     */
+    private class QuitActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            mainWindow.quit();
+        }
+    }
+
+    /**
+     * Action listener for the how to play button.
+     */
+    public class HowToPlayActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            mainWindow.showHowToPlay();
+        }
+    }
+
+    /**
+     * Action listener for the single player game button.
+     */
+    private class SinglePlayerGameActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            mainWindow.setupSinglePlayerGame();
+        }
     }
 }

@@ -42,16 +42,16 @@ public final class Logger {
     /** The instance. */
     private static Logger instance;
 
+    private String fileName = "c:\\temp\\yadf_" + System.currentTimeMillis() + ".txt";
+
     /**
      * Gets the single instance of Logger.
-     * 
      * @return single instance of Logger
      */
     public static Logger getInstance() {
         if (instance == null) {
             instance = new Logger();
         }
-
         return instance;
     }
 
@@ -59,12 +59,10 @@ public final class Logger {
      * Instantiates a new logger.
      */
     private Logger() {
-
     }
 
     /**
      * Log.
-     * 
      * @param object the object
      * @param text the text
      * @param err true if its an error message
@@ -72,7 +70,7 @@ public final class Logger {
     @SuppressWarnings("static-method")
     public void log(final Object object, final String text, final boolean err) {
         Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SS");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
         String dateString = dateFormat.format(date);
         String threadName = "[" + Thread.currentThread().getName() + "]";
         String className;
@@ -87,6 +85,10 @@ public final class Logger {
         } else {
             System.out.println(message);
         }
+        /**
+         * try { PrintWriter fileOut = null; fileOut = new PrintWriter(new FileWriter(fileName, true));
+         * fileOut.println(message); fileOut.close(); } catch (Exception e) { e.printStackTrace(); }
+         **/
     }
 
     /**

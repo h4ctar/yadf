@@ -182,10 +182,8 @@ class ClientThread implements Runnable {
      */
     private void receiveStartGame() {
         Logger.getInstance().log(this, "receiveStartGame()");
-        lobbyClient.startGame();
         stop();
         LobbyMessage message = new LobbyMessage(LobbyMessageType.START_GAME);
-
         try {
             connection.writeObject(message);
         } catch (Exception e) {
@@ -193,6 +191,7 @@ class ClientThread implements Runnable {
             close();
             lobbyClient.disconnect();
         }
+        lobbyClient.startGame();
     }
 
     /**
