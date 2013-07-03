@@ -52,14 +52,6 @@ public class AttackComponent extends AbstractCharacterComponent implements IAtta
         enemy = enemyTmp;
     }
 
-    /**
-     * Checks if is done.
-     * @return true, if is done
-     */
-    public boolean isDone() {
-        return enemy.isDead();
-    }
-
     @Override
     public void kill() {
         // do nothing

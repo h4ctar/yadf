@@ -130,7 +130,7 @@ public class SinglePlayerMenuPanel extends ImagePanel {
         JLabel titleLabel = new JLabel("Single Player Game");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Minecraftia", Font.PLAIN, 40));
+        titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 40));
         GridBagConstraints titleLabelConstraints = new GridBagConstraints();
         titleLabelConstraints.gridwidth = 4;
         titleLabelConstraints.insets = new Insets(0, 0, 5, 0);

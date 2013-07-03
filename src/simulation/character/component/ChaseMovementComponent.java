@@ -72,9 +72,9 @@ public class ChaseMovementComponent extends AbstractMoveComponent implements IMo
         RegionMap map = region.getMap();
 
         fallDown(map);
-
         checkBlocked(map);
 
+        // TODO: this should plan paths
         simulationSteps++;
         if (simulationSteps > walkSpeed) {
             List<WalkableNode> adjacencies = map.getAdjacencies(getCharacter().getPosition());
@@ -99,6 +99,10 @@ public class ChaseMovementComponent extends AbstractMoveComponent implements IMo
             if (bestNode != null) {
                 getCharacter().setPosition(bestNode);
                 simulationSteps = 0;
+            }
+            // TODO: this 1 should be HIT_DISTANCE from MilitaryStationJob
+            if (bestDistance <= 1) {
+                notifyListeners();
             }
         }
     }

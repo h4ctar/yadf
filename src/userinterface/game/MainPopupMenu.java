@@ -73,6 +73,7 @@ class MainPopupMenu extends JPopupMenu {
         JMenu createRoomMenu = setupCreateRoomMenu();
         JMenu placeItemMenu = setupPlaceItemMenu();
         JMenu buildWorkshopItemMenu = setupBuildWorkshopItemMenu();
+        JMenu militaryMenu = setupMilitaryMenu();
 
         JMenuItem createStockpile = new JMenuItem("Create stockpile");
         createStockpile.addActionListener(new CreateStockpileActionListener());
@@ -84,6 +85,7 @@ class MainPopupMenu extends JPopupMenu {
         add(buildWorkshopItemMenu);
         add(createRoomMenu);
         add(placeItemMenu);
+        add(militaryMenu);
         add(createStockpile);
         add(buildFarm);
     }
@@ -100,7 +102,6 @@ class MainPopupMenu extends JPopupMenu {
             buildWorkshopMenu.add(menuItem);
             menuItem.addActionListener(new BuildWorkshopActionListener());
         }
-
         return buildWorkshopMenu;
     }
 
@@ -116,7 +117,6 @@ class MainPopupMenu extends JPopupMenu {
             createRoomMenu.add(menuItem);
             menuItem.addActionListener(new CreateRoomActionListener());
         }
-
         return createRoomMenu;
     }
 
@@ -126,19 +126,17 @@ class MainPopupMenu extends JPopupMenu {
      */
     private JMenu setupDesignateMenu() {
         JMenu designateMenu = new JMenu("Designation");
-
         for (int i = 0; i < DesignationType.values().length; i++) {
             JMenuItem menuItem = new JMenuItem(DesignationType.values()[i].toString());
             designateMenu.add(menuItem);
             menuItem.addActionListener(new DesignationActionListener());
         }
-
         return designateMenu;
     }
 
     /**
      * Setup place item menu.
-     * @return the j menu
+     * @return the menu
      */
     private JMenu setupPlaceItemMenu() {
         JMenu placeItemMenu = new JMenu("Place item");
@@ -148,8 +146,15 @@ class MainPopupMenu extends JPopupMenu {
             placeItemMenu.add(menuItem);
             menuItem.addActionListener(new PlaceItemActionListener());
         }
-
         return placeItemMenu;
+    }
+
+    private JMenu setupMilitaryMenu() {
+        JMenu militaryMenu = new JMenu("Military");
+        JMenuItem menuItem = new JMenuItem("Station");
+        militaryMenu.add(menuItem);
+        menuItem.addActionListener(new MilitaryMoveActionListener());
+        return militaryMenu;
     }
 
     /**
@@ -219,6 +224,17 @@ class MainPopupMenu extends JPopupMenu {
         public void actionPerformed(final ActionEvent actionEvent) {
             worldPane.setState(GuiState.PLACE_ITEM);
             worldPane.setItemType(actionEvent.getActionCommand());
+        }
+    }
+
+    /**
+     * Action listener for the military move menu item.
+     */
+    private class MilitaryMoveActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent actionEvent) {
+            worldPane.setState(GuiState.MILITARY_STATION);
         }
     }
 }

@@ -31,9 +31,9 @@
  */
 package simulation.character;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import logger.Logger;
@@ -54,7 +54,7 @@ import simulation.map.MapIndex;
 class GameCharacter extends AbstractEntity implements IGameCharacter {
 
     /** All the components. */
-    private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new LinkedHashMap<>();
+    private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new ConcurrentHashMap<>();
 
     /** The list of listeners that want to be notified when the dwarf becomes available. */
     private final List<ICharacterAvailableListener> availableListeners = new CopyOnWriteArrayList<>();
@@ -96,13 +96,47 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
     }
 
     @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
+    public boolean isLocked() {
+        return locked;
+    }
+
+    @Override
     public boolean acquireLock() {
+        // TODO: Push components onto a "stack" and pop them in the release
         boolean lockAcquired = false;
         if (!locked) {
             locked = true;
             lockAcquired = true;
         }
         return lockAcquired;
+    }
+
+    @Override
+    public void releaseLock() {
+        if (locked) {
+            locked = false;
+            if (!dead) {
+                setComponent(IMovementComponent.class, new IdleMovementComponent(this));
+                for (ICharacterAvailableListener listener : availableListeners) {
+                    listener.characterAvailable(this);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void kill() {
+        Logger.getInstance().log(this, "Character died");
+        setComponent(IMovementComponent.class, new StillMovementComponent(this));
+        for (ICharacterComponent component : components.values()) {
+            component.kill();
+        }
+        dead = true;
     }
 
     @Override
@@ -140,6 +174,11 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
         components.put(componentInterface, component);
     }
 
+    @Override
+    public <T extends ICharacterComponent> void removeComponent(final Class<T> componentInterface) {
+        components.remove(componentInterface);
+    }
+
     /**
      * Gets the name of the character.
      * @return the name
@@ -152,31 +191,6 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
     @Override
     public boolean isDead() {
         return dead;
-    }
-
-    @Override
-    public boolean isLocked() {
-        return locked;
-    }
-
-    @Override
-    public void kill() {
-        Logger.getInstance().log(this, "Character died");
-        setComponent(IMovementComponent.class, new StillMovementComponent(this));
-        dead = true;
-    }
-
-    @Override
-    public void releaseLock() {
-        if (locked) {
-            locked = false;
-            if (!dead) {
-                setComponent(IMovementComponent.class, new IdleMovementComponent(this));
-                for (ICharacterAvailableListener listener : availableListeners) {
-                    listener.characterAvailable(this);
-                }
-            }
-        }
     }
 
     @Override

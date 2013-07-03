@@ -46,7 +46,6 @@ import javax.swing.JComponent;
 
 import logger.Logger;
 import simulation.IPlayer;
-import simulation.Player;
 import simulation.Region;
 import simulation.Tree;
 import simulation.character.IGameCharacter;
@@ -386,8 +385,8 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
      * @param g the graphics to draw on
      */
     private void drawDwarfs(final Graphics g) {
-        Set<Player> players = region.getPlayers();
-        for (Player playerTmp : players) {
+        Set<IPlayer> players = region.getPlayers();
+        for (IPlayer playerTmp : players) {
             Set<IGameCharacter> dwarfs = playerTmp.getDwarfManager().getDwarfs();
             for (IGameCharacter dwarf : dwarfs) {
                 MapIndex position = dwarf.getPosition();

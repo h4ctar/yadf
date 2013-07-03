@@ -26,6 +26,8 @@ public interface IGameCharacter extends IEntity {
      */
     <T extends ICharacterComponent> T getComponent(final Class<T> componentInterface);
 
+    <T extends ICharacterComponent> void removeComponent(final Class<T> componentInterface);
+
     /**
      * Kill the game character.
      */

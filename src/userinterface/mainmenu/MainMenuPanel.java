@@ -88,7 +88,7 @@ public class MainMenuPanel extends ImagePanel {
         JLabel titleLabel = new JLabel("Ben's Burrows");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Minecraftia", Font.PLAIN, 40));
+        titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 40));
         GridBagConstraints titleLabelConstraints = new GridBagConstraints();
         titleLabelConstraints.gridwidth = 3;
         titleLabelConstraints.insets = new Insets(5, 5, 5, 0);

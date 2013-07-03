@@ -33,7 +33,7 @@ package controller.command;
 
 import java.io.Serializable;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.Region;
 
 /**
@@ -50,13 +50,13 @@ public abstract class AbstractCommand implements Serializable {
     private final int playerId;
 
     /** The player that this command is applied to. */
-    protected transient Player player;
+    protected transient IPlayer player;
 
     /**
      * The default constructor.
      * @param playerTmp The player that this command is applied to
      */
-    AbstractCommand(final Player playerTmp) {
+    AbstractCommand(final IPlayer playerTmp) {
         player = playerTmp;
         playerId = player.getId();
     }

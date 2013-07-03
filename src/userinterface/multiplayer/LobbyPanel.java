@@ -220,7 +220,7 @@ public class LobbyPanel extends ImagePanel implements ILobbyPanel {
         JLabel multiplayerGameLabel = new JLabel("Multiplayer Game");
         panel_1.add(multiplayerGameLabel);
         multiplayerGameLabel.setForeground(Color.WHITE);
-        multiplayerGameLabel.setFont(new Font("Minecraftia", Font.PLAIN, 24));
+        multiplayerGameLabel.setFont(new Font("Tahoma", Font.PLAIN, 24));
         multiplayerGameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         JPanel panel = new JPanel();

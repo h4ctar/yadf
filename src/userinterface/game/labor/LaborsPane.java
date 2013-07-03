@@ -83,7 +83,6 @@ public class LaborsPane extends JPanel {
 
     /**
      * Setup.
-     * 
      * @param player the player
      * @param controller the controller
      */

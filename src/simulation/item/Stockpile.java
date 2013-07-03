@@ -36,7 +36,7 @@ import java.util.Set;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.job.HaulJob;
 import simulation.job.IJob;
 import simulation.job.IJobListener;
@@ -61,7 +61,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     private final Set<ItemType> acceptableItemTypes = new LinkedHashSet<>();
 
     /** The player that this stockpile belongs to. */
-    private final Player player;
+    private final IPlayer player;
 
     /**
      * An array of haul tasks that have been created for this stockpile, its remembered so they can be canceled if the
@@ -74,7 +74,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * @param areaTmp The area the stockpile will occupy
      * @param playerTmp the player the stockpile belongs to
      */
-    public Stockpile(final MapArea areaTmp, final Player playerTmp) {
+    public Stockpile(final MapArea areaTmp, final IPlayer playerTmp) {
         area = areaTmp;
         player = playerTmp;
         used = new boolean[area.width][area.height];

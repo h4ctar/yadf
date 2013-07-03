@@ -58,7 +58,7 @@ public class Region implements IRegion {
     private final TreeManager treeManager = new TreeManager(this);
 
     /** A vector of all the players in this region. */
-    private final Set<Player> players = new LinkedHashSet<>();
+    private final Set<IPlayer> players = new LinkedHashSet<>();
 
     /** The time. */
     private long time;
@@ -88,7 +88,7 @@ public class Region implements IRegion {
     // TODO: both these check methods need to be refactored to off load the work to the proper responsibles
     @Override
     public boolean checkAreaValid(final MapArea area) {
-        for (Player player : players) {
+        for (IPlayer player : players) {
             // Check if overlap with stockpile
             for (Stockpile stockpile : player.getStockManager().getStockpiles()) {
                 if (area.operlapsArea(stockpile.getArea())) {
@@ -128,7 +128,7 @@ public class Region implements IRegion {
 
     @Override
     public boolean checkIndexValid(final MapIndex mapIndex) {
-        for (Player player : players) {
+        for (IPlayer player : players) {
             // Check if overlap with stockpile
             for (Stockpile stockpile : player.getStockManager().getStockpiles()) {
                 if (stockpile.getArea().containesIndex(mapIndex)) {
@@ -177,8 +177,8 @@ public class Region implements IRegion {
      * @param playerId the player id
      * @return the player
      */
-    public Player getPlayer(final int playerId) {
-        for (Player player : players) {
+    public IPlayer getPlayer(final int playerId) {
+        for (IPlayer player : players) {
             if (player.getId() == playerId) {
                 return player;
             }
@@ -186,11 +186,8 @@ public class Region implements IRegion {
         return null;
     }
 
-    /**
-     * Gets all the players.
-     * @return the players
-     */
-    public Set<Player> getPlayers() {
+    @Override
+    public Set<IPlayer> getPlayers() {
         return players;
     }
 
@@ -215,7 +212,7 @@ public class Region implements IRegion {
                 listener.notifyTimeEvent();
             }
         }
-        for (Player player : players) {
+        for (IPlayer player : players) {
             player.update();
         }
     }

@@ -67,6 +67,7 @@ import controller.command.CreateFarmCommand;
 import controller.command.CreateRoomCommand;
 import controller.command.CreateStockpileCommand;
 import controller.command.DesignationCommand;
+import controller.command.MilitaryMoveCommand;
 import controller.command.PlaceItemCommand;
 
 /**
@@ -300,6 +301,8 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
             return "Normal";
         case PLACE_ITEM:
             return "Place " + placeItemType;
+        case MILITARY_STATION:
+            return "Military move";
         default:
             return "Normal";
         }
@@ -369,6 +372,20 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
             }
             break;
 
+        case BUILD_WORKSHOP:
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                if (selectionValid) {
+                    controller
+                            .addCommand(new BuildWorkshopCommand(player, new MapIndex(selection.pos), workshopType));
+                }
+
+                if (!e.isShiftDown()) {
+                    setState(GuiState.NORMAL);
+                    drawSelection = false;
+                }
+            }
+            break;
+
         case PLACE_ITEM:
             if (e.getButton() == MouseEvent.BUTTON1) {
                 if (selectionValid) {
@@ -382,17 +399,13 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
             }
             break;
 
-        case BUILD_WORKSHOP:
+        case MILITARY_STATION:
             if (e.getButton() == MouseEvent.BUTTON1) {
                 if (selectionValid) {
-                    controller
-                            .addCommand(new BuildWorkshopCommand(player, new MapIndex(selection.pos), workshopType));
+                    controller.addCommand(new MilitaryMoveCommand(player, new MapIndex(selection.pos)));
                 }
-
-                if (!e.isShiftDown()) {
-                    setState(GuiState.NORMAL);
-                    drawSelection = false;
-                }
+                setState(GuiState.NORMAL);
+                drawSelection = false;
             }
             break;
 
@@ -436,7 +449,7 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
         mouseIndex = worldCanvas.getMouseIndex(e.getX(), e.getY());
 
         if (!oldMouseIndex.equals(mouseIndex)) {
-            if (guiState == GuiState.PLACE_ITEM) {
+            if (guiState == GuiState.PLACE_ITEM || guiState == GuiState.MILITARY_STATION) {
                 absSelection.pos = mouseIndex;
                 absSelection.width = 1;
                 absSelection.height = 1;

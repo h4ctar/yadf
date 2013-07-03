@@ -13,6 +13,7 @@ import javax.swing.JTabbedPane;
 import logger.Logger;
 import misc.MyRandom;
 import settings.Settings;
+import simulation.IPlayer;
 import simulation.Player;
 import simulation.Region;
 import simulation.item.ItemTypeManager;
@@ -22,6 +23,7 @@ import simulation.recipe.RecipeManager;
 import simulation.workshop.WorkshopTypeManager;
 import userinterface.game.job.JobsPane;
 import userinterface.game.labor.LaborsPane;
+import userinterface.game.military.MilitaryPane;
 import userinterface.game.stock.StocksPane;
 import userinterface.misc.ImagePanel;
 import userinterface.multiplayer.IMainWindow;
@@ -65,8 +67,11 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     /** The stocks pane. */
     private StocksPane stocksPane;
 
+    /** The military pane. */
+    private MilitaryPane militaryPane;
+
     /** The status bar. */
-    private StatusBar statusBar;
+    private StatusBar northPanel;
 
     /**
      * Constructor.
@@ -103,6 +108,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             jobsPane.setup(player.getJobManager());
             laborsPane.setup(player, controller);
             stocksPane.setup(player);
+            militaryPane.setup(player, controller);
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
@@ -152,10 +158,11 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             jobsPane.setup(player.getJobManager());
             laborsPane.setup(player, controller);
             stocksPane.setup(player);
+            militaryPane.setup(player, controller);
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
-            for (Player playerTmp : region.getPlayers()) {
+            for (IPlayer playerTmp : region.getPlayers()) {
                 playerTmp.setup(region, embarkPosition, numberOfStartingDwarfs);
             }
             worldPane.getWorldCanvas().zoomToPosition(embarkPosition);
@@ -192,6 +199,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             jobsPane.setup(player.getJobManager());
             laborsPane.setup(player, controller);
             stocksPane.setup(player);
+            militaryPane.setup(player, controller);
 
             gameLoop = new GameLoop(region, controller, this);
         } catch (Exception e) {
@@ -221,7 +229,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     @Override
     public void update() {
         worldPane.update();
-        statusBar.update(gameLoop, region, worldPane);
+        northPanel.update(gameLoop, region, worldPane);
     }
 
     @Override
@@ -238,13 +246,14 @@ public class GamePanel extends ImagePanel implements IGamePanel {
         // CHECKSTYLE:OFF
         setLayout(new BorderLayout(0, 0));
 
+        // Create the status bar
+        northPanel = new StatusBar();
+        add(northPanel, BorderLayout.NORTH);
+
         JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setBorder(null);
         tabbedPane.setOpaque(false);
         add(tabbedPane, BorderLayout.CENTER);
-
-        // Create the status bar
-        statusBar = new StatusBar();
-        add(statusBar, BorderLayout.SOUTH);
 
         // The world pane contains the main game canvas
         worldPane = new WorldPane();
@@ -261,6 +270,10 @@ public class GamePanel extends ImagePanel implements IGamePanel {
         // The stocks pane shows all the stock counts
         stocksPane = new StocksPane();
         tabbedPane.addTab("Stocks", null, stocksPane, null);
+
+        // The military pane
+        militaryPane = new MilitaryPane();
+        tabbedPane.addTab("Military", null, militaryPane, null);
         // CHECKSTYLE:ON
     }
 }

@@ -49,5 +49,7 @@ public enum GuiState {
     /** The build farm. */
     BUILD_FARM,
     /** The build workshop. */
-    BUILD_WORKSHOP
+    BUILD_WORKSHOP,
+    /** Move the military to a position. */
+    MILITARY_STATION
 }

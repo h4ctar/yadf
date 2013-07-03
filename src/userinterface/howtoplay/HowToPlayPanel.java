@@ -52,7 +52,7 @@ public class HowToPlayPanel extends ImagePanel {
         howToPlayLabel.setText("How to Play");
         howToPlayLabel.setHorizontalAlignment(SwingConstants.CENTER);
         howToPlayLabel.setForeground(Color.WHITE);
-        howToPlayLabel.setFont(new Font("Minecraftia", Font.PLAIN, 40));
+        howToPlayLabel.setFont(new Font("Tahoma", Font.PLAIN, 40));
         GridBagConstraints gbc_howToPlayLabel = new GridBagConstraints();
         gbc_howToPlayLabel.insets = new Insets(0, 0, 5, 5);
         gbc_howToPlayLabel.gridx = 1;

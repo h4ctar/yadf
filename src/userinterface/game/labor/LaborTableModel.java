@@ -70,6 +70,7 @@ class LaborTableModel extends AbstractTableModel implements IDwarfManagerListene
         for (IGameCharacter dwarf : player.getDwarfManager().getDwarfs()) {
             dwarf.getComponent(ISkillComponent.class).addListener(this);
         }
+        // TODO: remove dwarf manager listener
     }
 
     @Override

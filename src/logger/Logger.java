@@ -42,7 +42,7 @@ public final class Logger {
     /** The instance. */
     private static Logger instance;
 
-    private String fileName = "c:\\temp\\yadf_" + System.currentTimeMillis() + ".txt";
+    // private String fileName = "c:\\temp\\yadf_" + System.currentTimeMillis() + ".txt";
 
     /**
      * Gets the single instance of Logger.

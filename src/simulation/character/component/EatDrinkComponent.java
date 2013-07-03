@@ -65,17 +65,14 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
     /** A reference to the drink job. */
     private EatDrinkJob drinkJob;
 
+    private boolean spawnJobs = true;
+
     /**
      * Constructor.
      * @param characterTmp the character that this component belongs to
      */
     public EatDrinkComponent(final IGameCharacter characterTmp) {
         super(characterTmp);
-    }
-
-    @Override
-    public boolean isHungryOrThirsty() {
-        return hunger > HUNGER_EAT_THRESHOLD || thirst > THIRST_DRINK_THRESHOLD;
     }
 
     @Override
@@ -115,14 +112,16 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
         hunger++;
         thirst++;
 
-        if (hunger > HUNGER_EAT_THRESHOLD && eatJob == null) {
-            eatJob = new EatDrinkJob(getCharacter(), true);
-            player.getJobManager().addJob(eatJob);
-        }
+        if (spawnJobs) {
+            if (hunger > HUNGER_EAT_THRESHOLD && eatJob == null) {
+                eatJob = new EatDrinkJob(getCharacter(), true);
+                player.getJobManager().addJob(eatJob);
+            }
 
-        if (thirst > THIRST_DRINK_THRESHOLD && drinkJob == null) {
-            drinkJob = new EatDrinkJob(getCharacter(), false);
-            player.getJobManager().addJob(drinkJob);
+            if (thirst > THIRST_DRINK_THRESHOLD && drinkJob == null) {
+                drinkJob = new EatDrinkJob(getCharacter(), false);
+                player.getJobManager().addJob(drinkJob);
+            }
         }
 
         if (hunger > HUNGER_SICK_THRESHOLD) {
@@ -140,5 +139,10 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
         if (drinkJob != null && drinkJob.isDone()) {
             drinkJob = null;
         }
+    }
+
+    @Override
+    public void setSpawnJobs(final boolean spawnJobsTmp) {
+        spawnJobs = spawnJobsTmp;
     }
 }

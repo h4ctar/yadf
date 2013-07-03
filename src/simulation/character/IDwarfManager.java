@@ -40,6 +40,14 @@ public interface IDwarfManager {
     IGameCharacter getDwarf(MapIndex mapIndex);
 
     /**
+     * Gets a dwarf within a radius of a position.
+     * @param position the position
+     * @param radius the radius
+     * @return the found dwarf, null if no dwarf within radius
+     */
+    IGameCharacter getDwarf(MapIndex position, int radius);
+
+    /**
      * Gets all the dwarfs.
      * @return the dwarfs
      */

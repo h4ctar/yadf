@@ -1,5 +1,7 @@
 package simulation;
 
+import java.util.Set;
+
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
@@ -42,6 +44,12 @@ public interface IRegion {
      * @return the map
      */
     RegionMap getMap();
+
+    /**
+     * Gets all the players.
+     * @return the players
+     */
+    Set<IPlayer> getPlayers();
 
     /**
      * Get the tree manager.

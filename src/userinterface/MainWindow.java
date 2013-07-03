@@ -67,10 +67,10 @@ public class MainWindow extends JFrame implements IMainWindow {
     private static final Rectangle WINDOW_BOUNDS = new Rectangle(100, 100, 800, 600);
 
     /** The default font. */
-    private static final Font DEFAULT_FONT = new Font("Minecraftia", Font.PLAIN, 14);
+    private static final Font DEFAULT_FONT = new Font("Tahoma", Font.PLAIN, 14);
 
     /** The default font for the internal frame titles, needs to be this because the minecraftia font is too large. */
-    private static final Font INTERNAL_FRAME_FONT = new Font("Tahoma", Font.PLAIN, 11);
+    private static final Font INTERNAL_FRAME_FONT = new Font("Tahoma", Font.PLAIN, 12);
 
     /**
      * Instantiates a new main window and starts the main menu.

@@ -16,12 +16,6 @@ public interface IEatDrinkComponent extends ICharacterComponent {
     void drink();
 
     /**
-     * Can the character work.
-     * @return true if they can work
-     */
-    boolean isHungryOrThirsty();
-
-    /**
      * Gets how hungry the character is as a percentage; 100% means they need to eat.
      * @return the hunger level
      */
@@ -32,4 +26,6 @@ public interface IEatDrinkComponent extends ICharacterComponent {
      * @return the thirst level
      */
     int getThirst();
+
+    void setSpawnJobs(boolean b);
 }

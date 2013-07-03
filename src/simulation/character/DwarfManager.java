@@ -64,12 +64,26 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
 
     @Override
     public IGameCharacter getDwarf(final MapIndex position) {
+        IGameCharacter foundDwarf = null;
         for (IGameCharacter dwarf : dwarfs) {
             if (dwarf.getPosition().equals(position)) {
-                return dwarf;
+                foundDwarf = dwarf;
+                break;
             }
         }
-        return null;
+        return foundDwarf;
+    }
+
+    @Override
+    public IGameCharacter getDwarf(final MapIndex position, final int radius) {
+        IGameCharacter foundDwarf = null;
+        for (IGameCharacter dwarf : dwarfs) {
+            if (dwarf.getPosition().distance(position) <= radius) {
+                foundDwarf = dwarf;
+                break;
+            }
+        }
+        return foundDwarf;
     }
 
     /**

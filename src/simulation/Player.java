@@ -47,6 +47,8 @@ import simulation.item.StockManager;
 import simulation.job.IJobManager;
 import simulation.job.JobManager;
 import simulation.map.MapIndex;
+import simulation.military.IMilitaryManager;
+import simulation.military.MilitaryManager;
 import simulation.room.IRoomManager;
 import simulation.room.RoomManager;
 import simulation.workshop.IWorkshopManager;
@@ -81,6 +83,9 @@ public class Player extends AbstractGameObject implements IPlayer {
     /** The workshop manager. */
     private final WorkshopManager workshopManager = new WorkshopManager();
 
+    /** The military manager. */
+    private final MilitaryManager militaryManager = new MilitaryManager();
+
     /** The region that this player is in. */
     private IRegion region;
 
@@ -92,13 +97,7 @@ public class Player extends AbstractGameObject implements IPlayer {
         name = playerName;
     }
 
-    /**
-     * Setup.
-     * @param playerName the players name
-     * @param regionTmp the region that this player is in
-     * @param embarkPosition the embark position
-     * @param numberOfStartingDwarfs the number of starting dwarfs
-     */
+    @Override
     public void setup(final IRegion regionTmp, final MapIndex embarkPosition, final int numberOfStartingDwarfs) {
         Logger.getInstance().log(this, "Setting up");
         region = regionTmp;
@@ -145,9 +144,12 @@ public class Player extends AbstractGameObject implements IPlayer {
         return workshopManager;
     }
 
-    /**
-     * Update.
-     */
+    @Override
+    public IMilitaryManager getMilitaryManager() {
+        return militaryManager;
+    }
+
+    @Override
     public void update() {
         dwarfManager.update();
         farmManager.update(this);

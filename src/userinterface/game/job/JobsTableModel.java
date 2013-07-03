@@ -93,12 +93,14 @@ class JobsTableModel extends AbstractTableModel implements IJobManagerListener {
 
     @Override
     public void jobsAdded(final IJob job) {
+        this.fireTableDataChanged();
         // this.fireTableRowsInserted(firstIndex, lastIndex);
         // TODO: fix this
     }
 
     @Override
     public void jobRemoved(final IJob job) {
+        this.fireTableDataChanged();
         // this.fireTableRowsDeleted(index, index);
         // TODO: fix this
     }

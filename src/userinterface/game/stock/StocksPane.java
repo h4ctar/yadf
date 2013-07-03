@@ -60,12 +60,14 @@ public class StocksPane extends JPanel {
      */
     public StocksPane() {
         super(new BorderLayout());
+        setOpaque(false);
 
         stocksScrollPane = new JScrollPane();
+        stocksScrollPane.setOpaque(false);
         add(stocksScrollPane, BorderLayout.CENTER);
 
         stocksTable = new JXTreeTable();
-        Font font = new Font("Minecraftia", Font.PLAIN, 12);
+        Font font = new Font("Tahoma", Font.PLAIN, 12);
         stocksTable.setFont(font);
         stocksScrollPane.setViewportView(stocksTable);
     }
