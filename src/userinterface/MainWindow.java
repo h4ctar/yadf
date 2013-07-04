@@ -31,7 +31,6 @@
  */
 package userinterface;
 
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -66,12 +65,6 @@ public class MainWindow extends JFrame implements IMainWindow {
     /** The bounds of the window when it is created. */
     private static final Rectangle WINDOW_BOUNDS = new Rectangle(100, 100, 800, 600);
 
-    /** The default font. */
-    private static final Font DEFAULT_FONT = new Font("Tahoma", Font.PLAIN, 14);
-
-    /** The default font for the internal frame titles, needs to be this because the minecraftia font is too large. */
-    private static final Font INTERNAL_FRAME_FONT = new Font("Tahoma", Font.PLAIN, 12);
-
     /**
      * Instantiates a new main window and starts the main menu.
      * @throws Exception something went wrong
@@ -83,8 +76,6 @@ public class MainWindow extends JFrame implements IMainWindow {
                 break;
             }
         }
-        UIManager.getLookAndFeelDefaults().put("defaultFont", DEFAULT_FONT);
-        UIManager.put("InternalFrame.titleFont", INTERNAL_FRAME_FONT);
         setTitle("Ben's Burrows");
         setBounds(WINDOW_BOUNDS);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

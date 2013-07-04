@@ -56,11 +56,6 @@ import simulation.map.MapIndex;
 import simulation.room.Room;
 import simulation.workshop.IWorkshop;
 import simulation.workshop.Workshop;
-import userinterface.game.dwarf.DwarfInterface;
-import userinterface.game.item.ItemInterface;
-import userinterface.game.room.RoomInterface;
-import userinterface.game.stockpile.StockpileInterface;
-import userinterface.game.workshop.WorkshopInterface;
 import controller.AbstractController;
 import controller.command.BuildWorkshopCommand;
 import controller.command.CreateFarmCommand;
@@ -73,6 +68,8 @@ import controller.command.PlaceItemCommand;
 /**
  * The Class WorldPane.
  */
+// TODO: i think there should be listeners (the ManagementPanel) that are notified when certain entities are clicked on,
+// or perhaps the ManagementPanel could be added as a listener to each entity
 class WorldPane extends JDesktopPane implements ComponentListener, MouseListener, MouseMotionListener {
 
     /** The serial version UID. */
@@ -89,21 +86,6 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
 
     /** The controller. */
     private AbstractController controller;
-
-    /** The stockpile interface. */
-    private StockpileInterface stockpileInterface;
-
-    /** The room interface. */
-    private RoomInterface roomInterface;
-
-    /** The workshop interface. */
-    private WorkshopInterface workshopInterface;
-
-    /** The dwarf interface. */
-    private DwarfInterface dwarfInterface;
-
-    /** The item interface. */
-    private ItemInterface itemInterface;
 
     /** The main popup menu. */
     private MainPopupMenu mainPopupMenu;
@@ -137,6 +119,8 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
 
     /** The designation type. */
     private DesignationType designationType = DesignationType.CHANNEL;
+
+    private ManagementPanel managementPanel;
 
     /**
      * Instantiates a new world pane.
@@ -236,24 +220,17 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
      * @param regionTmp the region
      * @param playerTmp the player
      * @param controllerTmp the controller
+     * @param managementPanelTmp the management panel
      */
-    public void setup(final Region regionTmp, final Player playerTmp, final AbstractController controllerTmp) {
+    public void setup(final Region regionTmp, final Player playerTmp, final AbstractController controllerTmp,
+            final ManagementPanel managementPanelTmp) {
         region = regionTmp;
         player = playerTmp;
         controller = controllerTmp;
+        managementPanel = managementPanelTmp;
         worldCanvas.setup(player, region);
         mainPopupMenu = new MainPopupMenu(this);
-        roomInterface = new RoomInterface(player, controller);
-        workshopInterface = new WorkshopInterface(worldCanvas, player, controller);
-        stockpileInterface = new StockpileInterface(worldCanvas, player, controller);
-        dwarfInterface = new DwarfInterface();
-        itemInterface = new ItemInterface();
         add(mainPopupMenu);
-        add(roomInterface);
-        add(workshopInterface);
-        add(stockpileInterface);
-        add(dwarfInterface);
-        add(itemInterface);
     }
 
     /**
@@ -318,48 +295,38 @@ class WorldPane extends JDesktopPane implements ComponentListener, MouseListener
                 // If click on dwarf, show the dwarf interface
                 IGameCharacter dwarf = player.getDwarfManager().getDwarf(mouseIndex);
                 if (dwarf != null) {
-                    dwarfInterface.setDwarf(dwarf, worldCanvas);
-                    dwarfInterface.setVisible(true);
+                    managementPanel.openDwarfInterface(dwarf, worldCanvas);
                     return;
                 }
 
                 // If left click on a item, show the item interface
                 Item item = player.getStockManager().getItem(mouseIndex);
                 if (item != null) {
-                    itemInterface.setItem(item);
-                    itemInterface.setVisible(true);
+                    managementPanel.openItemInterface(item, worldCanvas);
                     return;
                 }
 
                 // If left click on a stockpile, show the stockpile interface
                 Stockpile stockpile = player.getStockManager().getStockpile(mouseIndex);
                 if (stockpile != null) {
-                    stockpileInterface.setStockpile(stockpile);
-                    stockpileInterface.setVisible(true);
+                    managementPanel.openStockpileInterface(stockpile, worldCanvas);
                     return;
                 }
 
                 // If left click on a room, show the room interface
                 Room room = player.getRoomManager().getRoom(mouseIndex);
                 if (room != null) {
-                    roomInterface.setRoom(room);
-                    roomInterface.setVisible(true);
+                    managementPanel.openRoomInterface(room, worldCanvas);
                     return;
                 }
 
                 // If left click on a workshop, show the room interface
                 IWorkshop workshop = player.getWorkshopManager().getWorkshop(mouseIndex);
                 if (workshop != null) {
-                    workshopInterface.setWorkshop(workshop);
-                    workshopInterface.setVisible(true);
+                    managementPanel.openWorkshopInterface(workshop, worldCanvas);
                     return;
                 }
 
-                break;
-
-            // Middle mouse button
-            case MouseEvent.BUTTON2:
-                // do nothing
                 break;
 
             // Right mouse button

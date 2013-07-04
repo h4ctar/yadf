@@ -1,6 +1,6 @@
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.workshop.IWorkshop;
 
 /**
@@ -20,7 +20,7 @@ public class DeleteWorkshopCommand extends AbstractCommand {
      * @param player the player
      * @param workshopIdTmp the workshop id
      */
-    public DeleteWorkshopCommand(final Player player, final int workshopIdTmp) {
+    public DeleteWorkshopCommand(final IPlayer player, final int workshopIdTmp) {
         super(player);
         workshopId = workshopIdTmp;
     }

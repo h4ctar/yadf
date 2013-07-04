@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 
@@ -59,7 +59,7 @@ public class EnableLaborCommand extends AbstractCommand {
      * @param laborTypeNameTmp the labor type name
      * @param enabledTmp the enabled
      */
-    public EnableLaborCommand(final Player player, final int dwarfIdTmp, final String laborTypeNameTmp,
+    public EnableLaborCommand(final IPlayer player, final int dwarfIdTmp, final String laborTypeNameTmp,
             final boolean enabledTmp) {
         super(player);
         dwarfId = dwarfIdTmp;

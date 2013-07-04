@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.workshop.IWorkshop;
 
 /**
@@ -54,7 +54,7 @@ public class NewOrderCommand extends AbstractCommand {
      * @param workshopIdTmp the workshop id
      * @param recipeNameTmp the recipe name
      */
-    public NewOrderCommand(final Player player, final int workshopIdTmp, final String recipeNameTmp) {
+    public NewOrderCommand(final IPlayer player, final int workshopIdTmp, final String recipeNameTmp) {
         super(player);
         workshopId = workshopIdTmp;
         recipeName = recipeNameTmp;

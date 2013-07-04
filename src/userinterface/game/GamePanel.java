@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import logger.Logger;
 import misc.MyRandom;
@@ -21,10 +20,6 @@ import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
 import simulation.recipe.RecipeManager;
 import simulation.workshop.WorkshopTypeManager;
-import userinterface.game.job.JobsPane;
-import userinterface.game.labor.LaborsPane;
-import userinterface.game.military.MilitaryPane;
-import userinterface.game.stock.StocksPane;
 import userinterface.misc.ImagePanel;
 import userinterface.multiplayer.IMainWindow;
 import controller.AbstractController;
@@ -58,20 +53,11 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     /** The world pane. */
     private WorldPane worldPane;
 
-    /** The jobs pane. */
-    private JobsPane jobsPane;
-
-    /** The labors pane. */
-    private LaborsPane laborsPane;
-
-    /** The stocks pane. */
-    private StocksPane stocksPane;
-
-    /** The military pane. */
-    private MilitaryPane militaryPane;
-
     /** The status bar. */
-    private StatusBar northPanel;
+    private StatusBar statusPanel;
+
+    /** The south panel. */
+    private ManagementPanel managementPanel;
 
     /**
      * Constructor.
@@ -104,11 +90,8 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             region.addPlayer(player);
             controller = new SinglePlayerController();
 
-            worldPane.setup(region, player, controller);
-            jobsPane.setup(player.getJobManager());
-            laborsPane.setup(player, controller);
-            stocksPane.setup(player);
-            militaryPane.setup(player, controller);
+            managementPanel.setup(player, controller);
+            worldPane.setup(region, player, controller, managementPanel);
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
@@ -154,11 +137,8 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             }
             controller = new ClientController(connection, this);
 
-            worldPane.setup(region, player, controller);
-            jobsPane.setup(player.getJobManager());
-            laborsPane.setup(player, controller);
-            stocksPane.setup(player);
-            militaryPane.setup(player, controller);
+            managementPanel.setup(player, controller);
+            worldPane.setup(region, player, controller, managementPanel);
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
@@ -195,11 +175,8 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             player = region.getPlayers().toArray(new Player[0])[0];
             controller = new SinglePlayerController();
 
-            worldPane.setup(region, player, controller);
-            jobsPane.setup(player.getJobManager());
-            laborsPane.setup(player, controller);
-            stocksPane.setup(player);
-            militaryPane.setup(player, controller);
+            managementPanel.setup(player, controller);
+            worldPane.setup(region, player, controller, managementPanel);
 
             gameLoop = new GameLoop(region, controller, this);
         } catch (Exception e) {
@@ -229,7 +206,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     @Override
     public void update() {
         worldPane.update();
-        northPanel.update(gameLoop, region, worldPane);
+        statusPanel.update(gameLoop, region, worldPane);
     }
 
     @Override
@@ -243,37 +220,15 @@ public class GamePanel extends ImagePanel implements IGamePanel {
      * Setup the layout.
      */
     private void setupLayout() {
-        // CHECKSTYLE:OFF
         setLayout(new BorderLayout(0, 0));
 
-        // Create the status bar
-        northPanel = new StatusBar();
-        add(northPanel, BorderLayout.NORTH);
+        statusPanel = new StatusBar();
+        add(statusPanel, BorderLayout.NORTH);
 
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setBorder(null);
-        tabbedPane.setOpaque(false);
-        add(tabbedPane, BorderLayout.CENTER);
-
-        // The world pane contains the main game canvas
         worldPane = new WorldPane();
-        tabbedPane.addTab("World", null, worldPane, null);
+        add(worldPane, BorderLayout.CENTER);
 
-        // The jobs pane has a list of all jobs
-        jobsPane = new JobsPane();
-        tabbedPane.addTab("Jobs", null, jobsPane, null);
-
-        // The labors pane shows the skills and enabled labors for each dwarf
-        laborsPane = new LaborsPane();
-        tabbedPane.addTab("Labors", null, laborsPane, null);
-
-        // The stocks pane shows all the stock counts
-        stocksPane = new StocksPane();
-        tabbedPane.addTab("Stocks", null, stocksPane, null);
-
-        // The military pane
-        militaryPane = new MilitaryPane();
-        tabbedPane.addTab("Military", null, militaryPane, null);
-        // CHECKSTYLE:ON
+        managementPanel = new ManagementPanel();
+        add(managementPanel, BorderLayout.SOUTH);
     }
 }

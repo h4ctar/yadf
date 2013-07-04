@@ -33,19 +33,20 @@ package userinterface.game.dwarf;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 
 import simulation.character.ICharacterListener;
 import simulation.character.IGameCharacter;
@@ -57,13 +58,12 @@ import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.labor.LaborType;
 import userinterface.game.WorldCanvas;
-import userinterface.misc.ImagePanel;
 import userinterface.misc.SpriteManager;
 
 /**
  * The Class DwarfInterface.
  */
-public class DwarfInterface extends JInternalFrame implements ICharacterListener, ICharacterComponentListener {
+public class DwarfInterface extends JPanel implements ICharacterListener, ICharacterComponentListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 6213975713592520095L;
@@ -115,11 +115,14 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
 
     /** The follow button. */
     private JButton followButton;
+    private JPanel panel;
 
     /**
      * Create the frame.
      */
     public DwarfInterface() {
+        setBackground(Color.BLACK);
+        setOpaque(false);
         setupLayout();
     }
 
@@ -173,203 +176,8 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
     /**
      * Setup the layout.
      */
-    // CHECKSTYLE:OFF
     private void setupLayout() {
-        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        setClosable(true);
-        setTitle("Dwarf interface");
-        setBounds(100, 100, 608, 433);
-        setResizable(true);
-        getContentPane().setLayout(new BorderLayout(5, 5));
-
-        JPanel panel = new ImagePanel();
-        GridBagLayout panelLayout = new GridBagLayout();
-        panelLayout.columnWidths = new int[] { 252, 0, 0, 0 };
-        panelLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        panelLayout.columnWeights = new double[] { 1.0, 0.0, 1.0, Double.MIN_VALUE };
-        panelLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
-        panel.setLayout(panelLayout);
-        getContentPane().add(panel, BorderLayout.CENTER);
-
-        imageLabel = new JLabel("");
-        imageLabel.setVerticalAlignment(SwingConstants.TOP);
-        GridBagConstraints imageLabelConstraints = new GridBagConstraints();
-        imageLabelConstraints.gridheight = 9;
-        imageLabelConstraints.insets = new Insets(0, 0, 5, 5);
-        imageLabelConstraints.gridx = 0;
-        imageLabelConstraints.gridy = 0;
-        panel.add(imageLabel, imageLabelConstraints);
-
-        JLabel nameLabel = new JLabel("Name:");
-        nameLabel.setForeground(Color.WHITE);
-        GridBagConstraints nameLabeConstraints = new GridBagConstraints();
-        nameLabeConstraints.insets = new Insets(0, 0, 5, 5);
-        nameLabeConstraints.anchor = GridBagConstraints.EAST;
-        nameLabeConstraints.gridx = 1;
-        nameLabeConstraints.gridy = 0;
-        panel.add(nameLabel, nameLabeConstraints);
-
-        nameTextField = new JTextField();
-        nameTextField.setEditable(false);
-        GridBagConstraints nameTextFielConstraints = new GridBagConstraints();
-        nameTextFielConstraints.insets = new Insets(0, 0, 5, 0);
-        nameTextFielConstraints.fill = GridBagConstraints.HORIZONTAL;
-        nameTextFielConstraints.gridx = 2;
-        nameTextFielConstraints.gridy = 0;
-        nameTextField.setColumns(10);
-        panel.add(nameTextField, nameTextFielConstraints);
-
-        JLabel professionLabel = new JLabel("Profession:");
-        professionLabel.setForeground(Color.WHITE);
-        GridBagConstraints professionLabelGridBagConstrints = new GridBagConstraints();
-        professionLabelGridBagConstrints.anchor = GridBagConstraints.EAST;
-        professionLabelGridBagConstrints.insets = new Insets(0, 0, 5, 5);
-        professionLabelGridBagConstrints.gridx = 1;
-        professionLabelGridBagConstrints.gridy = 1;
-        panel.add(professionLabel, professionLabelGridBagConstrints);
-
-        professionTextField = new JTextField();
-        professionTextField.setEditable(false);
-        GridBagConstraints professionTextFielConstraints = new GridBagConstraints();
-        professionTextFielConstraints.insets = new Insets(0, 0, 5, 0);
-        professionTextFielConstraints.fill = GridBagConstraints.HORIZONTAL;
-        professionTextFielConstraints.gridx = 2;
-        professionTextFielConstraints.gridy = 1;
-        professionTextField.setColumns(10);
-        panel.add(professionTextField, professionTextFielConstraints);
-
-        JLabel deadLabel = new JLabel("Dead:");
-        deadLabel.setForeground(Color.WHITE);
-        GridBagConstraints deadLabeConstraints = new GridBagConstraints();
-        deadLabeConstraints.anchor = GridBagConstraints.EAST;
-        deadLabeConstraints.insets = new Insets(0, 0, 5, 5);
-        deadLabeConstraints.gridx = 1;
-        deadLabeConstraints.gridy = 2;
-        panel.add(deadLabel, deadLabeConstraints);
-
-        deadTextField = new JTextField();
-        deadTextField.setEditable(false);
-        GridBagConstraints deadTextFielConstraints = new GridBagConstraints();
-        deadTextFielConstraints.insets = new Insets(0, 0, 5, 0);
-        deadTextFielConstraints.fill = GridBagConstraints.HORIZONTAL;
-        deadTextFielConstraints.gridx = 2;
-        deadTextFielConstraints.gridy = 2;
-        panel.add(deadTextField, deadTextFielConstraints);
-        deadTextField.setColumns(10);
-
-        JLabel itemHaulingLabel = new JLabel("Item Hauling:");
-        itemHaulingLabel.setForeground(Color.WHITE);
-        GridBagConstraints itemHaulingLabeConstraints = new GridBagConstraints();
-        itemHaulingLabeConstraints.anchor = GridBagConstraints.EAST;
-        itemHaulingLabeConstraints.insets = new Insets(0, 0, 5, 5);
-        itemHaulingLabeConstraints.gridx = 1;
-        itemHaulingLabeConstraints.gridy = 3;
-        panel.add(itemHaulingLabel, itemHaulingLabeConstraints);
-
-        itemHaulingTextField = new JTextField();
-        itemHaulingTextField.setEditable(false);
-        GridBagConstraints itemHaulingTextFielConstraints = new GridBagConstraints();
-        itemHaulingTextFielConstraints.insets = new Insets(0, 0, 5, 0);
-        itemHaulingTextFielConstraints.fill = GridBagConstraints.HORIZONTAL;
-        itemHaulingTextFielConstraints.gridx = 2;
-        itemHaulingTextFielConstraints.gridy = 3;
-        panel.add(itemHaulingTextField, itemHaulingTextFielConstraints);
-        itemHaulingTextField.setColumns(10);
-
-        JLabel toolHoldingLabel = new JLabel("Tool holding:");
-        toolHoldingLabel.setForeground(Color.WHITE);
-        GridBagConstraints toolHoldingConstraints = new GridBagConstraints();
-        toolHoldingConstraints.anchor = GridBagConstraints.EAST;
-        toolHoldingConstraints.insets = new Insets(0, 0, 5, 5);
-        toolHoldingConstraints.gridx = 1;
-        toolHoldingConstraints.gridy = 4;
-        panel.add(toolHoldingLabel, toolHoldingConstraints);
-
-        toolHoldingTextField = new JTextField();
-        toolHoldingTextField.setEditable(false);
-        GridBagConstraints toolHoldingTextFieldConstraints = new GridBagConstraints();
-        toolHoldingTextFieldConstraints.insets = new Insets(0, 0, 5, 0);
-        toolHoldingTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-        toolHoldingTextFieldConstraints.gridx = 2;
-        toolHoldingTextFieldConstraints.gridy = 4;
-        panel.add(toolHoldingTextField, toolHoldingTextFieldConstraints);
-        toolHoldingTextField.setColumns(10);
-
-        JLabel healthLabel = new JLabel("Health:");
-        healthLabel.setForeground(Color.WHITE);
-        GridBagConstraints healthLabelConstraints = new GridBagConstraints();
-        healthLabelConstraints.anchor = GridBagConstraints.EAST;
-        healthLabelConstraints.insets = new Insets(0, 0, 5, 5);
-        healthLabelConstraints.gridx = 1;
-        healthLabelConstraints.gridy = 5;
-        panel.add(healthLabel, healthLabelConstraints);
-
-        healthTextField = new JTextField();
-        healthTextField.setEditable(false);
-        GridBagConstraints healthTextFieldConstraints = new GridBagConstraints();
-        healthTextFieldConstraints.insets = new Insets(0, 0, 5, 0);
-        healthTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-        healthTextFieldConstraints.gridx = 2;
-        healthTextFieldConstraints.gridy = 5;
-        panel.add(healthTextField, healthTextFieldConstraints);
-        healthTextField.setColumns(10);
-
-        JLabel hungerLabel = new JLabel("Hunger:");
-        hungerLabel.setForeground(Color.WHITE);
-        GridBagConstraints hungerLabelConstraints = new GridBagConstraints();
-        hungerLabelConstraints.anchor = GridBagConstraints.EAST;
-        hungerLabelConstraints.insets = new Insets(0, 0, 5, 5);
-        hungerLabelConstraints.gridx = 1;
-        hungerLabelConstraints.gridy = 6;
-        panel.add(hungerLabel, hungerLabelConstraints);
-
-        hungerTextField = new JTextField();
-        hungerTextField.setEditable(false);
-        GridBagConstraints hungerTextFieldConstraints = new GridBagConstraints();
-        hungerTextFieldConstraints.insets = new Insets(0, 0, 5, 0);
-        hungerTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-        hungerTextFieldConstraints.gridx = 2;
-        hungerTextFieldConstraints.gridy = 6;
-        panel.add(hungerTextField, hungerTextFieldConstraints);
-        hungerTextField.setColumns(10);
-
-        JLabel thirstLabel = new JLabel("Thirst:");
-        thirstLabel.setForeground(Color.WHITE);
-        GridBagConstraints thirstLabelConstraints = new GridBagConstraints();
-        thirstLabelConstraints.anchor = GridBagConstraints.EAST;
-        thirstLabelConstraints.insets = new Insets(0, 0, 5, 5);
-        thirstLabelConstraints.gridx = 1;
-        thirstLabelConstraints.gridy = 7;
-        panel.add(thirstLabel, thirstLabelConstraints);
-
-        thirstTextField = new JTextField();
-        thirstTextField.setEditable(false);
-        GridBagConstraints thirstTextFieldConstraints = new GridBagConstraints();
-        thirstTextFieldConstraints.insets = new Insets(0, 0, 5, 0);
-        thirstTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-        thirstTextFieldConstraints.gridx = 2;
-        thirstTextFieldConstraints.gridy = 7;
-        panel.add(thirstTextField, thirstTextFieldConstraints);
-        thirstTextField.setColumns(10);
-
-        lockLabel = new JLabel("Lock:");
-        lockLabel.setForeground(Color.WHITE);
-        GridBagConstraints lockLabelConstraints = new GridBagConstraints();
-        lockLabelConstraints.anchor = GridBagConstraints.EAST;
-        lockLabelConstraints.insets = new Insets(0, 0, 5, 5);
-        lockLabelConstraints.gridx = 1;
-        lockLabelConstraints.gridy = 8;
-        panel.add(lockLabel, lockLabelConstraints);
-
-        lockTextField = new JTextField();
-        lockTextField.setEditable(false);
-        GridBagConstraints lockTextFieldConstraints = new GridBagConstraints();
-        lockTextFieldConstraints.insets = new Insets(0, 0, 5, 0);
-        lockTextFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-        lockTextFieldConstraints.gridx = 2;
-        lockTextFieldConstraints.gridy = 8;
-        panel.add(lockTextField, lockTextFieldConstraints);
-        lockTextField.setColumns(10);
+        setLayout(new BorderLayout(0, 0));
 
         buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
@@ -379,13 +187,223 @@ public class DwarfInterface extends JInternalFrame implements ICharacterListener
         gbc_buttonPanel.fill = GridBagConstraints.HORIZONTAL;
         gbc_buttonPanel.gridx = 0;
         gbc_buttonPanel.gridy = 9;
-        panel.add(buttonPanel, gbc_buttonPanel);
+        add(buttonPanel, BorderLayout.WEST);
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
         zoomButton = new JButton("Zoom");
+        zoomButton.setPreferredSize(new Dimension(150, 23));
+        zoomButton.setMinimumSize(new Dimension(150, 23));
+        zoomButton.setMaximumSize(new Dimension(150, 23));
+        zoomButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.add(zoomButton);
 
         followButton = new JButton("Follow");
+        followButton.setPreferredSize(new Dimension(150, 23));
+        followButton.setMinimumSize(new Dimension(150, 23));
+        followButton.setMaximumSize(new Dimension(150, 23));
+        followButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.add(followButton);
-        // CHECKSTYLE:ON
+
+        panel = new JPanel();
+        panel.setBackground(Color.WHITE);
+        panel.setOpaque(false);
+        add(panel, BorderLayout.CENTER);
+        GridBagLayout gbl_panel = new GridBagLayout();
+        gbl_panel.columnWidths = new int[] { 0, 0, 0 };
+        gbl_panel.columnWeights = new double[] { 0.0, 0.0, 1.0 };
+        gbl_panel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 };
+        panel.setLayout(gbl_panel);
+
+        JLabel nameLabel = new JLabel("Name:");
+        nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_nameLabel = new GridBagConstraints();
+        gbc_nameLabel.anchor = GridBagConstraints.EAST;
+        gbc_nameLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_nameLabel.gridy = 0;
+        gbc_nameLabel.gridx = 0;
+        panel.add(nameLabel, gbc_nameLabel);
+        nameLabel.setForeground(Color.WHITE);
+
+        nameTextField = new JTextField();
+        nameTextField.setPreferredSize(new Dimension(150, 20));
+        nameTextField.setMinimumSize(new Dimension(150, 20));
+        nameTextField.setMaximumSize(new Dimension(150, 20));
+        GridBagConstraints gbc_nameTextField = new GridBagConstraints();
+        gbc_nameTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_nameTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_nameTextField.gridy = 0;
+        gbc_nameTextField.gridx = 1;
+        panel.add(nameTextField, gbc_nameTextField);
+        nameTextField.setEditable(false);
+        nameTextField.setColumns(10);
+
+        JLabel professionLabel = new JLabel("Profession:");
+        professionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_professionLabel = new GridBagConstraints();
+        gbc_professionLabel.anchor = GridBagConstraints.EAST;
+        gbc_professionLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_professionLabel.gridy = 1;
+        gbc_professionLabel.gridx = 0;
+        panel.add(professionLabel, gbc_professionLabel);
+        professionLabel.setForeground(Color.WHITE);
+
+        professionTextField = new JTextField();
+        GridBagConstraints gbc_professionTextField = new GridBagConstraints();
+        gbc_professionTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_professionTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_professionTextField.gridy = 1;
+        gbc_professionTextField.gridx = 1;
+        panel.add(professionTextField, gbc_professionTextField);
+        professionTextField.setEditable(false);
+        professionTextField.setColumns(10);
+
+        JLabel deadLabel = new JLabel("Dead:");
+        deadLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_deadLabel = new GridBagConstraints();
+        gbc_deadLabel.anchor = GridBagConstraints.EAST;
+        gbc_deadLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_deadLabel.gridy = 2;
+        gbc_deadLabel.gridx = 0;
+        panel.add(deadLabel, gbc_deadLabel);
+        deadLabel.setForeground(Color.WHITE);
+
+        deadTextField = new JTextField();
+        GridBagConstraints gbc_deadTextField = new GridBagConstraints();
+        gbc_deadTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_deadTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_deadTextField.gridy = 2;
+        gbc_deadTextField.gridx = 1;
+        panel.add(deadTextField, gbc_deadTextField);
+        deadTextField.setEditable(false);
+        deadTextField.setColumns(10);
+
+        JLabel itemHaulingLabel = new JLabel("Item Hauling:");
+        itemHaulingLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_itemHaulingLabel = new GridBagConstraints();
+        gbc_itemHaulingLabel.anchor = GridBagConstraints.EAST;
+        gbc_itemHaulingLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_itemHaulingLabel.gridy = 3;
+        gbc_itemHaulingLabel.gridx = 0;
+        panel.add(itemHaulingLabel, gbc_itemHaulingLabel);
+        itemHaulingLabel.setForeground(Color.WHITE);
+
+        itemHaulingTextField = new JTextField();
+        GridBagConstraints gbc_itemHaulingTextField = new GridBagConstraints();
+        gbc_itemHaulingTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_itemHaulingTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_itemHaulingTextField.gridy = 3;
+        gbc_itemHaulingTextField.gridx = 1;
+        panel.add(itemHaulingTextField, gbc_itemHaulingTextField);
+        itemHaulingTextField.setEditable(false);
+        itemHaulingTextField.setColumns(10);
+
+        JLabel toolHoldingLabel = new JLabel("Tool holding:");
+        toolHoldingLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_toolHoldingLabel = new GridBagConstraints();
+        gbc_toolHoldingLabel.anchor = GridBagConstraints.EAST;
+        gbc_toolHoldingLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_toolHoldingLabel.gridy = 4;
+        gbc_toolHoldingLabel.gridx = 0;
+        panel.add(toolHoldingLabel, gbc_toolHoldingLabel);
+        toolHoldingLabel.setForeground(Color.WHITE);
+
+        toolHoldingTextField = new JTextField();
+        GridBagConstraints gbc_toolHoldingTextField = new GridBagConstraints();
+        gbc_toolHoldingTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_toolHoldingTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_toolHoldingTextField.gridy = 4;
+        gbc_toolHoldingTextField.gridx = 1;
+        panel.add(toolHoldingTextField, gbc_toolHoldingTextField);
+        toolHoldingTextField.setEditable(false);
+        toolHoldingTextField.setColumns(10);
+
+        JLabel healthLabel = new JLabel("Health:");
+        healthLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_healthLabel = new GridBagConstraints();
+        gbc_healthLabel.anchor = GridBagConstraints.EAST;
+        gbc_healthLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_healthLabel.gridy = 5;
+        gbc_healthLabel.gridx = 0;
+        panel.add(healthLabel, gbc_healthLabel);
+        healthLabel.setForeground(Color.WHITE);
+
+        healthTextField = new JTextField();
+        GridBagConstraints gbc_healthTextField = new GridBagConstraints();
+        gbc_healthTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_healthTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_healthTextField.gridy = 5;
+        gbc_healthTextField.gridx = 1;
+        panel.add(healthTextField, gbc_healthTextField);
+        healthTextField.setEditable(false);
+        healthTextField.setColumns(10);
+
+        JLabel hungerLabel = new JLabel("Hunger:");
+        hungerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_hungerLabel = new GridBagConstraints();
+        gbc_hungerLabel.anchor = GridBagConstraints.EAST;
+        gbc_hungerLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_hungerLabel.gridy = 6;
+        gbc_hungerLabel.gridx = 0;
+        panel.add(hungerLabel, gbc_hungerLabel);
+        hungerLabel.setForeground(Color.WHITE);
+
+        hungerTextField = new JTextField();
+        GridBagConstraints gbc_hungerTextField = new GridBagConstraints();
+        gbc_hungerTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_hungerTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_hungerTextField.gridy = 6;
+        gbc_hungerTextField.gridx = 1;
+        panel.add(hungerTextField, gbc_hungerTextField);
+        hungerTextField.setEditable(false);
+        hungerTextField.setColumns(10);
+
+        JLabel thirstLabel = new JLabel("Thirst:");
+        thirstLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_thirstLabel = new GridBagConstraints();
+        gbc_thirstLabel.anchor = GridBagConstraints.EAST;
+        gbc_thirstLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_thirstLabel.gridy = 7;
+        gbc_thirstLabel.gridx = 0;
+        panel.add(thirstLabel, gbc_thirstLabel);
+        thirstLabel.setForeground(Color.WHITE);
+
+        thirstTextField = new JTextField();
+        GridBagConstraints gbc_thirstTextField = new GridBagConstraints();
+        gbc_thirstTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_thirstTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_thirstTextField.gridy = 7;
+        gbc_thirstTextField.gridx = 1;
+        panel.add(thirstTextField, gbc_thirstTextField);
+        thirstTextField.setEditable(false);
+        thirstTextField.setColumns(10);
+
+        lockLabel = new JLabel("Lock:");
+        lockLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_lockLabel = new GridBagConstraints();
+        gbc_lockLabel.anchor = GridBagConstraints.EAST;
+        gbc_lockLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_lockLabel.gridy = 8;
+        gbc_lockLabel.gridx = 0;
+        panel.add(lockLabel, gbc_lockLabel);
+        lockLabel.setForeground(Color.WHITE);
+
+        lockTextField = new JTextField();
+        GridBagConstraints gbc_lockTextField = new GridBagConstraints();
+        gbc_lockTextField.insets = new Insets(0, 0, 0, 5);
+        gbc_lockTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_lockTextField.gridy = 8;
+        gbc_lockTextField.gridx = 1;
+        panel.add(lockTextField, gbc_lockTextField);
+
+        lockTextField.setEditable(false);
+        lockTextField.setColumns(10);
+
+        imageLabel = new JLabel("");
+        imageLabel.setPreferredSize(new Dimension(250, 0));
+        imageLabel.setMinimumSize(new Dimension(250, 0));
+        imageLabel.setMaximumSize(new Dimension(250, 0));
+        imageLabel.setVerticalAlignment(SwingConstants.TOP);
+        add(imageLabel, BorderLayout.EAST);
     }
 }

@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.room.Room;
 
 /**
@@ -47,11 +47,10 @@ public class DeleteRoomCommand extends AbstractCommand {
 
     /**
      * Instantiates a new delete room command.
-     * 
      * @param player the player
      * @param roomIdTmp the room id
      */
-    public DeleteRoomCommand(final Player player, final int roomIdTmp) {
+    public DeleteRoomCommand(final IPlayer player, final int roomIdTmp) {
         super(player);
         roomId = roomIdTmp;
     }

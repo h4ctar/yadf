@@ -32,37 +32,30 @@
 package userinterface.game.room;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
+import javax.swing.JScrollPane;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.room.Room;
-import userinterface.misc.ImagePanel;
 import controller.AbstractController;
 import controller.command.DeleteRoomCommand;
 
 /**
  * The Class RoomInterface.
  */
-public class RoomInterface extends JInternalFrame {
+public class RoomInterface extends JPanel {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -4042642581073625964L;
-
-    /** The type label. */
-    private JLabel typeLabel;
 
     /** The items list. */
     private JList<String> itemsList;
@@ -74,32 +67,38 @@ public class RoomInterface extends JInternalFrame {
     private JButton destroyRoomButton;
 
     /** The controller. */
-    private final AbstractController controller;
+    private AbstractController controller;
 
     /** The player. */
-    private final Player player;
+    private IPlayer player;
 
     /** The room. */
     private Room room;
 
+    private JPanel infoPanel;
+
+    private JPanel buttonPanel;
+
+    private JScrollPane scrollPane;
+
     /**
      * Create the frame.
-     * @param playerTmp the player
-     * @param controllerTmp the controller
      */
-    public RoomInterface(final Player playerTmp, final AbstractController controllerTmp) {
-        player = playerTmp;
-        controller = controllerTmp;
+    public RoomInterface() {
         setupLayout();
     }
 
     /**
      * Sets the room.
      * @param roomTmp the new room
+     * @param playerTmp the player
+     * @param controllerTmp the controller
      */
-    public void setRoom(final Room roomTmp) {
+    public void setRoom(final Room roomTmp, final IPlayer playerTmp, final AbstractController controllerTmp) {
         room = roomTmp;
-        typeLabel.setText(room.getType().toString());
+        setOpaque(false);
+        player = playerTmp;
+        controller = controllerTmp;
         itemsListModel.setRoom(room);
     }
 
@@ -120,48 +119,40 @@ public class RoomInterface extends JInternalFrame {
      * Setup the layout.
      */
     private void setupLayout() {
-        // CHECKSTYLE:OFF
-        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        setResizable(true);
-        setClosable(true);
-        setTitle("Room Interface");
-        setBounds(100, 100, 450, 300);
-        getContentPane().setLayout(new BorderLayout(5, 5));
+        setLayout(new BorderLayout(0, 0));
 
-        JPanel panel = new ImagePanel();
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
-        panel.setLayout(gridBagLayout);
-        getContentPane().add(panel, BorderLayout.CENTER);
+        itemsListModel = new ItemListModel();
 
-        typeLabel = new JLabel("Room Type");
-        typeLabel.setForeground(Color.WHITE);
-        typeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        add(buttonPanel, BorderLayout.WEST);
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+
+        destroyRoomButton = new JButton("Destroy Room");
+        destroyRoomButton.setPreferredSize(new Dimension(150, 23));
+        destroyRoomButton.setMinimumSize(new Dimension(150, 23));
+        destroyRoomButton.setMaximumSize(new Dimension(150, 23));
+        buttonPanel.add(destroyRoomButton);
+        destroyRoomButton.addActionListener(new DestroyRoomActionListener());
+
+        infoPanel = new JPanel();
+        infoPanel.setOpaque(false);
+        add(infoPanel, BorderLayout.CENTER);
+        infoPanel.setLayout(new BorderLayout(0, 0));
         GridBagConstraints typeLabelConstraints = new GridBagConstraints();
         typeLabelConstraints.fill = GridBagConstraints.HORIZONTAL;
         typeLabelConstraints.insets = new Insets(0, 0, 5, 0);
         typeLabelConstraints.gridx = 0;
         typeLabelConstraints.gridy = 0;
-        panel.add(typeLabel, typeLabelConstraints);
 
-        itemsListModel = new ItemListModel();
+        scrollPane = new JScrollPane();
+        scrollPane.setOpaque(false);
+        infoPanel.add(scrollPane, BorderLayout.CENTER);
+
         itemsList = new JList<>(itemsListModel);
-        GridBagConstraints itemsListConstraints = new GridBagConstraints();
-        itemsListConstraints.insets = new Insets(0, 0, 5, 0);
-        itemsListConstraints.fill = GridBagConstraints.BOTH;
-        itemsListConstraints.gridx = 0;
-        itemsListConstraints.gridy = 1;
-        panel.add(itemsList, itemsListConstraints);
-
-        destroyRoomButton = new JButton("Destroy Room");
+        scrollPane.add(itemsList);
         GridBagConstraints destroyRoomButtonConstraints = new GridBagConstraints();
         destroyRoomButtonConstraints.gridx = 0;
         destroyRoomButtonConstraints.gridy = 2;
-        panel.add(destroyRoomButton, destroyRoomButtonConstraints);
-        destroyRoomButton.addActionListener(new DestroyRoomActionListener());
-        // CHECKSTYLE:ON
     }
 }

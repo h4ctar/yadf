@@ -33,7 +33,7 @@ package userinterface.game.labor;
 
 import javax.swing.table.AbstractTableModel;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.character.Dwarf;
 import simulation.character.IDwarfManagerListener;
 import simulation.character.IGameCharacter;
@@ -53,7 +53,7 @@ class LaborTableModel extends AbstractTableModel implements IDwarfManagerListene
     private static final long serialVersionUID = -2428815575025895385L;
 
     /** The player. */
-    private final Player player;
+    private final IPlayer player;
 
     /** The controller. */
     private final AbstractController controller;
@@ -63,7 +63,7 @@ class LaborTableModel extends AbstractTableModel implements IDwarfManagerListene
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    LaborTableModel(final Player playerTmp, final AbstractController controllerTmp) {
+    LaborTableModel(final IPlayer playerTmp, final AbstractController controllerTmp) {
         player = playerTmp;
         controller = controllerTmp;
         player.getDwarfManager().addListener(this);

@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.workshop.IWorkshop;
 
 /**
@@ -50,12 +50,11 @@ public class CancelOrderCommand extends AbstractCommand {
 
     /**
      * Instantiates a new cancel order command.
-     * 
      * @param player the player
      * @param workshopIdTmp the workshop id
      * @param orderIndexTmp the order index
      */
-    public CancelOrderCommand(final Player player, final int workshopIdTmp, final int orderIndexTmp) {
+    public CancelOrderCommand(final IPlayer player, final int workshopIdTmp, final int orderIndexTmp) {
         super(player);
         workshopId = workshopIdTmp;
         orderIndex = orderIndexTmp;

@@ -38,7 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.item.IContainerListener;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -60,7 +60,7 @@ class StockpileTreeTableModel extends AbstractTreeTableModel implements IContain
     private final AbstractController controller;
 
     /** The player. */
-    private final Player player;
+    private final IPlayer player;
 
     /** The root. */
     private final DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
@@ -72,7 +72,7 @@ class StockpileTreeTableModel extends AbstractTreeTableModel implements IContain
      * @param playerTmp the player
      */
     StockpileTreeTableModel(final Stockpile stockpileTmp, final AbstractController controllerTmp,
-            final Player playerTmp) {
+            final IPlayer playerTmp) {
         stockpile = stockpileTmp;
         controller = controllerTmp;
         player = playerTmp;

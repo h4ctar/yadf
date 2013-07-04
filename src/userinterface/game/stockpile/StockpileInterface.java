@@ -32,31 +32,30 @@
 package userinterface.game.stockpile;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.WindowConstants;
 
 import org.jdesktop.swingx.JXTreeTable;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.item.Stockpile;
 import userinterface.game.WorldCanvas;
-import userinterface.misc.ImagePanel;
 import controller.AbstractController;
 import controller.command.DeleteStockpileCommand;
 
 /**
  * The Class StockpileInterface.
  */
-public class StockpileInterface extends JInternalFrame {
+public class StockpileInterface extends JPanel {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -7914475811407054901L;
@@ -65,10 +64,10 @@ public class StockpileInterface extends JInternalFrame {
     private Stockpile stockpile;
 
     /** The controller. */
-    private final AbstractController controller;
+    private AbstractController controller;
 
     /** The player. */
-    private final Player player;
+    private IPlayer player;
 
     /** The delete button. */
     private JButton deleteButton;
@@ -86,28 +85,29 @@ public class StockpileInterface extends JInternalFrame {
     private JButton zoomButton;
 
     /** The canvas (required to zoom to the stockpile). */
-    private final WorldCanvas worldCanvas;
+    private WorldCanvas worldCanvas;
 
     /**
      * Create the frame.
-     * @param worldCanvasTmp the canvas (required to zoom to the stockpile)
-     * @param playerTmp the player
-     * @param controllerTmp the controller
      */
-    public StockpileInterface(final WorldCanvas worldCanvasTmp, final Player playerTmp,
-            final AbstractController controllerTmp) {
-        worldCanvas = worldCanvasTmp;
-        player = playerTmp;
-        controller = controllerTmp;
+    public StockpileInterface() {
+        setOpaque(false);
         setupLayout();
     }
 
     /**
      * Sets the stockpile.
      * @param stockpileTmp the new stockpile
+     * @param worldCanvasTmp the canvas (required to zoom to the stockpile)
+     * @param playerTmp the player
+     * @param controllerTmp the controller
      */
-    public void setStockpile(final Stockpile stockpileTmp) {
+    public void setStockpile(final Stockpile stockpileTmp, final WorldCanvas worldCanvasTmp, final IPlayer playerTmp,
+            final AbstractController controllerTmp) {
         stockpile = stockpileTmp;
+        worldCanvas = worldCanvasTmp;
+        player = playerTmp;
+        controller = controllerTmp;
         StockpileTreeTableModel tableModel = new StockpileTreeTableModel(stockpile, controller, player);
         treeTable = new JXTreeTable(tableModel);
         scrollPane.setViewportView(treeTable);
@@ -140,33 +140,12 @@ public class StockpileInterface extends JInternalFrame {
      * Setup the layout.
      */
     private void setupLayout() {
-        // CHECKSTYLE:OFF
-        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        setTitle("Stockpile interface");
-        setResizable(true);
-        setClosable(true);
-        setBounds(100, 100, 450, 300);
-        getContentPane().setLayout(new BorderLayout(5, 5));
-
-        JPanel panel = new ImagePanel();
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 1.0, 0.0 };
-        panel.setLayout(gridBagLayout);
-        getContentPane().add(panel);
-
-        scrollPane = new JScrollPane();
+        setLayout(new BorderLayout(0, 0));
         GridBagConstraints scrollPaneConstraints = new GridBagConstraints();
         scrollPaneConstraints.insets = new Insets(0, 0, 5, 0);
         scrollPaneConstraints.fill = GridBagConstraints.BOTH;
         scrollPaneConstraints.gridx = 0;
         scrollPaneConstraints.gridy = 0;
-        panel.add(scrollPane, scrollPaneConstraints);
-
-        treeTable = new JXTreeTable();
-        scrollPane.setViewportView(treeTable);
 
         buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
@@ -174,15 +153,30 @@ public class StockpileInterface extends JInternalFrame {
         gbc_buttonPanel.fill = GridBagConstraints.BOTH;
         gbc_buttonPanel.gridx = 0;
         gbc_buttonPanel.gridy = 1;
-        panel.add(buttonPanel, gbc_buttonPanel);
+        add(buttonPanel, BorderLayout.WEST);
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
         zoomButton = new JButton("Zoom");
+        zoomButton.setMinimumSize(new Dimension(150, 23));
+        zoomButton.setMaximumSize(new Dimension(150, 23));
+        zoomButton.setPreferredSize(new Dimension(150, 23));
+        zoomButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.add(zoomButton);
         zoomButton.addActionListener(new ZoomButtonActionListener());
 
         deleteButton = new JButton("Delete");
+        deleteButton.setMinimumSize(new Dimension(150, 23));
+        deleteButton.setMaximumSize(new Dimension(150, 23));
+        deleteButton.setPreferredSize(new Dimension(150, 23));
+        deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.add(deleteButton);
+
+        scrollPane = new JScrollPane();
+        scrollPane.setOpaque(false);
+        add(scrollPane);
+
+        treeTable = new JXTreeTable();
+        scrollPane.setViewportView(treeTable);
         deleteButton.addActionListener(new DeleteButtonActionListener());
-        // CHECKSTYLE:ON
     }
 }

@@ -1,16 +1,20 @@
 package userinterface.game.military;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.character.IGameCharacter;
 import controller.AbstractController;
 import controller.command.EnlistDwarfCommand;
@@ -30,20 +34,20 @@ public class MilitaryPane extends JPanel {
     private SoldiersTableModel soldiersTableModel;
 
     /** The player. */
-    private Player player;
+    private IPlayer player;
 
     /** The controller. */
     private AbstractController controller;
 
     /**
      * Constructor.
-     * @param controllerTmp the controller
      */
     public MilitaryPane() {
         setOpaque(false);
         setLayout(new BorderLayout(0, 0));
 
         JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBorder(new EmptyBorder(2, 2, 2, 2));
         scrollPane.setOpaque(false);
         add(scrollPane, BorderLayout.CENTER);
 
@@ -52,10 +56,15 @@ public class MilitaryPane extends JPanel {
 
         JPanel panel = new JPanel();
         panel.setOpaque(false);
-        add(panel, BorderLayout.SOUTH);
+        add(panel, BorderLayout.WEST);
 
         JButton enlistButton = new JButton("Enlist");
+        enlistButton.setMinimumSize(new Dimension(150, 23));
+        enlistButton.setMaximumSize(new Dimension(150, 23));
+        enlistButton.setPreferredSize(new Dimension(150, 23));
+        enlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         enlistButton.addActionListener(new EnlistButtonActionListener());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(enlistButton);
     }
 
@@ -64,7 +73,7 @@ public class MilitaryPane extends JPanel {
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public void setup(final Player playerTmp, final AbstractController controllerTmp) {
+    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp) {
         player = playerTmp;
         controller = controllerTmp;
         soldiersTableModel = new SoldiersTableModel(player.getMilitaryManager());

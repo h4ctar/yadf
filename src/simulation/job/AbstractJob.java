@@ -92,6 +92,8 @@ public abstract class AbstractJob implements IJob {
     public void interrupt(final String message) {
         Logger.getInstance().log(this, toString() + " has been interrupted: " + message, true);
         jobState.interrupt(toString() + " was interrupted");
+        done = true;
+        notifyListeners();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package userinterface.howtoplay;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -52,7 +51,6 @@ public class HowToPlayPanel extends ImagePanel {
         howToPlayLabel.setText("How to Play");
         howToPlayLabel.setHorizontalAlignment(SwingConstants.CENTER);
         howToPlayLabel.setForeground(Color.WHITE);
-        howToPlayLabel.setFont(new Font("Tahoma", Font.PLAIN, 40));
         GridBagConstraints gbc_howToPlayLabel = new GridBagConstraints();
         gbc_howToPlayLabel.insets = new Insets(0, 0, 5, 5);
         gbc_howToPlayLabel.gridx = 1;

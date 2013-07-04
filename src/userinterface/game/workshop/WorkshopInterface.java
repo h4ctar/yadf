@@ -32,29 +32,25 @@
 package userinterface.game.workshop;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.recipe.Recipe;
 import simulation.recipe.RecipeManager;
 import simulation.workshop.IWorkshop;
 import userinterface.game.WorldCanvas;
-import userinterface.misc.ImagePanel;
 import controller.AbstractController;
 import controller.command.CancelOrderCommand;
 import controller.command.DeleteWorkshopCommand;
@@ -63,13 +59,10 @@ import controller.command.NewOrderCommand;
 /**
  * The Class WorkshopInterface.
  */
-public class WorkshopInterface extends JInternalFrame {
+public class WorkshopInterface extends JPanel {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -4914056351593833868L;
-
-    /** The type label. */
-    private JLabel typeLabel;
 
     /** The orders list. */
     private JList<String> ordersList;
@@ -87,10 +80,10 @@ public class WorkshopInterface extends JInternalFrame {
     private JButton cancelOrderButton;
 
     /** The controller. */
-    private final AbstractController controller;
+    private AbstractController controller;
 
     /** The player. */
-    private final Player player;
+    private IPlayer player;
 
     /** The workshop. */
     private IWorkshop workshop;
@@ -105,29 +98,31 @@ public class WorkshopInterface extends JInternalFrame {
     private JButton zoomButton;
 
     /** The canvas (required to zoom to the workshop). */
-    private final WorldCanvas worldCanvas;
+    private WorldCanvas worldCanvas;
+
+    private JPanel infoPanel;
 
     /**
      * Create the frame.
-     * @param worldCanvasTmp the canvas (required to zoom to the workshop)
-     * @param playerTmp the player
-     * @param controllerTmp the controller
      */
-    public WorkshopInterface(final WorldCanvas worldCanvasTmp, final Player playerTmp,
-            final AbstractController controllerTmp) {
-        worldCanvas = worldCanvasTmp;
-        player = playerTmp;
-        controller = controllerTmp;
+    public WorkshopInterface() {
+        setOpaque(false);
         setupLayout();
     }
 
     /**
      * Sets the workshop that the interface is for.
      * @param workshopTmp the workshop
+     * @param worldCanvasTmp the canvas (required to zoom to the workshop)
+     * @param playerTmp the player
+     * @param controllerTmp the controller
      */
-    public void setWorkshop(final IWorkshop workshopTmp) {
+    public void setWorkshop(final IWorkshop workshopTmp, final WorldCanvas worldCanvasTmp, final IPlayer playerTmp,
+            final AbstractController controllerTmp) {
         workshop = workshopTmp;
-        typeLabel.setText(workshop.getType().name);
+        worldCanvas = worldCanvasTmp;
+        player = playerTmp;
+        controller = controllerTmp;
         ordersListModel.setWorkshop(workshop);
     }
 
@@ -200,69 +195,70 @@ public class WorkshopInterface extends JInternalFrame {
      * Setup the layout.
      */
     private void setupLayout() {
-        // CHECKSTYLE:OFF
-        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        setResizable(true);
-        setClosable(true);
-        setTitle("Workshop Interface");
-        setBounds(100, 100, 451, 300);
-        getContentPane().setLayout(new BorderLayout(5, 5));
+        setLayout(new BorderLayout(0, 0));
 
-        JPanel panel = new ImagePanel();
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
-        panel.setLayout(gridBagLayout);
-        getContentPane().add(panel, BorderLayout.CENTER);
+        ordersListModel = new OrdersListModel();
 
-        typeLabel = new JLabel("Workshop Type");
-        typeLabel.setForeground(Color.WHITE);
-        typeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        GridBagConstraints typeLabeConstraints = new GridBagConstraints();
-        typeLabeConstraints.fill = GridBagConstraints.HORIZONTAL;
-        typeLabeConstraints.insets = new Insets(0, 0, 5, 0);
-        typeLabeConstraints.gridx = 0;
-        typeLabeConstraints.gridy = 0;
-        panel.add(typeLabel, typeLabeConstraints);
+        buttonPanel = new JPanel();
+        add(buttonPanel, BorderLayout.WEST);
+        buttonPanel.setOpaque(false);
+        GridBagConstraints buttonPanelConstraints = new GridBagConstraints();
+        buttonPanelConstraints.fill = GridBagConstraints.BOTH;
+        buttonPanelConstraints.gridx = 0;
+        buttonPanelConstraints.gridy = 2;
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+
+        newOrderButton = new JButton("New Order");
+        newOrderButton.setMaximumSize(new Dimension(150, 23));
+        newOrderButton.setMinimumSize(new Dimension(150, 23));
+        newOrderButton.setPreferredSize(new Dimension(150, 23));
+        newOrderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(newOrderButton);
+
+        cancelOrderButton = new JButton("Cancel Order");
+        cancelOrderButton.setMaximumSize(new Dimension(150, 23));
+        cancelOrderButton.setMinimumSize(new Dimension(150, 23));
+        cancelOrderButton.setPreferredSize(new Dimension(150, 23));
+        cancelOrderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(cancelOrderButton);
+
+        zoomButton = new JButton("Zoom");
+        zoomButton.setMaximumSize(new Dimension(150, 23));
+        zoomButton.setMinimumSize(new Dimension(150, 23));
+        zoomButton.setPreferredSize(new Dimension(150, 23));
+        zoomButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(zoomButton);
+        zoomButton.addActionListener(new ZoomButtonActionListener());
+
+        destroyWorkshopButton = new JButton("Destroy Workshop");
+        destroyWorkshopButton.setMaximumSize(new Dimension(150, 23));
+        destroyWorkshopButton.setMinimumSize(new Dimension(150, 23));
+        destroyWorkshopButton.setPreferredSize(new Dimension(150, 23));
+        destroyWorkshopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(destroyWorkshopButton);
+        destroyWorkshopButton.addActionListener(new DestroyWorkshopActionListener());
+        cancelOrderButton.addActionListener(new CancelOrderActionListener());
+        newOrderButton.addActionListener(new NewOrderActionListener());
+
+        infoPanel = new JPanel();
+        infoPanel.setOpaque(false);
+        add(infoPanel, BorderLayout.CENTER);
+        infoPanel.setLayout(new BorderLayout(0, 0));
 
         scrollPane = new JScrollPane();
+        infoPanel.add(scrollPane);
         scrollPane.setOpaque(false);
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
         gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
         gbc_scrollPane.fill = GridBagConstraints.BOTH;
         gbc_scrollPane.gridx = 0;
         gbc_scrollPane.gridy = 1;
-        panel.add(scrollPane, gbc_scrollPane);
-
-        ordersListModel = new OrdersListModel();
         ordersList = new JList<>(ordersListModel);
         scrollPane.setViewportView(ordersList);
-
-        buttonPanel = new JPanel();
-        buttonPanel.setOpaque(false);
-        GridBagConstraints buttonPanelConstraints = new GridBagConstraints();
-        buttonPanelConstraints.fill = GridBagConstraints.BOTH;
-        buttonPanelConstraints.gridx = 0;
-        buttonPanelConstraints.gridy = 2;
-        panel.add(buttonPanel, buttonPanelConstraints);
-
-        newOrderButton = new JButton("New Order");
-        buttonPanel.add(newOrderButton);
-
-        cancelOrderButton = new JButton("Cancel Order");
-        buttonPanel.add(cancelOrderButton);
-
-        zoomButton = new JButton("Zoom");
-        buttonPanel.add(zoomButton);
-        zoomButton.addActionListener(new ZoomButtonActionListener());
-
-        destroyWorkshopButton = new JButton("Destroy Workshop");
-        buttonPanel.add(destroyWorkshopButton);
-        destroyWorkshopButton.addActionListener(new DestroyWorkshopActionListener());
-        cancelOrderButton.addActionListener(new CancelOrderActionListener());
-        newOrderButton.addActionListener(new NewOrderActionListener());
-        // CHECKSTYLE:ON
+        GridBagConstraints typeLabeConstraints = new GridBagConstraints();
+        typeLabeConstraints.fill = GridBagConstraints.HORIZONTAL;
+        typeLabeConstraints.insets = new Insets(0, 0, 5, 0);
+        typeLabeConstraints.gridx = 0;
+        typeLabeConstraints.gridy = 0;
     }
 }

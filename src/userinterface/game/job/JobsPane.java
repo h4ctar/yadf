@@ -32,11 +32,15 @@
 package userinterface.game.job;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 
 import simulation.job.IJobManager;
 
@@ -65,6 +69,7 @@ public class JobsPane extends JPanel {
         setOpaque(false);
 
         jobsScrollPane = new JScrollPane();
+        jobsScrollPane.setBorder(new EmptyBorder(2, 2, 2, 2));
         add(jobsScrollPane, BorderLayout.CENTER);
 
         jobsTable = new JTable();
@@ -72,18 +77,26 @@ public class JobsPane extends JPanel {
 
         JPanel panel = new JPanel();
         panel.setOpaque(false);
-        add(panel, BorderLayout.SOUTH);
-
-        JButton cancelJobButton = new JButton("Cancel job");
-        panel.add(cancelJobButton);
+        add(panel, BorderLayout.WEST);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JButton zoomToJobButton = new JButton("Zoom to job");
+        zoomToJobButton.setMaximumSize(new Dimension(150, 23));
+        zoomToJobButton.setMinimumSize(new Dimension(150, 23));
+        zoomToJobButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        zoomToJobButton.setPreferredSize(new Dimension(150, 23));
         panel.add(zoomToJobButton);
+
+        JButton cancelJobButton = new JButton("Cancel job");
+        cancelJobButton.setMinimumSize(new Dimension(150, 23));
+        cancelJobButton.setMaximumSize(new Dimension(150, 23));
+        cancelJobButton.setPreferredSize(new Dimension(150, 23));
+        cancelJobButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(cancelJobButton);
     }
 
     /**
-     * Sets the up.
-     * 
+     * Sets the job manager.
      * @param jobManager the new up
      */
     public void setup(final IJobManager jobManager) {

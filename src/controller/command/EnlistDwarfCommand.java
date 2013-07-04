@@ -1,6 +1,6 @@
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.character.IGameCharacter;
 
 /**
@@ -19,7 +19,7 @@ public class EnlistDwarfCommand extends AbstractCommand {
      * @param playerTmp the player
      * @param dwarfIdTmp the dwarf to enlist
      */
-    public EnlistDwarfCommand(final Player playerTmp, final int dwarfIdTmp) {
+    public EnlistDwarfCommand(final IPlayer playerTmp, final int dwarfIdTmp) {
         super(playerTmp);
         dwarfId = dwarfIdTmp;
     }

@@ -90,7 +90,7 @@ public class BuildWorkshopJob extends AbstractJob {
     public String toString() {
         String string = "Building ";
         if (workshopType != null) {
-            string += workshopType;
+            string += workshopType.name;
         }
         return string;
     }

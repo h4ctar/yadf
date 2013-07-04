@@ -32,14 +32,14 @@
 package userinterface.game.stock;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 
 import org.jdesktop.swingx.JXTreeTable;
 
-import simulation.Player;
+import simulation.IPlayer;
 
 /**
  * The Class StocksPane.
@@ -63,21 +63,20 @@ public class StocksPane extends JPanel {
         setOpaque(false);
 
         stocksScrollPane = new JScrollPane();
+        stocksScrollPane.setBorder(new EmptyBorder(2, 2, 2, 2));
         stocksScrollPane.setOpaque(false);
         add(stocksScrollPane, BorderLayout.CENTER);
 
         stocksTable = new JXTreeTable();
-        Font font = new Font("Tahoma", Font.PLAIN, 12);
-        stocksTable.setFont(font);
+        stocksTable.setBorder(null);
         stocksScrollPane.setViewportView(stocksTable);
     }
 
     /**
-     * Sets the up.
-     * 
-     * @param player the new up
+     * Setsup the layout.
+     * @param player the new player
      */
-    public void setup(final Player player) {
+    public void setup(final IPlayer player) {
         stocksTable = new JXTreeTable(new StockTreeTableModel(player.getStockManager()));
         stocksScrollPane.setViewportView(stocksTable);
     }

@@ -32,13 +32,17 @@
 package userinterface.game.labor;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 
-import simulation.Player;
+import simulation.IPlayer;
 import controller.AbstractController;
 
 /**
@@ -66,6 +70,7 @@ public class LaborsPane extends JPanel {
         setOpaque(false);
 
         laboursScrollPane = new JScrollPane();
+        laboursScrollPane.setBorder(new EmptyBorder(2, 2, 2, 2));
         add(laboursScrollPane, BorderLayout.CENTER);
 
         laborsTable = new JTable();
@@ -75,9 +80,14 @@ public class LaborsPane extends JPanel {
 
         JPanel panel = new JPanel();
         panel.setOpaque(false);
-        add(panel, BorderLayout.SOUTH);
+        add(panel, BorderLayout.WEST);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JButton zoomButton = new JButton("Zoom to dwarf");
+        zoomButton.setMinimumSize(new Dimension(150, 23));
+        zoomButton.setMaximumSize(new Dimension(150, 23));
+        zoomButton.setPreferredSize(new Dimension(150, 23));
+        zoomButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(zoomButton);
     }
 
@@ -86,7 +96,7 @@ public class LaborsPane extends JPanel {
      * @param player the player
      * @param controller the controller
      */
-    public void setup(final Player player, final AbstractController controller) {
+    public void setup(final IPlayer player, final AbstractController controller) {
         laborTableModel = new LaborTableModel(player, controller);
         laborsTable.setModel(laborTableModel);
     }

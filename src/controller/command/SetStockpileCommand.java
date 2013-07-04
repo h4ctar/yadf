@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.item.Stockpile;
 
 /**
@@ -58,7 +58,7 @@ public class SetStockpileCommand extends AbstractCommand {
      * @param itemTypeNameTmp the item type name
      * @param acceptTmp true to accept the item type
      */
-    public SetStockpileCommand(final Player player, final int stockpileIdTmp, final String itemTypeNameTmp,
+    public SetStockpileCommand(final IPlayer player, final int stockpileIdTmp, final String itemTypeNameTmp,
             final boolean acceptTmp) {
         super(player);
         stockpileId = stockpileIdTmp;

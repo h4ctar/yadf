@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 
 /**
  * The Class DeleteStockpileCommand.
@@ -49,7 +49,7 @@ public class DeleteStockpileCommand extends AbstractCommand {
      * @param player the player
      * @param stockpileIdTmp the stockpile id
      */
-    public DeleteStockpileCommand(final Player player, final int stockpileIdTmp) {
+    public DeleteStockpileCommand(final IPlayer player, final int stockpileIdTmp) {
         super(player);
         stockpileId = stockpileIdTmp;
     }
