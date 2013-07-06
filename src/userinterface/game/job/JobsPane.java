@@ -114,6 +114,7 @@ public class JobsPane extends JPanel {
         cancelJobButton.setMaximumSize(new Dimension(150, 23));
         cancelJobButton.setPreferredSize(new Dimension(150, 23));
         cancelJobButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cancelJobButton.addActionListener(new CancelJobButtonActionListener());
         panel.add(cancelJobButton);
     }
 
@@ -152,6 +153,21 @@ public class JobsPane extends JPanel {
     }
 
     /**
+     * Action listener for the cancel job button.
+     */
+    private class CancelJobButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            int row = jobsTable.getSelectedRow();
+            if (row != -1) {
+                IJob job = jobManager.getJobs().get(row);
+                job.interrupt("God canceled it");
+            }
+        }
+    }
+
+    /**
      * The jobs table list selection listener.
      * <p>
      * Enables and disables the buttons.
@@ -161,9 +177,11 @@ public class JobsPane extends JPanel {
         @Override
         public void valueChanged(final ListSelectionEvent e) {
             int row = jobsTable.getSelectedRow();
-            IJob job = jobManager.getJobs().get(row);
-            zoomToJobButton.setEnabled(row != -1 && job.getPosition() != null);
-            cancelJobButton.setEnabled(row != -1 && !(job instanceof AbstractDesignation));
+            if (row != -1) {
+                IJob job = jobManager.getJobs().get(row);
+                zoomToJobButton.setEnabled(row != -1 && job.getPosition() != null);
+                cancelJobButton.setEnabled(row != -1 && !(job instanceof AbstractDesignation));
+            }
         }
     }
 }
