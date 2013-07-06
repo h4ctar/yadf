@@ -38,6 +38,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -118,6 +120,9 @@ public class DwarfInterface extends JPanel implements ICharacterListener, IChara
     /** The info panel. */
     private JPanel infoPanel;
 
+    /** The world panel. */
+    private WorldPanel worldPanel;
+
     /**
      * Create the frame.
      */
@@ -141,10 +146,11 @@ public class DwarfInterface extends JPanel implements ICharacterListener, IChara
     /**
      * Sets the dwarf.
      * @param dwarfTmp the dwarf
-     * @param worldCanvas the world canvas
+     * @param worldPanelTmp the world panel
      */
-    public void setDwarf(final IGameCharacter dwarfTmp, final WorldPanel worldCanvas) {
+    public void setDwarf(final IGameCharacter dwarfTmp, final WorldPanel worldPanelTmp) {
         dwarf = dwarfTmp;
+        worldPanel = worldPanelTmp;
         dwarf.addListener(this);
         dwarf.getComponent(ISkillComponent.class).addListener(this);
         dwarf.getComponent(IHealthComponent.class).addListener(this);
@@ -195,6 +201,7 @@ public class DwarfInterface extends JPanel implements ICharacterListener, IChara
         zoomButton.setMinimumSize(new Dimension(150, 23));
         zoomButton.setMaximumSize(new Dimension(150, 23));
         zoomButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        zoomButton.addActionListener(new ZoomToDwarfButtonActionListener());
         buttonPanel.add(zoomButton);
 
         followButton = new JButton("Follow");
@@ -380,5 +387,16 @@ public class DwarfInterface extends JPanel implements ICharacterListener, IChara
         imageLabel = new JLabel("");
         imageLabel.setPreferredSize(new Dimension(IMAGE_SIZE, 0));
         add(imageLabel, BorderLayout.EAST);
+    }
+
+    /**
+     * Action listener for the zoom to dwarf button.
+     */
+    private class ZoomToDwarfButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            worldPanel.zoomToPosition(dwarf.getPosition());
+        }
     }
 }

@@ -34,15 +34,22 @@ package userinterface.game.labor;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import simulation.IPlayer;
+import simulation.character.IGameCharacter;
+import userinterface.game.WorldPanel;
 import controller.AbstractController;
 
 /**
@@ -61,6 +68,12 @@ public class LaborsPane extends JPanel {
 
     /** The labours scroll pane. */
     private final JScrollPane laboursScrollPane;
+
+    /** The zoom to dwarf button. */
+    private JButton zoomButton;
+
+    /** The world panel. */
+    private WorldPanel worldPanel;
 
     /**
      * Instantiates a new labors pane.
@@ -83,11 +96,12 @@ public class LaborsPane extends JPanel {
         add(panel, BorderLayout.WEST);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JButton zoomButton = new JButton("Zoom to dwarf");
+        zoomButton = new JButton("Zoom to dwarf");
         zoomButton.setMinimumSize(new Dimension(150, 23));
         zoomButton.setMaximumSize(new Dimension(150, 23));
         zoomButton.setPreferredSize(new Dimension(150, 23));
         zoomButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        zoomButton.addActionListener(new ZoomToDwarfButtonActionListener());
         panel.add(zoomButton);
     }
 
@@ -95,14 +109,43 @@ public class LaborsPane extends JPanel {
      * Setup.
      * @param player the player
      * @param controller the controller
+     * @param worldPanelTmp the world panel
      */
-    public void setup(final IPlayer player, final AbstractController controller) {
+    public void setup(final IPlayer player, final AbstractController controller, final WorldPanel worldPanelTmp) {
+        worldPanel = worldPanelTmp;
         laborTableModel = new LaborTableModel(player, controller);
         laborsTable.setModel(laborTableModel);
-        // TableCellRenderer headerRenderer = new VerticalTableHeaderCellRenderer();
-        // Enumeration<TableColumn> columns = laborsTable.getColumnModel().getColumns();
-        // while (columns.hasMoreElements()) {
-        // columns.nextElement().setHeaderRenderer(headerRenderer);
-        // }
+        laborsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        laborsTable.getSelectionModel().addListSelectionListener(new LaborsTableListSelectionListener());
+    }
+
+    /**
+     * Action listener for the zoom to dwarf button.
+     */
+    private class ZoomToDwarfButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            IGameCharacter dwarf = laborTableModel.getDwarf(laborsTable.getSelectedRow());
+            worldPanel.zoomToPosition(dwarf.getPosition());
+        }
+    }
+
+    /**
+     * The jobs table list selection listener.
+     * <p>
+     * Enables and disables the buttons.
+     */
+    private class LaborsTableListSelectionListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(final ListSelectionEvent e) {
+            int row = laborsTable.getSelectedRow();
+            if (row != -1) {
+                zoomButton.setEnabled(true);
+            } else {
+                zoomButton.setEnabled(false);
+            }
+        }
     }
 }

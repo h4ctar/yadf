@@ -179,8 +179,11 @@ public class JobsPane extends JPanel {
             int row = jobsTable.getSelectedRow();
             if (row != -1) {
                 IJob job = jobManager.getJobs().get(row);
-                zoomToJobButton.setEnabled(row != -1 && job.getPosition() != null);
-                cancelJobButton.setEnabled(row != -1 && !(job instanceof AbstractDesignation));
+                zoomToJobButton.setEnabled(job.getPosition() != null);
+                cancelJobButton.setEnabled(!(job instanceof AbstractDesignation));
+            } else {
+                zoomToJobButton.setEnabled(false);
+                cancelJobButton.setEnabled(false);
             }
         }
     }

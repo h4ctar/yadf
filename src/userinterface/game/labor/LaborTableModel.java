@@ -165,4 +165,13 @@ class LaborTableModel extends AbstractTableModel implements IGameObjectManagerLi
         dwarf.getComponent(ISkillComponent.class).removeListener(this);
         fireTableDataChanged();
     }
+
+    /**
+     * Get the dwarf at row.
+     * @param row the row
+     * @return the dwarf
+     */
+    public IGameCharacter getDwarf(final int row) {
+        return player.getDwarfManager().getDwarfs().toArray(new Dwarf[0])[row];
+    }
 }
