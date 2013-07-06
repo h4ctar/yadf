@@ -248,17 +248,12 @@ public class WorkshopInterface extends JPanel {
         scrollPane = new JScrollPane();
         infoPanel.add(scrollPane);
         scrollPane.setOpaque(false);
-        GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-        gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
-        gbc_scrollPane.fill = GridBagConstraints.BOTH;
-        gbc_scrollPane.gridx = 0;
-        gbc_scrollPane.gridy = 1;
+        GridBagConstraints scrollPaneConstraints = new GridBagConstraints();
+        scrollPaneConstraints.insets = new Insets(0, 0, 5, 0);
+        scrollPaneConstraints.fill = GridBagConstraints.BOTH;
+        scrollPaneConstraints.gridx = 0;
+        scrollPaneConstraints.gridy = 1;
         ordersList = new JList<>(ordersListModel);
         scrollPane.setViewportView(ordersList);
-        GridBagConstraints typeLabeConstraints = new GridBagConstraints();
-        typeLabeConstraints.fill = GridBagConstraints.HORIZONTAL;
-        typeLabeConstraints.insets = new Insets(0, 0, 5, 0);
-        typeLabeConstraints.gridx = 0;
-        typeLabeConstraints.gridy = 0;
     }
 }

@@ -23,6 +23,9 @@ import userinterface.game.stockpile.StockpileInterface;
 import userinterface.game.workshop.WorkshopInterface;
 import controller.AbstractController;
 
+/**
+ * The south panel that has all the info and stuff in it.
+ */
 public class ManagementPanel extends JTabbedPane implements IGameObjectListener {
 
     /** The serial version UID. */
@@ -58,10 +61,15 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
     /** The game object that currently has an interface open. */
     private IGameObject gameObject;
 
+    /** The player. */
     private IPlayer player;
 
+    /** The controller. */
     private AbstractController controller;
 
+    /**
+     * Constructor.
+     */
     public ManagementPanel() {
         setPreferredSize(new Dimension(0, 200));
         setRequestFocusEnabled(false);
@@ -86,6 +94,11 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         itemInterface = new ItemInterface();
     }
 
+    /**
+     * Setup the panel.
+     * @param playerTmp the player
+     * @param controllerTmp the controller
+     */
     public void setup(final IPlayer playerTmp, final AbstractController controllerTmp) {
         player = playerTmp;
         controller = controllerTmp;
@@ -95,6 +108,11 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         militaryPane.setup(playerTmp, controllerTmp);
     }
 
+    /**
+     * Open the dwarf interface.
+     * @param dwarf the dwarf
+     * @param worldCanvas the world canvas
+     */
     public void openDwarfInterface(final IGameCharacter dwarf, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
@@ -107,6 +125,11 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         setSelectedComponent(dwarfInterface);
     }
 
+    /**
+     * Open the item interface.
+     * @param item the item
+     * @param worldCanvas the world canvas
+     */
     public void openItemInterface(final Item item, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
@@ -119,6 +142,11 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         setSelectedComponent(itemInterface);
     }
 
+    /**
+     * Open the stockpile interface.
+     * @param stockpile the stockpile
+     * @param worldCanvas the world canvas
+     */
     public void openStockpileInterface(final Stockpile stockpile, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
@@ -131,6 +159,11 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         setSelectedComponent(stockpileInterface);
     }
 
+    /**
+     * Open the room interface.
+     * @param room the room
+     * @param worldCanvas the world canvas
+     */
     public void openRoomInterface(final Room room, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
@@ -143,6 +176,11 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         setSelectedComponent(roomInterface);
     }
 
+    /**
+     * Open the workshop interface.
+     * @param workshop the workshop
+     * @param worldCanvas the world canvas
+     */
     public void openWorkshopInterface(final IWorkshop workshop, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);

@@ -149,10 +149,10 @@ public class StockpileInterface extends JPanel {
 
         buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
-        GridBagConstraints gbc_buttonPanel = new GridBagConstraints();
-        gbc_buttonPanel.fill = GridBagConstraints.BOTH;
-        gbc_buttonPanel.gridx = 0;
-        gbc_buttonPanel.gridy = 1;
+        GridBagConstraints buttonPanelConstraints = new GridBagConstraints();
+        buttonPanelConstraints.fill = GridBagConstraints.BOTH;
+        buttonPanelConstraints.gridx = 0;
+        buttonPanelConstraints.gridy = 1;
         add(buttonPanel, BorderLayout.WEST);
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 

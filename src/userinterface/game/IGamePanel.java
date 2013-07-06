@@ -17,9 +17,21 @@ public interface IGamePanel {
      */
     void disconnect();
 
+    /**
+     * Set the GUI state.
+     * @param state the new state
+     */
     void setState(IGuiState state);
 
+    /**
+     * Get the world panel.
+     * @return the world panel
+     */
     WorldPanel getWorldPanel();
 
+    /**
+     * Get the management panel.
+     * @return the management panel
+     */
     ManagementPanel getManagementPanel();
 }
