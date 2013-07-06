@@ -7,8 +7,7 @@ import java.awt.event.MouseMotionListener;
 import simulation.IPlayer;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
-import userinterface.game.ManagementPanel;
-import userinterface.game.WorldCanvas;
+import userinterface.game.IGamePanel;
 import controller.AbstractController;
 
 /**
@@ -21,11 +20,10 @@ public abstract class AbstractFixedSizeGuiState extends AbstractGuiState impleme
     protected MapIndex position;
 
     @Override
-    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp,
-            final WorldCanvas worldPanelTmp, final ManagementPanel managementPanelTmp) {
-        super.setup(playerTmp, controllerTmp, worldPanelTmp, managementPanelTmp);
-        worldPanel.addMouseListener(this);
-        worldPanel.addMouseMotionListener(this);
+    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final IGamePanel gamePanel) {
+        super.setup(playerTmp, controllerTmp, gamePanel);
+        gamePanel.getWorldPanel().addMouseListener(this);
+        gamePanel.getWorldPanel().addMouseMotionListener(this);
     }
 
     @Override
@@ -37,22 +35,37 @@ public abstract class AbstractFixedSizeGuiState extends AbstractGuiState impleme
      * Clean everything.
      */
     private void cleanStuff() {
-        worldPanel.removeMouseListener(this);
-        worldPanel.removeMouseMotionListener(this);
-        worldPanel.setSelection(null, true);
+        gamePanel.getWorldPanel().removeMouseListener(this);
+        gamePanel.getWorldPanel().removeMouseMotionListener(this);
+        gamePanel.getWorldPanel().setSelection(null, true);
         notifyListeners();
     }
 
+    /**
+     * Do the actual command or whatever.
+     */
     protected abstract void doClickAction();
 
+    /**
+     * Get the width of the area.
+     * @return the width
+     */
     protected abstract int getWidth();
 
+    /**
+     * Get the height of the area.
+     * @return the height
+     */
     protected abstract int getHeight();
 
     @Override
     public void mouseClicked(final MouseEvent e) {
         doClickAction();
-        cleanStuff();
+        if (!e.isShiftDown()) {
+            cleanStuff();
+        } else {
+            gamePanel.getWorldPanel().setSelection(null, true);
+        }
     }
 
     @Override
@@ -77,8 +90,8 @@ public abstract class AbstractFixedSizeGuiState extends AbstractGuiState impleme
 
     @Override
     public void mouseMoved(final MouseEvent e) {
-        position = worldPanel.getMouseIndex(e.getX(), e.getY());
+        position = gamePanel.getWorldPanel().getMouseIndex(e.getX(), e.getY());
         MapArea selection = new MapArea(position, getWidth(), getHeight());
-        worldPanel.setSelection(selection, true);
+        gamePanel.getWorldPanel().setSelection(selection, true);
     }
 }

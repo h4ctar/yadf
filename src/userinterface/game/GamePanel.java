@@ -56,16 +56,13 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
     private Player player;
 
     /** The world pane. */
-    private WorldCanvas worldPanel;
+    private WorldPanel worldPanel;
 
     /** The status bar. */
     private StatusBar statusPanel;
 
     /** The south panel. */
     private ManagementPanel managementPanel;
-
-    /** The main popup menu. */
-    private MainPopupMenu mainPopupMenu;
 
     /** The current state the the GUI is in. */
     private IGuiState state;
@@ -89,15 +86,12 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
         statusPanel = new StatusBar();
         add(statusPanel, BorderLayout.NORTH);
 
-        worldPanel = new WorldCanvas();
+        worldPanel = new WorldPanel();
         add(worldPanel, BorderLayout.CENTER);
         worldPanel.setSize(new Dimension(400, 400));
 
         managementPanel = new ManagementPanel();
         add(managementPanel, BorderLayout.SOUTH);
-
-        mainPopupMenu = new MainPopupMenu(this);
-        worldPanel.setComponentPopupMenu(mainPopupMenu);
     }
 
     /**
@@ -114,17 +108,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "DOWN_Z");
 
-        getActionMap().put("SHIFT_UP", new AbstractAction() {
-
-            /** The serial version UID. */
-            private static final long serialVersionUID = -5686631134770314337L;
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                state.interrupt();
-            }
-        });
-
+        getActionMap().put("SHIFT_UP", new ShiftAction());
         getActionMap().put("UP", new MoveViewAction(0, -1, 0));
         getActionMap().put("DOWN", new MoveViewAction(0, 1, 0));
         getActionMap().put("LEFT", new MoveViewAction(-1, 0, 0));
@@ -162,7 +146,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             gameLoop = new GameLoop(region, controller, this);
 
             state = new NormalGuiState();
-            state.setup(player, controller, worldPanel, managementPanel);
+            state.setup(player, controller, this);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Could not start the game");
@@ -210,7 +194,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             gameLoop = new GameLoop(region, controller, this);
 
             state = new NormalGuiState();
-            state.setup(player, controller, worldPanel, managementPanel);
+            state.setup(player, controller, this);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Could not start the game");
@@ -240,7 +224,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             gameLoop = new GameLoop(region, controller, this);
 
             state = new NormalGuiState();
-            state.setup(player, controller, worldPanel, managementPanel);
+            state.setup(player, controller, this);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Could not start the game");
@@ -283,20 +267,37 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
         state.interrupt();
         state = stateTmp;
         state.addGuiStateListener(this);
-        state.setup(player, controller, worldPanel, managementPanel);
+        state.setup(player, controller, this);
     }
 
     @Override
     public void stateDone() {
         state.removeGuiStateListener(this);
         state = new NormalGuiState();
-        state.setup(player, controller, worldPanel, managementPanel);
+        state.setup(player, controller, this);
+    }
+
+    /**
+     * This action should interrupt the state when the shift key is released.
+     */
+    private class ShiftAction extends AbstractAction {
+
+        /** The serial version UID. */
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            if (!(state instanceof NormalGuiState)) {
+                state.interrupt();
+            }
+        }
     }
 
     /**
      * The action to move the view.
      */
     private class MoveViewAction extends AbstractAction {
+
         /** The serial version UID. */
         private static final long serialVersionUID = 1L;
 
@@ -325,5 +326,15 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
         public void actionPerformed(final ActionEvent e) {
             worldPanel.moveView(x, y, z);
         }
+    }
+
+    @Override
+    public WorldPanel getWorldPanel() {
+        return worldPanel;
+    }
+
+    @Override
+    public ManagementPanel getManagementPanel() {
+        return managementPanel;
     }
 }

@@ -56,7 +56,7 @@ import simulation.character.component.IInventoryComponent;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.labor.LaborType;
-import userinterface.game.WorldCanvas;
+import userinterface.game.WorldPanel;
 import userinterface.misc.SpriteManager;
 
 /**
@@ -143,7 +143,7 @@ public class DwarfInterface extends JPanel implements ICharacterListener, IChara
      * @param dwarfTmp the dwarf
      * @param worldCanvas the world canvas
      */
-    public void setDwarf(final IGameCharacter dwarfTmp, final WorldCanvas worldCanvas) {
+    public void setDwarf(final IGameCharacter dwarfTmp, final WorldPanel worldCanvas) {
         dwarf = dwarfTmp;
         dwarf.addListener(this);
         dwarf.getComponent(ISkillComponent.class).addListener(this);

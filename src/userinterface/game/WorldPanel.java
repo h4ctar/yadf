@@ -79,7 +79,7 @@ import userinterface.misc.SpriteManager;
 /**
  * The WorldCanvas.
  */
-public class WorldCanvas extends JPanel implements ComponentListener, IMapListener, IGameObjectManagerListener {
+public class WorldPanel extends JPanel implements ComponentListener, IMapListener, IGameObjectManagerListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 1L;
@@ -135,7 +135,7 @@ public class WorldCanvas extends JPanel implements ComponentListener, IMapListen
     /**
      * Instantiates a new world canvas.
      */
-    public WorldCanvas() {
+    public WorldPanel() {
         setIgnoreRepaint(true);
         setDoubleBuffered(true);
         addComponentListener(this);

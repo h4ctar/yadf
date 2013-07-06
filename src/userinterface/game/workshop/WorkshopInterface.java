@@ -50,7 +50,7 @@ import simulation.IPlayer;
 import simulation.recipe.Recipe;
 import simulation.recipe.RecipeManager;
 import simulation.workshop.IWorkshop;
-import userinterface.game.WorldCanvas;
+import userinterface.game.WorldPanel;
 import controller.AbstractController;
 import controller.command.CancelOrderCommand;
 import controller.command.DeleteWorkshopCommand;
@@ -98,7 +98,7 @@ public class WorkshopInterface extends JPanel {
     private JButton zoomButton;
 
     /** The canvas (required to zoom to the workshop). */
-    private WorldCanvas worldCanvas;
+    private WorldPanel worldCanvas;
 
     private JPanel infoPanel;
 
@@ -117,7 +117,7 @@ public class WorkshopInterface extends JPanel {
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public void setWorkshop(final IWorkshop workshopTmp, final WorldCanvas worldCanvasTmp, final IPlayer playerTmp,
+    public void setWorkshop(final IWorkshop workshopTmp, final WorldPanel worldCanvasTmp, final IPlayer playerTmp,
             final AbstractController controllerTmp) {
         workshop = workshopTmp;
         worldCanvas = worldCanvasTmp;

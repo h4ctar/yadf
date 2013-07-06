@@ -1,8 +1,7 @@
 package userinterface.game.guistate;
 
 import simulation.IPlayer;
-import userinterface.game.ManagementPanel;
-import userinterface.game.WorldCanvas;
+import userinterface.game.IGamePanel;
 import controller.AbstractController;
 
 /**
@@ -14,10 +13,9 @@ public interface IGuiState {
      * Setup the GUI state.
      * @param player the player
      * @param controller the controller
-     * @param worldPanel the world panel
-     * @param managementPanel the management panel
+     * @param gamePanel the game panel
      */
-    void setup(IPlayer player, AbstractController controller, WorldCanvas worldPanel, ManagementPanel managementPanel);
+    void setup(IPlayer player, AbstractController controller, IGamePanel gamePanel);
 
     /**
      * Add a listener.

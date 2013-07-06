@@ -7,8 +7,7 @@ import java.awt.event.MouseMotionListener;
 import simulation.IPlayer;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
-import userinterface.game.ManagementPanel;
-import userinterface.game.WorldCanvas;
+import userinterface.game.IGamePanel;
 import controller.AbstractController;
 
 /**
@@ -27,11 +26,10 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
     protected int button;
 
     @Override
-    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp,
-            final WorldCanvas worldPanelTmp, final ManagementPanel managementPanelTmp) {
-        super.setup(playerTmp, controllerTmp, worldPanelTmp, managementPanelTmp);
-        worldPanel.addMouseListener(this);
-        worldPanel.addMouseMotionListener(this);
+    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final IGamePanel gamePanel) {
+        super.setup(playerTmp, controllerTmp, gamePanel);
+        gamePanel.getWorldPanel().addMouseListener(this);
+        gamePanel.getWorldPanel().addMouseMotionListener(this);
     }
 
     @Override
@@ -43,9 +41,9 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
      * Clean everything.
      */
     private void cleanStuff() {
-        worldPanel.removeMouseListener(this);
-        worldPanel.removeMouseMotionListener(this);
-        worldPanel.setSelection(null, true);
+        gamePanel.getWorldPanel().removeMouseListener(this);
+        gamePanel.getWorldPanel().removeMouseMotionListener(this);
+        gamePanel.getWorldPanel().setSelection(null, true);
         notifyListeners();
     }
 
@@ -61,14 +59,18 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
     @Override
     public void mousePressed(final MouseEvent e) {
         button = e.getButton();
-        MapIndex mouseIndex = worldPanel.getMouseIndex(e.getX(), e.getY());
+        MapIndex mouseIndex = gamePanel.getWorldPanel().getMouseIndex(e.getX(), e.getY());
         selection.pos = mouseIndex;
     }
 
     @Override
     public void mouseReleased(final MouseEvent e) {
         doReleaseAction();
-        cleanStuff();
+        if (!e.isShiftDown()) {
+            cleanStuff();
+        } else {
+            gamePanel.getWorldPanel().setSelection(null, true);
+        }
     }
 
     @Override
@@ -81,7 +83,7 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
 
     @Override
     public void mouseDragged(final MouseEvent e) {
-        MapIndex mouseIndex = worldPanel.getMouseIndex(e.getX(), e.getY());
+        MapIndex mouseIndex = gamePanel.getWorldPanel().getMouseIndex(e.getX(), e.getY());
         selection.width = mouseIndex.x - selection.pos.x + 1;
         selection.height = mouseIndex.y - selection.pos.y + 1;
         absSelection = new MapArea(selection);
@@ -93,7 +95,7 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
             absSelection.pos.y = selection.pos.y + selection.height - 1;
             absSelection.height = -selection.height + 2;
         }
-        worldPanel.setSelection(absSelection, true);
+        gamePanel.getWorldPanel().setSelection(absSelection, true);
     }
 
     @Override

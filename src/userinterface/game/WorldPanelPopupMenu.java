@@ -56,10 +56,8 @@ import userinterface.game.guistate.PlaceItemGuiState;
 
 /**
  * The main context menu for the world pane.
- * 
- * @author Ben Smith (bensmith87@gmail.com)
  */
-class MainPopupMenu extends JPopupMenu {
+public class WorldPanelPopupMenu extends JPopupMenu {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -71,7 +69,7 @@ class MainPopupMenu extends JPopupMenu {
      * Instantiates a new main popup menu.
      * @param gamePanelTmp the game panel pane
      */
-    MainPopupMenu(final IGamePanel gamePanelTmp) {
+    public WorldPanelPopupMenu(final IGamePanel gamePanelTmp) {
         super("General Menu");
 
         gamePanel = gamePanelTmp;

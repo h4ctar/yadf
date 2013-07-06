@@ -95,7 +95,7 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         militaryPane.setup(playerTmp, controllerTmp);
     }
 
-    public void openDwarfInterface(final IGameCharacter dwarf, final WorldCanvas worldCanvas) {
+    public void openDwarfInterface(final IGameCharacter dwarf, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
             gameObject.removeGameObjectListener(this);
@@ -107,7 +107,7 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         setSelectedComponent(dwarfInterface);
     }
 
-    public void openItemInterface(final Item item, final WorldCanvas worldCanvas) {
+    public void openItemInterface(final Item item, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
             gameObject.removeGameObjectListener(this);
@@ -119,7 +119,7 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         setSelectedComponent(itemInterface);
     }
 
-    public void openStockpileInterface(final Stockpile stockpile, final WorldCanvas worldCanvas) {
+    public void openStockpileInterface(final Stockpile stockpile, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
             gameObject.removeGameObjectListener(this);
@@ -131,7 +131,7 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         setSelectedComponent(stockpileInterface);
     }
 
-    public void openRoomInterface(final Room room, final WorldCanvas worldCanvas) {
+    public void openRoomInterface(final Room room, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
             gameObject.removeGameObjectListener(this);
@@ -143,7 +143,7 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         setSelectedComponent(roomInterface);
     }
 
-    public void openWorkshopInterface(final IWorkshop workshop, final WorldCanvas worldCanvas) {
+    public void openWorkshopInterface(final IWorkshop workshop, final WorldPanel worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
             gameObject.removeGameObjectListener(this);

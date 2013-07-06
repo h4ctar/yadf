@@ -48,7 +48,7 @@ import org.jdesktop.swingx.JXTreeTable;
 
 import simulation.IPlayer;
 import simulation.item.Stockpile;
-import userinterface.game.WorldCanvas;
+import userinterface.game.WorldPanel;
 import controller.AbstractController;
 import controller.command.DeleteStockpileCommand;
 
@@ -85,7 +85,7 @@ public class StockpileInterface extends JPanel {
     private JButton zoomButton;
 
     /** The canvas (required to zoom to the stockpile). */
-    private WorldCanvas worldCanvas;
+    private WorldPanel worldCanvas;
 
     /**
      * Create the frame.
@@ -102,7 +102,7 @@ public class StockpileInterface extends JPanel {
      * @param playerTmp the player
      * @param controllerTmp the controller
      */
-    public void setStockpile(final Stockpile stockpileTmp, final WorldCanvas worldCanvasTmp, final IPlayer playerTmp,
+    public void setStockpile(final Stockpile stockpileTmp, final WorldPanel worldCanvasTmp, final IPlayer playerTmp,
             final AbstractController controllerTmp) {
         stockpile = stockpileTmp;
         worldCanvas = worldCanvasTmp;

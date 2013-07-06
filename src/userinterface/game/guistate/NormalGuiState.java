@@ -10,8 +10,8 @@ import simulation.item.Stockpile;
 import simulation.map.MapIndex;
 import simulation.room.Room;
 import simulation.workshop.IWorkshop;
-import userinterface.game.ManagementPanel;
-import userinterface.game.WorldCanvas;
+import userinterface.game.IGamePanel;
+import userinterface.game.WorldPanelPopupMenu;
 import controller.AbstractController;
 
 /**
@@ -21,55 +21,60 @@ import controller.AbstractController;
  */
 public class NormalGuiState extends AbstractGuiState implements MouseListener {
 
+    /** The main popup menu. */
+    private WorldPanelPopupMenu mainPopupMenu;
+
     @Override
-    public void setup(final IPlayer playerTmp, final AbstractController controller, final WorldCanvas worldPanelTmp,
-            final ManagementPanel managementPanelTmp) {
-        super.setup(playerTmp, controller, worldPanelTmp, managementPanelTmp);
-        worldPanel.addMouseListener(this);
+    public void setup(final IPlayer playerTmp, final AbstractController controller, final IGamePanel gamePanel) {
+        super.setup(playerTmp, controller, gamePanel);
+        gamePanel.getWorldPanel().addMouseListener(this);
+        mainPopupMenu = new WorldPanelPopupMenu(gamePanel);
+        gamePanel.getWorldPanel().setComponentPopupMenu(mainPopupMenu);
     }
 
     @Override
     public void interrupt() {
-        worldPanel.removeMouseListener(this);
+        gamePanel.getWorldPanel().removeMouseListener(this);
+        gamePanel.getWorldPanel().setComponentPopupMenu(null);
     }
 
     @Override
     public void mouseClicked(final MouseEvent e) {
         // TODO: do this smarter
-        MapIndex mouseIndex = worldPanel.getMouseIndex(e.getX(), e.getY());
+        MapIndex mouseIndex = gamePanel.getWorldPanel().getMouseIndex(e.getX(), e.getY());
 
         // If click on dwarf, show the dwarf interface
         IGameCharacter dwarf = player.getDwarfManager().getDwarf(mouseIndex);
         if (dwarf != null) {
-            managementPanel.openDwarfInterface(dwarf, worldPanel);
+            gamePanel.getManagementPanel().openDwarfInterface(dwarf, gamePanel.getWorldPanel());
             return;
         }
 
         // If left click on a item, show the item interface
         Item item = player.getStockManager().getItem(mouseIndex);
         if (item != null) {
-            managementPanel.openItemInterface(item, worldPanel);
+            gamePanel.getManagementPanel().openItemInterface(item, gamePanel.getWorldPanel());
             return;
         }
 
         // If left click on a stockpile, show the stockpile interface
         Stockpile stockpile = player.getStockManager().getStockpile(mouseIndex);
         if (stockpile != null) {
-            managementPanel.openStockpileInterface(stockpile, worldPanel);
+            gamePanel.getManagementPanel().openStockpileInterface(stockpile, gamePanel.getWorldPanel());
             return;
         }
 
         // If left click on a room, show the room interface
         Room room = player.getRoomManager().getRoom(mouseIndex);
         if (room != null) {
-            managementPanel.openRoomInterface(room, worldPanel);
+            gamePanel.getManagementPanel().openRoomInterface(room, gamePanel.getWorldPanel());
             return;
         }
 
         // If left click on a workshop, show the room interface
         IWorkshop workshop = player.getWorkshopManager().getWorkshop(mouseIndex);
         if (workshop != null) {
-            managementPanel.openWorkshopInterface(workshop, worldPanel);
+            gamePanel.getManagementPanel().openWorkshopInterface(workshop, gamePanel.getWorldPanel());
             return;
         }
     }

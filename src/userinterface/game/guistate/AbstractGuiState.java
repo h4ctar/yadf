@@ -4,8 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import simulation.IPlayer;
-import userinterface.game.ManagementPanel;
-import userinterface.game.WorldCanvas;
+import userinterface.game.IGamePanel;
 import controller.AbstractController;
 
 /**
@@ -22,21 +21,16 @@ public abstract class AbstractGuiState implements IGuiState {
     protected AbstractController controller;
 
     /** The world panel. */
-    protected WorldCanvas worldPanel;
-
-    /** The management panel. */
-    protected ManagementPanel managementPanel;
+    protected IGamePanel gamePanel;
 
     /** The listeners. */
     private Set<IGuiStateListener> listeners = new HashSet<>();
 
     @Override
-    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp,
-            final WorldCanvas worldPanelTmp, final ManagementPanel managementPanelTmp) {
+    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final IGamePanel gamePanelTmp) {
         player = playerTmp;
         controller = controllerTmp;
-        worldPanel = worldPanelTmp;
-        managementPanel = managementPanelTmp;
+        gamePanel = gamePanelTmp;
     }
 
     @Override

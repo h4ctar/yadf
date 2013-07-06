@@ -18,4 +18,8 @@ public interface IGamePanel {
     void disconnect();
 
     void setState(IGuiState state);
+
+    WorldPanel getWorldPanel();
+
+    ManagementPanel getManagementPanel();
 }
