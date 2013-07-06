@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.job.designation.DesignationType;
 import simulation.map.MapArea;
 
@@ -60,7 +60,7 @@ public class DesignationCommand extends AbstractCommand {
      * @param player the player
      */
     public DesignationCommand(final MapArea areaTmp, final DesignationType designateTypeTmp, final boolean addTmp,
-            final Player player) {
+            final IPlayer player) {
         super(player);
         area = areaTmp;
         designateType = designateTypeTmp;

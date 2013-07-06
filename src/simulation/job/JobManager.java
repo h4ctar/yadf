@@ -74,19 +74,26 @@ public class JobManager implements IJobManager, IJobListener {
         Logger.getInstance().log(this, "Adding job: " + job.toString());
         job.addListener(this);
         jobs.add(job);
+        int index = jobs.indexOf(job);
         for (IJobManagerListener listener : listeners) {
-            listener.jobsAdded(job);
+            listener.jobAdded(job, index);
         }
     }
 
     @Override
     public void jobDone(final IJob job) {
-        Logger.getInstance().log(this, "Removing job: " + job.toString());
         assert jobs.contains(job);
+        Logger.getInstance().log(this, "Removing job: " + job.toString());
+        int index = jobs.indexOf(job);
         jobs.remove(job);
         for (IJobManagerListener listener : listeners) {
-            listener.jobRemoved(job);
+            listener.jobRemoved(job, index);
         }
+    }
+
+    @Override
+    public void jobChanged(final IJob job) {
+        // do nothing
     }
 
     /**
@@ -125,7 +132,7 @@ public class JobManager implements IJobManager, IJobListener {
         designations.put(DesignationType.BUILD_RAMP, new ConstructionDesignation(BlockType.RAMP, region, player));
         designations.put(DesignationType.CARVE_STAIR, new ChannelDesignation(BlockType.STAIR, region, player));
         for (AbstractDesignation designation : designations.values()) {
-            jobs.add(designation);
+            addJob(designation);
         }
     }
 }

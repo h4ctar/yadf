@@ -1,5 +1,7 @@
 package userinterface.game;
 
+import userinterface.game.guistate.IGuiState;
+
 /**
  * Interface for the Game Panel.
  */
@@ -14,4 +16,6 @@ public interface IGamePanel {
      * Disconnect the game panel.
      */
     void disconnect();
+
+    void setState(IGuiState state);
 }

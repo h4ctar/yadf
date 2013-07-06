@@ -87,6 +87,11 @@ public abstract class HaulResourcesState extends AbstractJobState implements IJo
     }
 
     @Override
+    public void jobChanged(final IJob job) {
+        // do nothing
+    }
+
+    @Override
     public void interrupt(final String message) {
         for (IJob job : haulJobs) {
             job.removeListener(this);

@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
 import simulation.job.PlaceItemJob;
@@ -57,7 +57,7 @@ public class PlaceItemCommand extends AbstractCommand {
      * @param itemTypeNameTmp the item type name
      * @param positionTmp the position
      */
-    public PlaceItemCommand(final Player player, final String itemTypeNameTmp, final MapIndex positionTmp) {
+    public PlaceItemCommand(final IPlayer player, final String itemTypeNameTmp, final MapIndex positionTmp) {
         super(player);
         itemTypeName = itemTypeNameTmp;
         position = positionTmp;

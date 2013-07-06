@@ -3,13 +3,14 @@ package simulation.character;
 import java.util.Set;
 
 import simulation.IRegion;
+import simulation.farm.IGameObjectManager;
 import simulation.labor.LaborType;
 import simulation.map.MapIndex;
 
 /**
  * Interface for the dwarf manager.
  */
-public interface IDwarfManager {
+public interface IDwarfManager extends IGameObjectManager {
 
     /**
      * Adds a new dwarf.
@@ -52,19 +53,6 @@ public interface IDwarfManager {
      * @return the dwarfs
      */
     Set<IGameCharacter> getDwarfs();
-
-    /**
-     * Add a listener that will be notified when a dwarf is added or removed from the dwarf manager.
-     * @param listener the listener to add
-     */
-    void addListener(IDwarfManagerListener listener);
-
-    /**
-     * Remove a listener from the dwarf manager that was being notified of when a dwarf was added or removed from the
-     * manager.
-     * @param listener the listener to remove
-     */
-    void removeListener(IDwarfManagerListener listener);
 
     /**
      * Add a listener that will be notified when a dwarf becomes free.

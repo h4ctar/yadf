@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.farm.Farm;
 import simulation.map.MapArea;
 
@@ -52,7 +52,7 @@ public class CreateFarmCommand extends AbstractCommand {
      * @param areaTmp the area
      * @param player the player
      */
-    public CreateFarmCommand(final MapArea areaTmp, final Player player) {
+    public CreateFarmCommand(final MapArea areaTmp, final IPlayer player) {
         super(player);
         area = areaTmp;
     }

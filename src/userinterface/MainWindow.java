@@ -43,7 +43,11 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import settings.Settings;
+import simulation.item.ItemTypeManager;
+import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
+import simulation.recipe.RecipeManager;
+import simulation.workshop.WorkshopTypeManager;
 import userinterface.game.GamePanel;
 import userinterface.howtoplay.HowToPlayPanel;
 import userinterface.mainmenu.MainMenuPanel;
@@ -82,6 +86,10 @@ public class MainWindow extends JFrame implements IMainWindow {
         setExtendedState(getExtendedState() | Frame.MAXIMIZED_BOTH);
         setupMainMenu();
         setVisible(true);
+        ItemTypeManager.getInstance().load();
+        WorkshopTypeManager.getInstance().load();
+        LaborTypeManager.getInstance().load();
+        RecipeManager.getInstance().load();
     }
 
     @Override

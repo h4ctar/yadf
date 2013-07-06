@@ -55,11 +55,11 @@ class StatusBar extends JPanel {
      * Update the fields on the status bar.
      * @param gameLoop the game loop (to get the FPS)
      * @param region the region (to get the time)
-     * @param worldPane the world pane (to get the GUI state)
+     * @param stateName the name of the state that the GUI is in
      */
-    void update(final GameLoop gameLoop, final Region region, final WorldPane worldPane) {
+    void update(final GameLoop gameLoop, final Region region, final String stateName) {
         fpsLabel.setText("FPS:" + Long.toString(gameLoop.getFps()));
         dateLabel.setText(region.getTimeString());
-        stateLabel.setText(worldPane.getStateString());
+        stateLabel.setText(stateName);
     }
 }

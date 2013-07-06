@@ -34,13 +34,14 @@ package userinterface.game.job;
 import javax.swing.table.AbstractTableModel;
 
 import simulation.job.IJob;
+import simulation.job.IJobListener;
 import simulation.job.IJobManager;
 import simulation.job.IJobManagerListener;
 
 /**
  * The Class JobsTableModel.
  */
-class JobsTableModel extends AbstractTableModel implements IJobManagerListener {
+class JobsTableModel extends AbstractTableModel implements IJobManagerListener, IJobListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 4018365907743267846L;
@@ -50,10 +51,9 @@ class JobsTableModel extends AbstractTableModel implements IJobManagerListener {
 
     /**
      * Instantiates a new jobs table model.
-     * 
      * @param jobManagerTmp the job manager
      */
-    JobsTableModel(final IJobManager jobManagerTmp) {
+    public JobsTableModel(final IJobManager jobManagerTmp) {
         jobManager = jobManagerTmp;
         jobManager.addListener(this);
     }
@@ -68,7 +68,6 @@ class JobsTableModel extends AbstractTableModel implements IJobManagerListener {
         if (columnIndex == 0) {
             return "Job";
         }
-
         return "Status";
     }
 
@@ -84,7 +83,6 @@ class JobsTableModel extends AbstractTableModel implements IJobManagerListener {
             if (columnIndex == 0) {
                 return job.toString();
             }
-
             return job.getStatus();
         } catch (Exception e) {
             return null;
@@ -92,16 +90,25 @@ class JobsTableModel extends AbstractTableModel implements IJobManagerListener {
     }
 
     @Override
-    public void jobsAdded(final IJob job) {
-        this.fireTableDataChanged();
-        // this.fireTableRowsInserted(firstIndex, lastIndex);
-        // TODO: fix this
+    public void jobAdded(final IJob job, final int index) {
+        fireTableRowsInserted(index, index);
+        job.addListener(this);
     }
 
     @Override
-    public void jobRemoved(final IJob job) {
-        this.fireTableDataChanged();
-        // this.fireTableRowsDeleted(index, index);
-        // TODO: fix this
+    public void jobRemoved(final IJob job, final int index) {
+        fireTableRowsDeleted(index, index);
+        job.removeListener(this);
+    }
+
+    @Override
+    public void jobDone(final IJob job) {
+        // do nothing
+    }
+
+    @Override
+    public void jobChanged(final IJob job) {
+        int row = jobManager.getJobs().indexOf(job);
+        fireTableRowsUpdated(row, row);
     }
 }

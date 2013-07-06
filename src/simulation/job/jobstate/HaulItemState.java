@@ -110,6 +110,11 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
         finishState();
     }
 
+    @Override
+    public void jobChanged(final IJob job) {
+        // do nothing
+    }
+
     /**
      * Get the item that has been hauled.
      * @return the item that was hauled

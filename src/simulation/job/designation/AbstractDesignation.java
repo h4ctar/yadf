@@ -97,6 +97,7 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
                     newJob.addListener(this);
                     jobs.add(newJob);
                     mapIndicies.add(mapIndex);
+                    notifyJobChanged();
                 }
             }
         }
@@ -166,6 +167,7 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
         for (IJob job : jobs) {
             if (job.getPosition().equals(index)) {
                 job.interrupt("Designation removed");
+                notifyJobChanged();
                 return;
             }
         }
@@ -178,6 +180,21 @@ public abstract class AbstractDesignation implements IJob, IJobListener {
         job.removeListener(this);
         jobs.remove(job);
         removeFromDesignation(job.getPosition());
+        notifyJobChanged();
+    }
+
+    @Override
+    public void jobChanged(final IJob job) {
+        notifyJobChanged();
+    }
+
+    /**
+     * Notify all listeners that this job has changed.
+     */
+    private void notifyJobChanged() {
+        for (IJobListener listener : listeners) {
+            listener.jobChanged(this);
+        }
     }
 
     /**

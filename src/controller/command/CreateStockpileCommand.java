@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.item.Stockpile;
 import simulation.map.MapArea;
 
@@ -51,7 +51,7 @@ public class CreateStockpileCommand extends AbstractCommand {
      * @param areaTmp the area to use as the stockpile
      * @param player the player
      */
-    public CreateStockpileCommand(final MapArea areaTmp, final Player player) {
+    public CreateStockpileCommand(final MapArea areaTmp, final IPlayer player) {
         super(player);
         area = areaTmp;
     }

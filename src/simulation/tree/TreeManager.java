@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import misc.MyRandom;
 import simulation.IGameObjectListener;
+import simulation.IGameObjectManagerListener;
 import simulation.IRegion;
 import simulation.Tree;
 import simulation.map.BlockType;
@@ -28,7 +29,7 @@ public class TreeManager implements ITreeManager, IGameObjectListener {
     private final IRegion region;
 
     /** The tree manager listeners, will be notified when a tree is added or removed. */
-    private final Set<ITreeManagerListener> listeners = new LinkedHashSet<>();
+    private final Set<IGameObjectManagerListener> listeners = new LinkedHashSet<>();
 
     /**
      * Constructor.
@@ -54,8 +55,8 @@ public class TreeManager implements ITreeManager, IGameObjectListener {
                 if (random.nextDouble() < TREE_PROBABILITY) {
                     Tree tree = new Tree(new MapIndex(x, y, z));
                     trees.add(tree);
-                    for (ITreeManagerListener listener : listeners) {
-                        listener.treeAdded(tree);
+                    for (IGameObjectManagerListener listener : listeners) {
+                        listener.gameObjectAdded(tree);
                     }
                     tree.addGameObjectListener(this);
                 }
@@ -69,8 +70,8 @@ public class TreeManager implements ITreeManager, IGameObjectListener {
      */
     public void removeTree(final Tree tree) {
         trees.remove(tree);
-        for (ITreeManagerListener listener : listeners) {
-            listener.treeRemoved(tree);
+        for (IGameObjectManagerListener listener : listeners) {
+            listener.gameObjectRemoved(tree);
         }
         tree.removeGameObjectListener(this);
     }
@@ -101,9 +102,15 @@ public class TreeManager implements ITreeManager, IGameObjectListener {
     }
 
     @Override
-    public void addListener(final ITreeManagerListener listener) {
+    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
         assert !listeners.contains(listener);
         listeners.add(listener);
+    }
+
+    @Override
+    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
+        assert listeners.contains(listener);
+        listeners.remove(listener);
     }
 
     @Override

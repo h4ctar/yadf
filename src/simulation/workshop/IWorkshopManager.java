@@ -2,12 +2,13 @@ package simulation.workshop;
 
 import java.util.Set;
 
+import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**
  * Interface for a workshop manager.
  */
-public interface IWorkshopManager {
+public interface IWorkshopManager extends IGameObjectManager {
 
     /**
      * Add a new workshop.
@@ -45,16 +46,4 @@ public interface IWorkshopManager {
      * Update all the workshops.
      */
     void update();
-
-    /**
-     * Add a new workshop manager listener that will be notified whenever a workshop is added or removed.
-     * @param listener the new listener
-     */
-    void addListener(IWorkshopManagerListener listener);
-
-    /**
-     * Remove a workshop manager listener that was notified whenever a workshop was added or removed.
-     * @param listener the listener to remove
-     */
-    void removeListener(IWorkshopManagerListener listener);
 }

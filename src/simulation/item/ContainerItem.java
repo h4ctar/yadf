@@ -7,6 +7,7 @@ import logger.Logger;
 
 import org.w3c.dom.Element;
 
+import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
 import simulation.job.HaulJob;
 import simulation.job.IJob;
@@ -74,7 +75,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
         if (contentItemType == null) {
             listenForAllContentItemTypes();
         } else {
-            player.getStockManager().addListener(contentItemType, this);
+            player.getStockManager().addItemAvailableListener(contentItemType, this);
             createAllHaulJobs();
         }
     }
@@ -114,13 +115,13 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
                 contentItemType = item.getType();
                 // Stop listening to all items and only listen to this new content item type
                 stopListenForAllContentItemTypes();
-                player.getStockManager().addListener(contentItemType, this);
+                player.getStockManager().addItemAvailableListener(contentItemType, this);
                 createAllHaulJobs();
             }
             itemAdded = containerComponent.addItem(item);
             if (itemAdded) {
                 if (isFull()) {
-                    player.getStockManager().removeListener(contentItemType, this);
+                    player.getStockManager().removeItemAvailableListener(contentItemType, this);
                 }
             }
         }
@@ -134,10 +135,10 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
         if (itemRemoved) {
             // If the container was full, we want to be listening for an item to fill it again
             if (getItems().size() + 1 == itemType.capacity) {
-                player.getStockManager().addListener(contentItemType, this);
+                player.getStockManager().addItemAvailableListener(contentItemType, this);
             }
             if (isEmpty()) {
-                player.getStockManager().removeListener(contentItemType, this);
+                player.getStockManager().removeItemAvailableListener(contentItemType, this);
                 contentItemType = null;
                 listenForAllContentItemTypes();
             }
@@ -266,23 +267,28 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
         haulJob.getItem().setUsed(false);
     }
 
+    @Override
+    public void jobChanged(final IJob job) {
+        // do nothing
+    }
+
     /**
      * Listen for all item types that this container accepts.
      */
     private void listenForAllContentItemTypes() {
         for (String contentItemTypeName : itemType.contentItemTypeNames) {
             ItemType itemType = ItemTypeManager.getInstance().getItemType(contentItemTypeName);
-            player.getStockManager().addListener(itemType, this);
+            player.getStockManager().addItemAvailableListener(itemType, this);
         }
     }
 
     /**
-     * Stop ilstening for all item types that this container accepts.
+     * Stop listening for all item types that this container accepts.
      */
     private void stopListenForAllContentItemTypes() {
         for (String contentItemTypeName : itemType.contentItemTypeNames) {
             ItemType itemType = ItemTypeManager.getInstance().getItemType(contentItemTypeName);
-            player.getStockManager().removeListener(itemType, this);
+            player.getStockManager().removeItemAvailableListener(itemType, this);
         }
     }
 
@@ -292,33 +298,33 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
     }
 
     @Override
-    public void addListener(final IContainerListener listener) {
-        containerComponent.addListener(listener);
+    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
+        containerComponent.addGameObjectManagerListener(listener);
     }
 
     @Override
-    public void removeListener(final IContainerListener listener) {
-        containerComponent.removeListener(listener);
+    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
+        containerComponent.removeGameObjectManagerListener(listener);
     }
 
     @Override
-    public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.addListener(itemType, listener);
+    public void addItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.addItemAvailableListener(itemType, listener);
     }
 
     @Override
-    public void addListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.addListener(category, listener);
+    public void addItemAvailableListenerListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.addItemAvailableListenerListener(category, listener);
     }
 
     @Override
-    public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.removeListener(itemType, listener);
+    public void removeItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.removeItemAvailableListener(itemType, listener);
     }
 
     @Override
-    public void removeListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.removeListener(category, listener);
+    public void removeItemAvailableListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.removeItemAvailableListener(category, listener);
     }
 
     @Override

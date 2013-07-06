@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import misc.NameGenerator;
+import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
 import simulation.IRegion;
 import simulation.character.component.ISkillComponent;
@@ -25,7 +26,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
     private final IPlayer player;
 
     /** The dwarf manager listeners, notified of add and remove of dwarfs. */
-    private final Set<IDwarfManagerListener> managerListeners = new CopyOnWriteArraySet<>();
+    private final Set<IGameObjectManagerListener> managerListeners = new CopyOnWriteArraySet<>();
 
     /** The dwarf manager listeners, notified of add and remove of dwarfs. */
     private final Set<ICharacterAvailableListener> availableListeners = new CopyOnWriteArraySet<>();
@@ -121,13 +122,13 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
     }
 
     @Override
-    public void addListener(final IDwarfManagerListener listener) {
+    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
         assert !managerListeners.contains(listener);
         managerListeners.add(listener);
     }
 
     @Override
-    public void removeListener(final IDwarfManagerListener listener) {
+    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
         assert managerListeners.contains(listener);
         managerListeners.remove(listener);
     }
@@ -154,8 +155,8 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
      * @param dwarf the dwarf that was added
      */
     private void notifyDwarfAdded(final Dwarf dwarf) {
-        for (IDwarfManagerListener listener : managerListeners) {
-            listener.dwarfAdded(dwarf);
+        for (IGameObjectManagerListener listener : managerListeners) {
+            listener.gameObjectAdded(dwarf);
         }
     }
 

@@ -36,10 +36,10 @@ import java.util.Set;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
+import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
 import simulation.item.ContainerComponent;
 import simulation.item.IContainer;
-import simulation.item.IContainerListener;
 import simulation.item.IItemAvailableListener;
 import simulation.item.Item;
 import simulation.item.ItemType;
@@ -159,23 +159,23 @@ public class Room extends AbstractGameObject implements IContainer {
     }
 
     @Override
-    public void addListener(final IContainerListener listener) {
-        containerComponent.addListener(listener);
+    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
+        containerComponent.addGameObjectManagerListener(listener);
     }
 
     @Override
-    public void removeListener(final IContainerListener listener) {
-        containerComponent.removeListener(listener);
+    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
+        containerComponent.removeGameObjectManagerListener(listener);
     }
 
     @Override
-    public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.addListener(itemType, listener);
+    public void addItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.addItemAvailableListener(itemType, listener);
     }
 
     @Override
-    public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.removeListener(itemType, listener);
+    public void removeItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.removeItemAvailableListener(itemType, listener);
     }
 
     @Override
@@ -189,12 +189,12 @@ public class Room extends AbstractGameObject implements IContainer {
     }
 
     @Override
-    public void addListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.addListener(category, listener);
+    public void addItemAvailableListenerListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.addItemAvailableListenerListener(category, listener);
     }
 
     @Override
-    public void removeListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.removeListener(category, listener);
+    public void removeItemAvailableListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.removeItemAvailableListener(category, listener);
     }
 }

@@ -46,6 +46,13 @@ import simulation.job.designation.DesignationType;
 import simulation.room.RoomTypeManager;
 import simulation.workshop.WorkshopType;
 import simulation.workshop.WorkshopTypeManager;
+import userinterface.game.guistate.BuildWorkshopGuiState;
+import userinterface.game.guistate.CreateFarmGuiState;
+import userinterface.game.guistate.CreateRoomGuiState;
+import userinterface.game.guistate.CreateStockpileGuiState;
+import userinterface.game.guistate.DesignationGuiState;
+import userinterface.game.guistate.MilitaryStationGuiState;
+import userinterface.game.guistate.PlaceItemGuiState;
 
 /**
  * The main context menu for the world pane.
@@ -57,17 +64,17 @@ class MainPopupMenu extends JPopupMenu {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** The world pane. */
-    private final WorldPane worldPane;
+    /** The game panel. */
+    private final IGamePanel gamePanel;
 
     /**
      * Instantiates a new main popup menu.
-     * @param worldPaneTmp the world pane
+     * @param gamePanelTmp the game panel pane
      */
-    MainPopupMenu(final WorldPane worldPaneTmp) {
+    MainPopupMenu(final IGamePanel gamePanelTmp) {
         super("General Menu");
 
-        worldPane = worldPaneTmp;
+        gamePanel = gamePanelTmp;
 
         JMenu designateMenu = setupDesignateMenu();
         JMenu createRoomMenu = setupCreateRoomMenu();
@@ -149,6 +156,10 @@ class MainPopupMenu extends JPopupMenu {
         return placeItemMenu;
     }
 
+    /**
+     * Setup the military menu.
+     * @return the menu
+     */
     private JMenu setupMilitaryMenu() {
         JMenu militaryMenu = new JMenu("Military");
         JMenuItem menuItem = new JMenuItem("Station");
@@ -164,7 +175,7 @@ class MainPopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.BUILD_FARM);
+            gamePanel.setState(new CreateFarmGuiState());
         }
     }
 
@@ -175,8 +186,8 @@ class MainPopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.BUILD_WORKSHOP);
-            worldPane.setWorkshopType(actionEvent.getActionCommand());
+            String workshopTypeName = actionEvent.getActionCommand();
+            gamePanel.setState(new BuildWorkshopGuiState(workshopTypeName));
         }
     }
 
@@ -187,8 +198,8 @@ class MainPopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.CREATE_ROOM);
-            worldPane.setRoomType(actionEvent.getActionCommand());
+            String roomType = actionEvent.getActionCommand();
+            gamePanel.setState(new CreateRoomGuiState(roomType));
         }
     }
 
@@ -199,7 +210,7 @@ class MainPopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.BUILD_STOCKPILE);
+            gamePanel.setState(new CreateStockpileGuiState());
         }
     }
 
@@ -210,8 +221,8 @@ class MainPopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.DESIGNATION);
-            worldPane.setDesignationType(DesignationType.valueOf(actionEvent.getActionCommand()));
+            DesignationType designationType = DesignationType.valueOf(actionEvent.getActionCommand());
+            gamePanel.setState(new DesignationGuiState(designationType));
         }
     }
 
@@ -222,8 +233,8 @@ class MainPopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.PLACE_ITEM);
-            worldPane.setItemType(actionEvent.getActionCommand());
+            String itemTypeName = actionEvent.getActionCommand();
+            gamePanel.setState(new PlaceItemGuiState(itemTypeName));
         }
     }
 
@@ -234,7 +245,7 @@ class MainPopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {
-            worldPane.setState(GuiState.MILITARY_STATION);
+            gamePanel.setState(new MilitaryStationGuiState());
         }
     }
 }

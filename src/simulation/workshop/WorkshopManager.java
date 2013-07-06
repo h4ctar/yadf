@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import simulation.IGameObjectListener;
+import simulation.IGameObjectManagerListener;
 import simulation.map.MapIndex;
 
 /**
@@ -16,15 +17,15 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     private final Set<IWorkshop> workshops = new CopyOnWriteArraySet<>();
 
     /** The workshop manager listeners. */
-    private final Set<IWorkshopManagerListener> listeners = new LinkedHashSet<>();
+    private final Set<IGameObjectManagerListener> listeners = new LinkedHashSet<>();
 
     @Override
     public void addWorkshop(final IWorkshop workshop) {
         assert !workshops.contains(workshop);
         workshop.addGameObjectListener(this);
         workshops.add(workshop);
-        for (IWorkshopManagerListener listener : listeners) {
-            listener.workshopAdded(workshop);
+        for (IGameObjectManagerListener listener : listeners) {
+            listener.gameObjectAdded(workshop);
         }
     }
 
@@ -33,8 +34,8 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
         assert workshops.contains(workshop);
         workshop.removeGameObjectListener(this);
         workshops.remove(workshop);
-        for (IWorkshopManagerListener listener : listeners) {
-            listener.workshopRemoved(workshop);
+        for (IGameObjectManagerListener listener : listeners) {
+            listener.gameObjectRemoved(workshop);
         }
     }
 
@@ -71,13 +72,13 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     }
 
     @Override
-    public void addListener(final IWorkshopManagerListener listener) {
+    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
         assert !listeners.contains(listener);
         listeners.add(listener);
     }
 
     @Override
-    public void removeListener(final IWorkshopManagerListener listener) {
+    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
         assert listeners.contains(listener);
         listeners.remove(listener);
     }

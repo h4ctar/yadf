@@ -31,8 +31,8 @@
  */
 package simulation;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import logger.Logger;
 
@@ -51,7 +51,7 @@ public abstract class AbstractGameObject implements IGameObject {
     private static int count = 0;
 
     /** The listeners. */
-    private Set<IGameObjectListener> listeners = new LinkedHashSet<>();
+    private Set<IGameObjectListener> listeners = new CopyOnWriteArraySet<>();
 
     /**
      * Constructor.

@@ -34,6 +34,8 @@ package userinterface.game.job;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -85,6 +87,7 @@ public class JobsPane extends JPanel {
         zoomToJobButton.setMinimumSize(new Dimension(150, 23));
         zoomToJobButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         zoomToJobButton.setPreferredSize(new Dimension(150, 23));
+        zoomToJobButton.addActionListener(new ZoomToJobButtonActionListener());
         panel.add(zoomToJobButton);
 
         JButton cancelJobButton = new JButton("Cancel job");
@@ -98,9 +101,21 @@ public class JobsPane extends JPanel {
     /**
      * Sets the job manager.
      * @param jobManager the new up
+     * @param worldPane
      */
     public void setup(final IJobManager jobManager) {
         jobsTableModel = new JobsTableModel(jobManager);
         jobsTable.setModel(jobsTableModel);
+    }
+
+    /**
+     * Action listener for the zoom to job button.
+     */
+    private class ZoomToJobButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
     }
 }

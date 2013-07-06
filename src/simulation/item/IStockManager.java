@@ -2,12 +2,13 @@ package simulation.item;
 
 import java.util.Set;
 
+import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**
  * Interface for a stock manager.
  */
-public interface IStockManager extends IContainer {
+public interface IStockManager extends IGameObjectManager, IContainer {
 
     /**
      * Finds an item that is not stored, including containers.
@@ -61,16 +62,4 @@ public interface IStockManager extends IContainer {
      * @param stockpile the stockpile to remove
      */
     void removeStockpile(Stockpile stockpile);
-
-    /**
-     * Add a listener that will be notified whenever a stockpile is added or removed.
-     * @param listener the listener to add
-     */
-    void addListener(IStockManagerListener listener);
-
-    /**
-     * Remove a listener that was be notified whenever a stockpile is added or removed.
-     * @param listener the listener to remove
-     */
-    void removeListener(IStockManagerListener listener);
 }

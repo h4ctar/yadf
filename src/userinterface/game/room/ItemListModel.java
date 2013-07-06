@@ -36,14 +36,15 @@ import java.util.List;
 
 import javax.swing.AbstractListModel;
 
-import simulation.item.IContainerListener;
+import simulation.IGameObject;
+import simulation.IGameObjectManagerListener;
 import simulation.item.Item;
 import simulation.room.Room;
 
 /**
  * The Class ItemListModel.
  */
-class ItemListModel extends AbstractListModel<String> implements IContainerListener {
+class ItemListModel extends AbstractListModel<String> implements IGameObjectManagerListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -1108175675511497032L;
@@ -60,10 +61,10 @@ class ItemListModel extends AbstractListModel<String> implements IContainerListe
      */
     public void setRoom(final Room roomTmp) {
         if (room != null) {
-            room.removeListener(this);
+            room.removeGameObjectManagerListener(this);
         }
         room = roomTmp;
-        room.addListener(this);
+        room.addGameObjectManagerListener(this);
         items = new ArrayList<>(room.getItems());
     }
 
@@ -82,16 +83,20 @@ class ItemListModel extends AbstractListModel<String> implements IContainerListe
     }
 
     @Override
-    public void itemAdded(final Item item) {
-        assert !items.contains(item);
+    public void gameObjectAdded(final IGameObject gameObject) {
+        assert !items.contains(gameObject);
+        assert gameObject instanceof Item;
+        Item item = (Item) gameObject;
         items.add(item);
         int index = items.size() - 1;
         fireContentsChanged(this, index, index);
     }
 
     @Override
-    public void itemRemoved(final Item item) {
-        assert items.contains(item);
+    public void gameObjectRemoved(final IGameObject gameObject) {
+        assert items.contains(gameObject);
+        assert gameObject instanceof Item;
+        Item item = (Item) gameObject;
         int index = items.indexOf(item);
         items.remove(item);
         fireContentsChanged(this, index, index);

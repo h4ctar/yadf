@@ -66,6 +66,9 @@ public abstract class AbstractJob implements IJob {
         if (jobState != null) {
             Logger.getInstance().log(this, "Transitioning: " + jobStateTmp.toString() + " -> " + jobState.toString());
             jobState.start();
+            for (IJobListener listener : listeners) {
+                listener.jobChanged(this);
+            }
         } else {
             Logger.getInstance().log(this, "Job done");
             done = true;

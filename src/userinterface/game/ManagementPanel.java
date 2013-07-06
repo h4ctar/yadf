@@ -4,6 +4,8 @@ import java.awt.Dimension;
 
 import javax.swing.JTabbedPane;
 
+import simulation.IGameObject;
+import simulation.IGameObjectListener;
 import simulation.IPlayer;
 import simulation.character.IGameCharacter;
 import simulation.item.Item;
@@ -21,7 +23,10 @@ import userinterface.game.stockpile.StockpileInterface;
 import userinterface.game.workshop.WorkshopInterface;
 import controller.AbstractController;
 
-public class ManagementPanel extends JTabbedPane {
+public class ManagementPanel extends JTabbedPane implements IGameObjectListener {
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = 1L;
 
     /** The jobs pane. */
     private JobsPane jobsPane;
@@ -50,12 +55,15 @@ public class ManagementPanel extends JTabbedPane {
     /** The item interface. */
     private ItemInterface itemInterface;
 
+    /** The game object that currently has an interface open. */
+    private IGameObject gameObject;
+
     private IPlayer player;
 
     private AbstractController controller;
 
     public ManagementPanel() {
-        setPreferredSize(new Dimension(0, 250));
+        setPreferredSize(new Dimension(0, 200));
         setRequestFocusEnabled(false);
         setTabPlacement(JTabbedPane.LEFT);
         setBorder(null);
@@ -87,48 +95,70 @@ public class ManagementPanel extends JTabbedPane {
         militaryPane.setup(playerTmp, controllerTmp);
     }
 
-    public void openDwarfInterface(IGameCharacter dwarf, WorldCanvas worldCanvas) {
+    public void openDwarfInterface(final IGameCharacter dwarf, final WorldCanvas worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
+            gameObject.removeGameObjectListener(this);
         }
+        gameObject = dwarf;
+        gameObject.addGameObjectListener(this);
         dwarfInterface.setDwarf(dwarf, worldCanvas);
         addTab("Dwarf", null, dwarfInterface, null);
         setSelectedComponent(dwarfInterface);
     }
 
-    public void openItemInterface(Item item, WorldCanvas worldCanvas) {
+    public void openItemInterface(final Item item, final WorldCanvas worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
+            gameObject.removeGameObjectListener(this);
         }
+        gameObject = item;
+        gameObject.addGameObjectListener(this);
         itemInterface.setItem(item);
         addTab("Item", null, itemInterface, null);
         setSelectedComponent(itemInterface);
     }
 
-    public void openStockpileInterface(Stockpile stockpile, WorldCanvas worldCanvas) {
+    public void openStockpileInterface(final Stockpile stockpile, final WorldCanvas worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
+            gameObject.removeGameObjectListener(this);
         }
+        gameObject = stockpile;
+        gameObject.addGameObjectListener(this);
         stockpileInterface.setStockpile(stockpile, worldCanvas, player, controller);
         addTab("Stockpile", null, stockpileInterface, null);
         setSelectedComponent(stockpileInterface);
     }
 
-    public void openRoomInterface(Room room, WorldCanvas worldCanvas) {
+    public void openRoomInterface(final Room room, final WorldCanvas worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
+            gameObject.removeGameObjectListener(this);
         }
+        gameObject = room;
+        gameObject.addGameObjectListener(this);
         roomInterface.setRoom(room, player, controller);
         addTab(room.getType(), null, roomInterface, null);
         setSelectedComponent(roomInterface);
     }
 
-    public void openWorkshopInterface(IWorkshop workshop, WorldCanvas worldCanvas) {
+    public void openWorkshopInterface(final IWorkshop workshop, final WorldCanvas worldCanvas) {
         if (getTabCount() == 5) {
             removeTabAt(4);
+            gameObject.removeGameObjectListener(this);
         }
+        gameObject = workshop;
+        gameObject.addGameObjectListener(this);
         workshopInterface.setWorkshop(workshop, worldCanvas, player, controller);
         addTab(workshop.getType().name, null, workshopInterface, null);
         setSelectedComponent(workshopInterface);
+    }
+
+    @Override
+    public void gameObjectDeleted(final Object gameObjectTmp) {
+        assert getTabCount() == 5;
+        removeTabAt(4);
+        gameObject.removeGameObjectListener(this);
     }
 }

@@ -99,5 +99,10 @@ public class LaborsPane extends JPanel {
     public void setup(final IPlayer player, final AbstractController controller) {
         laborTableModel = new LaborTableModel(player, controller);
         laborsTable.setModel(laborTableModel);
+        // TableCellRenderer headerRenderer = new VerticalTableHeaderCellRenderer();
+        // Enumeration<TableColumn> columns = laborsTable.getColumnModel().getColumns();
+        // while (columns.hasMoreElements()) {
+        // columns.nextElement().setHeaderRenderer(headerRenderer);
+        // }
     }
 }

@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.job.BuildWorkshopJob;
 import simulation.map.MapIndex;
 
@@ -56,7 +56,7 @@ public class BuildWorkshopCommand extends AbstractCommand {
      * @param positionTmp the position
      * @param workshopTypeTmp the workshop type
      */
-    public BuildWorkshopCommand(final Player player, final MapIndex positionTmp, final String workshopTypeTmp) {
+    public BuildWorkshopCommand(final IPlayer player, final MapIndex positionTmp, final String workshopTypeTmp) {
         super(player);
         workshopType = workshopTypeTmp;
         position = positionTmp;

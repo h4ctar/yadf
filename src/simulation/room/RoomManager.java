@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import simulation.IGameObjectListener;
+import simulation.IGameObjectManagerListener;
 import simulation.map.MapIndex;
 
 /**
@@ -16,14 +17,14 @@ public class RoomManager implements IRoomManager, IGameObjectListener {
     private final Set<Room> rooms = new CopyOnWriteArraySet<>();
 
     /** The room manager listeners. */
-    private Set<IRoomManagerListener> listeners = new LinkedHashSet<>();
+    private Set<IGameObjectManagerListener> listeners = new LinkedHashSet<>();
 
     @Override
     public void addRoom(final Room room) {
         assert !rooms.contains(room);
         rooms.add(room);
-        for (IRoomManagerListener listener : listeners) {
-            listener.roomAdded(room);
+        for (IGameObjectManagerListener listener : listeners) {
+            listener.gameObjectAdded(room);
         }
         room.addGameObjectListener(this);
     }
@@ -32,8 +33,8 @@ public class RoomManager implements IRoomManager, IGameObjectListener {
     public void removeRoom(final Room room) {
         assert rooms.contains(room);
         rooms.remove(room);
-        for (IRoomManagerListener listener : listeners) {
-            listener.roomRemoved(room);
+        for (IGameObjectManagerListener listener : listeners) {
+            listener.gameObjectRemoved(room);
         }
         room.removeGameObjectListener(this);
     }
@@ -66,13 +67,13 @@ public class RoomManager implements IRoomManager, IGameObjectListener {
     }
 
     @Override
-    public void addListener(final IRoomManagerListener listener) {
+    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
         assert !listeners.contains(listener);
         listeners.add(listener);
     }
 
     @Override
-    public void removeListener(final IRoomManagerListener listener) {
+    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
         assert listeners.contains(listener);
         listeners.remove(listener);
     }

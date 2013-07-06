@@ -32,9 +32,10 @@
 package userinterface.game;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,17 +43,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import logger.Logger;
+import simulation.IGameObject;
+import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
 import simulation.Region;
 import simulation.Tree;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.Farm;
-import simulation.farm.IFarmManagerListener;
-import simulation.item.IStockManagerListener;
 import simulation.item.Item;
 import simulation.item.Stockpile;
 import simulation.job.IJobManager;
@@ -63,11 +64,8 @@ import simulation.map.IMapListener;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
-import simulation.room.IRoomManagerListener;
 import simulation.room.Room;
-import simulation.tree.ITreeManagerListener;
 import simulation.workshop.IWorkshop;
-import simulation.workshop.IWorkshopManagerListener;
 import userinterface.game.graphicobject.FarmGraphicObject;
 import userinterface.game.graphicobject.IGraphicObject;
 import userinterface.game.graphicobject.ItemGraphicObject;
@@ -81,8 +79,7 @@ import userinterface.misc.SpriteManager;
 /**
  * The WorldCanvas.
  */
-public class WorldCanvas extends JComponent implements IMapListener, ITreeManagerListener, IStockManagerListener,
-        IFarmManagerListener, IRoomManagerListener, IWorkshopManagerListener {
+public class WorldCanvas extends JPanel implements ComponentListener, IMapListener, IGameObjectManagerListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 1L;
@@ -141,6 +138,7 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     public WorldCanvas() {
         setIgnoreRepaint(true);
         setDoubleBuffered(true);
+        addComponentListener(this);
     }
 
     /**
@@ -152,12 +150,12 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         player = playerTmp;
         region = regionTmp;
         region.getMap().addListener(this);
-        region.getTreeManager().addListener(this);
+        region.getTreeManager().addGameObjectManagerListener(this);
         for (IPlayer player2 : region.getPlayers()) {
-            player2.getStockManager().addListener(this);
-            player2.getFarmManager().addListener(this);
-            player2.getRoomManager().addListener(this);
-            player2.getWorkshopManager().addListener(this);
+            player2.getStockManager().addGameObjectManagerListener(this);
+            player2.getFarmManager().addGameObjectManagerListener(this);
+            player2.getRoomManager().addGameObjectManagerListener(this);
+            player2.getWorkshopManager().addGameObjectManagerListener(this);
         }
     }
 
@@ -298,30 +296,6 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
         selectionValid = selectionValidTmp;
     }
 
-    @Override
-    public void setSize(final Dimension d) {
-        Logger.getInstance().log(this, "setSize (" + d.width + ", " + d.height + ")");
-        super.setSize(d);
-        canvasWidth = d.width;
-        canvasHeight = d.height;
-        if (canvasWidth <= 0) {
-            canvasWidth = 1;
-        }
-        if (canvasHeight <= 0) {
-            canvasHeight = 1;
-        }
-        // To keep the view centered on the same location it is moved so the corner is where it use to be centered then
-        // moved back or something, does that make any sense?
-        viewArea.pos.x += viewArea.width / 2;
-        viewArea.pos.y += viewArea.height / 2;
-        viewArea.width = canvasWidth / SpriteManager.SPRITE_SIZE + 1;
-        viewArea.height = canvasHeight / SpriteManager.SPRITE_SIZE + 1;
-        viewArea.pos.x -= viewArea.width / 2;
-        viewArea.pos.y -= viewArea.height / 2;
-        backgroundImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_ARGB);
-        drawBackgroundRequired = true;
-    }
-
     /**
      * Block sprite.
      * @param block the block
@@ -409,74 +383,66 @@ public class WorldCanvas extends JComponent implements IMapListener, ITreeManage
     }
 
     @Override
-    public void treeAdded(final Tree tree) {
-        assert !graphicObjects.containsKey(tree);
-        graphicObjects.put(tree, new TreeGraphicObject(tree));
+    public void gameObjectAdded(final IGameObject gameObject) {
+        assert !graphicObjects.containsKey(gameObject);
+        if (gameObject instanceof Farm) {
+            Farm farm = (Farm) gameObject;
+            graphicObjects.put(farm, new FarmGraphicObject(farm));
+        } else if (gameObject instanceof Stockpile) {
+            Stockpile stockpile = (Stockpile) gameObject;
+            graphicObjects.put(stockpile, new StockpileGraphicObject(stockpile));
+        } else if (gameObject instanceof Item) {
+            Item item = (Item) gameObject;
+            graphicObjects.put(item, new ItemGraphicObject(item));
+        } else if (gameObject instanceof Tree) {
+            Tree tree = (Tree) gameObject;
+            graphicObjects.put(tree, new TreeGraphicObject(tree));
+        } else if (gameObject instanceof Room) {
+            Room room = (Room) gameObject;
+            graphicObjects.put(room, new RoomGraphicObject(room));
+        } else if (gameObject instanceof IWorkshop) {
+            IWorkshop workshop = (IWorkshop) gameObject;
+            graphicObjects.put(workshop, new WorkshopGraphicObject(workshop));
+        }
     }
 
     @Override
-    public void treeRemoved(final Tree tree) {
-        assert graphicObjects.containsKey(tree);
-        graphicObjects.remove(tree);
+    public void gameObjectRemoved(final IGameObject gameObject) {
+        assert graphicObjects.containsKey(gameObject);
+        graphicObjects.remove(gameObject);
     }
 
     @Override
-    public void itemAdded(final Item item) {
-        assert !graphicObjects.containsKey(item);
-        graphicObjects.put(item, new ItemGraphicObject(item));
+    public void componentResized(final ComponentEvent e) {
+        canvasWidth = getWidth();
+        canvasHeight = getHeight();
+        if (canvasWidth <= 0) {
+            canvasWidth = 1;
+        }
+        if (canvasHeight <= 0) {
+            canvasHeight = 1;
+        }
+        // To keep the view centered on the same location it is moved so the corner is where it use to be centered then
+        // moved back or something, does that make any sense?
+        viewArea.pos.x += viewArea.width / 2;
+        viewArea.pos.y += viewArea.height / 2;
+        viewArea.width = canvasWidth / SpriteManager.SPRITE_SIZE + 1;
+        viewArea.height = canvasHeight / SpriteManager.SPRITE_SIZE + 1;
+        viewArea.pos.x -= viewArea.width / 2;
+        viewArea.pos.y -= viewArea.height / 2;
+        backgroundImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_ARGB);
+        drawBackgroundRequired = true;
     }
 
     @Override
-    public void itemRemoved(final Item item) {
-        assert graphicObjects.containsKey(item);
-        graphicObjects.remove(item);
+    public void componentMoved(final ComponentEvent e) {
     }
 
     @Override
-    public void stockpileAdded(final Stockpile stockpile) {
-        assert !graphicObjects.containsKey(stockpile);
-        graphicObjects.put(stockpile, new StockpileGraphicObject(stockpile));
+    public void componentShown(final ComponentEvent e) {
     }
 
     @Override
-    public void stockpileRemoved(final Stockpile stockpile) {
-        assert graphicObjects.containsKey(stockpile);
-        graphicObjects.remove(stockpile);
-    }
-
-    @Override
-    public void farmAdded(final Farm farm) {
-        assert !graphicObjects.containsKey(farm);
-        graphicObjects.put(farm, new FarmGraphicObject(farm));
-    }
-
-    @Override
-    public void farmRemoved(final Farm farm) {
-        assert graphicObjects.containsKey(farm);
-        graphicObjects.remove(farm);
-    }
-
-    @Override
-    public void roomAdded(final Room room) {
-        assert !graphicObjects.containsKey(room);
-        graphicObjects.put(room, new RoomGraphicObject(room));
-    }
-
-    @Override
-    public void roomRemoved(final Room room) {
-        assert graphicObjects.containsKey(room);
-        graphicObjects.remove(room);
-    }
-
-    @Override
-    public void workshopAdded(final IWorkshop workshop) {
-        assert !graphicObjects.containsKey(workshop);
-        graphicObjects.put(workshop, new WorkshopGraphicObject(workshop));
-    }
-
-    @Override
-    public void workshopRemoved(final IWorkshop workshop) {
-        assert graphicObjects.containsKey(workshop);
-        graphicObjects.remove(workshop);
+    public void componentHidden(final ComponentEvent e) {
     }
 }

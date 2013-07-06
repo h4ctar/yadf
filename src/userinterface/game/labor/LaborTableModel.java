@@ -33,9 +33,10 @@ package userinterface.game.labor;
 
 import javax.swing.table.AbstractTableModel;
 
+import simulation.IGameObject;
+import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
 import simulation.character.Dwarf;
-import simulation.character.IDwarfManagerListener;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.ISkillComponent;
@@ -47,7 +48,7 @@ import controller.command.EnableLaborCommand;
 /**
  * The Class LaborTableModel.
  */
-class LaborTableModel extends AbstractTableModel implements IDwarfManagerListener, ICharacterComponentListener {
+class LaborTableModel extends AbstractTableModel implements IGameObjectManagerListener, ICharacterComponentListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2428815575025895385L;
@@ -66,7 +67,7 @@ class LaborTableModel extends AbstractTableModel implements IDwarfManagerListene
     LaborTableModel(final IPlayer playerTmp, final AbstractController controllerTmp) {
         player = playerTmp;
         controller = controllerTmp;
-        player.getDwarfManager().addListener(this);
+        player.getDwarfManager().addGameObjectManagerListener(this);
         for (IGameCharacter dwarf : player.getDwarfManager().getDwarfs()) {
             dwarf.getComponent(ISkillComponent.class).addListener(this);
         }
@@ -150,13 +151,18 @@ class LaborTableModel extends AbstractTableModel implements IDwarfManagerListene
     }
 
     @Override
-    public void dwarfAdded(final IGameCharacter dwarf) {
+    public void gameObjectAdded(final IGameObject gameObject) {
+        assert gameObject instanceof IGameCharacter;
+        IGameCharacter dwarf = (IGameCharacter) gameObject;
         dwarf.getComponent(ISkillComponent.class).addListener(this);
         fireTableDataChanged();
     }
 
     @Override
-    public void dwarfRemoved(final IGameCharacter dwarf) {
+    public void gameObjectRemoved(final IGameObject gameObject) {
+        assert gameObject instanceof IGameCharacter;
+        IGameCharacter dwarf = (IGameCharacter) gameObject;
         dwarf.getComponent(ISkillComponent.class).removeListener(this);
+        fireTableDataChanged();
     }
 }

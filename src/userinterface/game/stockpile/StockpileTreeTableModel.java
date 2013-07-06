@@ -38,8 +38,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
+import simulation.IGameObject;
+import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
-import simulation.item.IContainerListener;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
@@ -51,7 +52,7 @@ import controller.command.SetStockpileCommand;
 /**
  * The Class StockpileTreeTableModel.
  */
-class StockpileTreeTableModel extends AbstractTreeTableModel implements IContainerListener {
+class StockpileTreeTableModel extends AbstractTreeTableModel implements IGameObjectManagerListener {
 
     /** The stockpile. */
     private final Stockpile stockpile;
@@ -88,7 +89,7 @@ class StockpileTreeTableModel extends AbstractTreeTableModel implements IContain
             }
         }
 
-        stockpile.addListener(this);
+        stockpile.addGameObjectManagerListener(this);
     }
 
     @Override
@@ -202,12 +203,14 @@ class StockpileTreeTableModel extends AbstractTreeTableModel implements IContain
     }
 
     @Override
-    public void itemAdded(final Item item) {
+    public void gameObjectAdded(final IGameObject gameObject) {
+        assert gameObject instanceof Item;
         // TODO Auto-generated method stub
     }
 
     @Override
-    public void itemRemoved(final Item item) {
+    public void gameObjectRemoved(final IGameObject gameObject) {
+        assert gameObject instanceof Item;
         // TODO Auto-generated method stub
     }
 }

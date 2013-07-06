@@ -3,11 +3,12 @@ package simulation.item;
 import java.util.Set;
 
 import simulation.IGameObject;
+import simulation.farm.IGameObjectManager;
 
 /**
  * Interface for a container.
  */
-public interface IContainer extends IGameObject {
+public interface IContainer extends IGameObject, IGameObjectManager {
     /**
      * Add an item to this container.
      * @param item the item to add
@@ -61,42 +62,30 @@ public interface IContainer extends IGameObject {
     int getItemQuantity(ItemType itemType);
 
     /**
-     * Add a listener to the container that will be notified whenever an item is added or removed.
-     * @param listener the listener to add
-     */
-    void addListener(final IContainerListener listener);
-
-    /**
-     * Remove a listener from the container that was be notified whenever an item is added or removed.
-     * @param listener the listener to remove
-     */
-    void removeListener(final IContainerListener listener);
-
-    /**
      * Add a listener to the container that will be notified when an item of a specific type becomes available.
      * @param itemType the type of item to be notified for
      * @param listener the new listener
      */
-    void addListener(final ItemType itemType, final IItemAvailableListener listener);
+    void addItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener);
 
     /**
      * Add a listener to the container that listens for available items of all item types in one category.
      * @param category the category
      * @param listener the new listener
      */
-    void addListener(final String category, IItemAvailableListener listener);
+    void addItemAvailableListenerListener(final String category, IItemAvailableListener listener);
 
     /**
      * Remove a listener from a particular item type.
      * @param itemType the type of item to stop listening for
      * @param listener the listener to remove
      */
-    void removeListener(ItemType itemType, IItemAvailableListener listener);
+    void removeItemAvailableListener(ItemType itemType, IItemAvailableListener listener);
 
     /**
      * Remove a listener from listening to all item types from one category.
      * @param category the category
      * @param listener the listener to remove
      */
-    void removeListener(final String category, IItemAvailableListener listener);
+    void removeItemAvailableListener(final String category, IItemAvailableListener listener);
 }

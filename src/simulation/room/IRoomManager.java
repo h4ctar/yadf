@@ -2,12 +2,13 @@ package simulation.room;
 
 import java.util.Set;
 
+import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**
  * Interface for a room manager.
  */
-public interface IRoomManager {
+public interface IRoomManager extends IGameObjectManager {
 
     /**
      * Adds a room.
@@ -40,16 +41,4 @@ public interface IRoomManager {
      * @return all the rooms
      */
     Set<Room> getRooms();
-
-    /**
-     * Add a new room manager listener who will be notified of rooms being added or removed.
-     * @param listener the new listener
-     */
-    void addListener(IRoomManagerListener listener);
-
-    /**
-     * Remove a room manager listener.
-     * @param listener the removed room manager listener
-     */
-    void removeListener(IRoomManagerListener listener);
 }

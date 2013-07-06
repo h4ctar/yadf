@@ -31,7 +31,7 @@
  */
 package controller.command;
 
-import simulation.Player;
+import simulation.IPlayer;
 import simulation.map.MapArea;
 import simulation.room.Room;
 
@@ -55,7 +55,7 @@ public class CreateRoomCommand extends AbstractCommand {
      * @param player the player
      * @param roomTypeTmp the room type
      */
-    public CreateRoomCommand(final MapArea areaTmp, final Player player, final String roomTypeTmp) {
+    public CreateRoomCommand(final MapArea areaTmp, final IPlayer player, final String roomTypeTmp) {
         super(player);
         area = areaTmp;
         roomType = roomTypeTmp;

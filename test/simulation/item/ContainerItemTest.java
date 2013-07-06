@@ -220,7 +220,7 @@ public class ContainerItemTest {
         assertEquals(breadItemType, containerItem.getContentItemType());
         // The container should stop listening to all item types, and now only listen to the bread item type
         // verify(stockManager, times(1)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
         // TODO: The container should have created heaps of jobs
 
         // Add another item of same type
@@ -230,7 +230,7 @@ public class ContainerItemTest {
         assertEquals(breadItemType, containerItem.getContentItemType());
         // The container should not change how it's listening
         // verify(stockManager, times(1)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
 
         // Add an item that is of different type
         Item item3 = new Item(new MapIndex(), chipsItemType, player);
@@ -239,7 +239,7 @@ public class ContainerItemTest {
         assertEquals(breadItemType, containerItem.getContentItemType());
         // The container should not change how it's listening
         // verify(stockManager, times(1)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
 
         // Add an item that is in different location
         Item item4 = new Item(new MapIndex(1, 1, 1), breadItemType, player);
@@ -248,7 +248,7 @@ public class ContainerItemTest {
         assertEquals(breadItemType, containerItem.getContentItemType());
         // The container should not change how it's listening
         // verify(stockManager, times(1)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
 
         // Add items to fill the container
         for (int i = 0; i < BARREL_CAPACITY - 2; i++) {
@@ -259,7 +259,7 @@ public class ContainerItemTest {
         assertTrue(containerItem.isFull());
         // The container should stop listening as it's now full
         // verify(stockManager, times(2)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
 
         // Add an item to a full container
         Item item5 = new Item(new MapIndex(), breadItemType, player);
@@ -268,7 +268,7 @@ public class ContainerItemTest {
         assertTrue(containerItem.isFull());
         // The container should not change how it's listening
         // verify(stockManager, times(2)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
     }
 
     /**
@@ -292,7 +292,7 @@ public class ContainerItemTest {
         // The container should stop listening to all item types, and now only listen to the bread item type
         // verify(stockManager, times(1)).addListener(containerItem);
         // verify(stockManager, times(1)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
 
         // Remove item from container
         boolean itemRemoved = containerItem.removeItem(item1);
@@ -302,7 +302,7 @@ public class ContainerItemTest {
         // The container should not change how it's listening
         // verify(stockManager, times(1)).addListener(containerItem);
         // verify(stockManager, times(1)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
 
         // Remove item that's not in container
         Item item3 = new Item(new MapIndex(), breadItemType, player);
@@ -313,7 +313,7 @@ public class ContainerItemTest {
         // The container should not change how it's listening
         // verify(stockManager, times(1)).addListener(containerItem);
         // verify(stockManager, times(1)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
 
         // Remove last item from container
         itemRemoved = containerItem.removeItem(item2);
@@ -324,7 +324,7 @@ public class ContainerItemTest {
         // The container should now be listening to all item types
         // verify(stockManager, times(2)).addListener(containerItem);
         // verify(stockManager, times(1)).removeListener(containerItem);
-        verify(stockManager, times(1)).addListener(breadItemType, containerItem);
+        verify(stockManager, times(1)).addItemAvailableListener(breadItemType, containerItem);
     }
 
     /**

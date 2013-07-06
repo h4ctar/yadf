@@ -1,13 +1,19 @@
 package userinterface.game;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 
 import logger.Logger;
 import misc.MyRandom;
@@ -15,11 +21,10 @@ import settings.Settings;
 import simulation.IPlayer;
 import simulation.Player;
 import simulation.Region;
-import simulation.item.ItemTypeManager;
-import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
-import simulation.recipe.RecipeManager;
-import simulation.workshop.WorkshopTypeManager;
+import userinterface.game.guistate.IGuiState;
+import userinterface.game.guistate.IGuiStateListener;
+import userinterface.game.guistate.NormalGuiState;
 import userinterface.misc.ImagePanel;
 import userinterface.multiplayer.IMainWindow;
 import controller.AbstractController;
@@ -30,7 +35,7 @@ import controller.SinglePlayerController;
 /**
  * The Game Panel.
  */
-public class GamePanel extends ImagePanel implements IGamePanel {
+public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -3057695070550769148L;
@@ -51,13 +56,19 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     private Player player;
 
     /** The world pane. */
-    private WorldPane worldPane;
+    private WorldCanvas worldPanel;
 
     /** The status bar. */
     private StatusBar statusPanel;
 
     /** The south panel. */
     private ManagementPanel managementPanel;
+
+    /** The main popup menu. */
+    private MainPopupMenu mainPopupMenu;
+
+    /** The current state the the GUI is in. */
+    private IGuiState state;
 
     /**
      * Constructor.
@@ -66,6 +77,60 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     public GamePanel(final IMainWindow mainWindowTmp) {
         mainWindow = mainWindowTmp;
         setupLayout();
+        setupKeyboardActions();
+    }
+
+    /**
+     * Setup the layout.
+     */
+    private void setupLayout() {
+        setLayout(new BorderLayout(0, 0));
+
+        statusPanel = new StatusBar();
+        add(statusPanel, BorderLayout.NORTH);
+
+        worldPanel = new WorldCanvas();
+        add(worldPanel, BorderLayout.CENTER);
+        worldPanel.setSize(new Dimension(400, 400));
+
+        managementPanel = new ManagementPanel();
+        add(managementPanel, BorderLayout.SOUTH);
+
+        mainPopupMenu = new MainPopupMenu(this);
+        worldPanel.setComponentPopupMenu(mainPopupMenu);
+    }
+
+    /**
+     * Setup all the keyboard actions.
+     */
+    private void setupKeyboardActions() {
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, true),
+                "SHIFT_UP");
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, false), "UP");
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, false), "DOWN");
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "LEFT");
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "RIGHT");
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0, false), "UP_Z");
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "DOWN_Z");
+
+        getActionMap().put("SHIFT_UP", new AbstractAction() {
+
+            /** The serial version UID. */
+            private static final long serialVersionUID = -5686631134770314337L;
+
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                state.interrupt();
+            }
+        });
+
+        getActionMap().put("UP", new MoveViewAction(0, -1, 0));
+        getActionMap().put("DOWN", new MoveViewAction(0, 1, 0));
+        getActionMap().put("LEFT", new MoveViewAction(-1, 0, 0));
+        getActionMap().put("RIGHT", new MoveViewAction(1, 0, 0));
+        getActionMap().put("UP_Z", new MoveViewAction(0, 0, 1));
+        getActionMap().put("DOWN_Z", new MoveViewAction(0, 0, -1));
     }
 
     /**
@@ -76,11 +141,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     public void startSinglePlayerGame(final String playerName, final MapIndex regionSize) {
         Logger.getInstance().log(this, "Starting single player game");
         try {
-            ItemTypeManager.getInstance().load();
-            WorkshopTypeManager.getInstance().load();
-            LaborTypeManager.getInstance().load();
-            RecipeManager.getInstance().load();
-            MyRandom.getInstance().setSeed(10);
+            MyRandom.getInstance().setSeed(2);
 
             int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
             MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
@@ -91,14 +152,17 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             controller = new SinglePlayerController();
 
             managementPanel.setup(player, controller);
-            worldPane.setup(region, player, controller, managementPanel);
+            worldPanel.setup(player, region);
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
             player.setup(region, embarkPosition, numberOfStartingDwarfs);
-            worldPane.getWorldCanvas().zoomToPosition(embarkPosition);
+            worldPanel.zoomToPosition(embarkPosition);
 
             gameLoop = new GameLoop(region, controller, this);
+
+            state = new NormalGuiState();
+            state.setup(player, controller, worldPanel, managementPanel);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Could not start the game");
@@ -118,11 +182,7 @@ public class GamePanel extends ImagePanel implements IGamePanel {
         Logger.getInstance().log(this, "Starting multiplayer game");
         controller = new ClientController(connection, this);
         try {
-            ItemTypeManager.getInstance().load();
-            WorkshopTypeManager.getInstance().load();
-            LaborTypeManager.getInstance().load();
-            RecipeManager.getInstance().load();
-            MyRandom.getInstance().setSeed(10);
+            MyRandom.getInstance().setSeed(2);
 
             int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
             MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
@@ -138,16 +198,19 @@ public class GamePanel extends ImagePanel implements IGamePanel {
             controller = new ClientController(connection, this);
 
             managementPanel.setup(player, controller);
-            worldPane.setup(region, player, controller, managementPanel);
+            worldPanel.setup(player, region);
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
             for (IPlayer playerTmp : region.getPlayers()) {
                 playerTmp.setup(region, embarkPosition, numberOfStartingDwarfs);
             }
-            worldPane.getWorldCanvas().zoomToPosition(embarkPosition);
+            worldPanel.zoomToPosition(embarkPosition);
 
             gameLoop = new GameLoop(region, controller, this);
+
+            state = new NormalGuiState();
+            state.setup(player, controller, worldPanel, managementPanel);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Could not start the game");
@@ -161,24 +224,23 @@ public class GamePanel extends ImagePanel implements IGamePanel {
     public void loadSinglePlayerGame() {
         Logger.getInstance().log(this, "Loading game");
         try {
-            ItemTypeManager.getInstance().load();
-            WorkshopTypeManager.getInstance().load();
-            LaborTypeManager.getInstance().load();
-            RecipeManager.getInstance().load();
+            MyRandom.getInstance().setSeed(2);
 
             FileInputStream fileInputStream = new FileInputStream("myobject.data");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             region = (Region) objectInputStream.readObject();
             objectInputStream.close();
 
-            // TODO: Which player, perhaps dialog...
             player = region.getPlayers().toArray(new Player[0])[0];
             controller = new SinglePlayerController();
 
             managementPanel.setup(player, controller);
-            worldPane.setup(region, player, controller, managementPanel);
+            worldPanel.setup(player, region);
 
             gameLoop = new GameLoop(region, controller, this);
+
+            state = new NormalGuiState();
+            state.setup(player, controller, worldPanel, managementPanel);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Could not start the game");
@@ -205,8 +267,8 @@ public class GamePanel extends ImagePanel implements IGamePanel {
 
     @Override
     public void update() {
-        worldPane.update();
-        statusPanel.update(gameLoop, region, worldPane);
+        worldPanel.repaint();
+        statusPanel.update(gameLoop, region, state == null ? "Normal" : state.toString());
     }
 
     @Override
@@ -216,19 +278,52 @@ public class GamePanel extends ImagePanel implements IGamePanel {
         }
     }
 
+    @Override
+    public void setState(final IGuiState stateTmp) {
+        state.interrupt();
+        state = stateTmp;
+        state.addGuiStateListener(this);
+        state.setup(player, controller, worldPanel, managementPanel);
+    }
+
+    @Override
+    public void stateDone() {
+        state.removeGuiStateListener(this);
+        state = new NormalGuiState();
+        state.setup(player, controller, worldPanel, managementPanel);
+    }
+
     /**
-     * Setup the layout.
+     * The action to move the view.
      */
-    private void setupLayout() {
-        setLayout(new BorderLayout(0, 0));
+    private class MoveViewAction extends AbstractAction {
+        /** The serial version UID. */
+        private static final long serialVersionUID = 1L;
 
-        statusPanel = new StatusBar();
-        add(statusPanel, BorderLayout.NORTH);
+        /** How far to move in x direction. */
+        private int x;
 
-        worldPane = new WorldPane();
-        add(worldPane, BorderLayout.CENTER);
+        /** How far to move in y direction. */
+        private int y;
 
-        managementPanel = new ManagementPanel();
-        add(managementPanel, BorderLayout.SOUTH);
+        /** How far to move in y direction. */
+        private int z;
+
+        /**
+         * Constructor.
+         * @param xTmp how far to move in x direction
+         * @param yTmp how far to move in y direction
+         * @param zTmp how far to move in z direction
+         */
+        public MoveViewAction(final int xTmp, final int yTmp, final int zTmp) {
+            x = xTmp;
+            y = yTmp;
+            z = zTmp;
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            worldPanel.moveView(x, y, z);
+        }
     }
 }

@@ -13,6 +13,9 @@ import simulation.military.IMilitaryManagerListener;
  */
 public class SoldiersTableModel extends AbstractTableModel implements IMilitaryManagerListener {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -3606638170944881663L;
+
     private IMilitaryManager militaryManager;
 
     /**
@@ -54,6 +57,6 @@ public class SoldiersTableModel extends AbstractTableModel implements IMilitaryM
 
     @Override
     public void soldierRemoved() {
-        // TODO Auto-generated method stub
+        fireTableDataChanged();
     }
 }

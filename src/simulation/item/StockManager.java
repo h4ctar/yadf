@@ -37,6 +37,7 @@ import java.util.Set;
 import logger.Logger;
 import simulation.AbstractGameObject;
 import simulation.IGameObjectListener;
+import simulation.IGameObjectManagerListener;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
@@ -52,7 +53,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     private final Set<Stockpile> stockpiles = new LinkedHashSet<>();
 
     /** Listeners for add and remove of items and stockpiles. */
-    private final Set<IStockManagerListener> managerListeners = new LinkedHashSet<>();
+    private final Set<IGameObjectManagerListener> managerListeners = new LinkedHashSet<>();
 
     @Override
     public boolean addItem(final Item item) {
@@ -106,8 +107,8 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
      * @param stockpile the stockpile that was added
      */
     private void notifyStockpileAdded(final Stockpile stockpile) {
-        for (IStockManagerListener managerListener : managerListeners) {
-            managerListener.stockpileAdded(stockpile);
+        for (IGameObjectManagerListener managerListener : managerListeners) {
+            managerListener.gameObjectAdded(stockpile);
         }
     }
 
@@ -116,8 +117,8 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
      * @param stockpile the stockpile that was removed
      */
     private void notifyStockpileRemoved(final Stockpile stockpile) {
-        for (IStockManagerListener managerListener : managerListeners) {
-            managerListener.stockpileRemoved(stockpile);
+        for (IGameObjectManagerListener managerListener : managerListeners) {
+            managerListener.gameObjectRemoved(stockpile);
         }
     }
 
@@ -185,7 +186,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     public void addStockpile(final Stockpile stockpile) {
         // The stockpile needs to listen to all item types
         for (ItemType itemType : ItemTypeManager.getInstance().getItemTypes()) {
-            stockpile.addListener(itemType, containerComponent);
+            stockpile.addItemAvailableListener(itemType, containerComponent);
         }
         stockpiles.add(stockpile);
         notifyStockpileAdded(stockpile);
@@ -195,7 +196,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     @Override
     public void removeStockpile(final Stockpile stockpile) {
         for (ItemType itemType : ItemTypeManager.getInstance().getItemTypes()) {
-            stockpile.removeListener(itemType, containerComponent);
+            stockpile.removeItemAvailableListener(itemType, containerComponent);
         }
         stockpiles.remove(stockpile);
         notifyStockpileRemoved(stockpile);
@@ -247,45 +248,35 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     }
 
     @Override
-    public void addListener(final IStockManagerListener listener) {
+    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
         managerListeners.add(listener);
-        containerComponent.addListener(listener);
+        containerComponent.addGameObjectManagerListener(listener);
     }
 
     @Override
-    public void removeListener(final IStockManagerListener listener) {
+    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
         managerListeners.remove(listener);
-        containerComponent.removeListener(listener);
+        containerComponent.removeGameObjectManagerListener(listener);
     }
 
     @Override
-    public void addListener(final IContainerListener listener) {
-        containerComponent.addListener(listener);
+    public void addItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.addItemAvailableListener(itemType, listener);
     }
 
     @Override
-    public void removeListener(final IContainerListener listener) {
-        containerComponent.removeListener(listener);
+    public void addItemAvailableListenerListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.addItemAvailableListenerListener(category, listener);
     }
 
     @Override
-    public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.addListener(itemType, listener);
+    public void removeItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.removeItemAvailableListener(itemType, listener);
     }
 
     @Override
-    public void addListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.addListener(category, listener);
-    }
-
-    @Override
-    public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.removeListener(itemType, listener);
-    }
-
-    @Override
-    public void removeListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.removeListener(category, listener);
+    public void removeItemAvailableListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.removeItemAvailableListener(category, listener);
     }
 
     @Override

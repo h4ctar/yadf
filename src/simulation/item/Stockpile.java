@@ -36,6 +36,7 @@ import java.util.Set;
 
 import logger.Logger;
 import simulation.AbstractGameObject;
+import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
 import simulation.job.HaulJob;
 import simulation.job.IJob;
@@ -189,6 +190,11 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         haulJobs.remove(haulJob);
     }
 
+    @Override
+    public void jobChanged(final IJob job) {
+        // do nothing
+    }
+
     /**
      * Sets the type of item that this stockpile will collect.
      * @param itemTypeName the item type name
@@ -200,12 +206,12 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         if (accept) {
             if (!acceptableItemTypes.contains(itemType)) {
                 acceptableItemTypes.add(itemType);
-                player.getStockManager().addListener(itemType, this);
+                player.getStockManager().addItemAvailableListener(itemType, this);
                 createHaulJobs();
             }
         } else {
             acceptableItemTypes.remove(itemType);
-            player.getStockManager().removeListener(itemType, this);
+            player.getStockManager().removeItemAvailableListener(itemType, this);
             // Interrupt and remove haul tasks that have been started
             for (HaulJob haulJob : haulJobs) {
                 if (haulJob.getItem().getType().name.equals(itemTypeName)) {
@@ -272,7 +278,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         super.delete();
         containerComponent.delete();
         for (ItemType itemType : acceptableItemTypes) {
-            player.getStockManager().removeListener(itemType, this);
+            player.getStockManager().removeItemAvailableListener(itemType, this);
         }
         for (Item item : getItems()) {
             player.getStockManager().addItem(item);
@@ -303,32 +309,32 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     }
 
     @Override
-    public void addListener(final IContainerListener listener) {
-        containerComponent.addListener(listener);
+    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
+        containerComponent.addGameObjectManagerListener(listener);
     }
 
     @Override
-    public void removeListener(final IContainerListener listener) {
-        containerComponent.removeListener(listener);
+    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
+        containerComponent.removeGameObjectManagerListener(listener);
     }
 
     @Override
-    public void addListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.addListener(itemType, listener);
+    public void addItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.addItemAvailableListener(itemType, listener);
     }
 
     @Override
-    public void addListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.addListener(category, listener);
+    public void addItemAvailableListenerListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.addItemAvailableListenerListener(category, listener);
     }
 
     @Override
-    public void removeListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.removeListener(itemType, listener);
+    public void removeItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
+        containerComponent.removeItemAvailableListener(itemType, listener);
     }
 
     @Override
-    public void removeListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.removeListener(category, listener);
+    public void removeItemAvailableListener(final String category, final IItemAvailableListener listener) {
+        containerComponent.removeItemAvailableListener(category, listener);
     }
 }

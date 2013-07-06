@@ -72,9 +72,9 @@ public abstract class LookingForItemState extends AbstractJobState implements II
         }
         if (item == null) {
             if (itemType != null) {
-                getJob().getPlayer().getStockManager().addListener(itemType, this);
+                getJob().getPlayer().getStockManager().addItemAvailableListener(itemType, this);
             } else {
-                getJob().getPlayer().getStockManager().addListener(category, this);
+                getJob().getPlayer().getStockManager().addItemAvailableListenerListener(category, this);
             }
         } else {
             item.setUsed(true);
@@ -91,9 +91,9 @@ public abstract class LookingForItemState extends AbstractJobState implements II
         item = availableItem;
         item.setUsed(true);
         if (itemType != null) {
-            getJob().getPlayer().getStockManager().removeListener(itemType, this);
+            getJob().getPlayer().getStockManager().removeItemAvailableListener(itemType, this);
         } else {
-            getJob().getPlayer().getStockManager().removeListener(category, this);
+            getJob().getPlayer().getStockManager().removeItemAvailableListener(category, this);
         }
         finishState();
     }
@@ -109,9 +109,9 @@ public abstract class LookingForItemState extends AbstractJobState implements II
     @Override
     public void interrupt(final String message) {
         if (itemType != null) {
-            getJob().getPlayer().getStockManager().removeListener(itemType, this);
+            getJob().getPlayer().getStockManager().removeItemAvailableListener(itemType, this);
         } else {
-            getJob().getPlayer().getStockManager().removeListener(category, this);
+            getJob().getPlayer().getStockManager().removeItemAvailableListener(category, this);
         }
     }
 }
