@@ -21,18 +21,10 @@ import controller.AbstractController;
  */
 public class NormalGuiState extends AbstractGuiState implements MouseListener {
 
-    private IPlayer player;
-
-    private WorldCanvas worldPanel;
-
-    private ManagementPanel managementPanel;
-
     @Override
     public void setup(final IPlayer playerTmp, final AbstractController controller, final WorldCanvas worldPanelTmp,
             final ManagementPanel managementPanelTmp) {
-        player = playerTmp;
-        worldPanel = worldPanelTmp;
-        managementPanel = managementPanelTmp;
+        super.setup(playerTmp, controller, worldPanelTmp, managementPanelTmp);
         worldPanel.addMouseListener(this);
     }
 

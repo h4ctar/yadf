@@ -17,35 +17,21 @@ import controller.AbstractController;
 public abstract class AbstractVariableSizeGuiState extends AbstractGuiState implements MouseListener,
         MouseMotionListener {
 
-    /** The player. */
-    protected IPlayer player;
-
-    /** The controller. */
-    protected AbstractController controller;
-
-    /** The world panel. */
-    protected WorldCanvas worldPanel;
-
     /** The selection. */
     private MapArea selection = new MapArea();
 
     /** The absolute selection. */
     protected MapArea absSelection = new MapArea();
 
+    /** The mouse button. */
+    protected int button;
+
     @Override
     public void setup(final IPlayer playerTmp, final AbstractController controllerTmp,
             final WorldCanvas worldPanelTmp, final ManagementPanel managementPanelTmp) {
-        player = playerTmp;
-        controller = controllerTmp;
-        worldPanel = worldPanelTmp;
-
+        super.setup(playerTmp, controllerTmp, worldPanelTmp, managementPanelTmp);
         worldPanel.addMouseListener(this);
         worldPanel.addMouseMotionListener(this);
-    }
-
-    @Override
-    public String toString() {
-        return "Build workshop";
     }
 
     @Override
@@ -74,6 +60,7 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
 
     @Override
     public void mousePressed(final MouseEvent e) {
+        button = e.getButton();
         MapIndex mouseIndex = worldPanel.getMouseIndex(e.getX(), e.getY());
         selection.pos = mouseIndex;
     }

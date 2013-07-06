@@ -17,22 +17,13 @@ import controller.AbstractController;
 public abstract class AbstractFixedSizeGuiState extends AbstractGuiState implements MouseListener,
         MouseMotionListener {
 
-    /** The player. */
-    protected IPlayer player;
-
-    protected AbstractController controller;
-
-    protected WorldCanvas worldPanel;
-
+    /** The position. */
     protected MapIndex position;
 
     @Override
     public void setup(final IPlayer playerTmp, final AbstractController controllerTmp,
             final WorldCanvas worldPanelTmp, final ManagementPanel managementPanelTmp) {
-        player = playerTmp;
-        controller = controllerTmp;
-        worldPanel = worldPanelTmp;
-
+        super.setup(playerTmp, controllerTmp, worldPanelTmp, managementPanelTmp);
         worldPanel.addMouseListener(this);
         worldPanel.addMouseMotionListener(this);
     }
