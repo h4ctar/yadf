@@ -12,4 +12,9 @@ public class CreateStockpileGuiState extends AbstractVariableSizeGuiState {
     protected void doReleaseAction() {
         controller.addCommand(new CreateStockpileCommand(new MapArea(absSelection), player));
     }
+
+    @Override
+    protected boolean checkAreaValid() {
+        return true;
+    }
 }

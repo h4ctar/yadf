@@ -33,4 +33,9 @@ public class PlaceItemGuiState extends AbstractFixedSizeGuiState {
     protected int getHeight() {
         return 1;
     }
+
+    @Override
+    protected boolean checkAreaValid() {
+        return true;
+    }
 }

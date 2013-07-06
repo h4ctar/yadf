@@ -19,6 +19,9 @@ public abstract class AbstractFixedSizeGuiState extends AbstractGuiState impleme
     /** The position. */
     protected MapIndex position;
 
+    /** Is the current selection valid. */
+    private boolean areaValid;
+
     @Override
     public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final IGamePanel gamePanel) {
         super.setup(playerTmp, controllerTmp, gamePanel);
@@ -37,7 +40,7 @@ public abstract class AbstractFixedSizeGuiState extends AbstractGuiState impleme
     private void cleanStuff() {
         gamePanel.getWorldPanel().removeMouseListener(this);
         gamePanel.getWorldPanel().removeMouseMotionListener(this);
-        gamePanel.getWorldPanel().setSelection(null, true);
+        gamePanel.getWorldPanel().setSelection(null, false);
         notifyListeners();
     }
 
@@ -58,13 +61,21 @@ public abstract class AbstractFixedSizeGuiState extends AbstractGuiState impleme
      */
     protected abstract int getHeight();
 
+    /**
+     * Should the area be checked if its valid, to change the colour of the selection.
+     * @return true if the area should be checked
+     */
+    protected abstract boolean checkAreaValid();
+
     @Override
     public void mouseClicked(final MouseEvent e) {
-        doClickAction();
-        if (!e.isShiftDown()) {
-            cleanStuff();
+        if (areaValid) {
+            doClickAction();
+        }
+        if (e.isShiftDown()) {
+            gamePanel.getWorldPanel().setSelection(null, false);
         } else {
-            gamePanel.getWorldPanel().setSelection(null, true);
+            cleanStuff();
         }
     }
 
@@ -92,6 +103,6 @@ public abstract class AbstractFixedSizeGuiState extends AbstractGuiState impleme
     public void mouseMoved(final MouseEvent e) {
         position = gamePanel.getWorldPanel().getMouseIndex(e.getX(), e.getY());
         MapArea selection = new MapArea(position, getWidth(), getHeight());
-        gamePanel.getWorldPanel().setSelection(selection, true);
+        areaValid = gamePanel.getWorldPanel().setSelection(selection, checkAreaValid());
     }
 }

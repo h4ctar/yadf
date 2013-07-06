@@ -12,4 +12,9 @@ public class CreateFarmGuiState extends AbstractVariableSizeGuiState {
     protected void doReleaseAction() {
         controller.addCommand(new CreateFarmCommand(new MapArea(absSelection), player));
     }
+
+    @Override
+    protected boolean checkAreaValid() {
+        return true;
+    }
 }

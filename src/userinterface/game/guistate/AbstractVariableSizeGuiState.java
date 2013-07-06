@@ -25,6 +25,9 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
     /** The mouse button. */
     protected int button;
 
+    /** Is the current selection valid. */
+    private boolean areaValid;
+
     @Override
     public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final IGamePanel gamePanel) {
         super.setup(playerTmp, controllerTmp, gamePanel);
@@ -43,7 +46,7 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
     private void cleanStuff() {
         gamePanel.getWorldPanel().removeMouseListener(this);
         gamePanel.getWorldPanel().removeMouseMotionListener(this);
-        gamePanel.getWorldPanel().setSelection(null, true);
+        gamePanel.getWorldPanel().setSelection(null, false);
         notifyListeners();
     }
 
@@ -51,6 +54,12 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
      * Do the action for the mouse release.
      */
     protected abstract void doReleaseAction();
+
+    /**
+     * Should the area be checked if its valid, to change the colour of the selection.
+     * @return true if the area should be checked
+     */
+    protected abstract boolean checkAreaValid();
 
     @Override
     public void mouseClicked(final MouseEvent e) {
@@ -65,11 +74,13 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
 
     @Override
     public void mouseReleased(final MouseEvent e) {
-        doReleaseAction();
-        if (!e.isShiftDown()) {
-            cleanStuff();
+        if (areaValid) {
+            doReleaseAction();
+        }
+        if (e.isShiftDown()) {
+            gamePanel.getWorldPanel().setSelection(null, false);
         } else {
-            gamePanel.getWorldPanel().setSelection(null, true);
+            cleanStuff();
         }
     }
 
@@ -95,7 +106,7 @@ public abstract class AbstractVariableSizeGuiState extends AbstractGuiState impl
             absSelection.pos.y = selection.pos.y + selection.height - 1;
             absSelection.height = -selection.height + 2;
         }
-        gamePanel.getWorldPanel().setSelection(absSelection, true);
+        areaValid = gamePanel.getWorldPanel().setSelection(absSelection, checkAreaValid());
     }
 
     @Override

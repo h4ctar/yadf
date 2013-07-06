@@ -31,7 +31,6 @@
  */
 package userinterface;
 
-import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
@@ -67,7 +66,7 @@ public class MainWindow extends JFrame implements IMainWindow {
     private static final long serialVersionUID = -3847562580085069500L;
 
     /** The bounds of the window when it is created. */
-    private static final Rectangle WINDOW_BOUNDS = new Rectangle(100, 100, 800, 600);
+    private static final Rectangle WINDOW_BOUNDS = new Rectangle(100, 100, 1280, 800);
 
     /**
      * Instantiates a new main window and starts the main menu.
@@ -83,7 +82,6 @@ public class MainWindow extends JFrame implements IMainWindow {
         setTitle("Ben's Burrows");
         setBounds(WINDOW_BOUNDS);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setExtendedState(getExtendedState() | Frame.MAXIMIZED_BOTH);
         setupMainMenu();
         setVisible(true);
         ItemTypeManager.getInstance().load();

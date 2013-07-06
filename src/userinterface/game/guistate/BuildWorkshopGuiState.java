@@ -2,11 +2,19 @@ package userinterface.game.guistate;
 
 import controller.command.BuildWorkshopCommand;
 
+/**
+ * GUI state to build a workshop.
+ */
 public class BuildWorkshopGuiState extends AbstractFixedSizeGuiState {
 
+    /** The type of workshop to build. */
     private String workshopTypeName;
 
-    public BuildWorkshopGuiState(String workshopTypeNameTmp) {
+    /**
+     * Constructor.
+     * @param workshopTypeNameTmp the type of workshop to build
+     */
+    public BuildWorkshopGuiState(final String workshopTypeNameTmp) {
         workshopTypeName = workshopTypeNameTmp;
     }
 
@@ -23,5 +31,10 @@ public class BuildWorkshopGuiState extends AbstractFixedSizeGuiState {
     @Override
     protected int getHeight() {
         return 3;
+    }
+
+    @Override
+    protected boolean checkAreaValid() {
+        return true;
     }
 }

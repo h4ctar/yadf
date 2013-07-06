@@ -204,9 +204,9 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
             g.setColor(INVALID_SELECTION_COLOUR);
         }
 
-        g.fillRect((selection.pos.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE, (selection.pos.y - viewArea.pos.y)
-                * SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE * selection.width, SpriteManager.SPRITE_SIZE
-                * selection.height);
+        g.fillRect((selection.pos.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE,
+                (selection.pos.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE, SpriteManager.SPRITE_SIZE
+                        * selection.width, SpriteManager.SPRITE_SIZE * selection.height);
     }
 
     /**
@@ -289,11 +289,13 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
     /**
      * Sets the selection.
      * @param selectionTmp the selection
-     * @param selectionValidTmp the selection valid
+     * @param checkValid check that the selection is valid against the region
+     * @return true if the area is valid
      */
-    public void setSelection(final MapArea selectionTmp, final boolean selectionValidTmp) {
+    public boolean setSelection(final MapArea selectionTmp, final boolean checkValid) {
         selection = selectionTmp;
-        selectionValid = selectionValidTmp;
+        selectionValid = checkValid ? region.checkAreaValid(selectionTmp) : true;
+        return selectionValid;
     }
 
     /**
