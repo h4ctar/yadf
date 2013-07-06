@@ -17,4 +17,9 @@ public class CreateStockpileGuiState extends AbstractVariableSizeGuiState {
     protected boolean checkAreaValid() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Create stockpile";
+    }
 }

@@ -34,4 +34,9 @@ public class ItemGraphicObject implements IGraphicObject {
             itemSprite.draw(graphics, x, y);
         }
     }
+
+    @Override
+    public boolean containsIndex(final MapIndex mapIndex) {
+        return item.getPosition().equals(mapIndex);
+    }
 }

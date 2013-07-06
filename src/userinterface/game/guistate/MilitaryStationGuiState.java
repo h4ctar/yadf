@@ -27,4 +27,9 @@ public class MilitaryStationGuiState extends AbstractFixedSizeGuiState {
     protected boolean checkAreaValid() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Military station";
+    }
 }

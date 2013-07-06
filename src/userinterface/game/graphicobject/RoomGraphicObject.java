@@ -47,4 +47,9 @@ public class RoomGraphicObject implements IGraphicObject {
             }
         }
     }
+
+    @Override
+    public boolean containsIndex(final MapIndex mapIndex) {
+        return room.getArea().containesIndex(mapIndex);
+    }
 }

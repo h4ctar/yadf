@@ -67,4 +67,9 @@ public class FarmGraphicObject implements IGraphicObject {
             }
         }
     }
+
+    @Override
+    public boolean containsIndex(final MapIndex mapIndex) {
+        return farm.getArea().containesIndex(mapIndex);
+    }
 }

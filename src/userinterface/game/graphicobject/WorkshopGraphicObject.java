@@ -3,6 +3,7 @@ package userinterface.game.graphicobject;
 import java.awt.Graphics;
 
 import simulation.map.MapArea;
+import simulation.map.MapIndex;
 import simulation.workshop.IWorkshop;
 import simulation.workshop.Workshop;
 import userinterface.misc.Sprite;
@@ -33,5 +34,10 @@ public class WorkshopGraphicObject implements IGraphicObject {
             Sprite workshopSprite = SpriteManager.getInstance().getWorkshopSprite(workshop.getType().sprite);
             workshopSprite.draw(graphics, x, y);
         }
+    }
+
+    @Override
+    public boolean containsIndex(final MapIndex mapIndex) {
+        return workshop.getArea().containesIndex(mapIndex);
     }
 }

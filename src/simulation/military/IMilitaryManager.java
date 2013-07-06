@@ -24,6 +24,8 @@ public interface IMilitaryManager {
 
     void militaryStation(MapIndex target);
 
+    void cancelMilitaryStation();
+
     /**
      * Add a military manager listener.
      * @param listener the new listener

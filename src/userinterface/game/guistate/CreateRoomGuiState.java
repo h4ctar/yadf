@@ -28,4 +28,9 @@ public class CreateRoomGuiState extends AbstractVariableSizeGuiState {
     protected boolean checkAreaValid() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Create " + roomType;
+    }
 }

@@ -36,4 +36,9 @@ public class TreeGraphicObject implements IGraphicObject {
             TREE_SPRITE.draw(graphics, x * SpriteManager.SPRITE_SIZE, y * SpriteManager.SPRITE_SIZE);
         }
     }
+
+    @Override
+    public boolean containsIndex(final MapIndex mapIndex) {
+        return tree.getPosition().equals(mapIndex);
+    }
 }

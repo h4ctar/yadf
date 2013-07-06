@@ -59,6 +59,7 @@ public class MilitaryPane extends JPanel {
 
         JPanel panel = new JPanel();
         panel.setOpaque(false);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         add(panel, BorderLayout.WEST);
 
         JButton enlistButton = new JButton("Enlist");
@@ -67,8 +68,22 @@ public class MilitaryPane extends JPanel {
         enlistButton.setPreferredSize(new Dimension(150, 23));
         enlistButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         enlistButton.addActionListener(new EnlistButtonActionListener());
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(enlistButton);
+
+        JButton btnStation = new JButton("Station");
+        btnStation.setMinimumSize(new Dimension(150, 23));
+        btnStation.setMaximumSize(new Dimension(150, 23));
+        btnStation.setPreferredSize(new Dimension(150, 23));
+        btnStation.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(btnStation);
+
+        JButton btnCancelStation = new JButton("Cancel station");
+        btnCancelStation.setMinimumSize(new Dimension(150, 23));
+        btnCancelStation.setMaximumSize(new Dimension(150, 23));
+        btnCancelStation.setPreferredSize(new Dimension(150, 23));
+        btnCancelStation.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnCancelStation.addActionListener(new CancelStationButtonActionListener());
+        panel.add(btnCancelStation);
     }
 
     /**
@@ -99,6 +114,14 @@ public class MilitaryPane extends JPanel {
                 return;
             }
             controller.addCommand(new EnlistDwarfCommand(player, dwarf.getId()));
+        }
+    }
+
+    private class CancelStationButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            // player.getMilitaryManager().
         }
     }
 }

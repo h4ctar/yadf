@@ -162,7 +162,7 @@ public class WorldPanelPopupMenu extends JPopupMenu {
         JMenu militaryMenu = new JMenu("Military");
         JMenuItem menuItem = new JMenuItem("Station");
         militaryMenu.add(menuItem);
-        menuItem.addActionListener(new MilitaryMoveActionListener());
+        menuItem.addActionListener(new MilitaryStationActionListener());
         return militaryMenu;
     }
 
@@ -239,7 +239,7 @@ public class WorldPanelPopupMenu extends JPopupMenu {
     /**
      * Action listener for the military move menu item.
      */
-    private class MilitaryMoveActionListener implements ActionListener {
+    private class MilitaryStationActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(final ActionEvent actionEvent) {

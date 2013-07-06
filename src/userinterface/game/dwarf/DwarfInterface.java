@@ -49,6 +49,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import simulation.IGameObject;
 import simulation.character.ICharacterListener;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ICharacterComponentListener;
@@ -58,13 +59,14 @@ import simulation.character.component.IInventoryComponent;
 import simulation.character.component.ISkillComponent;
 import simulation.item.Item;
 import simulation.labor.LaborType;
-import userinterface.game.WorldPanel;
+import userinterface.game.AbstractGameObjectInterface;
 import userinterface.misc.SpriteManager;
 
 /**
  * The Class DwarfInterface.
  */
-public class DwarfInterface extends JPanel implements ICharacterListener, ICharacterComponentListener {
+public class DwarfInterface extends AbstractGameObjectInterface implements ICharacterListener,
+        ICharacterComponentListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 6213975713592520095L;
@@ -120,9 +122,6 @@ public class DwarfInterface extends JPanel implements ICharacterListener, IChara
     /** The info panel. */
     private JPanel infoPanel;
 
-    /** The world panel. */
-    private WorldPanel worldPanel;
-
     /**
      * Create the frame.
      */
@@ -133,6 +132,22 @@ public class DwarfInterface extends JPanel implements ICharacterListener, IChara
     }
 
     @Override
+    protected void setup(final IGameObject gameObject) {
+        dwarf = (IGameCharacter) gameObject;
+        dwarf.addListener(this);
+        dwarf.getComponent(ISkillComponent.class).addListener(this);
+        dwarf.getComponent(IHealthComponent.class).addListener(this);
+        dwarf.getComponent(IInventoryComponent.class).addListener(this);
+        dwarf.getComponent(IEatDrinkComponent.class).addListener(this);
+        update();
+    }
+
+    @Override
+    public String getTitle() {
+        return "Dwarf";
+    }
+
+    @Override
     public void characterChanged(final Object character) {
         assert character == dwarf;
         update();
@@ -140,22 +155,6 @@ public class DwarfInterface extends JPanel implements ICharacterListener, IChara
 
     @Override
     public void componentChanged(final Object component) {
-        update();
-    }
-
-    /**
-     * Sets the dwarf.
-     * @param dwarfTmp the dwarf
-     * @param worldPanelTmp the world panel
-     */
-    public void setDwarf(final IGameCharacter dwarfTmp, final WorldPanel worldPanelTmp) {
-        dwarf = dwarfTmp;
-        worldPanel = worldPanelTmp;
-        dwarf.addListener(this);
-        dwarf.getComponent(ISkillComponent.class).addListener(this);
-        dwarf.getComponent(IHealthComponent.class).addListener(this);
-        dwarf.getComponent(IInventoryComponent.class).addListener(this);
-        dwarf.getComponent(IEatDrinkComponent.class).addListener(this);
         update();
     }
 
@@ -396,7 +395,7 @@ public class DwarfInterface extends JPanel implements ICharacterListener, IChara
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            worldPanel.zoomToPosition(dwarf.getPosition());
+            gamePanel.getWorldPanel().zoomToPosition(dwarf.getPosition());
         }
     }
 }

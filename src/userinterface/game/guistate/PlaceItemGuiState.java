@@ -20,6 +20,11 @@ public class PlaceItemGuiState extends AbstractFixedSizeGuiState {
     }
 
     @Override
+    public String toString() {
+        return "Place " + itemTypeName;
+    }
+
+    @Override
     protected void doClickAction() {
         controller.addCommand(new PlaceItemCommand(player, itemTypeName, new MapIndex(position)));
     }

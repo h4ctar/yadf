@@ -40,6 +40,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -130,7 +131,7 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
     private boolean drawBackgroundRequired;
 
     /** All the graphic objects. */
-    private final Map<Object, IGraphicObject> graphicObjects = new ConcurrentHashMap<>();
+    private final Map<IGameObject, IGraphicObject> graphicObjects = new ConcurrentHashMap<>();
 
     /**
      * Instantiates a new world canvas.
@@ -412,6 +413,22 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
     public void gameObjectRemoved(final IGameObject gameObject) {
         assert graphicObjects.containsKey(gameObject);
         graphicObjects.remove(gameObject);
+    }
+
+    /**
+     * Get a game object that has a graphic object at a specific mapIndex.
+     * @param mapIndex the map index
+     * @return the game object
+     */
+    public IGameObject getGameObject(final MapIndex mapIndex) {
+        IGameObject gameObject = null;
+        for (Entry<IGameObject, IGraphicObject> entry : graphicObjects.entrySet()) {
+            if (entry.getValue().containsIndex(mapIndex)) {
+                gameObject = entry.getKey();
+                break;
+            }
+        }
+        return gameObject;
     }
 
     @Override

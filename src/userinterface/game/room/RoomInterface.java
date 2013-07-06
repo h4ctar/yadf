@@ -44,15 +44,15 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import simulation.IPlayer;
+import simulation.IGameObject;
 import simulation.room.Room;
-import controller.AbstractController;
+import userinterface.game.AbstractGameObjectInterface;
 import controller.command.DeleteRoomCommand;
 
 /**
  * The Class RoomInterface.
  */
-public class RoomInterface extends JPanel {
+public class RoomInterface extends AbstractGameObjectInterface {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -4042642581073625964L;
@@ -66,19 +66,16 @@ public class RoomInterface extends JPanel {
     /** The destroy room button. */
     private JButton destroyRoomButton;
 
-    /** The controller. */
-    private AbstractController controller;
-
-    /** The player. */
-    private IPlayer player;
-
     /** The room. */
     private Room room;
 
-    private JPanel infoPanel;
-
+    /** The button panel. */
     private JPanel buttonPanel;
 
+    /** The info panel. */
+    private JPanel infoPanel;
+
+    /** The scroll pane. */
     private JScrollPane scrollPane;
 
     /**
@@ -88,18 +85,15 @@ public class RoomInterface extends JPanel {
         setupLayout();
     }
 
-    /**
-     * Sets the room.
-     * @param roomTmp the new room
-     * @param playerTmp the player
-     * @param controllerTmp the controller
-     */
-    public void setRoom(final Room roomTmp, final IPlayer playerTmp, final AbstractController controllerTmp) {
-        room = roomTmp;
-        setOpaque(false);
-        player = playerTmp;
-        controller = controllerTmp;
+    @Override
+    protected void setup(final IGameObject gameObject) {
+        room = (Room) gameObject;
         itemsListModel.setRoom(room);
+    }
+
+    @Override
+    public String getTitle() {
+        return room.getType();
     }
 
     /**
@@ -119,6 +113,7 @@ public class RoomInterface extends JPanel {
      * Setup the layout.
      */
     private void setupLayout() {
+        setOpaque(false);
         setLayout(new BorderLayout(0, 0));
 
         itemsListModel = new ItemListModel();

@@ -46,12 +46,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import simulation.IPlayer;
+import simulation.IGameObject;
 import simulation.recipe.Recipe;
 import simulation.recipe.RecipeManager;
 import simulation.workshop.IWorkshop;
-import userinterface.game.WorldPanel;
-import controller.AbstractController;
+import userinterface.game.AbstractGameObjectInterface;
 import controller.command.CancelOrderCommand;
 import controller.command.DeleteWorkshopCommand;
 import controller.command.NewOrderCommand;
@@ -59,7 +58,7 @@ import controller.command.NewOrderCommand;
 /**
  * The Class WorkshopInterface.
  */
-public class WorkshopInterface extends JPanel {
+public class WorkshopInterface extends AbstractGameObjectInterface {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -4914056351593833868L;
@@ -79,12 +78,6 @@ public class WorkshopInterface extends JPanel {
     /** The cancel order button. */
     private JButton cancelOrderButton;
 
-    /** The controller. */
-    private AbstractController controller;
-
-    /** The player. */
-    private IPlayer player;
-
     /** The workshop. */
     private IWorkshop workshop;
 
@@ -97,33 +90,92 @@ public class WorkshopInterface extends JPanel {
     /** Button to zoom to the workshop. */
     private JButton zoomButton;
 
-    /** The canvas (required to zoom to the workshop). */
-    private WorldPanel worldCanvas;
-
+    /** The info panel. */
     private JPanel infoPanel;
 
     /**
      * Create the frame.
      */
     public WorkshopInterface() {
-        setOpaque(false);
         setupLayout();
     }
 
-    /**
-     * Sets the workshop that the interface is for.
-     * @param workshopTmp the workshop
-     * @param worldCanvasTmp the canvas (required to zoom to the workshop)
-     * @param playerTmp the player
-     * @param controllerTmp the controller
-     */
-    public void setWorkshop(final IWorkshop workshopTmp, final WorldPanel worldCanvasTmp, final IPlayer playerTmp,
-            final AbstractController controllerTmp) {
-        workshop = workshopTmp;
-        worldCanvas = worldCanvasTmp;
-        player = playerTmp;
-        controller = controllerTmp;
+    @Override
+    public void setup(final IGameObject gameObject) {
+        workshop = (IWorkshop) gameObject;
         ordersListModel.setWorkshop(workshop);
+    }
+
+    @Override
+    public String getTitle() {
+        return workshop.getType().name;
+    }
+
+    /**
+     * Setup the layout.
+     */
+    private void setupLayout() {
+        setOpaque(false);
+        setLayout(new BorderLayout(0, 0));
+
+        ordersListModel = new OrdersListModel();
+
+        buttonPanel = new JPanel();
+        add(buttonPanel, BorderLayout.WEST);
+        buttonPanel.setOpaque(false);
+        GridBagConstraints buttonPanelConstraints = new GridBagConstraints();
+        buttonPanelConstraints.fill = GridBagConstraints.BOTH;
+        buttonPanelConstraints.gridx = 0;
+        buttonPanelConstraints.gridy = 2;
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+
+        newOrderButton = new JButton("New Order");
+        newOrderButton.setMaximumSize(new Dimension(150, 23));
+        newOrderButton.setMinimumSize(new Dimension(150, 23));
+        newOrderButton.setPreferredSize(new Dimension(150, 23));
+        newOrderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(newOrderButton);
+
+        cancelOrderButton = new JButton("Cancel Order");
+        cancelOrderButton.setMaximumSize(new Dimension(150, 23));
+        cancelOrderButton.setMinimumSize(new Dimension(150, 23));
+        cancelOrderButton.setPreferredSize(new Dimension(150, 23));
+        cancelOrderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(cancelOrderButton);
+
+        zoomButton = new JButton("Zoom");
+        zoomButton.setMaximumSize(new Dimension(150, 23));
+        zoomButton.setMinimumSize(new Dimension(150, 23));
+        zoomButton.setPreferredSize(new Dimension(150, 23));
+        zoomButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(zoomButton);
+        zoomButton.addActionListener(new ZoomButtonActionListener());
+
+        destroyWorkshopButton = new JButton("Destroy Workshop");
+        destroyWorkshopButton.setMaximumSize(new Dimension(150, 23));
+        destroyWorkshopButton.setMinimumSize(new Dimension(150, 23));
+        destroyWorkshopButton.setPreferredSize(new Dimension(150, 23));
+        destroyWorkshopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(destroyWorkshopButton);
+        destroyWorkshopButton.addActionListener(new DestroyWorkshopActionListener());
+        cancelOrderButton.addActionListener(new CancelOrderActionListener());
+        newOrderButton.addActionListener(new NewOrderActionListener());
+
+        infoPanel = new JPanel();
+        infoPanel.setOpaque(false);
+        add(infoPanel, BorderLayout.CENTER);
+        infoPanel.setLayout(new BorderLayout(0, 0));
+
+        scrollPane = new JScrollPane();
+        infoPanel.add(scrollPane);
+        scrollPane.setOpaque(false);
+        GridBagConstraints scrollPaneConstraints = new GridBagConstraints();
+        scrollPaneConstraints.insets = new Insets(0, 0, 5, 0);
+        scrollPaneConstraints.fill = GridBagConstraints.BOTH;
+        scrollPaneConstraints.gridx = 0;
+        scrollPaneConstraints.gridy = 1;
+        ordersList = new JList<>(ordersListModel);
+        scrollPane.setViewportView(ordersList);
     }
 
     /**
@@ -187,73 +239,7 @@ public class WorkshopInterface extends JPanel {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            worldCanvas.zoomToArea(workshop.getArea());
+            gamePanel.getWorldPanel().zoomToArea(workshop.getArea());
         }
-    }
-
-    /**
-     * Setup the layout.
-     */
-    private void setupLayout() {
-        setLayout(new BorderLayout(0, 0));
-
-        ordersListModel = new OrdersListModel();
-
-        buttonPanel = new JPanel();
-        add(buttonPanel, BorderLayout.WEST);
-        buttonPanel.setOpaque(false);
-        GridBagConstraints buttonPanelConstraints = new GridBagConstraints();
-        buttonPanelConstraints.fill = GridBagConstraints.BOTH;
-        buttonPanelConstraints.gridx = 0;
-        buttonPanelConstraints.gridy = 2;
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-
-        newOrderButton = new JButton("New Order");
-        newOrderButton.setMaximumSize(new Dimension(150, 23));
-        newOrderButton.setMinimumSize(new Dimension(150, 23));
-        newOrderButton.setPreferredSize(new Dimension(150, 23));
-        newOrderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(newOrderButton);
-
-        cancelOrderButton = new JButton("Cancel Order");
-        cancelOrderButton.setMaximumSize(new Dimension(150, 23));
-        cancelOrderButton.setMinimumSize(new Dimension(150, 23));
-        cancelOrderButton.setPreferredSize(new Dimension(150, 23));
-        cancelOrderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(cancelOrderButton);
-
-        zoomButton = new JButton("Zoom");
-        zoomButton.setMaximumSize(new Dimension(150, 23));
-        zoomButton.setMinimumSize(new Dimension(150, 23));
-        zoomButton.setPreferredSize(new Dimension(150, 23));
-        zoomButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(zoomButton);
-        zoomButton.addActionListener(new ZoomButtonActionListener());
-
-        destroyWorkshopButton = new JButton("Destroy Workshop");
-        destroyWorkshopButton.setMaximumSize(new Dimension(150, 23));
-        destroyWorkshopButton.setMinimumSize(new Dimension(150, 23));
-        destroyWorkshopButton.setPreferredSize(new Dimension(150, 23));
-        destroyWorkshopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(destroyWorkshopButton);
-        destroyWorkshopButton.addActionListener(new DestroyWorkshopActionListener());
-        cancelOrderButton.addActionListener(new CancelOrderActionListener());
-        newOrderButton.addActionListener(new NewOrderActionListener());
-
-        infoPanel = new JPanel();
-        infoPanel.setOpaque(false);
-        add(infoPanel, BorderLayout.CENTER);
-        infoPanel.setLayout(new BorderLayout(0, 0));
-
-        scrollPane = new JScrollPane();
-        infoPanel.add(scrollPane);
-        scrollPane.setOpaque(false);
-        GridBagConstraints scrollPaneConstraints = new GridBagConstraints();
-        scrollPaneConstraints.insets = new Insets(0, 0, 5, 0);
-        scrollPaneConstraints.fill = GridBagConstraints.BOTH;
-        scrollPaneConstraints.gridx = 0;
-        scrollPaneConstraints.gridy = 1;
-        ordersList = new JList<>(ordersListModel);
-        scrollPane.setViewportView(ordersList);
     }
 }

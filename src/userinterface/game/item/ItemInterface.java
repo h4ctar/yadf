@@ -15,20 +15,25 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import simulation.IGameObject;
 import simulation.item.ContainerItem;
 import simulation.item.Item;
+import userinterface.game.AbstractGameObjectInterface;
 import userinterface.misc.SpriteManager;
 
 /**
  * Interface for an item.
  */
-public class ItemInterface extends JPanel {
+public class ItemInterface extends AbstractGameObjectInterface {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -5779376341490166019L;
 
     /** The size in pixels of the item image. */
     private static final int IMAGE_SIZE = 200;
+
+    /** The item. */
+    private Item item;
 
     /** The type text field. */
     private JTextField typeTextField;
@@ -58,15 +63,12 @@ public class ItemInterface extends JPanel {
      * Constructor.
      */
     public ItemInterface() {
-        setOpaque(false);
         setupLayout();
     }
 
-    /**
-     * Set the item that this interface is showing.
-     * @param item the item
-     */
-    public void setItem(final Item item) {
+    @Override
+    protected void setup(final IGameObject gameObject) {
+        item = (Item) gameObject;
         typeTextField.setText(item.getType().toString());
         usedTextField.setText(Boolean.toString(item.isUsed()));
         placedTextField.setText(Boolean.toString(item.isPlaced()));
@@ -83,10 +85,16 @@ public class ItemInterface extends JPanel {
         imageLabel.setIcon(new ImageIcon(itemImage));
     }
 
+    @Override
+    public String getTitle() {
+        return item.getType().name;
+    }
+
     /**
      * Setup the layout.
      */
     private void setupLayout() {
+        setOpaque(false);
         setLayout(new BorderLayout(0, 0));
 
         infoPanel = new JPanel();

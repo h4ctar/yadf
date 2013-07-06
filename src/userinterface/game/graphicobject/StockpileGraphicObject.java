@@ -53,4 +53,8 @@ public class StockpileGraphicObject implements IGraphicObject {
         }
     }
 
+    @Override
+    public boolean containsIndex(final MapIndex mapIndex) {
+        return stockpile.getArea().containesIndex(mapIndex);
+    }
 }

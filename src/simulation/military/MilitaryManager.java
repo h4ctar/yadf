@@ -51,6 +51,12 @@ public class MilitaryManager implements IMilitaryManager {
     }
 
     @Override
+    public void cancelMilitaryStation() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public void addMilitaryManagerListener(final IMilitaryManagerListener listener) {
         assert !listeners.contains(listener);
         listeners.add(listener);

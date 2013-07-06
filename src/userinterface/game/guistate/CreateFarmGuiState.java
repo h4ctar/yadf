@@ -17,4 +17,9 @@ public class CreateFarmGuiState extends AbstractVariableSizeGuiState {
     protected boolean checkAreaValid() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Create farm";
+    }
 }

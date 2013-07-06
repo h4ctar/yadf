@@ -46,28 +46,21 @@ import javax.swing.JScrollPane;
 
 import org.jdesktop.swingx.JXTreeTable;
 
-import simulation.IPlayer;
+import simulation.IGameObject;
 import simulation.item.Stockpile;
-import userinterface.game.WorldPanel;
-import controller.AbstractController;
+import userinterface.game.AbstractGameObjectInterface;
 import controller.command.DeleteStockpileCommand;
 
 /**
  * The Class StockpileInterface.
  */
-public class StockpileInterface extends JPanel {
+public class StockpileInterface extends AbstractGameObjectInterface {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -7914475811407054901L;
 
     /** The stockpile. */
     private Stockpile stockpile;
-
-    /** The controller. */
-    private AbstractController controller;
-
-    /** The player. */
-    private IPlayer player;
 
     /** The delete button. */
     private JButton deleteButton;
@@ -84,9 +77,6 @@ public class StockpileInterface extends JPanel {
     /** A button that zooms to the stockpile. */
     private JButton zoomButton;
 
-    /** The canvas (required to zoom to the stockpile). */
-    private WorldPanel worldCanvas;
-
     /**
      * Create the frame.
      */
@@ -95,45 +85,17 @@ public class StockpileInterface extends JPanel {
         setupLayout();
     }
 
-    /**
-     * Sets the stockpile.
-     * @param stockpileTmp the new stockpile
-     * @param worldCanvasTmp the canvas (required to zoom to the stockpile)
-     * @param playerTmp the player
-     * @param controllerTmp the controller
-     */
-    public void setStockpile(final Stockpile stockpileTmp, final WorldPanel worldCanvasTmp, final IPlayer playerTmp,
-            final AbstractController controllerTmp) {
-        stockpile = stockpileTmp;
-        worldCanvas = worldCanvasTmp;
-        player = playerTmp;
-        controller = controllerTmp;
+    @Override
+    protected void setup(final IGameObject gameObject) {
+        stockpile = (Stockpile) gameObject;
         StockpileTreeTableModel tableModel = new StockpileTreeTableModel(stockpile, controller, player);
         treeTable = new JXTreeTable(tableModel);
         scrollPane.setViewportView(treeTable);
     }
 
-    /**
-     * Action listener for the delete button.
-     */
-    private class ZoomButtonActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            worldCanvas.zoomToArea(stockpile.getArea());
-        }
-    }
-
-    /**
-     * Action listener for the delete button.
-     */
-    private class DeleteButtonActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            controller.addCommand(new DeleteStockpileCommand(player, stockpile.getId()));
-            setVisible(false);
-        }
+    @Override
+    public String getTitle() {
+        return "Stockpile";
     }
 
     /**
@@ -178,5 +140,28 @@ public class StockpileInterface extends JPanel {
         treeTable = new JXTreeTable();
         scrollPane.setViewportView(treeTable);
         deleteButton.addActionListener(new DeleteButtonActionListener());
+    }
+
+    /**
+     * Action listener for the delete button.
+     */
+    private class ZoomButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            gamePanel.getWorldPanel().zoomToArea(stockpile.getArea());
+        }
+    }
+
+    /**
+     * Action listener for the delete button.
+     */
+    private class DeleteButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            controller.addCommand(new DeleteStockpileCommand(player, stockpile.getId()));
+            setVisible(false);
+        }
     }
 }

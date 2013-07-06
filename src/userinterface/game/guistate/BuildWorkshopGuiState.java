@@ -19,6 +19,11 @@ public class BuildWorkshopGuiState extends AbstractFixedSizeGuiState {
     }
 
     @Override
+    public String toString() {
+        return "Build " + workshopTypeName;
+    }
+
+    @Override
     protected void doClickAction() {
         controller.addCommand(new BuildWorkshopCommand(player, position, workshopTypeName));
     }

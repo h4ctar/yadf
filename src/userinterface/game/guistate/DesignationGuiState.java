@@ -31,4 +31,9 @@ public class DesignationGuiState extends AbstractVariableSizeGuiState {
     protected boolean checkAreaValid() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Designate " + designationType.name();
+    }
 }
