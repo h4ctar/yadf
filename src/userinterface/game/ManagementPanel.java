@@ -98,11 +98,12 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
      * Setup the panel.
      * @param playerTmp the player
      * @param controllerTmp the controller
+     * @param worldPanel the world panel
      */
-    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp) {
+    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final WorldPanel worldPanel) {
         player = playerTmp;
         controller = controllerTmp;
-        jobsPane.setup(playerTmp.getJobManager());
+        jobsPane.setup(playerTmp.getJobManager(), worldPanel);
         laborsPane.setup(playerTmp, controllerTmp);
         stocksPane.setup(playerTmp);
         militaryPane.setup(playerTmp, controllerTmp);

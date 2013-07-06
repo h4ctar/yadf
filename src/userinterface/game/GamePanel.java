@@ -135,8 +135,8 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             region.addPlayer(player);
             controller = new SinglePlayerController();
 
-            managementPanel.setup(player, controller);
             worldPanel.setup(player, region);
+            managementPanel.setup(player, controller, worldPanel);
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
@@ -181,8 +181,8 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             }
             controller = new ClientController(connection, this);
 
-            managementPanel.setup(player, controller);
             worldPanel.setup(player, region);
+            managementPanel.setup(player, controller, worldPanel);
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
@@ -218,8 +218,8 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             player = region.getPlayers().toArray(new Player[0])[0];
             controller = new SinglePlayerController();
 
-            managementPanel.setup(player, controller);
             worldPanel.setup(player, region);
+            managementPanel.setup(player, controller, worldPanel);
 
             gameLoop = new GameLoop(region, controller, this);
 

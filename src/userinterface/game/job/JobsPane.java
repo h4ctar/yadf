@@ -42,9 +42,16 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import simulation.job.IJob;
 import simulation.job.IJobManager;
+import simulation.job.designation.AbstractDesignation;
+import simulation.map.MapIndex;
+import userinterface.game.WorldPanel;
 
 /**
  * The Class JobsPane.
@@ -62,6 +69,18 @@ public class JobsPane extends JPanel {
 
     /** The jobs scroll pane. */
     private final JScrollPane jobsScrollPane;
+
+    /** The job manager. */
+    private IJobManager jobManager;
+
+    /** The world panel. */
+    private WorldPanel worldPanel;
+
+    /** The zoom to job button. */
+    private JButton zoomToJobButton;
+
+    /** The cancel job button. */
+    private JButton cancelJobButton;
 
     /**
      * Instantiates a new jobs pane.
@@ -82,7 +101,7 @@ public class JobsPane extends JPanel {
         add(panel, BorderLayout.WEST);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JButton zoomToJobButton = new JButton("Zoom to job");
+        zoomToJobButton = new JButton("Zoom to job");
         zoomToJobButton.setMaximumSize(new Dimension(150, 23));
         zoomToJobButton.setMinimumSize(new Dimension(150, 23));
         zoomToJobButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -90,7 +109,7 @@ public class JobsPane extends JPanel {
         zoomToJobButton.addActionListener(new ZoomToJobButtonActionListener());
         panel.add(zoomToJobButton);
 
-        JButton cancelJobButton = new JButton("Cancel job");
+        cancelJobButton = new JButton("Cancel job");
         cancelJobButton.setMinimumSize(new Dimension(150, 23));
         cancelJobButton.setMaximumSize(new Dimension(150, 23));
         cancelJobButton.setPreferredSize(new Dimension(150, 23));
@@ -100,12 +119,18 @@ public class JobsPane extends JPanel {
 
     /**
      * Sets the job manager.
-     * @param jobManager the new up
-     * @param worldPane
+     * @param jobManagerTmp the new up
+     * @param worldPanelTmp the world panel
      */
-    public void setup(final IJobManager jobManager) {
+    public void setup(final IJobManager jobManagerTmp, final WorldPanel worldPanelTmp) {
+        jobManager = jobManagerTmp;
+        worldPanel = worldPanelTmp;
         jobsTableModel = new JobsTableModel(jobManager);
         jobsTable.setModel(jobsTableModel);
+        jobsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jobsTable.getSelectionModel().addListSelectionListener(new JobsTableListSelectionListener());
+        zoomToJobButton.setEnabled(false);
+        cancelJobButton.setEnabled(false);
     }
 
     /**
@@ -115,7 +140,30 @@ public class JobsPane extends JPanel {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
+            int row = jobsTable.getSelectedRow();
+            if (row != -1) {
+                IJob job = jobManager.getJobs().get(row);
+                MapIndex position = job.getPosition();
+                if (position != null) {
+                    worldPanel.zoomToPosition(position);
+                }
+            }
+        }
+    }
 
+    /**
+     * The jobs table list selection listener.
+     * <p>
+     * Enables and disables the buttons.
+     */
+    private class JobsTableListSelectionListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(final ListSelectionEvent e) {
+            int row = jobsTable.getSelectedRow();
+            IJob job = jobManager.getJobs().get(row);
+            zoomToJobButton.setEnabled(row != -1 && job.getPosition() != null);
+            cancelJobButton.setEnabled(row != -1 && !(job instanceof AbstractDesignation));
         }
     }
 }
