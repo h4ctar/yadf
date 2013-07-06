@@ -31,12 +31,13 @@
  */
 package simulation.job;
 
+import simulation.IGameObject;
 import simulation.map.MapIndex;
 
 /**
  * Abstract class for a job, a job is just something that needs doing.
  */
-public interface IJob {
+public interface IJob extends IGameObject {
 
     /**
      * Gets the current status of the job, used by the GUI.

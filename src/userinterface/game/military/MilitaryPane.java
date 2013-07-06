@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 import simulation.IPlayer;
 import simulation.character.IGameCharacter;
+import userinterface.game.WorldPanel;
 import controller.AbstractController;
 import controller.command.EnlistDwarfCommand;
 
@@ -38,6 +39,8 @@ public class MilitaryPane extends JPanel {
 
     /** The controller. */
     private AbstractController controller;
+
+    private WorldPanel worldPanel;
 
     /**
      * Constructor.
@@ -72,10 +75,12 @@ public class MilitaryPane extends JPanel {
      * Setup.
      * @param playerTmp the player
      * @param controllerTmp the controller
+     * @param worldPanelTmp the world panel
      */
-    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp) {
+    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final WorldPanel worldPanelTmp) {
         player = playerTmp;
         controller = controllerTmp;
+        worldPanel = worldPanelTmp;
         soldiersTableModel = new SoldiersTableModel(player.getMilitaryManager());
         soldiersTable.setModel(soldiersTableModel);
     }
@@ -88,8 +93,8 @@ public class MilitaryPane extends JPanel {
         @Override
         public void actionPerformed(final ActionEvent e) {
             IGameCharacter[] dwarfs = player.getDwarfManager().getDwarfs().toArray(new IGameCharacter[0]);
-            IGameCharacter dwarf = (IGameCharacter) JOptionPane.showInputDialog(MilitaryPane.this, "Dwarf",
-                    "Enlist dwarf", JOptionPane.QUESTION_MESSAGE, null, dwarfs, dwarfs[0]);
+            IGameCharacter dwarf = (IGameCharacter) JOptionPane.showInputDialog(worldPanel, "Dwarf", "Enlist dwarf",
+                    JOptionPane.QUESTION_MESSAGE, null, dwarfs, dwarfs[0]);
             if (dwarf == null) {
                 return;
             }

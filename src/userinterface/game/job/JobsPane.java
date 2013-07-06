@@ -47,11 +47,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import simulation.IPlayer;
 import simulation.job.IJob;
-import simulation.job.IJobManager;
 import simulation.job.designation.AbstractDesignation;
 import simulation.map.MapIndex;
 import userinterface.game.WorldPanel;
+import controller.AbstractController;
+import controller.command.CancelJobCommand;
 
 /**
  * The Class JobsPane.
@@ -70,9 +72,6 @@ public class JobsPane extends JPanel {
     /** The jobs scroll pane. */
     private final JScrollPane jobsScrollPane;
 
-    /** The job manager. */
-    private IJobManager jobManager;
-
     /** The world panel. */
     private WorldPanel worldPanel;
 
@@ -81,6 +80,11 @@ public class JobsPane extends JPanel {
 
     /** The cancel job button. */
     private JButton cancelJobButton;
+
+    /** The player. */
+    private IPlayer player;
+
+    private AbstractController controller;
 
     /**
      * Instantiates a new jobs pane.
@@ -120,13 +124,15 @@ public class JobsPane extends JPanel {
 
     /**
      * Sets the job manager.
+     * @param controllerTmp
      * @param jobManagerTmp the new up
      * @param worldPanelTmp the world panel
      */
-    public void setup(final IJobManager jobManagerTmp, final WorldPanel worldPanelTmp) {
-        jobManager = jobManagerTmp;
+    public void setup(final IPlayer playerTmp, AbstractController controllerTmp, final WorldPanel worldPanelTmp) {
+        player = playerTmp;
+        controller = controllerTmp;
         worldPanel = worldPanelTmp;
-        jobsTableModel = new JobsTableModel(jobManager);
+        jobsTableModel = new JobsTableModel(player.getJobManager());
         jobsTable.setModel(jobsTableModel);
         jobsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jobsTable.getSelectionModel().addListSelectionListener(new JobsTableListSelectionListener());
@@ -143,7 +149,7 @@ public class JobsPane extends JPanel {
         public void actionPerformed(final ActionEvent e) {
             int row = jobsTable.getSelectedRow();
             if (row != -1) {
-                IJob job = jobManager.getJobs().get(row);
+                IJob job = player.getJobManager().getJobs().get(row);
                 MapIndex position = job.getPosition();
                 if (position != null) {
                     worldPanel.zoomToPosition(position);
@@ -161,8 +167,8 @@ public class JobsPane extends JPanel {
         public void actionPerformed(final ActionEvent e) {
             int row = jobsTable.getSelectedRow();
             if (row != -1) {
-                IJob job = jobManager.getJobs().get(row);
-                job.interrupt("God canceled it");
+                IJob job = player.getJobManager().getJobs().get(row);
+                controller.addCommand(new CancelJobCommand(player, job.getId()));
             }
         }
     }
@@ -178,7 +184,7 @@ public class JobsPane extends JPanel {
         public void valueChanged(final ListSelectionEvent e) {
             int row = jobsTable.getSelectedRow();
             if (row != -1) {
-                IJob job = jobManager.getJobs().get(row);
+                IJob job = player.getJobManager().getJobs().get(row);
                 zoomToJobButton.setEnabled(job.getPosition() != null);
                 cancelJobButton.setEnabled(!(job instanceof AbstractDesignation));
             } else {

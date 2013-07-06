@@ -41,4 +41,11 @@ public interface IJobManager {
      * @return the jobs
      */
     List<IJob> getJobs();
+
+    /**
+     * Get the job with ID.
+     * @param jobId the job ID
+     * @return the job
+     */
+    IJob getJob(int jobId);
 }

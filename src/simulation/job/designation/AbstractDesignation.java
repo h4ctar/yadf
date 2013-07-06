@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import simulation.AbstractGameObject;
 import simulation.IPlayer;
 import simulation.IRegion;
 import simulation.job.IJob;
@@ -47,7 +48,7 @@ import simulation.map.MapIndex;
  * 
  * Designations are groups or areas of jobs to do that can be added to or subtracted from and spawn jobs.
  */
-public abstract class AbstractDesignation implements IJob, IJobListener {
+public abstract class AbstractDesignation extends AbstractGameObject implements IJob, IJobListener {
 
     /** The jobs. */
     private List<IJob> jobs = new ArrayList<>();

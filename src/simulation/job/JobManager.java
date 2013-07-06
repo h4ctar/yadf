@@ -135,4 +135,16 @@ public class JobManager implements IJobManager, IJobListener {
             addJob(designation);
         }
     }
+
+    @Override
+    public IJob getJob(final int jobId) {
+        IJob foundJob = null;
+        for (IJob job : jobs) {
+            if (job.getId() == jobId) {
+                foundJob = job;
+                break;
+            }
+        }
+        return foundJob;
+    }
 }

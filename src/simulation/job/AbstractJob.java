@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import logger.Logger;
+import simulation.AbstractGameObject;
 import simulation.IPlayer;
 import simulation.job.jobstate.IJobState;
 
 /**
  * An abstract job class that implements the listeners storage and notification method.
  */
-public abstract class AbstractJob implements IJob {
+public abstract class AbstractJob extends AbstractGameObject implements IJob {
 
     /** The listeners to this job. */
     private final List<IJobListener> listeners = new CopyOnWriteArrayList<>();
@@ -64,7 +65,8 @@ public abstract class AbstractJob implements IJob {
         assert jobState == jobStateTmp;
         jobState = jobState.getNextState();
         if (jobState != null) {
-            Logger.getInstance().log(this, "Transitioning: " + jobStateTmp.toString() + " -> " + jobState.toString());
+            Logger.getInstance()
+                    .log(this, "Transitioning: " + jobStateTmp.toString() + " -> " + jobState.toString());
             jobState.start();
             for (IJobListener listener : listeners) {
                 listener.jobChanged(this);
