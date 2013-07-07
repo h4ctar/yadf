@@ -2,6 +2,7 @@ package userinterface.game.graphicobject;
 
 import java.awt.Graphics;
 
+import simulation.IGameObject;
 import simulation.Tree;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -23,8 +24,8 @@ public class TreeGraphicObject implements IGraphicObject {
      * Constructor.
      * @param treeTmp the tree
      */
-    public TreeGraphicObject(final Tree treeTmp) {
-        tree = treeTmp;
+    public TreeGraphicObject(final IGameObject treeTmp) {
+        tree = (Tree) treeTmp;
     }
 
     @Override

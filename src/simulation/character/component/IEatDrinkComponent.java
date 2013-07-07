@@ -27,5 +27,9 @@ public interface IEatDrinkComponent extends ICharacterComponent {
      */
     int getThirst();
 
-    void setSpawnJobs(boolean b);
+    /**
+     * Turn on or off the spawning of eat and drink jobs.
+     * @param spawnJobs true to spawn jobs
+     */
+    void setSpawnJobs(boolean spawnJobs);
 }

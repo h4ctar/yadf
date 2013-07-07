@@ -84,6 +84,7 @@ public class JobsPane extends JPanel {
     /** The player. */
     private IPlayer player;
 
+    /** The controller. */
     private AbstractController controller;
 
     /**
@@ -124,11 +125,11 @@ public class JobsPane extends JPanel {
 
     /**
      * Sets the job manager.
-     * @param controllerTmp
-     * @param jobManagerTmp the new up
+     * @param playerTmp the player
+     * @param controllerTmp the controller
      * @param worldPanelTmp the world panel
      */
-    public void setup(final IPlayer playerTmp, AbstractController controllerTmp, final WorldPanel worldPanelTmp) {
+    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final WorldPanel worldPanelTmp) {
         player = playerTmp;
         controller = controllerTmp;
         worldPanel = worldPanelTmp;

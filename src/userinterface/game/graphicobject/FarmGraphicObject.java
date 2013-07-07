@@ -3,6 +3,7 @@ package userinterface.game.graphicobject;
 import java.awt.Graphics;
 import java.util.List;
 
+import simulation.IGameObject;
 import simulation.farm.Farm;
 import simulation.farm.FarmPlot;
 import simulation.map.MapArea;
@@ -34,8 +35,8 @@ public class FarmGraphicObject implements IGraphicObject {
      * Constructor.
      * @param farmTmp the farm
      */
-    public FarmGraphicObject(final Farm farmTmp) {
-        farm = farmTmp;
+    public FarmGraphicObject(final IGameObject farmTmp) {
+        farm = (Farm) farmTmp;
     }
 
     @Override

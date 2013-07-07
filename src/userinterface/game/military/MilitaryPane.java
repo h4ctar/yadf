@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -16,8 +17,11 @@ import javax.swing.border.EmptyBorder;
 
 import simulation.IPlayer;
 import simulation.character.IGameCharacter;
-import userinterface.game.WorldPanel;
+import simulation.job.IJob;
+import userinterface.game.IGamePanel;
+import userinterface.game.guistate.MilitaryStationGuiState;
 import controller.AbstractController;
+import controller.command.CancelJobCommand;
 import controller.command.EnlistDwarfCommand;
 
 /**
@@ -40,7 +44,8 @@ public class MilitaryPane extends JPanel {
     /** The controller. */
     private AbstractController controller;
 
-    private WorldPanel worldPanel;
+    /** The game panel. */
+    private IGamePanel gamePanel;
 
     /**
      * Constructor.
@@ -75,6 +80,7 @@ public class MilitaryPane extends JPanel {
         btnStation.setMaximumSize(new Dimension(150, 23));
         btnStation.setPreferredSize(new Dimension(150, 23));
         btnStation.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnStation.addActionListener(new StationButtonActionListener());
         panel.add(btnStation);
 
         JButton btnCancelStation = new JButton("Cancel station");
@@ -90,12 +96,12 @@ public class MilitaryPane extends JPanel {
      * Setup.
      * @param playerTmp the player
      * @param controllerTmp the controller
-     * @param worldPanelTmp the world panel
+     * @param gamePanelTmp the game panel
      */
-    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final WorldPanel worldPanelTmp) {
+    public void setup(final IPlayer playerTmp, final AbstractController controllerTmp, final IGamePanel gamePanelTmp) {
         player = playerTmp;
         controller = controllerTmp;
-        worldPanel = worldPanelTmp;
+        gamePanel = gamePanelTmp;
         soldiersTableModel = new SoldiersTableModel(player.getMilitaryManager());
         soldiersTable.setModel(soldiersTableModel);
     }
@@ -108,8 +114,8 @@ public class MilitaryPane extends JPanel {
         @Override
         public void actionPerformed(final ActionEvent e) {
             IGameCharacter[] dwarfs = player.getDwarfManager().getDwarfs().toArray(new IGameCharacter[0]);
-            IGameCharacter dwarf = (IGameCharacter) JOptionPane.showInputDialog(worldPanel, "Dwarf", "Enlist dwarf",
-                    JOptionPane.QUESTION_MESSAGE, null, dwarfs, dwarfs[0]);
+            IGameCharacter dwarf = (IGameCharacter) JOptionPane.showInputDialog(gamePanel.getWorldPanel(), "Dwarf",
+                    "Enlist dwarf", JOptionPane.QUESTION_MESSAGE, null, dwarfs, dwarfs[0]);
             if (dwarf == null) {
                 return;
             }
@@ -117,11 +123,28 @@ public class MilitaryPane extends JPanel {
         }
     }
 
+    /**
+     * Action listener for the station button.
+     */
+    private class StationButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            gamePanel.setState(new MilitaryStationGuiState());
+        }
+    }
+
+    /**
+     * Action listener for the cancel station button.
+     */
     private class CancelStationButtonActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            // player.getMilitaryManager().
+            Set<IJob> jobs = player.getMilitaryManager().getStationJobs();
+            for (IJob job : jobs) {
+                controller.addCommand(new CancelJobCommand(player, job.getId()));
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package userinterface.game.graphicobject;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import simulation.IGameObject;
 import simulation.item.Item;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -25,8 +26,8 @@ public class RoomGraphicObject implements IGraphicObject {
      * Constructor.
      * @param roomTmp the room
      */
-    public RoomGraphicObject(final Room roomTmp) {
-        room = roomTmp;
+    public RoomGraphicObject(final IGameObject roomTmp) {
+        room = (Room) roomTmp;
     }
 
     @Override

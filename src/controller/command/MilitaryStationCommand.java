@@ -26,6 +26,6 @@ public class MilitaryStationCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getMilitaryManager().militaryStation(target);
+        player.getMilitaryManager().station(target);
     }
 }

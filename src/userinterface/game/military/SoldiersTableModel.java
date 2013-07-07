@@ -16,6 +16,7 @@ public class SoldiersTableModel extends AbstractTableModel implements IMilitaryM
     /** The serial version UID. */
     private static final long serialVersionUID = -3606638170944881663L;
 
+    /** The military manager. */
     private IMilitaryManager militaryManager;
 
     /**

@@ -6,13 +6,15 @@ import java.util.Set;
 import simulation.character.IGameCharacter;
 import simulation.character.component.IMilitaryComponent;
 import simulation.character.component.MilitaryComponent;
+import simulation.job.IJob;
+import simulation.job.IJobListener;
 import simulation.job.MilitaryStationJob;
 import simulation.map.MapIndex;
 
 /**
  * The military manager.
  */
-public class MilitaryManager implements IMilitaryManager {
+public class MilitaryManager implements IMilitaryManager, IJobListener {
 
     /** The dwarves that are enlisted. */
     private Set<IGameCharacter> soldiers = new LinkedHashSet<>();
@@ -20,12 +22,8 @@ public class MilitaryManager implements IMilitaryManager {
     /** The listeners. */
     private Set<IMilitaryManagerListener> listeners = new LinkedHashSet<>();
 
-    /**
-     * Constructor.
-     */
-    public MilitaryManager() {
-
-    }
+    /** All the station jobs. */
+    private Set<IJob> stationJobs = new LinkedHashSet<>();
 
     @Override
     public void enlistDwarf(final IGameCharacter dwarf) {
@@ -43,17 +41,18 @@ public class MilitaryManager implements IMilitaryManager {
     }
 
     @Override
-    public void militaryStation(final MapIndex target) {
-        // TODO: remember all the station jobs so they can be interrupted or something
+    public void station(final MapIndex target) {
         for (IGameCharacter soldier : soldiers) {
-            soldier.getPlayer().getJobManager().addJob(new MilitaryStationJob(target, soldier));
+            IJob stationJob = new MilitaryStationJob(target, soldier);
+            stationJobs.add(stationJob);
+            stationJob.addListener(this);
+            soldier.getPlayer().getJobManager().addJob(stationJob);
         }
     }
 
     @Override
-    public void cancelMilitaryStation() {
-        // TODO Auto-generated method stub
-
+    public Set<IJob> getStationJobs() {
+        return stationJobs;
     }
 
     @Override
@@ -66,5 +65,15 @@ public class MilitaryManager implements IMilitaryManager {
     public void removeMilitaryManagerListener(final IMilitaryManagerListener listener) {
         assert listeners.contains(listener);
         listeners.remove(listener);
+    }
+
+    @Override
+    public void jobDone(final IJob job) {
+        assert stationJobs.contains(job);
+        stationJobs.remove(job);
+    }
+
+    @Override
+    public void jobChanged(final IJob job) {
     }
 }

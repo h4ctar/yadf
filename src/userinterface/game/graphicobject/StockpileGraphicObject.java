@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Set;
 
+import simulation.IGameObject;
 import simulation.item.Item;
 import simulation.item.Stockpile;
 import simulation.map.MapArea;
@@ -26,8 +27,8 @@ public class StockpileGraphicObject implements IGraphicObject {
      * Constructor.
      * @param stockpileTmp the stockpile
      */
-    public StockpileGraphicObject(final Stockpile stockpileTmp) {
-        stockpile = stockpileTmp;
+    public StockpileGraphicObject(final IGameObject stockpileTmp) {
+        stockpile = (Stockpile) stockpileTmp;
     }
 
     @Override

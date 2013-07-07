@@ -102,7 +102,7 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
         jobsPane.setup(playerTmp, controllerTmp, gamePanel.getWorldPanel());
         laborsPane.setup(playerTmp, controllerTmp, gamePanel.getWorldPanel());
         stocksPane.setup(playerTmp);
-        militaryPane.setup(playerTmp, controllerTmp, gamePanel.getWorldPanel());
+        militaryPane.setup(playerTmp, controllerTmp, gamePanel);
     }
 
     /**
@@ -110,17 +110,18 @@ public class ManagementPanel extends JTabbedPane implements IGameObjectListener 
      * @param gameObjectTmp the game object to open the interface for
      */
     public void openGameObjectInterface(final IGameObject gameObjectTmp) {
-        if (getTabCount() == 5) {
-            gameObject.removeGameObjectListener(this);
-            removeTabAt(4);
+        AbstractGameObjectInterface gameObjectInterface = gameObjectInterfaces.get(gameObjectTmp.getClass());
+        if (gameObjectInterface != null) {
+            if (getTabCount() == 5) {
+                gameObject.removeGameObjectListener(this);
+                removeTabAt(4);
+            }
+            gameObject = gameObjectTmp;
+            gameObject.addGameObjectListener(this);
+            gameObjectInterface.setup(gameObject, player, controller, gamePanel);
+            addTab(gameObjectInterface.getTitle(), null, gameObjectInterface, null);
+            setSelectedComponent(gameObjectInterface);
         }
-        gameObject = gameObjectTmp;
-        gameObject.addGameObjectListener(this);
-        AbstractGameObjectInterface gameObjectInterface = gameObjectInterfaces.get(gameObject.getClass());
-        gameObjectInterface.setup(gameObject, player, controller, gamePanel);
-        addTab(gameObjectInterface.getTitle(), null, gameObjectInterface, null);
-        setSelectedComponent(gameObjectInterface);
-
     }
 
     @Override

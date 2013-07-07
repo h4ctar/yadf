@@ -2,6 +2,7 @@ package userinterface.game.graphicobject;
 
 import java.awt.Graphics;
 
+import simulation.IGameObject;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.workshop.IWorkshop;
@@ -21,8 +22,8 @@ public class WorkshopGraphicObject implements IGraphicObject {
      * Constructor.
      * @param workshopTmp the workshop
      */
-    public WorkshopGraphicObject(final IWorkshop workshopTmp) {
-        workshop = workshopTmp;
+    public WorkshopGraphicObject(final IGameObject workshopTmp) {
+        workshop = (IWorkshop) workshopTmp;
     }
 
     @Override

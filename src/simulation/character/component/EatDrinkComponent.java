@@ -65,6 +65,7 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
     /** A reference to the drink job. */
     private EatDrinkJob drinkJob;
 
+    /** Should eat and drink jobs be spawned. */
     private boolean spawnJobs = true;
 
     /**

@@ -3,6 +3,7 @@ package simulation.military;
 import java.util.Set;
 
 import simulation.character.IGameCharacter;
+import simulation.job.IJob;
 import simulation.map.MapIndex;
 
 /**
@@ -22,9 +23,17 @@ public interface IMilitaryManager {
      */
     Set<IGameCharacter> getSoldiers();
 
-    void militaryStation(MapIndex target);
+    /**
+     * Station the soldiers at a target.
+     * @param target the target
+     */
+    void station(MapIndex target);
 
-    void cancelMilitaryStation();
+    /**
+     * Get all the station jobs.
+     * @return the station jobs
+     */
+    Set<IJob> getStationJobs();
 
     /**
      * Add a military manager listener.

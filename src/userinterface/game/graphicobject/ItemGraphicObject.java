@@ -2,6 +2,7 @@ package userinterface.game.graphicobject;
 
 import java.awt.Graphics;
 
+import simulation.IGameObject;
 import simulation.item.Item;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -20,8 +21,8 @@ public class ItemGraphicObject implements IGraphicObject {
      * Constructor.
      * @param itemTmp the item
      */
-    public ItemGraphicObject(final Item itemTmp) {
-        item = itemTmp;
+    public ItemGraphicObject(final IGameObject itemTmp) {
+        item = (Item) itemTmp;
     }
 
     @Override

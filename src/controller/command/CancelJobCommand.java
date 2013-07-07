@@ -17,6 +17,7 @@ public class CancelJobCommand extends AbstractCommand {
     /**
      * Constructor.
      * @param player the player
+     * @param jobIdTmp the job ID
      */
     public CancelJobCommand(final IPlayer player, final int jobIdTmp) {
         super(player);

@@ -25,11 +25,10 @@ public abstract class AbstractGameObjectInterface extends JPanel {
 
     /**
      * Setup the game object interface.
-     * @param gameObject
-     * @param playerTmp
-     * @param controllerTmp
-     * @param gamePanel
-     * @return
+     * @param gameObject the game object
+     * @param playerTmp the player
+     * @param controllerTmp the controller
+     * @param gamePanelTmp the game panel
      */
     public final void setup(final IGameObject gameObject, final IPlayer playerTmp,
             final AbstractController controllerTmp, final IGamePanel gamePanelTmp) {
@@ -39,7 +38,15 @@ public abstract class AbstractGameObjectInterface extends JPanel {
         setup(gameObject);
     }
 
+    /**
+     * Specific setup stuff.
+     * @param gameObject the game object
+     */
     protected abstract void setup(final IGameObject gameObject);
 
+    /**
+     * Get the title of the interface.
+     * @return the title
+     */
     public abstract String getTitle();
 }

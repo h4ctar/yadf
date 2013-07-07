@@ -38,10 +38,10 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JPanel;
@@ -52,21 +52,21 @@ import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
 import simulation.Region;
 import simulation.Tree;
-import simulation.character.IGameCharacter;
-import simulation.character.component.ISkillComponent;
+import simulation.character.Dwarf;
 import simulation.farm.Farm;
+import simulation.item.ContainerItem;
 import simulation.item.Item;
 import simulation.item.Stockpile;
 import simulation.job.IJobManager;
 import simulation.job.designation.AbstractDesignation;
-import simulation.labor.LaborType;
 import simulation.map.BlockType;
 import simulation.map.IMapListener;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.room.Room;
-import simulation.workshop.IWorkshop;
+import simulation.workshop.Workshop;
+import userinterface.game.graphicobject.DwarfGraphicObject;
 import userinterface.game.graphicobject.FarmGraphicObject;
 import userinterface.game.graphicobject.IGraphicObject;
 import userinterface.game.graphicobject.ItemGraphicObject;
@@ -133,6 +133,8 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
     /** All the graphic objects. */
     private final Map<IGameObject, IGraphicObject> graphicObjects = new ConcurrentHashMap<>();
 
+    private final Map<Class<? extends IGameObject>, Class<? extends IGraphicObject>> graphicObjectClasses = new HashMap<>();;
+
     /**
      * Instantiates a new world canvas.
      */
@@ -150,6 +152,16 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
     public void setup(final IPlayer playerTmp, final Region regionTmp) {
         player = playerTmp;
         region = regionTmp;
+
+        graphicObjectClasses.put(Farm.class, FarmGraphicObject.class);
+        graphicObjectClasses.put(Stockpile.class, StockpileGraphicObject.class);
+        graphicObjectClasses.put(Item.class, ItemGraphicObject.class);
+        graphicObjectClasses.put(ContainerItem.class, ItemGraphicObject.class);
+        graphicObjectClasses.put(Tree.class, TreeGraphicObject.class);
+        graphicObjectClasses.put(Room.class, RoomGraphicObject.class);
+        graphicObjectClasses.put(Workshop.class, WorkshopGraphicObject.class);
+        graphicObjectClasses.put(Dwarf.class, DwarfGraphicObject.class);
+
         region.getMap().addListener(this);
         region.getTreeManager().addGameObjectManagerListener(this);
         for (IPlayer player2 : region.getPlayers()) {
@@ -157,6 +169,30 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
             player2.getFarmManager().addGameObjectManagerListener(this);
             player2.getRoomManager().addGameObjectManagerListener(this);
             player2.getWorkshopManager().addGameObjectManagerListener(this);
+            player2.getDwarfManager().addGameObjectManagerListener(this);
+        }
+    }
+
+    @Override
+    public void paint(final Graphics graphics) {
+        if (region == null) {
+            return;
+        }
+        if (drawBackgroundRequired) {
+            drawBlocks();
+        }
+        graphics.setColor(Color.BLACK);
+        graphics.drawImage(backgroundImage, 0, 0, null);
+        for (IGraphicObject graphicObject : graphicObjects.values()) {
+            graphicObject.render(graphics, viewArea);
+        }
+
+        drawDesignations(graphics);
+
+        if (selection != null) {
+            drawSelection(graphics);
+        } else {
+            drawMouse(graphics);
         }
     }
 
@@ -263,30 +299,6 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
         drawBackgroundRequired = true;
     }
 
-    @Override
-    public void paint(final Graphics graphics) {
-        if (region == null) {
-            return;
-        }
-        if (drawBackgroundRequired) {
-            drawBlocks();
-        }
-        graphics.setColor(Color.BLACK);
-        graphics.drawImage(backgroundImage, 0, 0, null);
-        for (IGraphicObject graphicObject : graphicObjects.values()) {
-            graphicObject.render(graphics, viewArea);
-        }
-
-        drawDesignations(graphics);
-        drawDwarfs(graphics);
-
-        if (selection != null) {
-            drawSelection(graphics);
-        } else {
-            drawMouse(graphics);
-        }
-    }
-
     /**
      * Sets the selection.
      * @param selectionTmp the selection
@@ -357,55 +369,18 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
         drawBackgroundRequired = false;
     }
 
-    /**
-     * Draw dwarfs.
-     * @param g the graphics to draw on
-     */
-    private void drawDwarfs(final Graphics g) {
-        Set<IPlayer> players = region.getPlayers();
-        for (IPlayer playerTmp : players) {
-            Set<IGameCharacter> dwarfs = playerTmp.getDwarfManager().getDwarfs();
-            for (IGameCharacter dwarf : dwarfs) {
-                MapIndex position = dwarf.getPosition();
-                if (position.z == viewArea.pos.z) {
-                    int x = (position.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;
-                    int y = (position.y - viewArea.pos.y) * SpriteManager.SPRITE_SIZE;
-                    if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
-                        Sprite dwarfSprite;
-                        if (dwarf.isDead()) {
-                            dwarfSprite = SpriteManager.getInstance().getItemSprite(SpriteManager.DEAD_DWARF_SPRITE);
-                        } else {
-                            LaborType profession = dwarf.getComponent(ISkillComponent.class).getProfession();
-                            dwarfSprite = SpriteManager.getInstance().getItemSprite(profession.sprite);
-                        }
-                        dwarfSprite.draw(g, x, y);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public void gameObjectAdded(final IGameObject gameObject) {
         assert !graphicObjects.containsKey(gameObject);
-        if (gameObject instanceof Farm) {
-            Farm farm = (Farm) gameObject;
-            graphicObjects.put(farm, new FarmGraphicObject(farm));
-        } else if (gameObject instanceof Stockpile) {
-            Stockpile stockpile = (Stockpile) gameObject;
-            graphicObjects.put(stockpile, new StockpileGraphicObject(stockpile));
-        } else if (gameObject instanceof Item) {
-            Item item = (Item) gameObject;
-            graphicObjects.put(item, new ItemGraphicObject(item));
-        } else if (gameObject instanceof Tree) {
-            Tree tree = (Tree) gameObject;
-            graphicObjects.put(tree, new TreeGraphicObject(tree));
-        } else if (gameObject instanceof Room) {
-            Room room = (Room) gameObject;
-            graphicObjects.put(room, new RoomGraphicObject(room));
-        } else if (gameObject instanceof IWorkshop) {
-            IWorkshop workshop = (IWorkshop) gameObject;
-            graphicObjects.put(workshop, new WorkshopGraphicObject(workshop));
+        Class<? extends IGraphicObject> graphicObjectClass = graphicObjectClasses.get(gameObject.getClass());
+        if (graphicObjectClass != null) {
+            IGraphicObject graphicObject = null;
+            try {
+                graphicObject = graphicObjectClass.getConstructor(IGameObject.class).newInstance(gameObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            graphicObjects.put(gameObject, graphicObject);
         }
     }
 
