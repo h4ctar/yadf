@@ -45,4 +45,9 @@ public class Tree extends AbstractEntity {
     public Tree(final MapIndex position) {
         super(position);
     }
+
+    @Override
+    public String toString() {
+        return "Tree";
+    }
 }

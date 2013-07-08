@@ -33,9 +33,14 @@ package userinterface.game;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +50,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import logger.Logger;
 import simulation.IGameObject;
@@ -133,7 +139,8 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
     /** All the graphic objects. */
     private final Map<IGameObject, IGraphicObject> graphicObjects = new ConcurrentHashMap<>();
 
-    private final Map<Class<? extends IGameObject>, Class<? extends IGraphicObject>> graphicObjectClasses = new HashMap<>();;
+    /** The graphic object classes. */
+    private final Map<Class<? extends IGameObject>, Class<? extends IGraphicObject>> graphicObjectClasses = new HashMap<>();
 
     /**
      * Instantiates a new world canvas.
@@ -142,6 +149,10 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
         setIgnoreRepaint(true);
         setDoubleBuffered(true);
         addComponentListener(this);
+
+        ToolTipManager toolTipMaker = new ToolTipManager();
+        addMouseMotionListener(toolTipMaker);
+        addMouseWheelListener(toolTipMaker);
     }
 
     /**
@@ -406,6 +417,16 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
         return gameObject;
     }
 
+    public List<IGameObject> getGameObjects(final MapIndex mapIndex) {
+        List<IGameObject> gameObjects = new ArrayList<>();
+        for (Entry<IGameObject, IGraphicObject> entry : graphicObjects.entrySet()) {
+            if (entry.getValue().containsIndex(mapIndex)) {
+                gameObjects.add(entry.getKey());
+            }
+        }
+        return gameObjects;
+    }
+
     @Override
     public void componentResized(final ComponentEvent e) {
         canvasWidth = getWidth();
@@ -438,5 +459,68 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
 
     @Override
     public void componentHidden(final ComponentEvent e) {
+    }
+
+    /**
+     * This class manages the tooltips.
+     */
+    private class ToolTipManager implements MouseMotionListener, MouseWheelListener {
+
+        /** What game object is selected. */
+        private int index = 0;
+
+        /** The map index of the mouse. */
+        private MapIndex mouseIndex = new MapIndex();
+
+        /** The game objects at the current mouse index. */
+        private List<IGameObject> gameObjects;
+
+        @Override
+        public void mouseMoved(final MouseEvent e) {
+            MapIndex mouseIndexTmp = getMouseIndex(e.getX(), e.getY());
+            if (!mouseIndex.equals(mouseIndexTmp)) {
+                index = 0;
+                mouseIndex = mouseIndexTmp;
+                gameObjects = getGameObjects(mouseIndex);
+                if (!gameObjects.isEmpty()) {
+                    setToolTipText(getToolTipText());
+                } else {
+                    setToolTipText(null);
+                }
+            }
+        }
+
+        @Override
+        public void mouseDragged(final MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseWheelMoved(final MouseWheelEvent e) {
+            if (!gameObjects.isEmpty()) {
+                index += e.getWheelRotation();
+                if (index > gameObjects.size() - 1) {
+                    index = 0;
+                }
+                if (index < 0) {
+                    index = gameObjects.size() - 1;
+                }
+                setToolTipText(getToolTipText());
+                Point locationOnScreen = MouseInfo.getPointerInfo().getLocation();
+                Point locationOnComponent = new Point(locationOnScreen);
+                SwingUtilities.convertPointFromScreen(locationOnComponent, WorldPanel.this);
+                javax.swing.ToolTipManager.sharedInstance().mouseMoved(
+                        new MouseEvent(WorldPanel.this, -1, System.currentTimeMillis(), 0, locationOnComponent.x,
+                                locationOnComponent.y, locationOnScreen.x, locationOnScreen.y, 0, false, 0));
+            }
+        }
+
+        /**
+         * Get the tool tip text.
+         * @return the tool tip text
+         */
+        private String getToolTipText() {
+            return gameObjects.get(index).toString() + " (" + (index + 1) + "/" + gameObjects.size() + ")";
+        }
     }
 }

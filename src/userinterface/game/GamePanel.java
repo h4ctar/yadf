@@ -15,6 +15,7 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.ToolTipManager;
 
 import logger.Logger;
 import misc.MyRandom;
@@ -76,6 +77,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
         mainWindow = mainWindowTmp;
         setupLayout();
         setupKeyboardActions();
+        ToolTipManager.sharedInstance().setInitialDelay(0);
     }
 
     /**
