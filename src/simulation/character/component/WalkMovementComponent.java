@@ -44,6 +44,9 @@ import simulation.map.WalkableNode;
  */
 public class WalkMovementComponent extends AbstractMoveComponent implements IMovementComponent {
 
+    /** How many simulation steps between walking steps. */
+    private static final long WALK_SPEED = IRegion.SIMULATION_STEPS_PER_MINUTE * 10;
+
     /** Where to go. */
     private final MapIndex target;
 
@@ -64,9 +67,6 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
 
     /** How many simulation steps since last walking step taken. */
     private int simulationSteps = 0;
-
-    /** How many simulation steps between walking steps. */
-    private final long walkSpeed = IRegion.SIMULATION_STEPS_PER_MINUTE * 4;
 
     /**
      * Instantiates a new walk move component.
@@ -197,7 +197,7 @@ public class WalkMovementComponent extends AbstractMoveComponent implements IMov
      */
     private void walkAlongPath(final RegionMap map) {
         simulationSteps++;
-        if (simulationSteps > walkSpeed) {
+        if (simulationSteps > WALK_SPEED) {
             MapIndex nextPosition = path.get(pathIndex);
             // Is the next position walkable
             if (map.isWalkable(nextPosition)) {

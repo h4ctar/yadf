@@ -1,19 +1,23 @@
 package simulation.job;
 
+import java.util.Random;
+
+import misc.MyRandom;
 import simulation.IRegion;
 import simulation.ITimeListener;
 import simulation.character.ICharacterListener;
 import simulation.character.IGameCharacter;
 import simulation.character.component.AttackComponent;
 import simulation.character.component.ChaseMovementComponent;
-import simulation.character.component.GuardMovementComponent;
 import simulation.character.component.IAttackComponent;
 import simulation.character.component.ICharacterComponentListener;
 import simulation.character.component.IEatDrinkComponent;
 import simulation.character.component.IHealthComponent;
 import simulation.character.component.ILookoutComponent;
 import simulation.character.component.IMovementComponent;
+import simulation.character.component.ISleepComponent;
 import simulation.character.component.LookoutComponent;
+import simulation.character.component.WalkMovementComponent;
 import simulation.job.jobstate.AbstractJobState;
 import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.WalkToPositionState;
@@ -42,6 +46,7 @@ public class MilitaryStationJob extends AbstractJob {
         soldier = soldierTmp;
         setJobState(new WaitForSoldierState());
         soldier.getComponent(IEatDrinkComponent.class).setSpawnJobs(false);
+        soldier.getComponent(ISleepComponent.class).setSpawnJobs(false);
     }
 
     @Override
@@ -58,7 +63,8 @@ public class MilitaryStationJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         soldier.getComponent(IEatDrinkComponent.class).setSpawnJobs(true);
-        soldier.releaseLock();
+        soldier.getComponent(ISleepComponent.class).setSpawnJobs(true);
+        soldier.setFree();
     }
 
     /**
@@ -124,6 +130,9 @@ public class MilitaryStationJob extends AbstractJob {
         /** The lookout component. */
         private LookoutComponent lookoutComponent;
 
+        /** The walk movement component. */
+        private WalkMovementComponent walkComponent;
+
         /**
          * Constructor.
          */
@@ -141,7 +150,9 @@ public class MilitaryStationJob extends AbstractJob {
             eatAndDrinkRationTime = soldier.getRegion().addTimeListener(TIME_BETWEEN_EAT_AND_DRINK_RATIONS, this);
             lookoutComponent = new LookoutComponent(soldier);
             lookoutComponent.addListener(this);
-            soldier.setComponent(IMovementComponent.class, new GuardMovementComponent(soldier, target));
+            walkComponent = new WalkMovementComponent(soldier, getWanderPosition(), false);
+            walkComponent.addListener(this);
+            soldier.setComponent(IMovementComponent.class, walkComponent);
             soldier.setComponent(ILookoutComponent.class, lookoutComponent);
         }
 
@@ -150,6 +161,8 @@ public class MilitaryStationJob extends AbstractJob {
             soldier.getRegion().removeTimeListener(eatAndDrinkRationTime, this);
             lookoutComponent.removeListener(this);
             soldier.removeComponent(ILookoutComponent.class);
+            walkComponent.removeListener(this);
+            // TODO: interrupt walk component
         }
 
         @Override
@@ -157,6 +170,8 @@ public class MilitaryStationJob extends AbstractJob {
             soldier.getRegion().removeTimeListener(eatAndDrinkRationTime, this);
             lookoutComponent.removeListener(this);
             soldier.removeComponent(ILookoutComponent.class);
+            walkComponent.removeListener(this);
+            // TODO: interrupt walk component
         }
 
         @Override
@@ -172,9 +187,28 @@ public class MilitaryStationJob extends AbstractJob {
 
         @Override
         public void componentChanged(final Object component) {
-            assert component == lookoutComponent;
-            nextState = new AttackState(lookoutComponent.getEnemy());
-            finishState();
+            if (component == lookoutComponent) {
+                nextState = new AttackState(lookoutComponent.getEnemy());
+                finishState();
+            } else if (component == walkComponent) {
+                walkComponent.removeListener(this);
+                walkComponent = new WalkMovementComponent(soldier, getWanderPosition(), false);
+                walkComponent.addListener(this);
+                soldier.setComponent(IMovementComponent.class, walkComponent);
+            }
+        }
+
+        /**
+         * Get a random position close to the target.
+         * @return the position
+         */
+        private MapIndex getWanderPosition() {
+            Random random = MyRandom.getInstance();
+            MapIndex wanderPosition = new MapIndex();
+            wanderPosition.x = random.nextInt(8) - 4 + target.x;
+            wanderPosition.y = random.nextInt(8) - 4 + target.y;
+            wanderPosition.z = soldier.getRegion().getMap().getHeight(wanderPosition.x, wanderPosition.y);
+            return wanderPosition;
         }
     }
 
@@ -199,6 +233,7 @@ public class MilitaryStationJob extends AbstractJob {
         /** When the prepare for hit time is up. */
         private long hitTime;
 
+        /** The chase movement component. */
         private ChaseMovementComponent chaseMovementComponent;
 
         /**
@@ -263,7 +298,7 @@ public class MilitaryStationJob extends AbstractJob {
         private void hitEnemy() {
             if (readyToHit && enemy.getPosition().distance(soldier.getPosition()) <= HIT_DISTANCE) {
                 // TODO: move this into damage component
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 100; i++) {
                     enemy.getComponent(IHealthComponent.class).decrementHealth();
                 }
                 hitTime = soldier.getRegion().addTimeListener(PREPARE_FOR_HIT_DURATION, this);
@@ -291,6 +326,12 @@ public class MilitaryStationJob extends AbstractJob {
         @Override
         public String toString() {
             return "Eating and drinking ration";
+        }
+
+        @Override
+        protected void doFinalActions() {
+            soldier.getComponent(IEatDrinkComponent.class).eat();
+            soldier.getComponent(IEatDrinkComponent.class).drink();
         }
 
         @Override

@@ -90,7 +90,7 @@ public class HarvestJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (farmer != null) {
-            farmer.releaseLock();
+            farmer.setFree();
         }
     }
 
@@ -156,7 +156,7 @@ public class HarvestJob extends AbstractJob {
             newItem = ItemFactory.createItem(farmPlot.getPosition(), itemType, getPlayer());
             getPlayer().getStockManager().addItem(newItem);
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-            farmer.releaseLock();
+            farmer.setFree();
         }
 
         @Override

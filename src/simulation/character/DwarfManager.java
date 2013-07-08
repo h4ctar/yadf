@@ -79,7 +79,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
     public IGameCharacter getDwarf(final MapIndex position, final int radius) {
         IGameCharacter foundDwarf = null;
         for (IGameCharacter dwarf : dwarfs) {
-            if (dwarf.getPosition().distance(position) <= radius) {
+            if (!dwarf.isDead() && dwarf.getPosition().distance(position) <= radius) {
                 foundDwarf = dwarf;
                 break;
             }
@@ -107,7 +107,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
             if (dwarf.isDead()) {
                 continue;
             }
-            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && dwarf.acquireLock()) {
+            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && dwarf.isFree()) {
                 return dwarf;
             }
         }
@@ -167,7 +167,7 @@ public class DwarfManager implements IDwarfManager, ICharacterAvailableListener 
     private void notifyDwarfNowIdle(final IGameCharacter dwarf) {
         for (ICharacterAvailableListener listener : availableListeners) {
             listener.characterAvailable(dwarf);
-            if (dwarf.isLocked()) {
+            if (!dwarf.isFree()) {
                 break;
             }
         }

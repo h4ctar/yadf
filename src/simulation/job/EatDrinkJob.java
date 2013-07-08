@@ -97,7 +97,7 @@ public class EatDrinkJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (dwarf != null) {
-            dwarf.releaseLock();
+            dwarf.setFree();
         }
         if (chair != null) {
             chair.setUsed(false);
@@ -264,7 +264,7 @@ public class EatDrinkJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             foodDrinkItem.delete();
-            dwarf.releaseLock();
+            dwarf.setFree();
             if (eat) {
                 dwarf.getComponent(IEatDrinkComponent.class).eat();
             } else {

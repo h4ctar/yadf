@@ -19,6 +19,9 @@ public class SleepComponent extends AbstractCharacterComponent implements ISleep
     /** The sleep job for the dwarf. */
     private SleepJob sleepJob;
 
+    /** Should sleep jobs be spawned. */
+    private boolean spawnJobs;
+
     /**
      * Constructor.
      * @param characterTmp the character that this component belongs to
@@ -32,7 +35,7 @@ public class SleepComponent extends AbstractCharacterComponent implements ISleep
         IJobManager jobManager = getCharacter().getPlayer().getJobManager();
 
         sleepiness++;
-        if (sleepiness > SLEEP_THRESHOLD && sleepJob == null) {
+        if (spawnJobs && sleepiness > SLEEP_THRESHOLD && sleepJob == null) {
             sleepJob = new SleepJob(getCharacter());
             jobManager.addJob(sleepJob);
         }
@@ -44,13 +47,15 @@ public class SleepComponent extends AbstractCharacterComponent implements ISleep
 
     @Override
     public void kill() {
-        if (sleepJob != null) {
-            sleepJob.interrupt("Character died");
-        }
     }
 
     @Override
     public void sleep() {
         sleepiness = 0;
+    }
+
+    @Override
+    public void setSpawnJobs(final boolean spawnJobsTmp) {
+        spawnJobs = spawnJobsTmp;
     }
 }

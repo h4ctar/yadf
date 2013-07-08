@@ -92,7 +92,7 @@ public class PlantJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (farmer != null) {
-            farmer.releaseLock();
+            farmer.setFree();
         }
         if (seed != null) {
             seed.setUsed(false);
@@ -156,7 +156,7 @@ public class PlantJob extends AbstractJob {
         protected void doFinalActions() {
             seed.delete();
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-            farmer.releaseLock();
+            farmer.setFree();
         }
 
         @Override

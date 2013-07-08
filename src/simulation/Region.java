@@ -66,6 +66,9 @@ public class Region implements IRegion {
     /** Listeners to be notified at a certain time. */
     private final Map<Long, Set<ITimeListener>> timeListeners = new HashMap<>();
 
+    /** Is it paused? */
+    private boolean paused = false;
+
     /**
      * Setup the region.
      * @param regionSize the size of the region
@@ -206,15 +209,24 @@ public class Region implements IRegion {
      * Update.
      */
     public void update() {
-        time++;
-        if (timeListeners.containsKey(time)) {
-            for (ITimeListener listener : timeListeners.remove(time)) {
-                listener.notifyTimeEvent();
+        if (!paused) {
+            time++;
+            if (timeListeners.containsKey(time)) {
+                for (ITimeListener listener : timeListeners.remove(time)) {
+                    listener.notifyTimeEvent();
+                }
+            }
+            for (IPlayer player : players) {
+                player.update();
             }
         }
-        for (IPlayer player : players) {
-            player.update();
-        }
+    }
+
+    /**
+     * Toggle pause.
+     */
+    public void togglePause() {
+        paused = !paused;
     }
 
     @Override

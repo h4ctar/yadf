@@ -46,6 +46,7 @@ import simulation.character.component.IHealthComponent;
 import simulation.character.component.IMovementComponent;
 import simulation.character.component.IdleMovementComponent;
 import simulation.character.component.StillMovementComponent;
+import simulation.job.IJob;
 import simulation.map.MapIndex;
 
 /**
@@ -68,8 +69,8 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
     /** The name. */
     private String name;
 
-    /** The lock. */
-    private boolean locked;
+    /** The dwarfs current job. */
+    private IJob job = null;
 
     /** The player that this character belongs to. */
     private final IPlayer player;
@@ -101,29 +102,27 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
     }
 
     @Override
-    public boolean isLocked() {
-        return locked;
+    public boolean isFree() {
+        return job == null;
     }
 
     @Override
-    public boolean acquireLock() {
+    public void setJob(final IJob jobTmp) {
+        assert job == null;
         // TODO: Push components onto a "stack" and pop them in the release
-        boolean lockAcquired = false;
-        if (!locked) {
-            locked = true;
-            lockAcquired = true;
-        }
-        return lockAcquired;
+        job = jobTmp;
     }
 
     @Override
-    public void releaseLock() {
-        if (locked) {
-            locked = false;
-            if (!dead) {
-                setComponent(IMovementComponent.class, new IdleMovementComponent(this));
-                for (ICharacterAvailableListener listener : availableListeners) {
-                    listener.characterAvailable(this);
+    public void setFree() {
+        assert job != null;
+        job = null;
+        if (!dead) {
+            setComponent(IMovementComponent.class, new IdleMovementComponent(this));
+            for (ICharacterAvailableListener listener : availableListeners) {
+                listener.characterAvailable(this);
+                if (job != null) {
+                    break;
                 }
             }
         }
@@ -132,11 +131,18 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
     @Override
     public void kill() {
         Logger.getInstance().log(this, "Character died");
-        setComponent(IMovementComponent.class, new StillMovementComponent(this));
-        for (ICharacterComponent component : components.values()) {
-            component.kill();
+        if (!dead) {
+            if (job != null) {
+                job.interrupt("Character died");
+            }
+            assert job == null;
+            setComponent(IMovementComponent.class, new StillMovementComponent(this));
+            for (ICharacterComponent component : components.values()) {
+                component.kill();
+            }
+            dead = true;
+            notifyCharacterListeners();
         }
-        dead = true;
     }
 
     @Override
@@ -159,6 +165,15 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
         changeListeners.remove(listener);
     }
 
+    /**
+     * Notify all the character listeners that something has changed.
+     */
+    protected void notifyCharacterListeners() {
+        for (ICharacterListener listener : changeListeners) {
+            listener.characterChanged(this);
+        }
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ICharacterComponent> T getComponent(final Class<T> componentInterface) {
@@ -167,10 +182,10 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
 
     @Override
     public <T extends ICharacterComponent> void setComponent(final Class<T> componentInterface, final T component) {
-        Logger.getInstance()
-                .log(this,
-                        "Set component: " + componentInterface.getSimpleName() + " = "
-                                + component.getClass().getSimpleName());
+        Logger.getInstance().log(
+                this,
+                "Set component: " + componentInterface.getSimpleName() + " = "
+                        + component.getClass().getSimpleName());
         components.put(componentInterface, component);
     }
 
@@ -195,8 +210,10 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
 
     @Override
     public void update() {
-        for (ICharacterComponent component : components.values()) {
-            component.update(region);
+        if (!dead) {
+            for (ICharacterComponent component : components.values()) {
+                component.update(region);
+            }
         }
     }
 

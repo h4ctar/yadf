@@ -76,7 +76,7 @@ public class PickupToolJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (character != null) {
-            character.releaseLock();
+            character.setFree();
         }
         if (tool != null) {
             tool.setUsed(false);
@@ -116,7 +116,7 @@ public class PickupToolJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             character.getComponent(IInventoryComponent.class).pickupTool(tool);
-            character.releaseLock();
+            character.setFree();
         }
 
         @Override

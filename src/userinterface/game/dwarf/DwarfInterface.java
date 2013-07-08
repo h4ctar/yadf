@@ -173,7 +173,7 @@ public class DwarfInterface extends AbstractGameObjectInterface implements IChar
         healthTextField.setText(Integer.toString(dwarf.getComponent(IHealthComponent.class).getHealth()));
         hungerTextField.setText(Integer.toString(dwarf.getComponent(IEatDrinkComponent.class).getHunger()));
         thirstTextField.setText(Integer.toString(dwarf.getComponent(IEatDrinkComponent.class).getThirst()));
-        lockTextField.setText(Boolean.toString(dwarf.isLocked()));
+        lockTextField.setText(Boolean.toString(!dwarf.isFree()));
         Image dwarfImage = SpriteManager.getInstance().getItemSprite(profession.sprite).getImage();
         dwarfImage = dwarfImage.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_FAST);
         imageLabel.setIcon(new ImageIcon(dwarfImage));

@@ -156,7 +156,7 @@ public class HaulJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (needToReleaseLock && hauler != null) {
-            hauler.releaseLock();
+            hauler.setFree();
             if (item != null) {
                 hauler.getComponent(IInventoryComponent.class).dropHaulItem(true);
                 getPlayer().getStockManager().addItem(item);
@@ -259,7 +259,7 @@ public class HaulJob extends AbstractJob {
         protected void doFinalActions() {
             hauler.getComponent(IInventoryComponent.class).dropHaulItem(false);
             if (needToReleaseLock) {
-                hauler.releaseLock();
+                hauler.setFree();
             }
             if (container != null) {
                 if (container.isDeleted()) {

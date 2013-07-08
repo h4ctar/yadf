@@ -50,7 +50,7 @@ public class SleepJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (dwarf != null) {
-            dwarf.releaseLock();
+            dwarf.setFree();
         }
         if (bed != null) {
             bed.setUsed(false);
@@ -129,7 +129,7 @@ public class SleepJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             dwarf.getComponent(ISleepComponent.class).sleep();
-            dwarf.releaseLock();
+            dwarf.setFree();
             if (bed != null) {
                 bed.setUsed(false);
             }

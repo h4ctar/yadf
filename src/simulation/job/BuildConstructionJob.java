@@ -111,7 +111,7 @@ public class BuildConstructionJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (builder != null) {
-            builder.releaseLock();
+            builder.setFree();
         }
         if (rock != null) {
             rock.setUsed(false);
@@ -209,7 +209,7 @@ public class BuildConstructionJob extends AbstractJob {
             }
             map.setBlock(position, constructionType);
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-            builder.releaseLock();
+            builder.setFree();
         }
 
         @Override

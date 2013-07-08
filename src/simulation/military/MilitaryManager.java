@@ -1,7 +1,7 @@
 package simulation.military;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import simulation.character.IGameCharacter;
 import simulation.character.component.IMilitaryComponent;
@@ -17,13 +17,13 @@ import simulation.map.MapIndex;
 public class MilitaryManager implements IMilitaryManager, IJobListener {
 
     /** The dwarves that are enlisted. */
-    private Set<IGameCharacter> soldiers = new LinkedHashSet<>();
+    private Set<IGameCharacter> soldiers = new CopyOnWriteArraySet<>();
 
     /** The listeners. */
-    private Set<IMilitaryManagerListener> listeners = new LinkedHashSet<>();
+    private Set<IMilitaryManagerListener> listeners = new CopyOnWriteArraySet<>();
 
     /** All the station jobs. */
-    private Set<IJob> stationJobs = new LinkedHashSet<>();
+    private Set<IJob> stationJobs = new CopyOnWriteArraySet<>();
 
     @Override
     public void enlistDwarf(final IGameCharacter dwarf) {
@@ -42,6 +42,9 @@ public class MilitaryManager implements IMilitaryManager, IJobListener {
 
     @Override
     public void station(final MapIndex target) {
+        for (IJob stationJob : stationJobs) {
+            stationJob.interrupt("New station ordered");
+        }
         for (IGameCharacter soldier : soldiers) {
             IJob stationJob = new MilitaryStationJob(target, soldier);
             stationJobs.add(stationJob);

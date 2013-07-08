@@ -4,6 +4,7 @@ import simulation.IEntity;
 import simulation.IPlayer;
 import simulation.IRegion;
 import simulation.character.component.ICharacterComponent;
+import simulation.job.IJob;
 
 /**
  * Interface for a game character.
@@ -73,18 +74,18 @@ public interface IGameCharacter extends IEntity {
      * Is the character locked.
      * @return true if the character is locked
      */
-    boolean isLocked();
+    boolean isFree();
 
     /**
      * Release the lock on a character.
      */
-    void releaseLock();
+    void setFree();
 
     /**
-     * Acquire a lock on a character.
-     * @return true if the lock was acquired
+     * Set the job of the character.
+     * @param job the new job
      */
-    boolean acquireLock();
+    void setJob(IJob job);
 
     /**
      * Update the game character.

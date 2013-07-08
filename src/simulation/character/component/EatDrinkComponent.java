@@ -98,12 +98,6 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
 
     @Override
     public void kill() {
-        if (eatJob != null) {
-            eatJob.interrupt("Character died");
-        }
-        if (drinkJob != null) {
-            drinkJob.interrupt("Character died");
-        }
     }
 
     @Override

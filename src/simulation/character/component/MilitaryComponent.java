@@ -6,7 +6,7 @@ import simulation.character.IGameCharacter;
 /**
  * The military component.
  * <p>
- * This component should spawn training jobs, keep the soldier in formation, initiate attacks etc...
+ * This component should spawn training jobs.
  */
 public class MilitaryComponent extends AbstractCharacterComponent implements IMilitaryComponent {
 

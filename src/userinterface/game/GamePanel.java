@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
@@ -98,17 +99,18 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
      * Setup all the keyboard actions.
      */
     private void setupKeyboardActions() {
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, true),
-                "SHIFT_UP");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, false), "UP");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, false), "DOWN");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "LEFT");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "RIGHT");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0, false), "UP_Z");
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "DOWN_Z");
+        InputMap inputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, true), "CANCEL_STATE");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "PAUSE");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, false), "UP");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, false), "DOWN");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "LEFT");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "RIGHT");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0, false), "UP_Z");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "DOWN_Z");
 
-        getActionMap().put("SHIFT_UP", new ShiftAction());
+        getActionMap().put("CANCEL_STATE", new CancelStateAction());
+        getActionMap().put("PAUSE", new PauseAction());
         getActionMap().put("UP", new MoveViewAction(0, -1, 0));
         getActionMap().put("DOWN", new MoveViewAction(0, 1, 0));
         getActionMap().put("LEFT", new MoveViewAction(-1, 0, 0));
@@ -280,7 +282,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
     /**
      * This action should interrupt the state when the shift key is released.
      */
-    private class ShiftAction extends AbstractAction {
+    private class CancelStateAction extends AbstractAction {
 
         /** The serial version UID. */
         private static final long serialVersionUID = 1L;
@@ -290,6 +292,20 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             if (!(state instanceof NormalGuiState)) {
                 state.interrupt();
             }
+        }
+    }
+
+    /**
+     * The pause action.
+     */
+    private class PauseAction extends AbstractAction {
+
+        /** The serial version UID. */
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            region.togglePause();
         }
     }
 

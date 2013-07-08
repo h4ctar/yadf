@@ -108,7 +108,7 @@ public class CraftJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (crafter != null) {
-            crafter.releaseLock();
+            crafter.setFree();
         }
         if (resources != null) {
             for (Item resource : resources) {
@@ -206,7 +206,7 @@ public class CraftJob extends AbstractJob {
             for (Item resource : resources) {
                 resource.delete();
             }
-            crafter.releaseLock();
+            crafter.setFree();
         }
 
         @Override
