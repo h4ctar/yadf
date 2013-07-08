@@ -142,6 +142,9 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
     /** The graphic object classes. */
     private final Map<Class<? extends IGameObject>, Class<? extends IGraphicObject>> graphicObjectClasses = new HashMap<>();
 
+    /** The tool tip manager. */
+    private ToolTipManager toolTipManager;
+
     /**
      * Instantiates a new world canvas.
      */
@@ -150,9 +153,9 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
         setDoubleBuffered(true);
         addComponentListener(this);
 
-        ToolTipManager toolTipMaker = new ToolTipManager();
-        addMouseMotionListener(toolTipMaker);
-        addMouseWheelListener(toolTipMaker);
+        toolTipManager = new ToolTipManager();
+        addMouseMotionListener(toolTipManager);
+        addMouseWheelListener(toolTipManager);
     }
 
     /**
@@ -402,21 +405,18 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
     }
 
     /**
-     * Get a game object that has a graphic object at a specific mapIndex.
-     * @param mapIndex the map index
+     * Get the game object that currently has a tool tip displayed.
      * @return the game object
      */
-    public IGameObject getGameObject(final MapIndex mapIndex) {
-        IGameObject gameObject = null;
-        for (Entry<IGameObject, IGraphicObject> entry : graphicObjects.entrySet()) {
-            if (entry.getValue().containsIndex(mapIndex)) {
-                gameObject = entry.getKey();
-                break;
-            }
-        }
-        return gameObject;
+    public IGameObject getGameObject() {
+        return toolTipManager.gameObjects.get(toolTipManager.index);
     }
 
+    /**
+     * Get all the game objects at a map index position.
+     * @param mapIndex the map index
+     * @return the game objects
+     */
     public List<IGameObject> getGameObjects(final MapIndex mapIndex) {
         List<IGameObject> gameObjects = new ArrayList<>();
         for (Entry<IGameObject, IGraphicObject> entry : graphicObjects.entrySet()) {

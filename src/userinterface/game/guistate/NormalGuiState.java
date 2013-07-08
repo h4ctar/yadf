@@ -42,7 +42,7 @@ public class NormalGuiState extends AbstractGuiState implements MouseListener {
     @Override
     public void mouseClicked(final MouseEvent e) {
         MapIndex mouseIndex = gamePanel.getWorldPanel().getMouseIndex(e.getX(), e.getY());
-        IGameObject gameObject = gamePanel.getWorldPanel().getGameObject(mouseIndex);
+        IGameObject gameObject = gamePanel.getWorldPanel().getGameObject();
         if (gameObject != null) {
             gamePanel.getManagementPanel().openGameObjectInterface(gameObject);
         }
