@@ -4,6 +4,7 @@ import java.util.Set;
 
 import simulation.IPlayer;
 import simulation.IRegion;
+import simulation.character.ICharacterManager;
 import simulation.character.IGameCharacter;
 
 /**
@@ -36,7 +37,8 @@ public class LookoutComponent extends AbstractCharacterComponent implements ILoo
             if (player == soldier.getPlayer()) {
                 continue;
             }
-            IGameCharacter enemyTmp = player.getDwarfManager().getDwarf(soldier.getPosition(), VIEW_DISTANCE);
+            IGameCharacter enemyTmp = player.getComponent(ICharacterManager.class).getDwarf(soldier.getPosition(),
+                    VIEW_DISTANCE);
             if (enemyTmp != null) {
                 enemy = enemyTmp;
                 notifyListeners();

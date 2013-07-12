@@ -33,6 +33,7 @@ package controller.command;
 
 import simulation.IPlayer;
 import simulation.job.BuildWorkshopJob;
+import simulation.job.IJobManager;
 import simulation.map.MapIndex;
 
 /**
@@ -64,6 +65,6 @@ public class BuildWorkshopCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getJobManager().addJob(new BuildWorkshopJob(position, workshopType, player));
+        player.getComponent(IJobManager.class).addJob(new BuildWorkshopJob(position, workshopType, player));
     }
 }

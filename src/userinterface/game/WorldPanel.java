@@ -59,8 +59,11 @@ import simulation.IPlayer;
 import simulation.Region;
 import simulation.Tree;
 import simulation.character.Dwarf;
+import simulation.character.ICharacterManager;
 import simulation.farm.Farm;
+import simulation.farm.IFarmManager;
 import simulation.item.ContainerItem;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.Stockpile;
 import simulation.job.IJobManager;
@@ -70,7 +73,9 @@ import simulation.map.IMapListener;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
+import simulation.room.IRoomManager;
 import simulation.room.Room;
+import simulation.workshop.IWorkshopManager;
 import simulation.workshop.Workshop;
 import userinterface.game.graphicobject.DwarfGraphicObject;
 import userinterface.game.graphicobject.FarmGraphicObject;
@@ -179,11 +184,11 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
         region.getMap().addListener(this);
         region.getTreeManager().addGameObjectManagerListener(this);
         for (IPlayer player2 : region.getPlayers()) {
-            player2.getStockManager().addGameObjectManagerListener(this);
-            player2.getFarmManager().addGameObjectManagerListener(this);
-            player2.getRoomManager().addGameObjectManagerListener(this);
-            player2.getWorkshopManager().addGameObjectManagerListener(this);
-            player2.getDwarfManager().addGameObjectManagerListener(this);
+            player2.getComponent(IStockManager.class).addGameObjectManagerListener(this);
+            player2.getComponent(IFarmManager.class).addGameObjectManagerListener(this);
+            player2.getComponent(IRoomManager.class).addGameObjectManagerListener(this);
+            player2.getComponent(IWorkshopManager.class).addGameObjectManagerListener(this);
+            player2.getComponent(ICharacterManager.class).addGameObjectManagerListener(this);
         }
     }
 
@@ -215,7 +220,7 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
      * @param g the g
      */
     public void drawDesignations(final Graphics g) {
-        IJobManager jobManager = player.getJobManager();
+        IJobManager jobManager = player.getComponent(IJobManager.class);
         for (AbstractDesignation designation : jobManager.getDesignations()) {
             List<MapIndex> mapIndicies = new ArrayList<>(designation.getMapIndicies());
             for (MapIndex mapIndex : mapIndicies) {
@@ -409,7 +414,7 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
      * @return the game object
      */
     public IGameObject getGameObject() {
-        return toolTipManager.gameObjects.get(toolTipManager.index);
+        return toolTipManager.getGameObject();
     }
 
     /**
@@ -488,6 +493,18 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
                     setToolTipText(null);
                 }
             }
+        }
+
+        /**
+         * Get the currently selected game object.
+         * @return the game object
+         */
+        public IGameObject getGameObject() {
+            IGameObject gameObject = null;
+            if (!gameObjects.isEmpty()) {
+                gameObject = gameObjects.get(index);
+            }
+            return gameObject;
         }
 
         @Override

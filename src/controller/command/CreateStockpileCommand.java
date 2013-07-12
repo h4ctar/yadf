@@ -32,6 +32,7 @@
 package controller.command;
 
 import simulation.IPlayer;
+import simulation.item.IStockManager;
 import simulation.item.Stockpile;
 import simulation.map.MapArea;
 
@@ -58,6 +59,6 @@ public class CreateStockpileCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getStockManager().addStockpile(new Stockpile(area, player));
+        player.getComponent(IStockManager.class).addStockpile(new Stockpile(area, player));
     }
 }

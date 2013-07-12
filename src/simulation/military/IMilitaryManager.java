@@ -2,6 +2,7 @@ package simulation.military;
 
 import java.util.Set;
 
+import simulation.IPlayerComponent;
 import simulation.character.IGameCharacter;
 import simulation.job.IJob;
 import simulation.map.MapIndex;
@@ -9,7 +10,7 @@ import simulation.map.MapIndex;
 /**
  * Interface for the military manager.
  */
-public interface IMilitaryManager {
+public interface IMilitaryManager extends IPlayerComponent {
 
     /**
      * Enlist a dwarf into the military.

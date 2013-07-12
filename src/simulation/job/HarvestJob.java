@@ -36,6 +36,7 @@ import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.farm.IFarmPlot;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemFactory;
 import simulation.item.ItemType;
@@ -151,10 +152,10 @@ public class HarvestJob extends AbstractJob {
         protected void doFinalActions() {
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
             Item newItem = ItemFactory.createItem(farmPlot.getPosition(), itemType, getPlayer());
-            getPlayer().getStockManager().addItem(newItem);
+            getPlayer().getComponent(IStockManager.class).addItem(newItem);
             itemType = ItemTypeManager.getInstance().getItemType("Seed");
             newItem = ItemFactory.createItem(farmPlot.getPosition(), itemType, getPlayer());
-            getPlayer().getStockManager().addItem(newItem);
+            getPlayer().getComponent(IStockManager.class).addItem(newItem);
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             farmer.setFree();
         }

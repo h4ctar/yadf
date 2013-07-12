@@ -14,7 +14,7 @@ import simulation.map.MapIndex;
 /**
  * The dwarf manager. There should be one dwarf manager per player per region.
  */
-public class DwarfManager implements IDwarfManager, ICharacterAvailableListener {
+public class DwarfManager implements ICharacterManager, ICharacterAvailableListener {
 
     /** The dwarfs. */
     private final Set<IGameCharacter> dwarfs = new CopyOnWriteArraySet<>();

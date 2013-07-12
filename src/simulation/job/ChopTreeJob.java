@@ -36,6 +36,7 @@ import simulation.IRegion;
 import simulation.Tree;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemFactory;
 import simulation.item.ItemType;
@@ -155,7 +156,7 @@ public class ChopTreeJob extends AbstractJob {
             }
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Log");
             Item log = ItemFactory.createItem(tree.getPosition(), itemType, getPlayer());
-            getPlayer().getStockManager().addItem(log);
+            getPlayer().getComponent(IStockManager.class).addItem(log);
             tree.delete();
             lumberjack.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             lumberjack.setFree();

@@ -32,7 +32,7 @@ public class SleepComponent extends AbstractCharacterComponent implements ISleep
 
     @Override
     public void update(final IRegion region) {
-        IJobManager jobManager = getCharacter().getPlayer().getJobManager();
+        IJobManager jobManager = getCharacter().getPlayer().getComponent(IJobManager.class);
 
         sleepiness++;
         if (spawnJobs && sleepiness > SLEEP_THRESHOLD && sleepJob == null) {

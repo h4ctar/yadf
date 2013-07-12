@@ -32,7 +32,7 @@
 package controller.command;
 
 import simulation.IPlayer;
-import simulation.farm.Farm;
+import simulation.farm.IFarmManager;
 import simulation.map.MapArea;
 
 /**
@@ -59,6 +59,6 @@ public class CreateFarmCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getFarmManager().addFarm(new Farm(area));
+        player.getComponent(IFarmManager.class).addNewFarm(area);
     }
 }

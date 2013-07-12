@@ -83,4 +83,9 @@ public class RoomManager implements IRoomManager, IGameObjectListener {
         assert rooms.contains(gameObject);
         removeRoom((Room) gameObject);
     }
+
+    @Override
+    public void update() {
+        // nothing to do
+    }
 }

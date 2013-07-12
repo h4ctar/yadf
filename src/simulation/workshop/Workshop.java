@@ -38,6 +38,7 @@ import simulation.AbstractGameObject;
 import simulation.IPlayer;
 import simulation.job.CraftJob;
 import simulation.job.IJob;
+import simulation.job.IJobManager;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.recipe.Recipe;
@@ -157,7 +158,7 @@ public class Workshop extends AbstractGameObject implements IWorkshop {
         if (craftJob == null) {
             if (!orders.isEmpty()) {
                 craftJob = new CraftJob(this, orders.get(0), player);
-                player.getJobManager().addJob(craftJob);
+                player.getComponent(IJobManager.class).addJob(craftJob);
             }
         } else {
             if (craftJob.isDone()) {

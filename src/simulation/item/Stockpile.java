@@ -41,6 +41,7 @@ import simulation.IPlayer;
 import simulation.job.HaulJob;
 import simulation.job.IJob;
 import simulation.job.IJobListener;
+import simulation.job.IJobManager;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 
@@ -184,8 +185,8 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     public void jobDone(final IJob job) {
         assert job.isDone();
         HaulJob haulJob = (HaulJob) job;
-        Logger.getInstance()
-                .log(this, "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
+        Logger.getInstance().log(this,
+                "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
         haulJob.getItem().setUsed(false);
         haulJobs.remove(haulJob);
     }
@@ -206,12 +207,12 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         if (accept) {
             if (!acceptableItemTypes.contains(itemType)) {
                 acceptableItemTypes.add(itemType);
-                player.getStockManager().addItemAvailableListener(itemType, this);
+                player.getComponent(IStockManager.class).addItemAvailableListener(itemType, this);
                 createHaulJobs();
             }
         } else {
             acceptableItemTypes.remove(itemType);
-            player.getStockManager().removeItemAvailableListener(itemType, this);
+            player.getComponent(IStockManager.class).removeItemAvailableListener(itemType, this);
             // Interrupt and remove haul tasks that have been started
             for (HaulJob haulJob : haulJobs) {
                 if (haulJob.getItem().getType().name.equals(itemTypeName)) {
@@ -224,7 +225,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
             for (Item item : getItems().toArray(new Item[0])) {
                 if (item.getType().equals(itemType)) {
                     getItems().remove(item);
-                    player.getStockManager().addItem(item);
+                    player.getComponent(IStockManager.class).addItem(item);
                     MapIndex pos = item.getPosition().sub(area.pos);
                     used[pos.x][pos.y] = false;
                 }
@@ -241,13 +242,13 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
             for (int x = 0; x < area.width; x++) {
                 for (int y = 0; y < area.height; y++) {
                     if (!used[x][y]) {
-                        Item item = player.getStockManager().getUnstoredItem(acceptableItemTypes);
+                        Item item = player.getComponent(IStockManager.class).getUnstoredItem(acceptableItemTypes);
                         if (item != null) {
                             item.setUsed(true);
                             used[x][y] = true;
                             HaulJob haulJob = new HaulJob(item, this, area.pos.add(x, y, 0), player);
                             haulJob.addListener(this);
-                            player.getJobManager().addJob(haulJob);
+                            player.getComponent(IJobManager.class).addJob(haulJob);
                             haulJobs.add(haulJob);
                         }
                     }
@@ -278,10 +279,10 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         super.delete();
         containerComponent.delete();
         for (ItemType itemType : acceptableItemTypes) {
-            player.getStockManager().removeItemAvailableListener(itemType, this);
+            player.getComponent(IStockManager.class).removeItemAvailableListener(itemType, this);
         }
         for (Item item : getItems()) {
-            player.getStockManager().addItem(item);
+            player.getComponent(IStockManager.class).addItem(item);
         }
         for (HaulJob haulJob : haulJobs) {
             haulJob.interrupt("Stockpile deleted");
@@ -294,7 +295,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      */
     @Override
     public void itemAvailable(final Item availableItem, final IContainer container) {
-        assert container == player.getStockManager();
+        assert container == player.getComponent(IStockManager.class);
         createHaulJobs();
     }
 

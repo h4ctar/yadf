@@ -33,6 +33,7 @@ package controller.command;
 
 import simulation.IPlayer;
 import simulation.map.MapArea;
+import simulation.room.IRoomManager;
 import simulation.room.Room;
 
 /**
@@ -63,6 +64,6 @@ public class CreateRoomCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getRoomManager().addRoom(new Room(area, roomType, player));
+        player.getComponent(IRoomManager.class).addRoom(new Room(area, roomType, player));
     }
 }

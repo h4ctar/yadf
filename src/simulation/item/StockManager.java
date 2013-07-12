@@ -284,4 +284,9 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
         assert stockpiles.contains(gameObject);
         removeStockpile((Stockpile) gameObject);
     }
+
+    @Override
+    public void update() {
+        // do nothing
+    }
 }

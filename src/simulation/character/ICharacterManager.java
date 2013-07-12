@@ -2,6 +2,7 @@ package simulation.character;
 
 import java.util.Set;
 
+import simulation.IPlayerComponent;
 import simulation.IRegion;
 import simulation.farm.IGameObjectManager;
 import simulation.labor.LaborType;
@@ -10,7 +11,7 @@ import simulation.map.MapIndex;
 /**
  * Interface for the dwarf manager.
  */
-public interface IDwarfManager extends IGameObjectManager {
+public interface ICharacterManager extends IGameObjectManager, IPlayerComponent {
 
     /**
      * Adds a new dwarf.

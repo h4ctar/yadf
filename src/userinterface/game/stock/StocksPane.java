@@ -40,6 +40,7 @@ import javax.swing.border.EmptyBorder;
 import org.jdesktop.swingx.JXTreeTable;
 
 import simulation.IPlayer;
+import simulation.item.IStockManager;
 
 /**
  * The Class StocksPane.
@@ -77,7 +78,7 @@ public class StocksPane extends JPanel {
      * @param player the new player
      */
     public void setup(final IPlayer player) {
-        stocksTable = new JXTreeTable(new StockTreeTableModel(player.getStockManager()));
+        stocksTable = new JXTreeTable(new StockTreeTableModel(player.getComponent(IStockManager.class)));
         stocksScrollPane.setViewportView(stocksTable);
     }
 }

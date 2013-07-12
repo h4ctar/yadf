@@ -32,6 +32,7 @@
 package controller.command;
 
 import simulation.IPlayer;
+import simulation.job.IJobManager;
 import simulation.job.designation.DesignationType;
 import simulation.map.MapArea;
 
@@ -70,9 +71,9 @@ public class DesignationCommand extends AbstractCommand {
     @Override
     public void doCommand() {
         if (add) {
-            player.getJobManager().getDesignation(designateType).addToDesignation(area);
+            player.getComponent(IJobManager.class).getDesignation(designateType).addToDesignation(area);
         } else {
-            player.getJobManager().getDesignation(designateType).removeFromDesignation(area);
+            player.getComponent(IJobManager.class).getDesignation(designateType).removeFromDesignation(area);
         }
     }
 }

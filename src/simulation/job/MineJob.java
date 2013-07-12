@@ -35,6 +35,7 @@ import simulation.IPlayer;
 import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemFactory;
 import simulation.item.ItemType;
@@ -222,7 +223,7 @@ public class MineJob extends AbstractJob {
             if (itemTypeName != null) {
                 ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
                 Item blockItem = ItemFactory.createItem(position, itemType, getPlayer());
-                getPlayer().getStockManager().addItem(blockItem);
+                getPlayer().getComponent(IStockManager.class).addItem(blockItem);
             }
             map.mineBlock(position);
             miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);

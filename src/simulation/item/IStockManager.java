@@ -2,13 +2,14 @@ package simulation.item;
 
 import java.util.Set;
 
+import simulation.IPlayerComponent;
 import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**
  * Interface for a stock manager.
  */
-public interface IStockManager extends IGameObjectManager, IContainer {
+public interface IStockManager extends IGameObjectManager, IContainer, IPlayerComponent {
 
     /**
      * Finds an item that is not stored, including containers.

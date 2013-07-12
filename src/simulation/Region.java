@@ -38,6 +38,8 @@ import java.util.Set;
 
 import logger.Logger;
 import simulation.farm.Farm;
+import simulation.farm.IFarmManager;
+import simulation.item.IStockManager;
 import simulation.item.Stockpile;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
@@ -45,6 +47,7 @@ import simulation.map.RegionMap;
 import simulation.tree.ITreeManager;
 import simulation.tree.TreeManager;
 import simulation.workshop.IWorkshop;
+import simulation.workshop.IWorkshopManager;
 
 /**
  * Region Contains all the data for a region, including the map, players and trees.
@@ -83,7 +86,7 @@ public class Region implements IRegion {
      * Adds the player.
      * @param player the player
      */
-    public void addPlayer(final Player player) {
+    public void addPlayer(final HumanPlayer player) {
         Logger.getInstance().log(this, "Adding player " + player.getName());
         players.add(player);
     }
@@ -93,19 +96,19 @@ public class Region implements IRegion {
     public boolean checkAreaValid(final MapArea area) {
         for (IPlayer player : players) {
             // Check if overlap with stockpile
-            for (Stockpile stockpile : player.getStockManager().getStockpiles()) {
+            for (Stockpile stockpile : player.getComponent(IStockManager.class).getStockpiles()) {
                 if (area.operlapsArea(stockpile.getArea())) {
                     return false;
                 }
             }
             // Check that the area is free from workshops
-            for (IWorkshop workshop : player.getWorkshopManager().getWorkshops()) {
+            for (IWorkshop workshop : player.getComponent(IWorkshopManager.class).getWorkshops()) {
                 if (area.operlapsArea(workshop.getArea())) {
                     return false;
                 }
             }
             // Check that the area is free from farms
-            for (Farm farm : player.getFarmManager().getFarms()) {
+            for (Farm farm : player.getComponent(IFarmManager.class).getFarms()) {
                 if (area.operlapsArea(farm.getArea())) {
                     return false;
                 }
@@ -133,19 +136,19 @@ public class Region implements IRegion {
     public boolean checkIndexValid(final MapIndex mapIndex) {
         for (IPlayer player : players) {
             // Check if overlap with stockpile
-            for (Stockpile stockpile : player.getStockManager().getStockpiles()) {
+            for (Stockpile stockpile : player.getComponent(IStockManager.class).getStockpiles()) {
                 if (stockpile.getArea().containesIndex(mapIndex)) {
                     return false;
                 }
             }
             // Check that the area is free from workshops
-            for (IWorkshop workshop : player.getWorkshopManager().getWorkshops()) {
+            for (IWorkshop workshop : player.getComponent(IWorkshopManager.class).getWorkshops()) {
                 if (workshop.getArea().containesIndex(mapIndex)) {
                     return false;
                 }
             }
             // Check that the area is free from farms
-            for (Farm farm : player.getFarmManager().getFarms()) {
+            for (Farm farm : player.getComponent(IFarmManager.class).getFarms()) {
                 if (farm.getArea().containesIndex(mapIndex)) {
                     return false;
                 }

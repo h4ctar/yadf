@@ -33,6 +33,7 @@ package simulation.character.component;
 
 import simulation.IRegion;
 import simulation.character.IGameCharacter;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 
 /**
@@ -97,14 +98,14 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
             dropTool();
         }
         toolHolding = tool;
-        getCharacter().getPlayer().getStockManager().removeItem(toolHolding);
+        getCharacter().getPlayer().getComponent(IStockManager.class).removeItem(toolHolding);
         notifyListeners();
     }
 
     @Override
     public void dropTool() {
         if (toolHolding != null) {
-            getCharacter().getPlayer().getStockManager().addItem(toolHolding);
+            getCharacter().getPlayer().getComponent(IStockManager.class).addItem(toolHolding);
             toolHolding = null;
             notifyListeners();
         }

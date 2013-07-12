@@ -32,6 +32,7 @@
 package controller.command;
 
 import simulation.IPlayer;
+import simulation.room.IRoomManager;
 import simulation.room.Room;
 
 /**
@@ -57,7 +58,7 @@ public class DeleteRoomCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        Room room = player.getRoomManager().getRoom(roomId);
+        Room room = player.getComponent(IRoomManager.class).getRoom(roomId);
         room.delete();
     }
 }

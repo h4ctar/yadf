@@ -32,6 +32,7 @@
 package controller.command;
 
 import simulation.IPlayer;
+import simulation.item.IStockManager;
 import simulation.item.Stockpile;
 
 /**
@@ -68,7 +69,7 @@ public class SetStockpileCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        Stockpile stockpile = player.getStockManager().getStockpile(stockpileId);
+        Stockpile stockpile = player.getComponent(IStockManager.class).getStockpile(stockpileId);
         stockpile.setItemType(itemTypeName, accept);
     }
 }

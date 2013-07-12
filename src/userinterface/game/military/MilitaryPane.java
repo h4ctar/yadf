@@ -16,8 +16,10 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
 import simulation.IPlayer;
+import simulation.character.ICharacterManager;
 import simulation.character.IGameCharacter;
 import simulation.job.IJob;
+import simulation.military.IMilitaryManager;
 import userinterface.game.IGamePanel;
 import userinterface.game.guistate.MilitaryStationGuiState;
 import controller.AbstractController;
@@ -102,7 +104,7 @@ public class MilitaryPane extends JPanel {
         player = playerTmp;
         controller = controllerTmp;
         gamePanel = gamePanelTmp;
-        soldiersTableModel = new SoldiersTableModel(player.getMilitaryManager());
+        soldiersTableModel = new SoldiersTableModel(player.getComponent(IMilitaryManager.class));
         soldiersTable.setModel(soldiersTableModel);
     }
 
@@ -113,7 +115,8 @@ public class MilitaryPane extends JPanel {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            IGameCharacter[] dwarfs = player.getDwarfManager().getDwarfs().toArray(new IGameCharacter[0]);
+            IGameCharacter[] dwarfs = player.getComponent(ICharacterManager.class).getDwarfs()
+                    .toArray(new IGameCharacter[0]);
             IGameCharacter dwarf = (IGameCharacter) JOptionPane.showInputDialog(gamePanel.getWorldPanel(), "Dwarf",
                     "Enlist dwarf", JOptionPane.QUESTION_MESSAGE, null, dwarfs, dwarfs[0]);
             if (dwarf == null) {
@@ -141,7 +144,7 @@ public class MilitaryPane extends JPanel {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            Set<IJob> jobs = player.getMilitaryManager().getStationJobs();
+            Set<IJob> jobs = player.getComponent(IMilitaryManager.class).getStationJobs();
             for (IJob job : jobs) {
                 controller.addCommand(new CancelJobCommand(player, job.getId()));
             }

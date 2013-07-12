@@ -2,6 +2,7 @@ package controller.command;
 
 import simulation.IPlayer;
 import simulation.map.MapIndex;
+import simulation.military.IMilitaryManager;
 
 /**
  * The station military command.
@@ -26,6 +27,6 @@ public class MilitaryStationCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getMilitaryManager().station(target);
+        player.getComponent(IMilitaryManager.class).station(target);
     }
 }

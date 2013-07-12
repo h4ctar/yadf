@@ -37,6 +37,7 @@ import simulation.IPlayer;
 import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemFactory;
 import simulation.job.jobstate.HaulResourcesState;
@@ -197,7 +198,7 @@ public class CraftJob extends AbstractJob {
         protected void doFinalActions() {
             for (int i = 0; i < recipe.quantity; i++) {
                 Item newItem = ItemFactory.createItem(workshop.getPosition(), recipe.itemType, getPlayer());
-                getPlayer().getStockManager().addItem(newItem);
+                getPlayer().getComponent(IStockManager.class).addItem(newItem);
             }
             workshop.setOccupied(false);
             if (recipe.skill != null) {

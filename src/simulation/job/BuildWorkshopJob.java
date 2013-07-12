@@ -46,6 +46,7 @@ import simulation.job.jobstate.WasteTimeState;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
 import simulation.map.MapIndex;
+import simulation.workshop.IWorkshopManager;
 import simulation.workshop.Workshop;
 import simulation.workshop.WorkshopType;
 import simulation.workshop.WorkshopTypeManager;
@@ -191,7 +192,8 @@ public class BuildWorkshopJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            getPlayer().getWorkshopManager().addWorkshop(new Workshop(getPlayer(), workshopType, position));
+            getPlayer().getComponent(IWorkshopManager.class).addWorkshop(
+                    new Workshop(getPlayer(), workshopType, position));
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.setFree();
             for (Item resource : resources) {

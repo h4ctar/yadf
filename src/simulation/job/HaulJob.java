@@ -36,6 +36,7 @@ import simulation.IPlayer;
 import simulation.character.IGameCharacter;
 import simulation.character.component.IInventoryComponent;
 import simulation.item.IContainer;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.job.jobstate.IJobState;
@@ -159,7 +160,7 @@ public class HaulJob extends AbstractJob {
             hauler.setFree();
             if (item != null) {
                 hauler.getComponent(IInventoryComponent.class).dropHaulItem(true);
-                getPlayer().getStockManager().addItem(item);
+                getPlayer().getComponent(IStockManager.class).addItem(item);
             }
         } else if (item != null) {
             item.setUsed(false);
@@ -232,7 +233,7 @@ public class HaulJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            getPlayer().getStockManager().removeItem(item);
+            getPlayer().getComponent(IStockManager.class).removeItem(item);
             hauler.getComponent(IInventoryComponent.class).pickupHaulItem(item);
         }
 
@@ -264,11 +265,11 @@ public class HaulJob extends AbstractJob {
             if (container != null) {
                 if (container.isDeleted()) {
                     Logger.getInstance().log(this, "Can't store item, container has been deleted", true);
-                    getPlayer().getStockManager().addItem(item);
+                    getPlayer().getComponent(IStockManager.class).addItem(item);
                 } else {
                     if (!container.addItem(item)) {
                         Logger.getInstance().log(this, "Can't store item, container didn't accept it", true);
-                        getPlayer().getStockManager().addItem(item);
+                        getPlayer().getComponent(IStockManager.class).addItem(item);
                     }
                 }
             }

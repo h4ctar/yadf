@@ -24,7 +24,7 @@ import org.mockito.MockitoAnnotations;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import simulation.Player;
+import simulation.HumanPlayer;
 import simulation.map.MapIndex;
 
 /**
@@ -52,7 +52,7 @@ public class ContainerItemTest {
 
     /** The mock player. */
     @Mock
-    private Player player;
+    private HumanPlayer player;
 
     /** The mock stock manager. */
     @Mock
@@ -81,7 +81,7 @@ public class ContainerItemTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(player.getStockManager()).thenReturn(stockManager);
+        when(player.getComponent(IStockManager.class)).thenReturn(stockManager);
 
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilder = documentBuilderFactory.newDocumentBuilder();

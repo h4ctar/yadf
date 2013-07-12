@@ -2,6 +2,7 @@ package simulation.job.jobstate;
 
 import simulation.character.Dwarf;
 import simulation.character.ICharacterAvailableListener;
+import simulation.character.ICharacterManager;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
 import simulation.job.AbstractJob;
@@ -35,9 +36,9 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
 
     @Override
     public void start() {
-        dwarf = getJob().getPlayer().getDwarfManager().getIdleDwarf(requiredLabor);
+        dwarf = getJob().getPlayer().getComponent(ICharacterManager.class).getIdleDwarf(requiredLabor);
         if (dwarf == null) {
-            getJob().getPlayer().getDwarfManager().addListener(this);
+            getJob().getPlayer().getComponent(ICharacterManager.class).addListener(this);
         } else {
             dwarf.setJob(getJob());
             finishState();
@@ -49,7 +50,7 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
         assert character instanceof Dwarf;
         if (character.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && character.isFree()) {
             character.setJob(getJob());
-            getJob().getPlayer().getDwarfManager().removeListener(this);
+            getJob().getPlayer().getComponent(ICharacterManager.class).removeListener(this);
             dwarf = character;
             finishState();
         }
@@ -65,6 +66,6 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
 
     @Override
     public void interrupt(final String message) {
-        getJob().getPlayer().getDwarfManager().removeListener(this);
+        getJob().getPlayer().getComponent(ICharacterManager.class).removeListener(this);
     }
 }

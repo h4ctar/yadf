@@ -1,70 +1,36 @@
 package simulation;
 
-import simulation.character.IDwarfManager;
-import simulation.farm.IFarmManager;
-import simulation.item.IStockManager;
-import simulation.job.IJobManager;
-import simulation.map.MapIndex;
-import simulation.military.IMilitaryManager;
-import simulation.room.IRoomManager;
-import simulation.workshop.IWorkshopManager;
 
 /**
  * Interface of a player.
  */
 public interface IPlayer extends IGameObject {
-    /**
-     * Get the players stock manager.
-     * @return the stock manager
-     */
-    IStockManager getStockManager();
 
     /**
-     * Get the players job manager.
-     * @return the job manager
+     * Set the character component.
+     * @param componentInterface the component interface to set
+     * @param component the new component to apply
+     * @param <T> the component interface
      */
-    IJobManager getJobManager();
+    <T extends IPlayerComponent> void setComponent(final Class<T> componentInterface, final T component);
 
     /**
-     * Gets the dwarf manager.
-     * @return the dwarf manager
+     * Get a character component.
+     * @param componentInterface the component interface to get
+     * @return the character component
+     * @param <T> the component interface
      */
-    IDwarfManager getDwarfManager();
+    <T extends IPlayerComponent> T getComponent(final Class<T> componentInterface);
 
     /**
-     * Get the farm manager.
-     * @return the farm manager
+     * Remove a character component.
+     * @param componentInterface the component to remove.
+     * @param <T> the component interface
      */
-    IFarmManager getFarmManager();
-
-    /**
-     * Get the room manager.
-     * @return the room manager
-     */
-    IRoomManager getRoomManager();
-
-    /**
-     * Get the workshop manager.
-     * @return the workshop manager
-     */
-    IWorkshopManager getWorkshopManager();
-
-    /**
-     * Get the military manager.
-     * @return the military manager
-     */
-    IMilitaryManager getMilitaryManager();
+    <T extends IPlayerComponent> void removeComponent(final Class<T> componentInterface);
 
     /**
      * Update.
      */
     void update();
-
-    /**
-     * Setup.
-     * @param regionTmp the region that this player is in
-     * @param embarkPosition the embark position
-     * @param numberOfStartingDwarfs the number of starting dwarfs
-     */
-    void setup(final IRegion regionTmp, final MapIndex embarkPosition, final int numberOfStartingDwarfs);
 }

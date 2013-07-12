@@ -32,12 +32,14 @@
 package simulation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 import logger.Logger;
 import misc.MyRandom;
 import simulation.character.DwarfManager;
-import simulation.character.IDwarfManager;
+import simulation.character.ICharacterManager;
 import simulation.farm.FarmManager;
 import simulation.farm.IFarmManager;
 import simulation.item.IStockManager;
@@ -55,9 +57,12 @@ import simulation.workshop.IWorkshopManager;
 import simulation.workshop.WorkshopManager;
 
 /**
- * The player.
+ * The human player.
  */
-public class Player extends AbstractGameObject implements IPlayer {
+public class HumanPlayer extends AbstractGameObject implements IPlayer {
+
+    /** All the components. */
+    private final Map<Class<? extends IPlayerComponent>, IPlayerComponent> components = new ConcurrentHashMap<>();
 
     /** The size of the embark area. */
     private static final int EMBARK_SIZE = 10;
@@ -75,7 +80,7 @@ public class Player extends AbstractGameObject implements IPlayer {
     private final DwarfManager dwarfManager = new DwarfManager(this);
 
     /** The farm manager. */
-    private final FarmManager farmManager = new FarmManager();
+    private final FarmManager farmManager = new FarmManager(this);
 
     /** The room manager. */
     private final RoomManager roomManager = new RoomManager();
@@ -93,11 +98,23 @@ public class Player extends AbstractGameObject implements IPlayer {
      * Constructor.
      * @param playerName the players name
      */
-    public Player(final String playerName) {
+    public HumanPlayer(final String playerName) {
         name = playerName;
+        setComponent(IJobManager.class, jobManager);
+        setComponent(IStockManager.class, stockManager);
+        setComponent(ICharacterManager.class, dwarfManager);
+        setComponent(IFarmManager.class, farmManager);
+        setComponent(IRoomManager.class, roomManager);
+        setComponent(IWorkshopManager.class, workshopManager);
+        setComponent(IMilitaryManager.class, militaryManager);
     }
 
-    @Override
+    /**
+     * Setup.
+     * @param regionTmp the region that this player is in
+     * @param embarkPosition the embark position
+     * @param numberOfStartingDwarfs the number of starting dwarfs
+     */
     public void setup(final IRegion regionTmp, final MapIndex embarkPosition, final int numberOfStartingDwarfs) {
         Logger.getInstance().log(this, "Setting up");
         region = regionTmp;
@@ -114,46 +131,31 @@ public class Player extends AbstractGameObject implements IPlayer {
         return name;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public IDwarfManager getDwarfManager() {
-        return dwarfManager;
+    public <T extends IPlayerComponent> T getComponent(final Class<T> componentInterface) {
+        return (T) components.get(componentInterface);
     }
 
     @Override
-    public IJobManager getJobManager() {
-        return jobManager;
+    public <T extends IPlayerComponent> void setComponent(final Class<T> componentInterface, final T component) {
+        Logger.getInstance().log(
+                this,
+                "Set component: " + componentInterface.getSimpleName() + " = "
+                        + component.getClass().getSimpleName());
+        components.put(componentInterface, component);
     }
 
     @Override
-    public IStockManager getStockManager() {
-        return stockManager;
-    }
-
-    @Override
-    public IFarmManager getFarmManager() {
-        return farmManager;
-    }
-
-    @Override
-    public IRoomManager getRoomManager() {
-        return roomManager;
-    }
-
-    @Override
-    public IWorkshopManager getWorkshopManager() {
-        return workshopManager;
-    }
-
-    @Override
-    public IMilitaryManager getMilitaryManager() {
-        return militaryManager;
+    public <T extends IPlayerComponent> void removeComponent(final Class<T> componentInterface) {
+        components.remove(componentInterface);
     }
 
     @Override
     public void update() {
-        dwarfManager.update();
-        farmManager.update(this);
-        workshopManager.update();
+        for (IPlayerComponent component : components.values()) {
+            component.update();
+        }
     }
 
     /**

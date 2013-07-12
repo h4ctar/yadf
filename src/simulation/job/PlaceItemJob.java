@@ -32,11 +32,13 @@
 package simulation.job;
 
 import simulation.IPlayer;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.job.jobstate.HaulItemState;
 import simulation.job.jobstate.IJobState;
 import simulation.map.MapIndex;
+import simulation.room.IRoomManager;
 import simulation.room.Room;
 
 /**
@@ -108,7 +110,7 @@ public class PlaceItemJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             item = getItem();
-            room = getPlayer().getRoomManager().getRoom(position);
+            room = getPlayer().getComponent(IRoomManager.class).getRoom(position);
         }
 
         @Override
@@ -126,7 +128,8 @@ public class PlaceItemJob extends AbstractJob {
          * Constructor.
          */
         public PlaceItemState() {
-            super(item, position, room != null ? room : getPlayer().getStockManager(), PlaceItemJob.this);
+            super(item, position, room != null ? room : getPlayer().getComponent(IStockManager.class),
+                    PlaceItemJob.this);
         }
 
         @Override

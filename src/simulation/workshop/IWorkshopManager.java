@@ -2,13 +2,14 @@ package simulation.workshop;
 
 import java.util.Set;
 
+import simulation.IPlayerComponent;
 import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**
  * Interface for a workshop manager.
  */
-public interface IWorkshopManager extends IGameObjectManager {
+public interface IWorkshopManager extends IGameObjectManager, IPlayerComponent {
 
     /**
      * Add a new workshop.

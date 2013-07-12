@@ -33,6 +33,7 @@ package controller.command;
 
 import simulation.IPlayer;
 import simulation.workshop.IWorkshop;
+import simulation.workshop.IWorkshopManager;
 
 /**
  * The Class NewOrderCommand.
@@ -62,7 +63,7 @@ public class NewOrderCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        IWorkshop workshop = player.getWorkshopManager().getWorkshop(workshopId);
+        IWorkshop workshop = player.getComponent(IWorkshopManager.class).getWorkshop(workshopId);
         workshop.newOrder(recipeName);
     }
 

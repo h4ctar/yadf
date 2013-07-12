@@ -35,6 +35,7 @@ import simulation.IPlayer;
 import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.job.EatDrinkJob;
+import simulation.job.IJobManager;
 
 /**
  * The Class EatDrinkComponent.
@@ -110,12 +111,12 @@ public class EatDrinkComponent extends AbstractCharacterComponent implements IEa
         if (spawnJobs) {
             if (hunger > HUNGER_EAT_THRESHOLD && eatJob == null) {
                 eatJob = new EatDrinkJob(getCharacter(), true);
-                player.getJobManager().addJob(eatJob);
+                player.getComponent(IJobManager.class).addJob(eatJob);
             }
 
             if (thirst > THIRST_DRINK_THRESHOLD && drinkJob == null) {
                 drinkJob = new EatDrinkJob(getCharacter(), false);
-                player.getJobManager().addJob(drinkJob);
+                player.getComponent(IJobManager.class).addJob(drinkJob);
             }
         }
 

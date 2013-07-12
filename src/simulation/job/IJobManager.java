@@ -3,13 +3,14 @@ package simulation.job;
 import java.util.Collection;
 import java.util.List;
 
+import simulation.IPlayerComponent;
 import simulation.job.designation.AbstractDesignation;
 import simulation.job.designation.DesignationType;
 
 /**
  * Interface for a job manager.
  */
-public interface IJobManager {
+public interface IJobManager extends IPlayerComponent {
 
     /**
      * Add a new job.

@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -20,8 +21,7 @@ import javax.swing.ToolTipManager;
 import logger.Logger;
 import misc.MyRandom;
 import settings.Settings;
-import simulation.IPlayer;
-import simulation.Player;
+import simulation.HumanPlayer;
 import simulation.Region;
 import simulation.map.MapIndex;
 import userinterface.game.guistate.IGuiState;
@@ -55,7 +55,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
     private Region region;
 
     /** The player. */
-    private Player player;
+    private HumanPlayer player;
 
     /** The world pane. */
     private WorldPanel worldPanel;
@@ -135,7 +135,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
 
             region = new Region();
-            player = new Player(playerName);
+            player = new HumanPlayer(playerName);
             region.addPlayer(player);
             controller = new SinglePlayerController();
 
@@ -176,9 +176,11 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
 
             region = new Region();
+            List<HumanPlayer> humanPlayers = new ArrayList<>();
             for (String playerName : playerNames) {
-                Player newPlayer = new Player(playerName);
+                HumanPlayer newPlayer = new HumanPlayer(playerName);
                 region.addPlayer(newPlayer);
+                humanPlayers.add(newPlayer);
                 if (playerName.equals(playerNames.get(playerIndex))) {
                     player = newPlayer;
                 }
@@ -190,7 +192,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
-            for (IPlayer playerTmp : region.getPlayers()) {
+            for (HumanPlayer playerTmp : humanPlayers) {
                 playerTmp.setup(region, embarkPosition, numberOfStartingDwarfs);
             }
             worldPanel.zoomToPosition(embarkPosition);
@@ -219,7 +221,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             region = (Region) objectInputStream.readObject();
             objectInputStream.close();
 
-            player = region.getPlayers().toArray(new Player[0])[0];
+            player = region.getPlayers().toArray(new HumanPlayer[0])[0];
             controller = new SinglePlayerController();
 
             worldPanel.setup(player, region);

@@ -50,15 +50,20 @@ public class Farm extends AbstractGameObject {
     /** The farm plots. */
     private final List<FarmPlot> farmPlots = new ArrayList<>();
 
+    /** The player that the farm belongs to. */
+    private final IPlayer player;
+
     /**
      * Instantiates a new farm.
      * @param areaTmp the area
+     * @param playerTmp the player that the farm belongs to
      */
-    public Farm(final MapArea areaTmp) {
+    public Farm(final MapArea areaTmp, final IPlayer playerTmp) {
         area = areaTmp;
+        player = playerTmp;
         for (int x = 0; x < area.width; x++) {
             for (int y = 0; y < area.height; y++) {
-                farmPlots.add(new FarmPlot(new MapIndex(x + area.pos.x, y + area.pos.y, area.pos.z)));
+                farmPlots.add(new FarmPlot(new MapIndex(x + area.pos.x, y + area.pos.y, area.pos.z), player));
             }
         }
     }
@@ -81,11 +86,10 @@ public class Farm extends AbstractGameObject {
 
     /**
      * Update.
-     * @param player the player
      */
-    public void update(final IPlayer player) {
+    public void update() {
         for (FarmPlot farmPlot : farmPlots) {
-            farmPlot.update(player);
+            farmPlot.update();
         }
     }
 }

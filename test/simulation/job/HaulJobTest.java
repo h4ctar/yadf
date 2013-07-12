@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import simulation.IPlayer;
-import simulation.character.IDwarfManager;
+import simulation.character.ICharacterManager;
 import simulation.character.IGameCharacter;
 import simulation.character.component.IMovementComponent;
 import simulation.character.component.WalkMovementComponent;
@@ -30,7 +30,7 @@ public class HaulJobTest extends TestCase {
     private IPlayer player;
 
     @Mock
-    private IDwarfManager dwarfManager;
+    private ICharacterManager dwarfManager;
 
     @Mock
     private IStockManager stockManager;
@@ -53,8 +53,8 @@ public class HaulJobTest extends TestCase {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(item.getPosition()).thenReturn(new MapIndex(0, 0, 0));
-        when(player.getDwarfManager()).thenReturn(dwarfManager);
-        when(player.getStockManager()).thenReturn(stockManager);
+        when(player.getComponent(ICharacterManager.class)).thenReturn(dwarfManager);
+        when(player.getComponent(IStockManager.class)).thenReturn(stockManager);
         // when(dwarfManager.getIdleDwarf(requiredLabor)).thenReturn(character);
         // when(character.setComponent(eq(IMovementComponent.class), any(WalkMovementComponent.class)));
     }

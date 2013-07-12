@@ -2,6 +2,7 @@ package simulation.job.jobstate;
 
 import simulation.item.IContainer;
 import simulation.item.IItemAvailableListener;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.job.AbstractJob;
@@ -66,15 +67,17 @@ public abstract class LookingForItemState extends AbstractJobState implements II
     @Override
     public void start() {
         if (itemType != null) {
-            item = getJob().getPlayer().getStockManager().getItem(itemType.name, used, placed);
+            item = getJob().getPlayer().getComponent(IStockManager.class).getItem(itemType.name, used, placed);
         } else {
-            item = getJob().getPlayer().getStockManager().getItemFromCategory(category, used, placed);
+            item = getJob().getPlayer().getComponent(IStockManager.class)
+                    .getItemFromCategory(category, used, placed);
         }
         if (item == null) {
             if (itemType != null) {
-                getJob().getPlayer().getStockManager().addItemAvailableListener(itemType, this);
+                getJob().getPlayer().getComponent(IStockManager.class).addItemAvailableListener(itemType, this);
             } else {
-                getJob().getPlayer().getStockManager().addItemAvailableListenerListener(category, this);
+                getJob().getPlayer().getComponent(IStockManager.class)
+                        .addItemAvailableListenerListener(category, this);
             }
         } else {
             item.setUsed(true);
@@ -85,15 +88,15 @@ public abstract class LookingForItemState extends AbstractJobState implements II
     @Override
     public void itemAvailable(final Item availableItem, final IContainer container) {
         assert !availableItem.isUsed();
-        assert container == getJob().getPlayer().getStockManager();
+        assert container == getJob().getPlayer().getComponent(IStockManager.class);
         assert (itemType != null && itemType.equals(availableItem.getType()))
                 || (category != null && category.equals(availableItem.getType().category));
         item = availableItem;
         item.setUsed(true);
         if (itemType != null) {
-            getJob().getPlayer().getStockManager().removeItemAvailableListener(itemType, this);
+            getJob().getPlayer().getComponent(IStockManager.class).removeItemAvailableListener(itemType, this);
         } else {
-            getJob().getPlayer().getStockManager().removeItemAvailableListener(category, this);
+            getJob().getPlayer().getComponent(IStockManager.class).removeItemAvailableListener(category, this);
         }
         finishState();
     }
@@ -109,9 +112,9 @@ public abstract class LookingForItemState extends AbstractJobState implements II
     @Override
     public void interrupt(final String message) {
         if (itemType != null) {
-            getJob().getPlayer().getStockManager().removeItemAvailableListener(itemType, this);
+            getJob().getPlayer().getComponent(IStockManager.class).removeItemAvailableListener(itemType, this);
         } else {
-            getJob().getPlayer().getStockManager().removeItemAvailableListener(category, this);
+            getJob().getPlayer().getComponent(IStockManager.class).removeItemAvailableListener(category, this);
         }
     }
 }

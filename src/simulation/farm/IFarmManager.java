@@ -2,16 +2,19 @@ package simulation.farm;
 
 import java.util.Set;
 
+import simulation.IPlayerComponent;
+import simulation.map.MapArea;
+
 /**
  * The farm manager.
  */
-public interface IFarmManager extends IGameObjectManager {
+public interface IFarmManager extends IGameObjectManager, IPlayerComponent {
 
     /**
-     * Adds a farm.
-     * @param farm the farm
+     * Adds a new farm.
+     * @param area the area of the farm
      */
-    void addFarm(final Farm farm);
+    void addNewFarm(final MapArea area);
 
     /**
      * Gets all the farms.

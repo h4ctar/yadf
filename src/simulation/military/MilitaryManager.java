@@ -8,6 +8,7 @@ import simulation.character.component.IMilitaryComponent;
 import simulation.character.component.MilitaryComponent;
 import simulation.job.IJob;
 import simulation.job.IJobListener;
+import simulation.job.IJobManager;
 import simulation.job.MilitaryStationJob;
 import simulation.map.MapIndex;
 
@@ -49,7 +50,7 @@ public class MilitaryManager implements IMilitaryManager, IJobListener {
             IJob stationJob = new MilitaryStationJob(target, soldier);
             stationJobs.add(stationJob);
             stationJob.addListener(this);
-            soldier.getPlayer().getJobManager().addJob(stationJob);
+            soldier.getPlayer().getComponent(IJobManager.class).addJob(stationJob);
         }
     }
 
@@ -78,5 +79,10 @@ public class MilitaryManager implements IMilitaryManager, IJobListener {
 
     @Override
     public void jobChanged(final IJob job) {
+    }
+
+    @Override
+    public void update() {
+        // nothing to do
     }
 }

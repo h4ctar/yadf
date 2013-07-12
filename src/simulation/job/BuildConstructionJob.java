@@ -37,6 +37,7 @@ import simulation.IPlayer;
 import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.ISkillComponent;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.item.ItemTypeManager;
@@ -127,7 +128,8 @@ public class BuildConstructionJob extends AbstractJob {
          * Constructor.
          */
         public HaulBuildingMaterialsState() {
-            super(BUILDING_MATERIAL_TYPE, position, getPlayer().getStockManager(), BuildConstructionJob.this);
+            super(BUILDING_MATERIAL_TYPE, position, getPlayer().getComponent(IStockManager.class),
+                    BuildConstructionJob.this);
         }
 
         @Override
@@ -198,7 +200,7 @@ public class BuildConstructionJob extends AbstractJob {
         public void doFinalActions() {
             rock.delete();
             // Move items away from build area
-            for (Item item : getPlayer().getStockManager().getItems()) {
+            for (Item item : getPlayer().getComponent(IStockManager.class).getItems()) {
                 if (item.getPosition().equals(position)) {
                     List<WalkableNode> adjacencies = map.getAdjacencies(position);
 

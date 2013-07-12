@@ -174,8 +174,8 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
+    @Override
     public <T extends ICharacterComponent> T getComponent(final Class<T> componentInterface) {
         return (T) components.get(componentInterface);
     }

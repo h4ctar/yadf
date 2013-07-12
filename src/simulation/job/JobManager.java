@@ -147,4 +147,9 @@ public class JobManager implements IJobManager, IJobListener {
         }
         return foundJob;
     }
+
+    @Override
+    public void update() {
+        // nothing to do
+    }
 }

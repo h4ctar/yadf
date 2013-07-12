@@ -41,6 +41,7 @@ import simulation.IPlayer;
 import simulation.item.ContainerComponent;
 import simulation.item.IContainer;
 import simulation.item.IItemAvailableListener;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.map.MapArea;
@@ -149,7 +150,7 @@ public class Room extends AbstractGameObject implements IContainer {
             if (item.isPlaced()) {
                 item.setPlaced(false);
             }
-            player.getStockManager().addItem(item);
+            player.getComponent(IStockManager.class).addItem(item);
         }
     }
 

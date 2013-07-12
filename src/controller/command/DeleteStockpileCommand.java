@@ -32,6 +32,7 @@
 package controller.command;
 
 import simulation.IPlayer;
+import simulation.item.IStockManager;
 
 /**
  * The Class DeleteStockpileCommand.
@@ -56,6 +57,6 @@ public class DeleteStockpileCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getStockManager().getStockpile(stockpileId).delete();
+        player.getComponent(IStockManager.class).getStockpile(stockpileId).delete();
     }
 }

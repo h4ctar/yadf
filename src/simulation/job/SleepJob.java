@@ -10,6 +10,7 @@ import simulation.job.jobstate.IJobState;
 import simulation.job.jobstate.WalkToPositionState;
 import simulation.job.jobstate.WasteTimeState;
 import simulation.map.MapIndex;
+import simulation.room.IRoomManager;
 import simulation.room.Room;
 
 /**
@@ -71,7 +72,7 @@ public class SleepJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            Set<Room> rooms = getPlayer().getRoomManager().getRooms();
+            Set<Room> rooms = getPlayer().getComponent(IRoomManager.class).getRooms();
             for (Room room : rooms) {
                 // TODO: do I have my own room?
                 if (room.getType().equals("Dormitory")) {

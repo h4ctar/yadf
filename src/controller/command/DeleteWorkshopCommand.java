@@ -2,6 +2,7 @@ package controller.command;
 
 import simulation.IPlayer;
 import simulation.workshop.IWorkshop;
+import simulation.workshop.IWorkshopManager;
 
 /**
  * Command to delete a workshop.
@@ -27,7 +28,7 @@ public class DeleteWorkshopCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        IWorkshop workshop = player.getWorkshopManager().getWorkshop(workshopId);
+        IWorkshop workshop = player.getComponent(IWorkshopManager.class).getWorkshop(workshopId);
         workshop.delete();
     }
 }

@@ -36,6 +36,7 @@ import java.util.Set;
 import simulation.IRegion;
 import simulation.character.IGameCharacter;
 import simulation.character.component.IEatDrinkComponent;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.job.jobstate.HaulItemState;
 import simulation.job.jobstate.IJobState;
@@ -43,6 +44,7 @@ import simulation.job.jobstate.LookingForItemState;
 import simulation.job.jobstate.WalkToPositionState;
 import simulation.job.jobstate.WasteTimeState;
 import simulation.map.MapIndex;
+import simulation.room.IRoomManager;
 import simulation.room.Room;
 
 /**
@@ -144,7 +146,7 @@ public class EatDrinkJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            Set<Room> rooms = getPlayer().getRoomManager().getRooms();
+            Set<Room> rooms = getPlayer().getComponent(IRoomManager.class).getRooms();
             for (Room room : rooms) {
                 if (room.getType().equals("Dining room")) {
                     Set<Item> tables = room.getUnusedItems("Table");
@@ -216,7 +218,8 @@ public class EatDrinkJob extends AbstractJob {
          * Constructor.
          */
         public HaulFoodDrinkToTableState() {
-            super(dwarf, foodDrinkItem, table.getPosition(), getPlayer().getStockManager(), EatDrinkJob.this);
+            super(dwarf, foodDrinkItem, table.getPosition(), getPlayer().getComponent(IStockManager.class),
+                    EatDrinkJob.this);
         }
 
         @Override

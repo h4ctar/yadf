@@ -39,7 +39,9 @@ import java.util.Set;
 import simulation.IPlayer;
 import simulation.IRegion;
 import simulation.character.IGameCharacter;
+import simulation.item.IStockManager;
 import simulation.item.Item;
+import simulation.job.IJobManager;
 import simulation.job.PickupToolJob;
 import simulation.labor.LaborType;
 import simulation.labor.LaborTypeManager;
@@ -208,13 +210,13 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
                 if (laborType.toolType == null) {
                     continue;
                 }
-                tool = player.getStockManager().getItem(laborType.toolType.name, false, false);
+                tool = player.getComponent(IStockManager.class).getItem(laborType.toolType.name, false, false);
                 if (tool == null) {
                     continue;
                 }
                 tool.setUsed(true);
                 pickupToolJob = new PickupToolJob(getCharacter(), tool);
-                player.getJobManager().addJob(pickupToolJob);
+                player.getComponent(IJobManager.class).addJob(pickupToolJob);
                 break;
             }
         }

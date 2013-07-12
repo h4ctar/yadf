@@ -2,6 +2,7 @@ package controller.command;
 
 import simulation.IPlayer;
 import simulation.job.IJob;
+import simulation.job.IJobManager;
 
 /**
  * Command to cancel a job.
@@ -26,7 +27,7 @@ public class CancelJobCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        IJob job = player.getJobManager().getJob(jobId);
+        IJob job = player.getComponent(IJobManager.class).getJob(jobId);
         job.interrupt("God canceled it");
     }
 }

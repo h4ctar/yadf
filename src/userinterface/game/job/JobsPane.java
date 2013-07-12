@@ -49,6 +49,7 @@ import javax.swing.event.ListSelectionListener;
 
 import simulation.IPlayer;
 import simulation.job.IJob;
+import simulation.job.IJobManager;
 import simulation.job.designation.AbstractDesignation;
 import simulation.map.MapIndex;
 import userinterface.game.WorldPanel;
@@ -133,7 +134,7 @@ public class JobsPane extends JPanel {
         player = playerTmp;
         controller = controllerTmp;
         worldPanel = worldPanelTmp;
-        jobsTableModel = new JobsTableModel(player.getJobManager());
+        jobsTableModel = new JobsTableModel(player.getComponent(IJobManager.class));
         jobsTable.setModel(jobsTableModel);
         jobsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jobsTable.getSelectionModel().addListSelectionListener(new JobsTableListSelectionListener());
@@ -150,7 +151,7 @@ public class JobsPane extends JPanel {
         public void actionPerformed(final ActionEvent e) {
             int row = jobsTable.getSelectedRow();
             if (row != -1) {
-                IJob job = player.getJobManager().getJobs().get(row);
+                IJob job = player.getComponent(IJobManager.class).getJobs().get(row);
                 MapIndex position = job.getPosition();
                 if (position != null) {
                     worldPanel.zoomToPosition(position);
@@ -168,7 +169,7 @@ public class JobsPane extends JPanel {
         public void actionPerformed(final ActionEvent e) {
             int row = jobsTable.getSelectedRow();
             if (row != -1) {
-                IJob job = player.getJobManager().getJobs().get(row);
+                IJob job = player.getComponent(IJobManager.class).getJobs().get(row);
                 controller.addCommand(new CancelJobCommand(player, job.getId()));
             }
         }
@@ -185,7 +186,7 @@ public class JobsPane extends JPanel {
         public void valueChanged(final ListSelectionEvent e) {
             int row = jobsTable.getSelectedRow();
             if (row != -1) {
-                IJob job = player.getJobManager().getJobs().get(row);
+                IJob job = player.getComponent(IJobManager.class).getJobs().get(row);
                 zoomToJobButton.setEnabled(job.getPosition() != null);
                 cancelJobButton.setEnabled(!(job instanceof AbstractDesignation));
             } else {

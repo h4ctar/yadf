@@ -2,13 +2,14 @@ package simulation.room;
 
 import java.util.Set;
 
+import simulation.IPlayerComponent;
 import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**
  * Interface for a room manager.
  */
-public interface IRoomManager extends IGameObjectManager {
+public interface IRoomManager extends IGameObjectManager, IPlayerComponent {
 
     /**
      * Adds a room.

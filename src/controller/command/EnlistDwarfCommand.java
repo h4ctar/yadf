@@ -1,7 +1,9 @@
 package controller.command;
 
 import simulation.IPlayer;
+import simulation.character.ICharacterManager;
 import simulation.character.IGameCharacter;
+import simulation.military.IMilitaryManager;
 
 /**
  * Enlist a new dwarf into the military.
@@ -26,7 +28,7 @@ public class EnlistDwarfCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        IGameCharacter dwarf = player.getDwarfManager().getDwarf(dwarfId);
-        player.getMilitaryManager().enlistDwarf(dwarf);
+        IGameCharacter dwarf = player.getComponent(ICharacterManager.class).getDwarf(dwarfId);
+        player.getComponent(IMilitaryManager.class).enlistDwarf(dwarf);
     }
 }

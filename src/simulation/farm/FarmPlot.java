@@ -33,9 +33,11 @@ package simulation.farm;
 
 import simulation.IPlayer;
 import simulation.IRegion;
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.job.HarvestJob;
 import simulation.job.IJob;
+import simulation.job.IJobManager;
 import simulation.job.PlantJob;
 import simulation.job.TillJob;
 import simulation.map.MapIndex;
@@ -76,13 +78,18 @@ public class FarmPlot implements IFarmPlot {
     /** The simulation steps. */
     private int simulationSteps;
 
+    /** The player that the farm belongs to. */
+    private final IPlayer player;
+
     /**
      * Instantiates a new farm plot.
      * 
      * @param positionTmp the position
+     * @param player
      */
-    FarmPlot(final MapIndex positionTmp) {
+    FarmPlot(final MapIndex positionTmp, final IPlayer playerTmp) {
         position = positionTmp;
+        player = playerTmp;
     }
 
     /**
@@ -105,14 +112,13 @@ public class FarmPlot implements IFarmPlot {
 
     /**
      * Update.
-     * @param player the player
      */
-    public void update(final IPlayer player) {
+    public void update() {
         // TODO: the farm should listen to the jobs
         switch (state) {
         case START:
             job = new TillJob(this, player);
-            player.getJobManager().addJob(job);
+            player.getComponent(IJobManager.class).addJob(job);
 
             state = State.TILL;
             break;
@@ -126,12 +132,12 @@ public class FarmPlot implements IFarmPlot {
 
         case PLANT:
             if (job == null) {
-                Item seed = player.getStockManager().getItem("Seed", false, false);
+                Item seed = player.getComponent(IStockManager.class).getItem("Seed", false, false);
                 if (seed != null) {
-                    player.getStockManager().removeItem(seed);
+                    player.getComponent(IStockManager.class).removeItem(seed);
                     seed.setUsed(true);
                     job = new PlantJob(seed, this, player);
-                    player.getJobManager().addJob(job);
+                    player.getComponent(IJobManager.class).addJob(job);
                 }
             } else if (job.isDone()) {
                 simulationSteps = 0;
@@ -143,7 +149,7 @@ public class FarmPlot implements IFarmPlot {
             simulationSteps++;
             if (simulationSteps > GROW_DURATION) {
                 job = new HarvestJob(this, player);
-                player.getJobManager().addJob(job);
+                player.getComponent(IJobManager.class).addJob(job);
                 state = State.HARVEST;
             }
             break;

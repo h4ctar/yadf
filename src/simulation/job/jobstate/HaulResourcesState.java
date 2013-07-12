@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemType;
 import simulation.job.AbstractJob;
@@ -65,8 +66,8 @@ public abstract class HaulResourcesState extends AbstractJobState implements IJo
         for (Entry<ItemType, Integer> entry : resourceTypes.entrySet()) {
             ItemType itemType = entry.getKey();
             for (int i = 0; i < entry.getValue().intValue(); i++) {
-                HaulJob haulJob = new HaulJob(itemType, getJob().getPlayer().getStockManager(), position, getJob()
-                        .getPlayer());
+                HaulJob haulJob = new HaulJob(itemType, getJob().getPlayer().getComponent(IStockManager.class),
+                        position, getJob().getPlayer());
                 haulJob.addListener(this);
                 haulJobs.add(haulJob);
             }
