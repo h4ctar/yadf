@@ -1,9 +1,9 @@
 package simulation.character;
 
-import java.util.Set;
+import java.util.List;
 
+import simulation.IGameObjectManager;
 import simulation.IPlayerComponent;
-import simulation.farm.IGameObjectManager;
 import simulation.labor.LaborType;
 import simulation.map.MapIndex;
 
@@ -45,7 +45,7 @@ public interface ICharacterManager extends IGameObjectManager, IPlayerComponent 
      * Gets all the characters.
      * @return the characters
      */
-    Set<IGameCharacter> getCharacters();
+    List<IGameCharacter> getCharacters();
 
     /**
      * Add a listener that will be notified when a character becomes free.

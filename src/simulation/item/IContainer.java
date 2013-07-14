@@ -1,9 +1,9 @@
 package simulation.item;
 
-import java.util.Set;
+import java.util.List;
 
 import simulation.IGameObject;
-import simulation.farm.IGameObjectManager;
+import simulation.IGameObjectManager;
 
 /**
  * Interface for a container.
@@ -25,9 +25,9 @@ public interface IContainer extends IGameObject, IGameObjectManager {
 
     /**
      * Gets all the items.
-     * @return A list of references to all the items
+     * @return a list of references to all the items
      */
-    Set<Item> getItems();
+    List<Item> getItems();
 
     /**
      * Finds an item but does not remove it from the container and does not set the item as used.

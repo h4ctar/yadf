@@ -31,6 +31,7 @@
  */
 package simulation.job;
 
+import java.util.List;
 import java.util.Set;
 
 import simulation.IRegion;
@@ -146,7 +147,7 @@ public class EatDrinkJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            Set<Room> rooms = getPlayer().getComponent(IRoomManager.class).getRooms();
+            List<Room> rooms = getPlayer().getComponent(IRoomManager.class).getRooms();
             for (Room room : rooms) {
                 if (room.getType().equals("Dining room")) {
                     Set<Item> tables = room.getUnusedItems("Table");

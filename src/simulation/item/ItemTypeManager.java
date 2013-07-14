@@ -58,16 +58,18 @@ public final class ItemTypeManager {
     private static ItemTypeManager instance;
 
     /** The item types. */
-    private Set<ItemType> itemTypes = new LinkedHashSet<>();
+    private List<ItemType> itemTypes = new ArrayList<>();
 
     /** The item types, keyed by name. */
     private Map<String, ItemType> itemTypesByName = new HashMap<>();
 
     /** The item types, keyed by category. */
-    private Map<String, Set<ItemType>> itemTypesByCategory = new HashMap<>();
+    private Map<String, List<ItemType>> itemTypesByCategory = new HashMap<>();
 
     /** The embark items. */
-    private Set<Item> embarkItems = new LinkedHashSet<>();
+    private List<Item> embarkItems = new ArrayList<>();
+
+    private List<String> itemCategories = new ArrayList<>();
 
     /**
      * Gets the single instance of ItemTypeManager.
@@ -90,8 +92,8 @@ public final class ItemTypeManager {
      * Gets the category names.
      * @return the category names
      */
-    public Set<String> getCategoryNames() {
-        return itemTypesByCategory.keySet();
+    public List<String> getCategories() {
+        return itemCategories;
     }
 
     /**
@@ -112,7 +114,7 @@ public final class ItemTypeManager {
      * Get all the item types.
      * @return all the item types
      */
-    public Set<ItemType> getItemTypes() {
+    public List<ItemType> getItemTypes() {
         return itemTypes;
     }
 
@@ -132,7 +134,7 @@ public final class ItemTypeManager {
      * @param category the category
      * @return the item types from category
      */
-    public Set<ItemType> getItemTypesFromCategory(final String category) {
+    public List<ItemType> getItemTypesFromCategory(final String category) {
         return itemTypesByCategory.get(category);
     }
 
@@ -190,7 +192,7 @@ public final class ItemTypeManager {
             Node categoryeNode = categoryNodes.item(i);
             Element categoryElement = (Element) categoryeNode;
             String category = categoryElement.getAttribute("name");
-            Set<ItemType> itemTypesInCategory = new LinkedHashSet<>();
+            List<ItemType> itemTypesInCategory = new ArrayList<>();
 
             NodeList itemTypeNodes = categoryElement.getElementsByTagName("itemType");
             for (int j = 0; j < itemTypeNodes.getLength(); j++) {
@@ -204,6 +206,7 @@ public final class ItemTypeManager {
             }
 
             itemTypesByCategory.put(category, itemTypesInCategory);
+            itemCategories.add(category);
         }
     }
 
@@ -230,9 +233,9 @@ public final class ItemTypeManager {
      * Unload all the item types.
      */
     public void unload() {
-        itemTypes = new LinkedHashSet<>();
+        itemTypes = new ArrayList<>();
         itemTypesByName = new HashMap<>();
         itemTypesByCategory = new HashMap<>();
-        embarkItems = new LinkedHashSet<>();
+        embarkItems = new ArrayList<>();
     }
 }

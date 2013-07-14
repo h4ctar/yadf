@@ -31,7 +31,8 @@
  */
 package simulation.item;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import logger.Logger;
@@ -50,10 +51,10 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     private final ContainerComponent containerComponent = new ContainerComponent(this);
 
     /** The stockpiles owned by this stock manager. */
-    private final Set<Stockpile> stockpiles = new LinkedHashSet<>();
+    private final List<Stockpile> stockpiles = new ArrayList<>();
 
     /** Listeners for add and remove of items and stockpiles. */
-    private final Set<IGameObjectManagerListener> managerListeners = new LinkedHashSet<>();
+    private final List<IGameObjectManagerListener> managerListeners = new ArrayList<>();
 
     @Override
     public boolean addItem(final Item item) {
@@ -82,7 +83,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
      * @return A list of references to all the unstored items
      */
     @Override
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return containerComponent.getItems();
     }
 
@@ -108,17 +109,18 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
      */
     private void notifyStockpileAdded(final Stockpile stockpile) {
         for (IGameObjectManagerListener managerListener : managerListeners) {
-            managerListener.gameObjectAdded(stockpile);
+            managerListener.gameObjectAdded(stockpile, stockpiles.indexOf(stockpile));
         }
     }
 
     /**
      * Notify all the listeners that a stockpile was removed.
      * @param stockpile the stockpile that was removed
+     * @param index index of the removed stockpile
      */
-    private void notifyStockpileRemoved(final Stockpile stockpile) {
+    private void notifyStockpileRemoved(final Stockpile stockpile, final int index) {
         for (IGameObjectManagerListener managerListener : managerListeners) {
-            managerListener.gameObjectRemoved(stockpile);
+            managerListener.gameObjectRemoved(stockpile, index);
         }
     }
 
@@ -198,8 +200,9 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
         for (ItemType itemType : ItemTypeManager.getInstance().getItemTypes()) {
             stockpile.removeItemAvailableListener(itemType, containerComponent);
         }
+        int index = stockpiles.indexOf(stockpile);
         stockpiles.remove(stockpile);
-        notifyStockpileRemoved(stockpile);
+        notifyStockpileRemoved(stockpile, index);
         stockpile.removeGameObjectListener(this);
     }
 
@@ -225,7 +228,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     }
 
     @Override
-    public Set<Stockpile> getStockpiles() {
+    public List<Stockpile> getStockpiles() {
         return stockpiles;
     }
 

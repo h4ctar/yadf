@@ -1,8 +1,9 @@
 package simulation.farm;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
@@ -14,7 +15,7 @@ import simulation.map.MapArea;
 public class FarmManager implements IFarmManager {
 
     /** The farms. */
-    private final Set<Farm> farms = new CopyOnWriteArraySet<>();
+    private final List<Farm> farms = new ArrayList<>();
 
     /** The farm manager listeners. */
     private final Set<IGameObjectManagerListener> listeners = new LinkedHashSet<>();
@@ -38,18 +39,17 @@ public class FarmManager implements IFarmManager {
         Farm farm = new Farm(area, player);
         farms.add(farm);
         for (IGameObjectManagerListener listener : listeners) {
-            listener.gameObjectAdded(farm);
+            listener.gameObjectAdded(farm, farms.indexOf(farm));
         }
     }
 
     @Override
-    public Set<Farm> getFarms() {
+    public List<Farm> getFarms() {
         return farms;
     }
 
     /**
      * Update all the farms.
-     * @param player the player
      */
     public void update() {
         // TODO: Don't update farms every step

@@ -1,9 +1,10 @@
 package simulation.item;
 
+import java.util.List;
 import java.util.Set;
 
+import simulation.IGameObjectManager;
 import simulation.IPlayerComponent;
-import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**
@@ -29,7 +30,7 @@ public interface IStockManager extends IGameObjectManager, IContainer, IPlayerCo
      * Gets references to all the stockpiles.
      * @return A vector of references to all the stockpiles
      */
-    Set<Stockpile> getStockpiles();
+    List<Stockpile> getStockpiles();
 
     /**
      * Get an item located at a specific map index.

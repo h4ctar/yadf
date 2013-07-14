@@ -1,8 +1,7 @@
 package simulation.workshop;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.ArrayList;
+import java.util.List;
 
 import simulation.IGameObjectListener;
 import simulation.IGameObjectManagerListener;
@@ -14,10 +13,10 @@ import simulation.map.MapIndex;
 public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
 
     /** The workshops. */
-    private final Set<IWorkshop> workshops = new CopyOnWriteArraySet<>();
+    private final List<IWorkshop> workshops = new ArrayList<>();
 
     /** The workshop manager listeners. */
-    private final Set<IGameObjectManagerListener> listeners = new LinkedHashSet<>();
+    private final List<IGameObjectManagerListener> listeners = new ArrayList<>();
 
     @Override
     public void addWorkshop(final IWorkshop workshop) {
@@ -25,7 +24,7 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
         workshop.addGameObjectListener(this);
         workshops.add(workshop);
         for (IGameObjectManagerListener listener : listeners) {
-            listener.gameObjectAdded(workshop);
+            listener.gameObjectAdded(workshop, workshops.indexOf(workshop));
         }
     }
 
@@ -33,9 +32,10 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     public void removeWorkshop(final IWorkshop workshop) {
         assert workshops.contains(workshop);
         workshop.removeGameObjectListener(this);
+        int index = workshops.indexOf(workshop);
         workshops.remove(workshop);
         for (IGameObjectManagerListener listener : listeners) {
-            listener.gameObjectRemoved(workshop);
+            listener.gameObjectRemoved(workshop, index);
         }
     }
 
@@ -60,7 +60,7 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     }
 
     @Override
-    public Set<IWorkshop> getWorkshops() {
+    public List<IWorkshop> getWorkshops() {
         return workshops;
     }
 

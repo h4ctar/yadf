@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,7 +58,7 @@ public class ItemTypeManagerTest {
 
     @Test
     public void testGetCategoryNames() {
-        Set<String> categoryNames = ItemTypeManager.getInstance().getCategoryNames();
+        List<String> categoryNames = ItemTypeManager.getInstance().getCategories();
         assertEquals("Should have 2 categories", 2, categoryNames.size());
         assertTrue("Categories should contain Food", categoryNames.contains("Food"));
         assertTrue("Categories should contain Storage", categoryNames.contains("Storage"));
@@ -104,7 +104,8 @@ public class ItemTypeManagerTest {
     public void testGetPlaceableItems() {
         Collection<ItemType> itemTypes = ItemTypeManager.getInstance().getPlaceableItems();
         assertEquals("Should contain 1 item types", 1, itemTypes.size());
-        assertTrue("Should contain Barrel", itemTypes.contains(ItemTypeManager.getInstance().getItemType("Barrel")));
+        assertTrue("Should contain Barrel",
+                itemTypes.contains(ItemTypeManager.getInstance().getItemType("Barrel")));
     }
 
     @Test

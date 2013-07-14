@@ -1,7 +1,8 @@
 package simulation.farm;
 
-import java.util.Set;
+import java.util.List;
 
+import simulation.IGameObjectManager;
 import simulation.IPlayerComponent;
 import simulation.map.MapArea;
 
@@ -20,5 +21,5 @@ public interface IFarmManager extends IGameObjectManager, IPlayerComponent {
      * Gets all the farms.
      * @return the farms
      */
-    Set<Farm> getFarms();
+    List<Farm> getFarms();
 }

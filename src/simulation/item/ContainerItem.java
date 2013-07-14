@@ -1,6 +1,7 @@
 package simulation.item;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import logger.Logger;
@@ -294,7 +295,7 @@ public class ContainerItem extends Item implements IContainer, IJobListener, IIt
     }
 
     @Override
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return containerComponent.getItems();
     }
 

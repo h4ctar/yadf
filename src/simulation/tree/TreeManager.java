@@ -1,9 +1,10 @@
 package simulation.tree;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import misc.MyRandom;
 import simulation.IGameObjectListener;
@@ -23,13 +24,13 @@ public class TreeManager implements ITreeManager, IGameObjectListener {
     private static final double TREE_PROBABILITY = 0.1;
 
     /** All of the trees. */
-    private final Set<Tree> trees = new CopyOnWriteArraySet<>();
+    private final List<Tree> trees = new ArrayList<>();
 
     /** The region that this tree manager is managing trees for. */
     private final IRegion region;
 
     /** The tree manager listeners, will be notified when a tree is added or removed. */
-    private final Set<IGameObjectManagerListener> listeners = new LinkedHashSet<>();
+    private final List<IGameObjectManagerListener> listeners = new ArrayList<>();
 
     /**
      * Constructor.
@@ -56,7 +57,7 @@ public class TreeManager implements ITreeManager, IGameObjectListener {
                     Tree tree = new Tree(new MapIndex(x, y, z));
                     trees.add(tree);
                     for (IGameObjectManagerListener listener : listeners) {
-                        listener.gameObjectAdded(tree);
+                        listener.gameObjectAdded(tree, trees.indexOf(tree));
                     }
                     tree.addGameObjectListener(this);
                 }
@@ -69,9 +70,10 @@ public class TreeManager implements ITreeManager, IGameObjectListener {
      * @param tree the tree to remove
      */
     public void removeTree(final Tree tree) {
+        int index = trees.indexOf(tree);
         trees.remove(tree);
         for (IGameObjectManagerListener listener : listeners) {
-            listener.gameObjectRemoved(tree);
+            listener.gameObjectRemoved(tree, index);
         }
         tree.removeGameObjectListener(this);
     }

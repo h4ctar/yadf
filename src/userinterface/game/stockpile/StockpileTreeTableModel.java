@@ -32,9 +32,11 @@
 package userinterface.game.stockpile;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
@@ -78,7 +80,7 @@ class StockpileTreeTableModel extends AbstractTreeTableModel implements IGameObj
         controller = controllerTmp;
         player = playerTmp;
 
-        Set<String> categoryNames = ItemTypeManager.getInstance().getCategoryNames();
+        List<String> categoryNames = ItemTypeManager.getInstance().getCategories();
         for (String categoryName : categoryNames) {
             DefaultMutableTreeNode categoryNode = new DefaultMutableTreeNode(categoryName);
             root.add(categoryNode);
@@ -156,7 +158,7 @@ class StockpileTreeTableModel extends AbstractTreeTableModel implements IGameObj
             return null;
         }
 
-        boolean isCategory = ItemTypeManager.getInstance().getCategoryNames().contains(name);
+        boolean isCategory = ItemTypeManager.getInstance().getCategories().contains(name);
         switch (columnIndex) {
         case 0:
             return name;
@@ -190,7 +192,7 @@ class StockpileTreeTableModel extends AbstractTreeTableModel implements IGameObj
     public void setValueAt(final Object value, final Object node, final int columnIndex) {
         String name = ((DefaultMutableTreeNode) node).toString();
 
-        boolean isCategory = ItemTypeManager.getInstance().getCategoryNames().contains(name);
+        boolean isCategory = ItemTypeManager.getInstance().getCategories().contains(name);
         boolean checked = ((Boolean) value).booleanValue();
 
         if (isCategory) {
@@ -203,13 +205,20 @@ class StockpileTreeTableModel extends AbstractTreeTableModel implements IGameObj
     }
 
     @Override
-    public void gameObjectAdded(final IGameObject gameObject) {
+    public void gameObjectAdded(final IGameObject gameObject, final int index) {
         assert gameObject instanceof Item;
-        // TODO Auto-generated method stub
+        Item item = (Item) gameObject;
+        int categoryIndex = ItemTypeManager.getInstance().getCategories().indexOf(item.getType().category);
+        int itemTypeIndex = ItemTypeManager.getInstance().getItemTypesFromCategory(item.getType().category)
+                .indexOf(item.getType());
+        TreeNode categoryNode = root.getChildAt(categoryIndex);
+        TreeNode itemTypeNode = categoryNode.getChildAt(itemTypeIndex);
+        TreePath parentPath = new TreePath(new Object[] { root, categoryNode });
+        modelSupport.fireChildChanged(parentPath, itemTypeIndex, itemTypeNode);
     }
 
     @Override
-    public void gameObjectRemoved(final IGameObject gameObject) {
+    public void gameObjectRemoved(final IGameObject gameObject, final int index) {
         assert gameObject instanceof Item;
         // TODO Auto-generated method stub
     }

@@ -1,7 +1,7 @@
 package simulation.tree;
 
+import simulation.IGameObjectManager;
 import simulation.Tree;
-import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**

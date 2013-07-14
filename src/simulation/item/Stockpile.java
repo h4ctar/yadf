@@ -32,6 +32,7 @@
 package simulation.item;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import logger.Logger;
@@ -81,6 +82,11 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
         player = playerTmp;
         used = new boolean[area.width][area.height];
         Logger.getInstance().log(this, "New stockpile - id: " + getId());
+    }
+
+    @Override
+    public String toString() {
+        return "Stockpile";
     }
 
     @Override
@@ -144,7 +150,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * @return the items
      */
     @Override
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return containerComponent.getItems();
     }
 

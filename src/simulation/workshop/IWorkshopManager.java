@@ -1,9 +1,9 @@
 package simulation.workshop;
 
-import java.util.Set;
+import java.util.List;
 
+import simulation.IGameObjectManager;
 import simulation.IPlayerComponent;
-import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**
@@ -27,7 +27,7 @@ public interface IWorkshopManager extends IGameObjectManager, IPlayerComponent {
      * Gets the workshops.
      * @return the workshops
      */
-    Set<IWorkshop> getWorkshops();
+    List<IWorkshop> getWorkshops();
 
     /**
      * Gets the workshop.

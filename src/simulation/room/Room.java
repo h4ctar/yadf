@@ -32,6 +32,7 @@
 package simulation.room;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import logger.Logger;
@@ -77,6 +78,11 @@ public class Room extends AbstractGameObject implements IContainer {
     }
 
     @Override
+    public String toString() {
+        return roomType;
+    }
+
+    @Override
     public boolean addItem(final Item item) {
         Logger.getInstance().log(this, "Adding item: " + item.getType().name);
         boolean itemAdded = containerComponent.addItem(item);
@@ -102,7 +108,7 @@ public class Room extends AbstractGameObject implements IContainer {
      * @return the items
      */
     @Override
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return containerComponent.getItems();
     }
 

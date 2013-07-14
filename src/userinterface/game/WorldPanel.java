@@ -395,7 +395,7 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
     }
 
     @Override
-    public void gameObjectAdded(final IGameObject gameObject) {
+    public void gameObjectAdded(final IGameObject gameObject, final int index) {
         assert !graphicObjects.containsKey(gameObject);
         Class<? extends IGraphicObject> graphicObjectClass = graphicObjectClasses.get(gameObject.getClass());
         if (graphicObjectClass != null) {
@@ -403,14 +403,14 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
             try {
                 graphicObject = graphicObjectClass.getConstructor(IGameObject.class).newInstance(gameObject);
             } catch (Exception e) {
-                e.printStackTrace();
+                assert false;
             }
             graphicObjects.put(gameObject, graphicObject);
         }
     }
 
     @Override
-    public void gameObjectRemoved(final IGameObject gameObject) {
+    public void gameObjectRemoved(final IGameObject gameObject, final int index) {
         assert graphicObjects.containsKey(gameObject);
         graphicObjects.remove(gameObject);
     }
@@ -419,7 +419,7 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
      * Get the game object that currently has a tool tip displayed.
      * @return the game object
      */
-    public IGameObject getGameObject() {
+    public IGameObject getSelectedGameObject() {
         return toolTipManager.getGameObject();
     }
 

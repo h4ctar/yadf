@@ -31,9 +31,6 @@
  */
 package userinterface.game.room;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.AbstractListModel;
 
 import simulation.IGameObject;
@@ -52,9 +49,6 @@ class ItemListModel extends AbstractListModel<String> implements IGameObjectMana
     /** The room. */
     private Room room;
 
-    /** An ordered cache set of the items. */
-    private List<Item> items;
-
     /**
      * Sets the room.
      * @param roomTmp the new room
@@ -65,40 +59,31 @@ class ItemListModel extends AbstractListModel<String> implements IGameObjectMana
         }
         room = roomTmp;
         room.addGameObjectManagerListener(this);
-        items = new ArrayList<>(room.getItems());
     }
 
     @Override
     public String getElementAt(final int index) {
-        return items.get(index).toString();
+        return room.getItems().get(index).toString();
     }
 
     @Override
     public int getSize() {
         int size = 0;
         if (room != null) {
-            size = items.size();
+            size = room.getItems().size();
         }
         return size;
     }
 
     @Override
-    public void gameObjectAdded(final IGameObject gameObject) {
-        assert !items.contains(gameObject);
+    public void gameObjectAdded(final IGameObject gameObject, final int index) {
         assert gameObject instanceof Item;
-        Item item = (Item) gameObject;
-        items.add(item);
-        int index = items.size() - 1;
         fireContentsChanged(this, index, index);
     }
 
     @Override
-    public void gameObjectRemoved(final IGameObject gameObject) {
-        assert items.contains(gameObject);
+    public void gameObjectRemoved(final IGameObject gameObject, final int index) {
         assert gameObject instanceof Item;
-        Item item = (Item) gameObject;
-        int index = items.indexOf(item);
-        items.remove(item);
         fireContentsChanged(this, index, index);
     }
 }

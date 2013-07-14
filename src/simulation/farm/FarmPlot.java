@@ -85,7 +85,7 @@ public class FarmPlot implements IFarmPlot {
      * Instantiates a new farm plot.
      * 
      * @param positionTmp the position
-     * @param player
+     * @param playerTmp the player that this farm belongs to
      */
     FarmPlot(final MapIndex positionTmp, final IPlayer playerTmp) {
         position = positionTmp;

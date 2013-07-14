@@ -1,9 +1,9 @@
 package simulation.room;
 
-import java.util.Set;
+import java.util.List;
 
+import simulation.IGameObjectManager;
 import simulation.IPlayerComponent;
-import simulation.farm.IGameObjectManager;
 import simulation.map.MapIndex;
 
 /**
@@ -41,5 +41,5 @@ public interface IRoomManager extends IGameObjectManager, IPlayerComponent {
      * Get all the rooms.
      * @return all the rooms
      */
-    Set<Room> getRooms();
+    List<Room> getRooms();
 }

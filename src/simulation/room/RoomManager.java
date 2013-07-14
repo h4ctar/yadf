@@ -1,8 +1,9 @@
 package simulation.room;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import simulation.IGameObjectListener;
 import simulation.IGameObjectManagerListener;
@@ -14,7 +15,7 @@ import simulation.map.MapIndex;
 public class RoomManager implements IRoomManager, IGameObjectListener {
 
     /** The rooms. */
-    private final Set<Room> rooms = new CopyOnWriteArraySet<>();
+    private final List<Room> rooms = new ArrayList<>();
 
     /** The room manager listeners. */
     private Set<IGameObjectManagerListener> listeners = new LinkedHashSet<>();
@@ -24,7 +25,7 @@ public class RoomManager implements IRoomManager, IGameObjectListener {
         assert !rooms.contains(room);
         rooms.add(room);
         for (IGameObjectManagerListener listener : listeners) {
-            listener.gameObjectAdded(room);
+            listener.gameObjectAdded(room, rooms.indexOf(room));
         }
         room.addGameObjectListener(this);
     }
@@ -32,9 +33,10 @@ public class RoomManager implements IRoomManager, IGameObjectListener {
     @Override
     public void removeRoom(final Room room) {
         assert rooms.contains(room);
+        int index = rooms.indexOf(room);
         rooms.remove(room);
         for (IGameObjectManagerListener listener : listeners) {
-            listener.gameObjectRemoved(room);
+            listener.gameObjectRemoved(room, index);
         }
         room.removeGameObjectListener(this);
     }
@@ -62,7 +64,7 @@ public class RoomManager implements IRoomManager, IGameObjectListener {
     }
 
     @Override
-    public Set<Room> getRooms() {
+    public List<Room> getRooms() {
         return rooms;
     }
 

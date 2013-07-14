@@ -32,7 +32,7 @@
 package userinterface.game.stock;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -60,7 +60,7 @@ class StockTreeTableModel extends AbstractTreeTableModel {
     StockTreeTableModel(final IStockManager stockManagerTmp) {
         stockManager = stockManagerTmp;
 
-        Set<String> categoryNames = ItemTypeManager.getInstance().getCategoryNames();
+        List<String> categoryNames = ItemTypeManager.getInstance().getCategories();
         for (String categoryName : categoryNames) {
             DefaultMutableTreeNode categoryNode = new DefaultMutableTreeNode(categoryName);
             root.add(categoryNode);
@@ -116,7 +116,7 @@ class StockTreeTableModel extends AbstractTreeTableModel {
     @Override
     public Object getValueAt(final Object node, final int columnIndex) {
         DefaultMutableTreeNode stockNode = (DefaultMutableTreeNode) node;
-        if (ItemTypeManager.getInstance().getCategoryNames().contains(stockNode.toString())) {
+        if (ItemTypeManager.getInstance().getCategories().contains(stockNode.toString())) {
             switch (columnIndex) {
             case 0:
                 return stockNode.toString();

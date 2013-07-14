@@ -49,7 +49,8 @@ import controller.command.EnableLaborCommand;
 /**
  * The Class LaborTableModel.
  */
-class LaborTableModel extends AbstractTableModel implements IGameObjectManagerListener, ICharacterComponentListener {
+class LaborTableModel extends AbstractTableModel implements IGameObjectManagerListener,
+        ICharacterComponentListener {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2428815575025895385L;
@@ -73,12 +74,6 @@ class LaborTableModel extends AbstractTableModel implements IGameObjectManagerLi
             dwarf.getComponent(ISkillComponent.class).addListener(this);
         }
         // TODO: remove dwarf manager listener
-    }
-
-    @Override
-    public void componentChanged(final Object component) {
-        assert component instanceof ISkillComponent;
-        fireTableRowsUpdated(0, getRowCount() - 1);
     }
 
     @Override
@@ -152,19 +147,26 @@ class LaborTableModel extends AbstractTableModel implements IGameObjectManagerLi
     }
 
     @Override
-    public void gameObjectAdded(final IGameObject gameObject) {
-        assert gameObject instanceof IGameCharacter;
-        IGameCharacter dwarf = (IGameCharacter) gameObject;
-        dwarf.getComponent(ISkillComponent.class).addListener(this);
-        fireTableDataChanged();
+    public void componentChanged(final Object component) {
+        assert component instanceof ISkillComponent;
+        fireTableRowsUpdated(0, getRowCount() - 1);
+        // TODO: fix this
     }
 
     @Override
-    public void gameObjectRemoved(final IGameObject gameObject) {
+    public void gameObjectAdded(final IGameObject gameObject, final int index) {
+        assert gameObject instanceof IGameCharacter;
+        IGameCharacter dwarf = (IGameCharacter) gameObject;
+        dwarf.getComponent(ISkillComponent.class).addListener(this);
+        fireTableRowsInserted(index, index);
+    }
+
+    @Override
+    public void gameObjectRemoved(final IGameObject gameObject, final int index) {
         assert gameObject instanceof IGameCharacter;
         IGameCharacter dwarf = (IGameCharacter) gameObject;
         dwarf.getComponent(ISkillComponent.class).removeListener(this);
-        fireTableDataChanged();
+        fireTableRowsDeleted(index, index);
     }
 
     /**

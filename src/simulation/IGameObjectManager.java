@@ -1,6 +1,5 @@
-package simulation.farm;
+package simulation;
 
-import simulation.IGameObjectManagerListener;
 
 /**
  * Interface for a game object manager.

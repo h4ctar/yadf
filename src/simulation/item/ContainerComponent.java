@@ -1,6 +1,7 @@
 package simulation.item;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,13 +21,13 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
         IGameObjectListener {
 
     /** The content items. */
-    private final Set<Item> items = new LinkedHashSet<>();
+    private final List<Item> items = new ArrayList<>();
 
     /** The container that this component belongs to. */
     private final IContainer container;
 
     /** Listeners for item additions and removals. */
-    private final Set<IGameObjectManagerListener> managerListeners = new LinkedHashSet<>();
+    private final List<IGameObjectManagerListener> managerListeners = new ArrayList<>();
 
     /** Listeners for available items. */
     private final Map<ItemType, Set<IItemAvailableListener>> itemAvailableListeners = new ConcurrentHashMap<>();
@@ -55,13 +56,14 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
 
     @Override
     public boolean removeItem(final Item item) {
+        int index = items.indexOf(item);
         boolean itemRemoved = items.remove(item);
         if (itemRemoved) {
             // Only notify when an item is directly removed from this container, not if its removed from any of the sub
             // containers
             item.removeListener(this);
             item.removeGameObjectListener(this);
-            notifyItemRemoved(item);
+            notifyItemRemoved(item, index);
         }
         if (!itemRemoved) {
             for (Item containerTmp : getItems()) {
@@ -77,7 +79,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     }
 
     @Override
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
@@ -190,7 +192,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
 
     @Override
     public void removeItemAvailableListener(final String category, final IItemAvailableListener listener) {
-        Set<ItemType> itemTypes = ItemTypeManager.getInstance().getItemTypesFromCategory(category);
+        List<ItemType> itemTypes = ItemTypeManager.getInstance().getItemTypesFromCategory(category);
         for (ItemType itemType : itemTypes) {
             removeItemAvailableListener(itemType, listener);
         }
@@ -207,17 +209,18 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
      */
     private void notifyItemAdded(final Item item) {
         for (IGameObjectManagerListener listener : managerListeners) {
-            listener.gameObjectAdded(item);
+            listener.gameObjectAdded(item, items.indexOf(item));
         }
     }
 
     /**
      * Notify listeners that an item has been removed.
      * @param item the removed item
+     * @param index the index of the removed item
      */
-    private void notifyItemRemoved(final Item item) {
+    private void notifyItemRemoved(final Item item, final int index) {
         for (IGameObjectManagerListener listener : managerListeners) {
-            listener.gameObjectRemoved(item);
+            listener.gameObjectRemoved(item, index);
         }
     }
 

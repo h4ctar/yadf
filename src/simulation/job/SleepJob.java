@@ -1,6 +1,6 @@
 package simulation.job;
 
-import java.util.Set;
+import java.util.List;
 
 import simulation.IRegion;
 import simulation.character.IGameCharacter;
@@ -72,7 +72,7 @@ public class SleepJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            Set<Room> rooms = getPlayer().getComponent(IRoomManager.class).getRooms();
+            List<Room> rooms = getPlayer().getComponent(IRoomManager.class).getRooms();
             for (Room room : rooms) {
                 // TODO: do I have my own room?
                 if (room.getType().equals("Dormitory")) {

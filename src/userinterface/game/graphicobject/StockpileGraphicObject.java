@@ -2,7 +2,7 @@ package userinterface.game.graphicobject;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Set;
+import java.util.List;
 
 import simulation.IGameObject;
 import simulation.item.Item;
@@ -43,7 +43,7 @@ public class StockpileGraphicObject implements IGraphicObject {
                     * SpriteManager.SPRITE_SIZE);
 
             // TODO: render with item graphic object
-            Set<Item> items = stockpile.getItems();
+            List<Item> items = stockpile.getItems();
             for (Item item : items) {
                 MapIndex position = item.getPosition();
                 int x2 = (position.x - viewArea.pos.x) * SpriteManager.SPRITE_SIZE;

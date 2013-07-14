@@ -5,7 +5,6 @@ import java.awt.event.MouseListener;
 
 import simulation.IGameObject;
 import simulation.IPlayer;
-import simulation.map.MapIndex;
 import userinterface.game.IGamePanel;
 import userinterface.game.WorldPanelPopupMenu;
 import controller.AbstractController;
@@ -41,8 +40,7 @@ public class NormalGuiState extends AbstractGuiState implements MouseListener {
 
     @Override
     public void mouseClicked(final MouseEvent e) {
-        MapIndex mouseIndex = gamePanel.getWorldPanel().getMouseIndex(e.getX(), e.getY());
-        IGameObject gameObject = gamePanel.getWorldPanel().getGameObject();
+        IGameObject gameObject = gamePanel.getWorldPanel().getSelectedGameObject();
         if (gameObject != null) {
             gamePanel.getManagementPanel().openGameObjectInterface(gameObject);
         }

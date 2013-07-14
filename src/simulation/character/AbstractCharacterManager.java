@@ -1,7 +1,7 @@
 package simulation.character;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.ArrayList;
+import java.util.List;
 
 import simulation.IGameObjectManagerListener;
 import simulation.character.component.ISkillComponent;
@@ -14,13 +14,13 @@ import simulation.map.MapIndex;
 public abstract class AbstractCharacterManager implements ICharacterManager, ICharacterAvailableListener {
 
     /** The dwarfs. */
-    private final Set<IGameCharacter> characters = new CopyOnWriteArraySet<>();
+    private final List<IGameCharacter> characters = new ArrayList<>();
 
     /** The dwarf manager listeners, notified of add and remove of dwarfs. */
-    private final Set<IGameObjectManagerListener> managerListeners = new CopyOnWriteArraySet<>();
+    private final List<IGameObjectManagerListener> managerListeners = new ArrayList<>();
 
     /** The dwarf manager listeners, notified of add and remove of dwarfs. */
-    private final Set<ICharacterAvailableListener> availableListeners = new CopyOnWriteArraySet<>();
+    private final List<ICharacterAvailableListener> availableListeners = new ArrayList<>();
 
     @Override
     public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
@@ -47,12 +47,12 @@ public abstract class AbstractCharacterManager implements ICharacterManager, ICh
     }
 
     /**
-     * Notify all the listeners that a dwarf has been added.
-     * @param dwarf the dwarf that was added
+     * Notify all the listeners that a character has been added.
+     * @param character the character that was added
      */
-    protected void notifyDwarfAdded(final IGameCharacter dwarf) {
+    protected void notifyDwarfAdded(final IGameCharacter character) {
         for (IGameObjectManagerListener listener : managerListeners) {
-            listener.gameObjectAdded(dwarf);
+            listener.gameObjectAdded(character, characters.indexOf(character));
         }
     }
 
@@ -109,11 +109,11 @@ public abstract class AbstractCharacterManager implements ICharacterManager, ICh
     }
 
     /**
-     * Gets all the dwarfs.
-     * @return the dwarfs
+     * Gets all the characters.
+     * @return the characters
      */
     @Override
-    public Set<IGameCharacter> getCharacters() {
+    public List<IGameCharacter> getCharacters() {
         return characters;
     }
 
