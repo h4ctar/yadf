@@ -21,6 +21,7 @@ import javax.swing.ToolTipManager;
 import logger.Logger;
 import misc.MyRandom;
 import settings.Settings;
+import simulation.GoblinPlayer;
 import simulation.HumanPlayer;
 import simulation.Region;
 import simulation.map.MapIndex;
@@ -135,8 +136,13 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
 
             region = new Region();
-            player = new HumanPlayer(playerName);
+
+            player = new HumanPlayer(playerName, region);
             region.addPlayer(player);
+
+            GoblinPlayer goblinPlayer = new GoblinPlayer(region);
+            region.addPlayer(goblinPlayer);
+
             controller = new SinglePlayerController();
 
             worldPanel.setup(player, region);
@@ -144,7 +150,8 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
 
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
-            player.setup(region, embarkPosition, numberOfStartingDwarfs);
+            player.setup(embarkPosition, numberOfStartingDwarfs);
+            goblinPlayer.setup();
             worldPanel.zoomToPosition(embarkPosition);
 
             gameLoop = new GameLoop(region, controller, this);
@@ -178,7 +185,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             region = new Region();
             List<HumanPlayer> humanPlayers = new ArrayList<>();
             for (String playerName : playerNames) {
-                HumanPlayer newPlayer = new HumanPlayer(playerName);
+                HumanPlayer newPlayer = new HumanPlayer(playerName, region);
                 region.addPlayer(newPlayer);
                 humanPlayers.add(newPlayer);
                 if (playerName.equals(playerNames.get(playerIndex))) {
@@ -193,7 +200,7 @@ public class GamePanel extends ImagePanel implements IGamePanel, IGuiStateListen
             region.setup(regionSize);
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
             for (HumanPlayer playerTmp : humanPlayers) {
-                playerTmp.setup(region, embarkPosition, numberOfStartingDwarfs);
+                playerTmp.setup(embarkPosition, numberOfStartingDwarfs);
             }
             worldPanel.zoomToPosition(embarkPosition);
 

@@ -37,7 +37,7 @@ public class LookoutComponent extends AbstractCharacterComponent implements ILoo
             if (player == soldier.getPlayer()) {
                 continue;
             }
-            IGameCharacter enemyTmp = player.getComponent(ICharacterManager.class).getDwarf(soldier.getPosition(),
+            IGameCharacter enemyTmp = player.getComponent(ICharacterManager.class).getCharacter(soldier.getPosition(),
                     VIEW_DISTANCE);
             if (enemyTmp != null) {
                 enemy = enemyTmp;

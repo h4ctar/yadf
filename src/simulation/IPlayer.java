@@ -1,5 +1,7 @@
 package simulation;
 
+import simulation.map.MapArea;
+import simulation.map.MapIndex;
 
 /**
  * Interface of a player.
@@ -33,4 +35,14 @@ public interface IPlayer extends IGameObject {
      * Update.
      */
     void update();
+
+    /**
+     * Get the players name.
+     * @return the players name
+     */
+    String getName();
+
+    boolean checkAreaValid(MapArea area);
+
+    boolean checkAreaValid(MapIndex mapIndex);
 }

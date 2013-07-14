@@ -89,7 +89,7 @@ public class SleepJob extends AbstractJob {
         public IJobState getNextState() {
             IJobState nextState;
             if (bed != null) {
-                nextState = new WalkToSleepBedState();
+                nextState = new WalkToBedState();
             } else {
                 nextState = new SleepState();
             }
@@ -100,12 +100,12 @@ public class SleepJob extends AbstractJob {
     /**
      * The walk to bed job state.
      */
-    private class WalkToSleepBedState extends WalkToPositionState {
+    private class WalkToBedState extends WalkToPositionState {
 
         /**
          * Constructor.
          */
-        public WalkToSleepBedState() {
+        public WalkToBedState() {
             super(bed.getPosition(), dwarf, false, SleepJob.this);
         }
 

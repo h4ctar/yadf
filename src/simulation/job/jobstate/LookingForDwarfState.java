@@ -36,7 +36,7 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
 
     @Override
     public void start() {
-        dwarf = getJob().getPlayer().getComponent(ICharacterManager.class).getIdleDwarf(requiredLabor);
+        dwarf = getJob().getPlayer().getComponent(ICharacterManager.class).getIdleCharacter(requiredLabor);
         if (dwarf == null) {
             getJob().getPlayer().getComponent(ICharacterManager.class).addListener(this);
         } else {

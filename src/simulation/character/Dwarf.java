@@ -46,7 +46,7 @@ import simulation.map.MapIndex;
 /**
  * The Class Dwarf.
  */
-public class Dwarf extends GameCharacter {
+public class Dwarf extends AbstractCharacter {
 
     /**
      * Instantiates a new dwarf.

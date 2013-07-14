@@ -50,9 +50,9 @@ import simulation.job.IJob;
 import simulation.map.MapIndex;
 
 /**
- * The Class GameCharacter.
+ * An abstract character to implement boring stuff.
  */
-class GameCharacter extends AbstractEntity implements IGameCharacter {
+class AbstractCharacter extends AbstractEntity implements IGameCharacter {
 
     /** All the components. */
     private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new ConcurrentHashMap<>();
@@ -85,7 +85,7 @@ class GameCharacter extends AbstractEntity implements IGameCharacter {
      * @param regionTmp the region that the character is currently in
      * @param playerTmp the player that this dwarf belongs to
      */
-    public GameCharacter(final String nameTmp, final MapIndex position, final IRegion regionTmp,
+    public AbstractCharacter(final String nameTmp, final MapIndex position, final IRegion regionTmp,
             final IPlayer playerTmp) {
         super(position);
         Logger.getInstance().log(this, "Character created");

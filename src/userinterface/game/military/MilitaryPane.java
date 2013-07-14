@@ -115,7 +115,7 @@ public class MilitaryPane extends JPanel {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-            IGameCharacter[] dwarfs = player.getComponent(ICharacterManager.class).getDwarfs()
+            IGameCharacter[] dwarfs = player.getComponent(ICharacterManager.class).getCharacters()
                     .toArray(new IGameCharacter[0]);
             IGameCharacter dwarf = (IGameCharacter) JOptionPane.showInputDialog(gamePanel.getWorldPanel(), "Dwarf",
                     "Enlist dwarf", JOptionPane.QUESTION_MESSAGE, null, dwarfs, dwarfs[0]);

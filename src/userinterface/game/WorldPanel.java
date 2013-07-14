@@ -53,12 +53,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import logger.Logger;
+import simulation.HumanPlayer;
 import simulation.IGameObject;
 import simulation.IGameObjectManagerListener;
 import simulation.IPlayer;
 import simulation.Region;
 import simulation.Tree;
 import simulation.character.Dwarf;
+import simulation.character.Goblin;
 import simulation.character.ICharacterManager;
 import simulation.farm.Farm;
 import simulation.farm.IFarmManager;
@@ -79,6 +81,7 @@ import simulation.workshop.IWorkshopManager;
 import simulation.workshop.Workshop;
 import userinterface.game.graphicobject.DwarfGraphicObject;
 import userinterface.game.graphicobject.FarmGraphicObject;
+import userinterface.game.graphicobject.GoblinGraphicObject;
 import userinterface.game.graphicobject.IGraphicObject;
 import userinterface.game.graphicobject.ItemGraphicObject;
 import userinterface.game.graphicobject.RoomGraphicObject;
@@ -180,14 +183,17 @@ public class WorldPanel extends JPanel implements ComponentListener, IMapListene
         graphicObjectClasses.put(Room.class, RoomGraphicObject.class);
         graphicObjectClasses.put(Workshop.class, WorkshopGraphicObject.class);
         graphicObjectClasses.put(Dwarf.class, DwarfGraphicObject.class);
+        graphicObjectClasses.put(Goblin.class, GoblinGraphicObject.class);
 
         region.getMap().addListener(this);
         region.getTreeManager().addGameObjectManagerListener(this);
         for (IPlayer player2 : region.getPlayers()) {
-            player2.getComponent(IStockManager.class).addGameObjectManagerListener(this);
-            player2.getComponent(IFarmManager.class).addGameObjectManagerListener(this);
-            player2.getComponent(IRoomManager.class).addGameObjectManagerListener(this);
-            player2.getComponent(IWorkshopManager.class).addGameObjectManagerListener(this);
+            if (player2 instanceof HumanPlayer) {
+                player2.getComponent(IStockManager.class).addGameObjectManagerListener(this);
+                player2.getComponent(IFarmManager.class).addGameObjectManagerListener(this);
+                player2.getComponent(IRoomManager.class).addGameObjectManagerListener(this);
+                player2.getComponent(IWorkshopManager.class).addGameObjectManagerListener(this);
+            }
             player2.getComponent(ICharacterManager.class).addGameObjectManagerListener(this);
         }
     }

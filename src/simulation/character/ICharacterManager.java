@@ -3,7 +3,6 @@ package simulation.character;
 import java.util.Set;
 
 import simulation.IPlayerComponent;
-import simulation.IRegion;
 import simulation.farm.IGameObjectManager;
 import simulation.labor.LaborType;
 import simulation.map.MapIndex;
@@ -14,61 +13,54 @@ import simulation.map.MapIndex;
 public interface ICharacterManager extends IGameObjectManager, IPlayerComponent {
 
     /**
-     * Adds a new dwarf.
-     * @param position the position of the new dwarf
-     * @param region the region the dwarf is in
+     * Get a character with a specific ID.
+     * @param id the characters ID
+     * @return the character
      */
-    void addNewDwarf(MapIndex position, IRegion region);
+    IGameCharacter getCharacter(int id);
 
     /**
-     * Get a dwarf with a specific ID.
-     * @param id the dwarfs ID
-     * @return the dwarf
+     * Gets an idle character.
+     * @param requiredLabor the labor that the character needs to have, null if don't care
+     * @return the character
      */
-    IGameCharacter getDwarf(int id);
+    IGameCharacter getIdleCharacter(LaborType requiredLabor);
 
     /**
-     * Gets an idle dwarf.
-     * @param requiredLabor the labor that the dwarf needs to have, null if don't care
-     * @return the dwarf
-     */
-    IGameCharacter getIdleDwarf(LaborType requiredLabor);
-
-    /**
-     * Gets a dwarf at a specific map index.
+     * Gets a character at a specific map index.
      * @param mapIndex the map index
-     * @return the dwarf
+     * @return the character
      */
-    IGameCharacter getDwarf(MapIndex mapIndex);
+    IGameCharacter getCharacter(MapIndex mapIndex);
 
     /**
-     * Gets a dwarf within a radius of a position.
+     * Gets a character within a radius of a position.
      * @param position the position
      * @param radius the radius
-     * @return the found dwarf, null if no dwarf within radius
+     * @return the found character, null if no character within radius
      */
-    IGameCharacter getDwarf(MapIndex position, int radius);
+    IGameCharacter getCharacter(MapIndex position, int radius);
 
     /**
-     * Gets all the dwarfs.
-     * @return the dwarfs
+     * Gets all the characters.
+     * @return the characters
      */
-    Set<IGameCharacter> getDwarfs();
+    Set<IGameCharacter> getCharacters();
 
     /**
-     * Add a listener that will be notified when a dwarf becomes free.
+     * Add a listener that will be notified when a character becomes free.
      * @param listener the listener to add
      */
     void addListener(ICharacterAvailableListener listener);
 
     /**
-     * Remove a listener from the dwarf manager that was being notified of when a dwarf became free.
+     * Remove a listener from the character manager that was being notified of when a character became free.
      * @param listener the listener to remove
      */
     void removeListener(ICharacterAvailableListener listener);
 
     /**
-     * Update all the dwarfs.
+     * Update all the characters.
      */
     void update();
 }

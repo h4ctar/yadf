@@ -34,20 +34,16 @@ package simulation;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import logger.Logger;
-import simulation.farm.Farm;
-import simulation.farm.IFarmManager;
-import simulation.item.IStockManager;
-import simulation.item.Stockpile;
+import misc.MyRandom;
 import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.map.RegionMap;
 import simulation.tree.ITreeManager;
 import simulation.tree.TreeManager;
-import simulation.workshop.IWorkshop;
-import simulation.workshop.IWorkshopManager;
 
 /**
  * Region Contains all the data for a region, including the map, players and trees.
@@ -86,7 +82,7 @@ public class Region implements IRegion {
      * Adds the player.
      * @param player the player
      */
-    public void addPlayer(final HumanPlayer player) {
+    public void addPlayer(final IPlayer player) {
         Logger.getInstance().log(this, "Adding player " + player.getName());
         players.add(player);
     }
@@ -95,23 +91,8 @@ public class Region implements IRegion {
     @Override
     public boolean checkAreaValid(final MapArea area) {
         for (IPlayer player : players) {
-            // Check if overlap with stockpile
-            for (Stockpile stockpile : player.getComponent(IStockManager.class).getStockpiles()) {
-                if (area.operlapsArea(stockpile.getArea())) {
-                    return false;
-                }
-            }
-            // Check that the area is free from workshops
-            for (IWorkshop workshop : player.getComponent(IWorkshopManager.class).getWorkshops()) {
-                if (area.operlapsArea(workshop.getArea())) {
-                    return false;
-                }
-            }
-            // Check that the area is free from farms
-            for (Farm farm : player.getComponent(IFarmManager.class).getFarms()) {
-                if (area.operlapsArea(farm.getArea())) {
-                    return false;
-                }
+            if (!player.checkAreaValid(area)) {
+                return false;
             }
         }
         if (!treeManager.getTrees(area).isEmpty()) {
@@ -135,23 +116,8 @@ public class Region implements IRegion {
     @Override
     public boolean checkIndexValid(final MapIndex mapIndex) {
         for (IPlayer player : players) {
-            // Check if overlap with stockpile
-            for (Stockpile stockpile : player.getComponent(IStockManager.class).getStockpiles()) {
-                if (stockpile.getArea().containesIndex(mapIndex)) {
-                    return false;
-                }
-            }
-            // Check that the area is free from workshops
-            for (IWorkshop workshop : player.getComponent(IWorkshopManager.class).getWorkshops()) {
-                if (workshop.getArea().containesIndex(mapIndex)) {
-                    return false;
-                }
-            }
-            // Check that the area is free from farms
-            for (Farm farm : player.getComponent(IFarmManager.class).getFarms()) {
-                if (farm.getArea().containesIndex(mapIndex)) {
-                    return false;
-                }
+            if (!player.checkAreaValid(mapIndex)) {
+                return false;
             }
         }
         if (treeManager.getTree(mapIndex) != null) {
@@ -247,5 +213,15 @@ public class Region implements IRegion {
         if (timeListeners.containsKey(notifyTime)) {
             timeListeners.get(notifyTime).remove(listener);
         }
+    }
+
+    @Override
+    public MapIndex getRandomSurfacePosition() {
+        Random random = MyRandom.getInstance();
+        MapIndex position = new MapIndex();
+        position.x = random.nextInt(map.getMapSize().x);
+        position.y = random.nextInt(map.getMapSize().y);
+        position.z = map.getHeight(position.x, position.y);
+        return position;
     }
 }

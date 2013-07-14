@@ -32,43 +32,39 @@
 package simulation;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 import logger.Logger;
 import misc.MyRandom;
 import simulation.character.DwarfManager;
 import simulation.character.ICharacterManager;
+import simulation.farm.Farm;
 import simulation.farm.FarmManager;
 import simulation.farm.IFarmManager;
 import simulation.item.IStockManager;
 import simulation.item.Item;
 import simulation.item.ItemTypeManager;
 import simulation.item.StockManager;
+import simulation.item.Stockpile;
 import simulation.job.IJobManager;
 import simulation.job.JobManager;
+import simulation.map.MapArea;
 import simulation.map.MapIndex;
 import simulation.military.IMilitaryManager;
 import simulation.military.MilitaryManager;
 import simulation.room.IRoomManager;
 import simulation.room.RoomManager;
+import simulation.workshop.IWorkshop;
 import simulation.workshop.IWorkshopManager;
 import simulation.workshop.WorkshopManager;
 
 /**
  * The human player.
  */
-public class HumanPlayer extends AbstractGameObject implements IPlayer {
-
-    /** All the components. */
-    private final Map<Class<? extends IPlayerComponent>, IPlayerComponent> components = new ConcurrentHashMap<>();
+public class HumanPlayer extends AbstractPlayer {
 
     /** The size of the embark area. */
     private static final int EMBARK_SIZE = 10;
-
-    /** The name of the player. */
-    private final String name;
 
     /** The job manager. */
     private final JobManager jobManager = new JobManager();
@@ -91,15 +87,18 @@ public class HumanPlayer extends AbstractGameObject implements IPlayer {
     /** The military manager. */
     private final MilitaryManager militaryManager = new MilitaryManager();
 
-    /** The region that this player is in. */
+    /** The region that this player is currently in. */
     private IRegion region;
 
     /**
      * Constructor.
+     * @param regionTmp the region that this player is in
      * @param playerName the players name
+     * @param regionTmp
      */
-    public HumanPlayer(final String playerName) {
-        name = playerName;
+    public HumanPlayer(final String playerName, final Region regionTmp) {
+        super(playerName);
+        region = regionTmp;
         setComponent(IJobManager.class, jobManager);
         setComponent(IStockManager.class, stockManager);
         setComponent(ICharacterManager.class, dwarfManager);
@@ -111,51 +110,14 @@ public class HumanPlayer extends AbstractGameObject implements IPlayer {
 
     /**
      * Setup.
-     * @param regionTmp the region that this player is in
      * @param embarkPosition the embark position
      * @param numberOfStartingDwarfs the number of starting dwarfs
      */
-    public void setup(final IRegion regionTmp, final MapIndex embarkPosition, final int numberOfStartingDwarfs) {
+    public void setup(final MapIndex embarkPosition, final int numberOfStartingDwarfs) {
         Logger.getInstance().log(this, "Setting up");
-        region = regionTmp;
         jobManager.addDesignations(region, this);
         addEmbarkResources(embarkPosition);
         addEmbarkDwarfs(embarkPosition, numberOfStartingDwarfs);
-    }
-
-    /**
-     * Gets the name of the player.
-     * @return the name of the player
-     */
-    public String getName() {
-        return name;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends IPlayerComponent> T getComponent(final Class<T> componentInterface) {
-        return (T) components.get(componentInterface);
-    }
-
-    @Override
-    public <T extends IPlayerComponent> void setComponent(final Class<T> componentInterface, final T component) {
-        Logger.getInstance().log(
-                this,
-                "Set component: " + componentInterface.getSimpleName() + " = "
-                        + component.getClass().getSimpleName());
-        components.put(componentInterface, component);
-    }
-
-    @Override
-    public <T extends IPlayerComponent> void removeComponent(final Class<T> componentInterface) {
-        components.remove(componentInterface);
-    }
-
-    @Override
-    public void update() {
-        for (IPlayerComponent component : components.values()) {
-            component.update();
-        }
     }
 
     /**
@@ -189,5 +151,51 @@ public class HumanPlayer extends AbstractGameObject implements IPlayer {
             item.setPosition(position);
             stockManager.addItem(item);
         }
+    }
+
+    @Override
+    public boolean checkAreaValid(final MapArea area) {
+        // Check if overlap with stockpile
+        for (Stockpile stockpile : getComponent(IStockManager.class).getStockpiles()) {
+            if (area.operlapsArea(stockpile.getArea())) {
+                return false;
+            }
+        }
+        // Check that the area is free from workshops
+        for (IWorkshop workshop : getComponent(IWorkshopManager.class).getWorkshops()) {
+            if (area.operlapsArea(workshop.getArea())) {
+                return false;
+            }
+        }
+        // Check that the area is free from farms
+        for (Farm farm : getComponent(IFarmManager.class).getFarms()) {
+            if (area.operlapsArea(farm.getArea())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkAreaValid(final MapIndex mapIndex) {
+        // Check if overlap with stockpile
+        for (Stockpile stockpile : getComponent(IStockManager.class).getStockpiles()) {
+            if (stockpile.getArea().containesIndex(mapIndex)) {
+                return false;
+            }
+        }
+        // Check that the area is free from workshops
+        for (IWorkshop workshop : getComponent(IWorkshopManager.class).getWorkshops()) {
+            if (workshop.getArea().containesIndex(mapIndex)) {
+                return false;
+            }
+        }
+        // Check that the area is free from farms
+        for (Farm farm : getComponent(IFarmManager.class).getFarms()) {
+            if (farm.getArea().containesIndex(mapIndex)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -69,7 +69,7 @@ class LaborTableModel extends AbstractTableModel implements IGameObjectManagerLi
         player = playerTmp;
         controller = controllerTmp;
         player.getComponent(ICharacterManager.class).addGameObjectManagerListener(this);
-        for (IGameCharacter dwarf : player.getComponent(ICharacterManager.class).getDwarfs()) {
+        for (IGameCharacter dwarf : player.getComponent(ICharacterManager.class).getCharacters()) {
             dwarf.getComponent(ISkillComponent.class).addListener(this);
         }
         // TODO: remove dwarf manager listener
@@ -109,12 +109,12 @@ class LaborTableModel extends AbstractTableModel implements IGameObjectManagerLi
         if (player == null) {
             return 0;
         }
-        return player.getComponent(ICharacterManager.class).getDwarfs().size();
+        return player.getComponent(ICharacterManager.class).getCharacters().size();
     }
 
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
-        Dwarf dwarf = player.getComponent(ICharacterManager.class).getDwarfs().toArray(new Dwarf[0])[rowIndex];
+        Dwarf dwarf = player.getComponent(ICharacterManager.class).getCharacters().toArray(new Dwarf[0])[rowIndex];
 
         if (columnIndex == 0) {
             LaborType profession = dwarf.getComponent(ISkillComponent.class).getProfession();
@@ -144,7 +144,7 @@ class LaborTableModel extends AbstractTableModel implements IGameObjectManagerLi
     @Override
     public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
         if (columnIndex != 0) {
-            Dwarf dwarf = player.getComponent(ICharacterManager.class).getDwarfs().toArray(new Dwarf[0])[rowIndex];
+            Dwarf dwarf = player.getComponent(ICharacterManager.class).getCharacters().toArray(new Dwarf[0])[rowIndex];
             LaborType laborType = (LaborType) LaborTypeManager.getInstance().getLaborTypes().toArray()[columnIndex - 1];
             boolean enabled = ((Boolean) aValue).booleanValue();
             controller.addCommand(new EnableLaborCommand(player, dwarf.getId(), laborType.name, enabled));
@@ -173,6 +173,6 @@ class LaborTableModel extends AbstractTableModel implements IGameObjectManagerLi
      * @return the dwarf
      */
     public IGameCharacter getDwarf(final int row) {
-        return player.getComponent(ICharacterManager.class).getDwarfs().toArray(new Dwarf[0])[row];
+        return player.getComponent(ICharacterManager.class).getCharacters().toArray(new Dwarf[0])[row];
     }
 }
