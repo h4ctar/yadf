@@ -69,6 +69,7 @@ public final class ItemTypeManager {
     /** The embark items. */
     private List<Item> embarkItems = new ArrayList<>();
 
+    /** The item categories. */
     private List<String> itemCategories = new ArrayList<>();
 
     /**

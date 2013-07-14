@@ -220,6 +220,13 @@ class StockpileTreeTableModel extends AbstractTreeTableModel implements IGameObj
     @Override
     public void gameObjectRemoved(final IGameObject gameObject, final int index) {
         assert gameObject instanceof Item;
-        // TODO Auto-generated method stub
+        Item item = (Item) gameObject;
+        int categoryIndex = ItemTypeManager.getInstance().getCategories().indexOf(item.getType().category);
+        int itemTypeIndex = ItemTypeManager.getInstance().getItemTypesFromCategory(item.getType().category)
+                .indexOf(item.getType());
+        TreeNode categoryNode = root.getChildAt(categoryIndex);
+        TreeNode itemTypeNode = categoryNode.getChildAt(itemTypeIndex);
+        TreePath parentPath = new TreePath(new Object[] { root, categoryNode });
+        modelSupport.fireChildChanged(parentPath, itemTypeIndex, itemTypeNode);
     }
 }
