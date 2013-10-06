@@ -29,52 +29,28 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
-
-import java.util.Properties;
+package yadf.userinterface.swing.multiplayer;
 
 /**
- * The Class Settings.
+ * The Enum LobbyMessageType.
  */
-public final class Settings {
+public enum LobbyMessageType {
 
-    /** The instance. */
-    private static Settings instance;
+    /** The my name is. */
+    MY_NAME_IS,
 
-    /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
-     */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
+    /** The all player names. */
+    ALL_PLAYER_NAMES,
 
-        return instance;
-    }
+    /** The this is your index. */
+    THIS_IS_YOUR_INDEX,
 
-    /** The properties. */
-    private final Properties properties;
+    /** The chat. */
+    CHAT,
 
-    /**
-     * Instantiates a new settings.
-     */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
+    /** The disconnect. */
+    DISCONNECT,
 
-    /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
-     */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
-    }
+    /** The start game. */
+    START_GAME
 }

@@ -29,52 +29,47 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.multiplayer.server;
 
-import java.util.Properties;
+import java.net.Socket;
+
+import yadf.userinterface.swing.multiplayer.ILobby;
 
 /**
- * The Class Settings.
+ * The lobby server.
  */
-public final class Settings {
-
-    /** The instance. */
-    private static Settings instance;
+public interface ILobbyServer extends ILobby {
 
     /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
+     * Adds the new client.
+     * 
+     * @param socket the socket
      */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
+    void addNewClient(Socket socket);
 
     /**
-     * Instantiates a new settings.
+     * Disconnect.
      */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
+    void disconnect();
 
     /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
+     * Receive chat.
+     * 
+     * @param playerName the player name
+     * @param text the text
      */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
-    }
+    void receiveChat(String playerName, String text);
+
+    /**
+     * Receive start game.
+     */
+    void receiveStartGame();
+
+    /**
+     * Sets the player name.
+     * 
+     * @param playerIndex the player index
+     * @param playerName the player name
+     */
+    void setPlayerName(int playerIndex, String playerName);
 }

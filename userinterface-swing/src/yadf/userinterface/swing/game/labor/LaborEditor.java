@@ -29,52 +29,51 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.game.labor;
 
-import java.util.Properties;
+import java.awt.Component;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+import javax.swing.AbstractCellEditor;
+import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
 
 /**
- * The Class Settings.
+ * The Class LaborEditor.
  */
-public final class Settings {
+class LaborEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
 
-    /** The instance. */
-    private static Settings instance;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1762119570759441760L;
 
-    /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
-     */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
+    /** The renderer. */
+    private final LaborRenderer renderer = new LaborRenderer();
 
     /**
-     * Instantiates a new settings.
+     * Instantiates a new labor editor.
      */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+    public LaborEditor() {
+        renderer.addItemListener(this);
     }
 
-    /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
-     */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+    @Override
+    public Object getCellEditorValue() {
+        return new Boolean(renderer.isSelected());
     }
+
+    @Override
+    public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
+            final int row, final int column) {
+        LaborNode v = (LaborNode) value;
+        renderer.setSelected(v.enabled.booleanValue());
+        renderer.setText(v.skill.toString());
+        return renderer;
+    }
+
+    @Override
+    public void itemStateChanged(final ItemEvent e) {
+        this.fireEditingStopped();
+    }
+
 }

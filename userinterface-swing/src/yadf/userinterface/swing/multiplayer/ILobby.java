@@ -29,52 +29,42 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
-
-import java.util.Properties;
+package yadf.userinterface.swing.multiplayer;
 
 /**
- * The Class Settings.
+ * The Interface ILobby.
  */
-public final class Settings {
-
-    /** The instance. */
-    private static Settings instance;
+public interface ILobby {
 
     /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
+     * Close.
      */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
+    void close();
 
     /**
-     * Instantiates a new settings.
+     * Inits the.
+     * 
+     * @param ip the ip
+     * @param port the port
+     * @return true, if successful
      */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
+    boolean init(String ip, int port);
 
     /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
+     * Send chat.
+     * 
+     * @param playerName the player name
+     * @param text the text
      */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
-    }
+    void sendChat(String playerName, String text);
+
+    /**
+     * Start.
+     */
+    void start();
+
+    /**
+     * Stop.
+     */
+    void stop();
 }

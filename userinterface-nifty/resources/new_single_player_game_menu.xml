@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+    <useStyles filename="nifty-default-styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    <screen id="new-single-player-game-menu" controller="yadf.userinterface.nifty.mainmenu.NewSinglePlayerGameMenu">
+        <layer id="layer" childLayout="vertical">
+            <panel id="top-panel" height="25%" align="center" childLayout="center">
+                <text text="Single Player Game" font="verdana-small-regular.fnt" />
+            </panel>
+            <panel id="centre-panel" height="50%" align="center" childLayout="center" visibleToMouse="true" width="200">
+                <panel id="button-panel" childLayout="vertical">
+                    <text text="Name:" font="verdana-small-regular.fnt" />
+                    <control id="name-input" name="textfield" maxLength="20" />
+                    <text text="Region Size:" font="verdana-small-regular.fnt" />
+                    <control id="region-size-input" name="textfield" maxLength="20" />
+                    <text text="Starting Resources:" font="verdana-small-regular.fnt" />
+                    <control id="starting-resources-input" name="dropDown" />
+                    <control id="start-game-button" name="button" label="Start Game" width="100%">
+                        <interact onClick="startGame()" />
+                    </control>
+                    <control id="back-button" name="button" label="Back" width="100%">
+                        <interact onClick="back()" />
+                    </control>
+                </panel>
+            </panel>
+            <panel id="bottom-panel" height="25%" />
+        </layer>
+    </screen>
+</nifty>

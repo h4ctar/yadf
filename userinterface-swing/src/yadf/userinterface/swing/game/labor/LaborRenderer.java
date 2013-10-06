@@ -29,52 +29,50 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.game.labor;
 
-import java.util.Properties;
+import java.awt.Color;
+import java.awt.Component;
+
+import javax.swing.JCheckBox;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
 
 /**
- * The Class Settings.
+ * The Class LaborRenderer.
  */
-public final class Settings {
+class LaborRenderer extends JCheckBox implements TableCellRenderer {
 
-    /** The instance. */
-    private static Settings instance;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -2029038227766583757L;
+
+    /** The Constant hilite. */
+    private static final Color HILIGHT_COLOUR = new Color(0xE8E8E8);
 
     /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
+     * Instantiates a new labor renderer.
      */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
+    public LaborRenderer() {
+        this.setOpaque(true);
     }
 
-    /** The properties. */
-    private final Properties properties;
-
-    /**
-     * Instantiates a new settings.
-     */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
+    @Override
+    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+            final boolean hasFocus, final int row, final int col) {
+        if (value == null) {
+            return null;
         }
-    }
 
-    /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
-     */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+        LaborNode v = (LaborNode) value;
+        this.setSelected(v.enabled.booleanValue());
+        this.setText(v.skill.toString());
+
+        if (isSelected) {
+            this.setBackground(HILIGHT_COLOUR);
+        } else {
+            this.setBackground(Color.white);
+        }
+
+        return this;
     }
 }

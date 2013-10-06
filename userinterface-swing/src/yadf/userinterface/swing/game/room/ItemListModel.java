@@ -29,52 +29,61 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.game.room;
 
-import java.util.Properties;
+import javax.swing.AbstractListModel;
+
+import yadf.simulation.IGameObject;
+import yadf.simulation.IGameObjectManagerListener;
+import yadf.simulation.item.Item;
+import yadf.simulation.room.Room;
 
 /**
- * The Class Settings.
+ * The Class ItemListModel.
  */
-public final class Settings {
+class ItemListModel extends AbstractListModel<String> implements IGameObjectManagerListener {
 
-    /** The instance. */
-    private static Settings instance;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -1108175675511497032L;
+
+    /** The room. */
+    private Room room;
 
     /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
+     * Sets the room.
+     * @param roomTmp the new room
      */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
+    public void setRoom(final Room roomTmp) {
+        if (room != null) {
+            room.removeGameObjectManagerListener(this);
         }
-
-        return instance;
+        room = roomTmp;
+        room.addGameObjectManagerListener(this);
     }
 
-    /** The properties. */
-    private final Properties properties;
-
-    /**
-     * Instantiates a new settings.
-     */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+    @Override
+    public String getElementAt(final int index) {
+        return room.getItems().get(index).toString();
     }
 
-    /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
-     */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+    @Override
+    public int getSize() {
+        int size = 0;
+        if (room != null) {
+            size = room.getItems().size();
+        }
+        return size;
+    }
+
+    @Override
+    public void gameObjectAdded(final IGameObject gameObject, final int index) {
+        assert gameObject instanceof Item;
+        fireContentsChanged(this, index, index);
+    }
+
+    @Override
+    public void gameObjectRemoved(final IGameObject gameObject, final int index) {
+        assert gameObject instanceof Item;
+        fireContentsChanged(this, index, index);
     }
 }

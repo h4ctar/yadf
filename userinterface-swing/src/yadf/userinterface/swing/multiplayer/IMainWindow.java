@@ -29,52 +29,72 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.multiplayer;
 
-import java.util.Properties;
+import java.util.List;
+
+import yadf.controller.Connection;
+import yadf.simulation.map.MapIndex;
 
 /**
- * The Class Settings.
+ * Listener to the lobby panel.
  */
-public final class Settings {
-
-    /** The instance. */
-    private static Settings instance;
+public interface IMainWindow {
 
     /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
+     * Load single player game.
      */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
+    void loadSinglePlayerGame();
 
     /**
-     * Instantiates a new settings.
+     * Quit.
      */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
+    void quit();
 
     /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
+     * Setup host multiplayer game.
      */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
-    }
+    void setupHostMultiplayerGame();
+
+    /**
+     * Setup join multiplayer game.
+     */
+    void setupJoinMultiplayerGame();
+
+    /**
+     * Setup main menu.
+     */
+    void setupMainMenu();
+
+    /**
+     * Setup single player game.
+     */
+    void setupSinglePlayerGame();
+
+    /**
+     * Start multiplayer game.
+     * @param connection the connection
+     * @param playerNames the player names
+     * @param playerIndex the player index
+     * @param regionSize the region size
+     */
+    void startMultiplayerGame(Connection connection, List<String> playerNames, int playerIndex, MapIndex regionSize);
+
+    /**
+     * Start server.
+     * @param connections the connections
+     */
+    void startServer(List<Connection> connections);
+
+    /**
+     * Start single player game.
+     * @param playerName the player name
+     * @param regionSize the region size
+     */
+    void startSinglePlayerGame(String playerName, MapIndex regionSize);
+
+    /**
+     * Show the how to play panel.
+     */
+    void showHowToPlay();
 }

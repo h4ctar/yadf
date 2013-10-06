@@ -29,52 +29,56 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.game.stock;
 
-import java.util.Properties;
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
+
+import org.jdesktop.swingx.JXTreeTable;
+
+import yadf.simulation.IPlayer;
+import yadf.simulation.item.IStockManager;
 
 /**
- * The Class Settings.
+ * The Class StocksPane.
  */
-public final class Settings {
+public class StocksPane extends JPanel {
 
-    /** The instance. */
-    private static Settings instance;
+    /** The serial version UID. */
+    private static final long serialVersionUID = 3427702994977889616L;
 
-    /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
-     */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
+    /** The stocks table. */
+    private JXTreeTable stocksTable;
 
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
+    /** The stocks scroll pane. */
+    private final JScrollPane stocksScrollPane;
 
     /**
-     * Instantiates a new settings.
+     * Instantiates a new stocks pane.
      */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+    public StocksPane() {
+        super(new BorderLayout());
+        setOpaque(false);
+
+        stocksScrollPane = new JScrollPane();
+        stocksScrollPane.setBorder(new EmptyBorder(2, 2, 2, 2));
+        stocksScrollPane.setOpaque(false);
+        add(stocksScrollPane, BorderLayout.CENTER);
+
+        stocksTable = new JXTreeTable();
+        stocksTable.setBorder(null);
+        stocksScrollPane.setViewportView(stocksTable);
     }
 
     /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
+     * Setsup the layout.
+     * @param player the new player
      */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+    public void setup(final IPlayer player) {
+        stocksTable = new JXTreeTable(new StockTreeTableModel(player.getComponent(IStockManager.class)));
+        stocksScrollPane.setViewportView(stocksTable);
     }
 }

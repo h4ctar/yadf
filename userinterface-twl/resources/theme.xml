@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<themes>
+    <images file="simple.png" format="RGBA">
+        <area name="-frameA" xywh="0,0,9,9" splitx="L3,R3" splity="T3,B3" />
+        <area name="-frameB" xywh="10,0,9,9" splitx="L3,R3" splity="T3,B3" />
+        <area name="-frameC" xywh="20,0,9,9" splitx="L3,R3" splity="T3,B3" />
+        <area name="-frameD" xywh="30,0,9,9" splitx="L3,R3" splity="T3,B3" />
+        <area name="-frameE" xywh="40,0,9,9" splitx="L3,R3" splity="T3,B3" />
+        <area name="-frameF" xywh="50,0,9,9" splitx="L3,R3" splity="T3,B3" />
+        <area name="-frameG" xywh="60,0,9,9" splitx="L3,R3" splity="T3,B3" />
+        <area name="-frameH" xywh="70,0,9,9" splitx="L3,R3" splity="T3,B3" />
+
+        <select name="button.background">
+            <alias ref="-frameB" if="disabled" tint="#8fff" />
+            <alias ref="-frameE" if="armed" />
+            <alias ref="-frameB" />
+        </select>
+    </images>
+
+    <fontDef name="normal" filename="font.fnt" color="black">
+        <fontParam if="error" color="red" />
+        <fontParam if="disabled" color="gray" />
+        <fontParam if="textSelection" color="blue" />
+    </fontDef>
+
+    <inputMapDef name="-defaultInputMap">
+        <action name="selectAll">ctrl A</action>
+        <action name="cut">ctrl X</action>
+        <action name="copy">ctrl C</action>
+        <action name="paste">ctrl V</action>
+    </inputMapDef>
+
+    <theme name="-defaults">
+        <param name="background">
+            <image>none</image>
+        </param>
+        <param name="overlay">
+            <image>none</image>
+        </param>
+        <param name="font">
+            <font>normal</font>
+        </param>
+        <param name="textAlignment">
+            <enum type="alignment">center</enum>
+        </param>
+        <param name="minWidth">
+            <int>0</int>
+        </param>
+        <param name="minHeight">
+            <int>0</int>
+        </param>
+        <param name="maxWidth">
+            <int>0</int>
+        </param>
+        <param name="maxHeight">
+            <int>0</int>
+        </param>
+        <param name="inputMap">
+            <inputMap>-defaultInputMap</inputMap>
+        </param>
+    </theme>
+
+    <theme name="window" ref="-defaults">
+        <theme name="mainmenuview" ref="-defaults">
+            <theme name="boxlayout" ref="-defaults">
+                <param name="spacing">
+                    <int>5</int>
+                </param>
+                <param name="alignment">
+                    <enum type="alignment">center</enum>
+                </param>
+                <theme name="button" ref="-defaults">
+                    <param name="">
+                        <image>button.*</image>
+                    </param>
+                </theme>
+            </theme>
+        </theme>
+        
+        <theme name="gameview" ref="-defaults">
+        </theme>
+    </theme>
+</themes>

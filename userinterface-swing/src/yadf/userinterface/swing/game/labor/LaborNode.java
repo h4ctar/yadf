@@ -29,52 +29,41 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
-
-import java.util.Properties;
+package yadf.userinterface.swing.game.labor;
 
 /**
- * The Class Settings.
+ * The Class LaborNode.
  */
-public final class Settings {
+public class LaborNode implements Comparable<LaborNode> {
 
-    /** The instance. */
-    private static Settings instance;
+    /** The enabled. */
+    public Boolean enabled;
+
+    /** The skill. */
+    public Integer skill;
 
     /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
+     * Instantiates a new labor node.
+     * @param skillTmp the skill
+     * @param enabledTmp the enabled
      */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
+    public LaborNode(final Integer skillTmp, final Boolean enabledTmp) {
+        skill = skillTmp;
+        enabled = enabledTmp;
     }
 
-    /** The properties. */
-    private final Properties properties;
-
-    /**
-     * Instantiates a new settings.
-     */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+    @Override
+    public int compareTo(final LaborNode o) {
+        return this.skill.compareTo(o.skill);
     }
 
-    /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
-     */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+    @Override
+    public boolean equals(final Object v) {
+        return v instanceof LaborNode && this.skill.equals(((LaborNode) v).skill);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.skill.hashCode();
     }
 }

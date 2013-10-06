@@ -29,52 +29,37 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing;
 
-import java.util.Properties;
+import javax.swing.JApplet;
 
 /**
- * The Class Settings.
+ * The main class, launches the main window.
  */
-public final class Settings {
+public final class Main extends JApplet {
 
-    /** The instance. */
-    private static Settings instance;
-
-    /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
-     */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -4044672929786417464L;
 
     /**
-     * Instantiates a new settings.
+     * The entry for the program.
+     * 
+     * @param args the arguments
      */
-    private Settings() {
-        properties = new Properties();
+    public static void main(final String[] args) {
         try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
+            new MainWindow();
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(-1);
         }
     }
 
-    /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
-     */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+    @Override
+    public void init() {
+        try {
+            new MainWindow();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

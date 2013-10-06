@@ -29,52 +29,14 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
-
-import java.util.Properties;
+package yadf.userinterface.swing.multiplayer;
 
 /**
- * The Class Settings.
+ * The Enum LobbyType.
  */
-public final class Settings {
-
-    /** The instance. */
-    private static Settings instance;
-
-    /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
-     */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
-
-    /**
-     * Instantiates a new settings.
-     */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
-
-    /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
-     */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
-    }
+public enum LobbyType {
+    /** The client. */
+    CLIENT,
+    /** The server. */
+    SERVER
 }

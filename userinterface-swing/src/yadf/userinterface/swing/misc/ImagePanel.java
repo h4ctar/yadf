@@ -29,52 +29,58 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.misc;
 
-import java.util.Properties;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 /**
- * The Class Settings.
+ * A panel that has a nice background texture.
  */
-public final class Settings {
+public class ImagePanel extends JPanel {
 
-    /** The instance. */
-    private static Settings instance;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -5474129575219242704L;
 
-    /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
-     */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
+    /** The image. */
+    private Image image;
 
     /**
-     * Instantiates a new settings.
+     * Instantiates a new image panel.
      */
-    private Settings() {
-        properties = new Properties();
+    public ImagePanel() {
         try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
+            InputStream inputStream = new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(
+                    "background.png"));
+            image = ImageIO.read(inputStream);
+            Dimension size = new Dimension(image.getWidth(null), image.getHeight(null));
+            setPreferredSize(size);
+            setMinimumSize(size);
+            setMaximumSize(size);
+            setSize(size);
+            setLayout(null);
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(-1);
         }
     }
 
-    /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
-     */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+    @Override
+    public void paintComponent(final Graphics g) {
+        int width = getWidth();
+        int height = getHeight();
+        int imageW = image.getWidth(this);
+        int imageH = image.getHeight(this);
+        // Tile the image to fill our area.
+        for (int x = 0; x < width; x += imageW) {
+            for (int y = 0; y < height; y += imageH) {
+                g.drawImage(image, x, y, this);
+            }
+        }
     }
 }

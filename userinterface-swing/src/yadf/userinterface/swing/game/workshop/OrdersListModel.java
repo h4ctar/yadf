@@ -29,52 +29,73 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.game.workshop;
 
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.AbstractListModel;
+
+import yadf.simulation.recipe.Recipe;
+import yadf.simulation.workshop.IWorkshop;
+import yadf.simulation.workshop.IWorkshopListener;
 
 /**
- * The Class Settings.
+ * The Class OrdersListModel.
  */
-public final class Settings {
+class OrdersListModel extends AbstractListModel<String> implements IWorkshopListener {
 
-    /** The instance. */
-    private static Settings instance;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -221041635977890239L;
+
+    /** The workshop. */
+    private IWorkshop workshop;
+
+    /** A cache of all the orders. */
+    private List<String> orders;
 
     /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
+     * Sets the workshop.
+     * @param workshopTmp the new workshop
      */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
+    public void setWorkshop(final IWorkshop workshopTmp) {
+        if (workshop != null) {
+            workshop.removeListener(this);
         }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
-
-    /**
-     * Instantiates a new settings.
-     */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
+        workshop = workshopTmp;
+        workshop.addListener(this);
+        orders = new ArrayList<>();
+        for (Recipe recipe : workshop.getOrders()) {
+            orders.add(recipe.toString());
         }
     }
 
-    /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
-     */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+    @Override
+    public String getElementAt(final int row) {
+        String element = null;
+        if (orders != null) {
+            element = orders.get(row);
+        }
+        return element;
+    }
+
+    @Override
+    public int getSize() {
+        if (workshop == null) {
+            return 0;
+        }
+        return workshop.getOrders().size();
+    }
+
+    @Override
+    public void orderAdded(final Recipe recipe, final int index) {
+        orders.add(index, recipe.toString());
+        fireContentsChanged(this, index, index);
+    }
+
+    @Override
+    public void orderRemoved(final Recipe recipe, final int index) {
+        orders.remove(index);
+        fireContentsChanged(this, index, index);
     }
 }

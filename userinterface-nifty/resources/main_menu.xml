@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+    <useStyles filename="nifty-default-styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    <screen id="main-menu" controller="yadf.userinterface.nifty.mainmenu.MainMenu">
+        <layer id="layer" childLayout="vertical">
+            <panel id="top-panel" height="25%" align="center" childLayout="center">
+                <text text="Ben's Burrows" font="verdana-small-regular.fnt" />
+            </panel>
+            <panel id="centre-panel" height="50%" align="center" childLayout="center" visibleToMouse="true" width="200">
+                <panel id="button-panel" childLayout="vertical">
+                    <control id="new-single-player-game-button" name="button" label="New Single Player Game"
+                        width="100%">
+                        <interact onClick="newSinglePlayerGame()" />
+                    </control>
+                    <control id="load-single-player-game-button" name="button" label="Load Single Player Game"
+                        width="100%">
+                        <interact onClick="loadSinglePlayerGame()" />
+                    </control>
+                    <control id="join-multiplayer-game-button" name="button" label="Join Multiplayer Game"
+                        width="100%">
+                        <interact onClick="joinMultiplayerGame()" />
+                    </control>
+                    <control id="host-multiplayer-game-button" name="button" label="Host Multiplayer Game"
+                        width="100%">
+                        <interact onClick="hostMultiplayerGame()" />
+                    </control>
+                    <control id="quit-button" name="button" label="Quit" width="100%">
+                        <interact onClick="quit()" />
+                    </control>
+                </panel>
+            </panel>
+            <panel id="bottom-panel" height="25%" />
+        </layer>
+    </screen>
+</nifty>

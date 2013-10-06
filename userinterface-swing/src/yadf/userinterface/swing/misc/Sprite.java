@@ -29,52 +29,44 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.misc;
 
-import java.util.Properties;
+import java.awt.Graphics;
+import java.awt.Image;
 
 /**
- * The Class Settings.
+ * The Class Sprite.
  */
-public final class Settings {
+public class Sprite {
 
-    /** The instance. */
-    private static Settings instance;
-
-    /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
-     */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
+    /** The image. */
+    private final Image image;
 
     /**
-     * Instantiates a new settings.
+     * Instantiates a new sprite.
+     * 
+     * @param imageTmp the image
      */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+    public Sprite(final Image imageTmp) {
+        image = imageTmp;
     }
 
     /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
+     * Draw the sprite.
+     * 
+     * @param g the graphics to draw onto
+     * @param x the x position
+     * @param y the y position
      */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+    public void draw(final Graphics g, final int x, final int y) {
+        g.drawImage(image, x, y, null);
+    }
+
+    /**
+     * Get the image.
+     * @return the image
+     */
+    public Image getImage() {
+        return image;
     }
 }

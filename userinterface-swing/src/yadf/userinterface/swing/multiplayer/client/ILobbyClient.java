@@ -29,52 +29,46 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.multiplayer.client;
 
-import java.util.Properties;
+import java.util.List;
+
+import yadf.userinterface.swing.multiplayer.ILobby;
 
 /**
- * The Class Settings.
+ * The lobby client.
  */
-public final class Settings {
-
-    /** The instance. */
-    private static Settings instance;
+public interface ILobbyClient extends ILobby {
 
     /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
+     * Disconnect.
      */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
-
-        return instance;
-    }
-
-    /** The properties. */
-    private final Properties properties;
+    void disconnect();
 
     /**
-     * Instantiates a new settings.
+     * Receive chat.
+     * 
+     * @param playerName the player name
+     * @param text the text
      */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
+    void receiveChat(String playerName, String text);
 
     /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
+     * Sets the player index.
+     * 
+     * @param index the new player index
      */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
-    }
+    void setPlayerIndex(int index);
+
+    /**
+     * Sets the player names.
+     * 
+     * @param playerNames the new player names
+     */
+    void setPlayerNames(List<String> playerNames);
+
+    /**
+     * Start game.
+     */
+    void startGame();
 }

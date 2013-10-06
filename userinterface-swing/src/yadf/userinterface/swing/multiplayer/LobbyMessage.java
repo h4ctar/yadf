@@ -29,52 +29,40 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package yadf.settings;
+package yadf.userinterface.swing.multiplayer;
 
-import java.util.Properties;
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * The Class Settings.
+ * The Class LobbyMessage.
  */
-public final class Settings {
+public class LobbyMessage implements Serializable {
 
-    /** The instance. */
-    private static Settings instance;
+    /** The serial version UID. */
+    private static final long serialVersionUID = -8777477139231963446L;
 
-    /**
-     * Gets the single instance of Settings.
-     * @return single instance of Settings
-     */
-    public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
-        }
+    /** The type. */
+    public LobbyMessageType type;
 
-        return instance;
-    }
+    /** The player name. */
+    public String playerName;
 
-    /** The properties. */
-    private final Properties properties;
+    /** The player index. */
+    public int playerIndex;
 
-    /**
-     * Instantiates a new settings.
-     */
-    private Settings() {
-        properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("yadf.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
+    /** The text. */
+    public String text;
+
+    /** The player names. */
+    public List<String> playerNames;
 
     /**
-     * Gets the setting.
-     * @param settingName the setting name
-     * @return the setting
+     * Instantiates a new lobby message.
+     * 
+     * @param typeTmp the type
      */
-    public String getSetting(final String settingName) {
-        return properties.getProperty(settingName);
+    public LobbyMessage(final LobbyMessageType typeTmp) {
+        type = typeTmp;
     }
 }
