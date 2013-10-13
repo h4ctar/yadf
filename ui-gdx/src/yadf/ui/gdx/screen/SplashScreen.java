@@ -13,14 +13,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
+/**
+ * The splash screen.
+ */
 public class SplashScreen extends AbstractScreen {
 
-    private TextureRegion textureRegion;
-
+    /** The image. */
     private Image splashImage;
 
-    private TextureAtlas textureAtlas;
+    /** The texture atlas. */
+    private TextureAtlas atlas;
 
+    /**
+     * Constructor.
+     * @param screenController the screen controller
+     */
     public SplashScreen(IScreenController screenController) {
         super(screenController);
     }
@@ -29,11 +36,11 @@ public class SplashScreen extends AbstractScreen {
     public void show() {
         super.show();
 
-        textureAtlas = new TextureAtlas(Gdx.files.internal("image-atlases/images.atlas"));
+        atlas = new TextureAtlas(Gdx.files.internal("image-atlases/images.atlas"));
 
-        textureRegion = textureAtlas.findRegion("splash/splash");
+        TextureRegion splashRegion = atlas.findRegion("splash/splash");
 
-        splashImage = new Image(textureRegion);
+        splashImage = new Image(splashRegion);
         splashImage.setScaling(Scaling.stretch);
         splashImage.setAlign(Align.bottom | Align.left);
         splashImage.getColor().a = 0f;
@@ -54,11 +61,15 @@ public class SplashScreen extends AbstractScreen {
         super.dispose();
     }
 
+    /**
+     * The action that starts the main menu when the splash screen is finished.
+     */
     private final class StartMainMenuAction extends Action {
 
+        @Override
         public boolean act(float delta) {
             System.out.println("StartMainMenuAction.act");
-            screenController.replaceScreen("main_menu");
+            screenController.replaceScreen(new MainMenuScreen(screenController));
             return true;
         }
     }

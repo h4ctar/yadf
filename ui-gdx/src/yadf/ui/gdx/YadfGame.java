@@ -1,30 +1,25 @@
 package yadf.ui.gdx;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
-import yadf.ui.gdx.screen.GameScreen;
 import yadf.ui.gdx.screen.IScreenController;
-import yadf.ui.gdx.screen.MainMenuScreen;
 import yadf.ui.gdx.screen.SplashScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
+/**
+ * The yadf game class.
+ */
 public class YadfGame extends Game implements IScreenController {
 
-    private Map<String, Screen> screens = new HashMap<>();
-
+    /** The current screen stack. */
     Stack<Screen> currentScreenStack = new Stack<>();
 
     @Override
     public void create() {
-        screens.put("splash", new SplashScreen(this));
-        screens.put("main_menu", new MainMenuScreen(this));
-        screens.put("game", new GameScreen(this));
-        setScreen("splash");
+        addScreen(new SplashScreen(this));
     }
 
     @Override
@@ -53,18 +48,18 @@ public class YadfGame extends Game implements IScreenController {
     }
 
     @Override
-    public void setScreen(String screenName) {
-        System.out.println("setScreen: " + screenName);
-        Screen screen = screens.get(screenName);
+    public void addScreen(Screen screen) {
+        System.out.println("addScreen: " + screen.getClass().getSimpleName());
         currentScreenStack.add(screen);
         setScreen(screen);
     }
 
     @Override
-    public void replaceScreen(String screenName) {
-        System.out.println("replaceScreen: " + screenName);
+    public void replaceScreen(Screen screen) {
+        System.out.println("replaceScreen: " + screen.getClass().getSimpleName());
         currentScreenStack.pop();
-        setScreen(screenName);
+        currentScreenStack.add(screen);
+        setScreen(screen);
     }
 
     @Override
@@ -72,7 +67,8 @@ public class YadfGame extends Game implements IScreenController {
         System.out.println("endScreen");
         currentScreenStack.pop();
         if (!currentScreenStack.isEmpty()) {
-            setScreen(currentScreenStack.peek());
+            Screen screen = currentScreenStack.peek();
+            setScreen(screen);
         } else {
             Gdx.app.exit();
         }

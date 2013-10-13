@@ -69,22 +69,7 @@ public enum BlockType {
     WALL(false, true, false, false, null, 0),
 
     /** The mine grass. */
-    MINE_GRASS(true, true, false, false, null, GRASS.sprite),
-
-    /** The mine dirt. */
-    MINE_DIRT(true, true, false, false, null, DIRT.sprite),
-
-    /** The mine rock. */
-    MINE_ROCK(true, true, false, false, null, ROCK.sprite),
-
-    /** The mine gold. */
-    MINE_GOLD(true, true, false, false, null, GOLD.sprite),
-
-    /** The mine iron. */
-    MINE_IRON(true, true, false, false, null, IRON.sprite),
-
-    /** The mine coal. */
-    MINE_COAL(true, true, false, false, null, COAL.sprite);
+    MINE(true, true, false, false, null, GRASS.sprite);
 
     /** The is stand in. */
     public final boolean isStandIn;

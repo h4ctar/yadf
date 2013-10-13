@@ -3,64 +3,104 @@ images.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-game/dirt
+block/coal
   rotate: false
   xy: 0, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+block/covered
+  rotate: false
+  xy: 18, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+block/dirt
+  rotate: false
+  xy: 36, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+block/empty
+  rotate: false
+  xy: 54, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+block/gold
+  rotate: false
+  xy: 72, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+block/grass
+  rotate: false
+  xy: 90, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+block/iron
+  rotate: false
+  xy: 108, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+block/mine
+  rotate: false
+  xy: 198, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-game/farm_tilled
+block/ramp
   rotate: false
-  xy: 16, 0
-  size: 16, 16
-  orig: 16, 16
+  xy: 126, 0
+  size: 18, 18
+  orig: 18, 18
   offset: 0, 0
   index: -1
-game/grass
+block/rock
   rotate: false
-  xy: 32, 0
-  size: 16, 16
-  orig: 16, 16
+  xy: 144, 0
+  size: 18, 18
+  orig: 18, 18
   offset: 0, 0
   index: -1
-game/ore_coal
+block/stair
   rotate: false
-  xy: 48, 0
-  size: 16, 16
-  orig: 16, 16
+  xy: 162, 0
+  size: 18, 18
+  orig: 18, 18
   offset: 0, 0
   index: -1
-game/ore_diamond
+block/wall
   rotate: false
-  xy: 64, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-game/ore_gold
-  rotate: false
-  xy: 80, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-game/ore_iron
-  rotate: false
-  xy: 96, 0
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-game/stone
-  rotate: false
-  xy: 112, 0
-  size: 16, 16
-  orig: 16, 16
+  xy: 180, 0
+  size: 18, 18
+  orig: 18, 18
   offset: 0, 0
   index: -1
 
 images2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+characters/dwarf
+  rotate: false
+  xy: 0, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+
+images3.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none

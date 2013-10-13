@@ -1,5 +1,7 @@
 package yadf.ui.gdx.screen;
 
+import yadf.ui.gdx.screen.game.GameScreen;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -7,8 +9,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/**
+ * The main menu screen.
+ */
 public class MainMenuScreen extends AbstractScreen {
 
+    /**
+     * Constructor.
+     * @param screenController the screen controller.
+     */
     public MainMenuScreen(IScreenController screenController) {
         super(screenController);
     }
@@ -46,15 +55,21 @@ public class MainMenuScreen extends AbstractScreen {
         table.add(quitButton).width(300);
     }
 
+    /**
+     * The listener for the new single player game button.
+     */
     private final class NewSinglePlayerGameButtonListener extends ClickListener {
 
         @Override
         public void clicked(InputEvent event, float x, float y) {
             super.clicked(event, x, y);
-            screenController.setScreen("game");
+            screenController.replaceScreen(new GameScreen(screenController));
         }
     }
 
+    /**
+     * The listener for the load single player game button.
+     */
     private final class LoadSinglePlayerGameButtonListener extends ClickListener {
 
         @Override
@@ -63,6 +78,9 @@ public class MainMenuScreen extends AbstractScreen {
         }
     }
 
+    /**
+     * The listener for the host multiplayer game button.
+     */
     private final class HostMultiplayerGameButtonListener extends ClickListener {
 
         @Override
@@ -71,6 +89,9 @@ public class MainMenuScreen extends AbstractScreen {
         }
     }
 
+    /**
+     * The listener for the join multiplayer game button.
+     */
     private final class JoinMultiplayerGameButtonListener extends ClickListener {
 
         @Override
@@ -79,6 +100,9 @@ public class MainMenuScreen extends AbstractScreen {
         }
     }
 
+    /**
+     * The listener for the quit button.
+     */
     private final class QuitButtonListener extends ClickListener {
 
         @Override

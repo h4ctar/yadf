@@ -166,9 +166,10 @@ public class RegionMap {
             // it empty
             if (getBlock(index.add(0, 0, -1)).isSolid
                     && (!getBlock(index.add(-1, -1, 0)).isStandIn || !getBlock(index.add(0, -1, 0)).isStandIn
-                            || !getBlock(index.add(1, -1, 0)).isStandIn || !getBlock(index.add(-1, 1, 0)).isStandIn
-                            || !getBlock(index.add(0, 1, 0)).isStandIn || !getBlock(index.add(1, 1, 0)).isStandIn
-                            || !getBlock(index.add(-1, 0, 0)).isStandIn || !getBlock(index.add(1, 0, 0)).isStandIn)) {
+                            || !getBlock(index.add(1, -1, 0)).isStandIn
+                            || !getBlock(index.add(-1, 1, 0)).isStandIn || !getBlock(index.add(0, 1, 0)).isStandIn
+                            || !getBlock(index.add(1, 1, 0)).isStandIn || !getBlock(index.add(-1, 0, 0)).isStandIn || !getBlock(index
+                                .add(1, 0, 0)).isStandIn)) {
                 setBlock(index, BlockType.RAMP);
             } else {
                 setBlock(index, BlockType.EMPTY);
@@ -371,8 +372,7 @@ public class RegionMap {
      * @param index the index
      */
     public void mineBlock(final MapIndex index) {
-        BlockType blockType = blockTypes[index.x][index.y][index.z];
-        setBlock(index, BlockType.valueOf("MINE_" + blockType));
+        setBlock(index, BlockType.MINE);
         removeRampsAroundBlock(index);
     }
 

@@ -3,6 +3,7 @@ package yadf.simulation.character;
 /**
  * Interface for a listener of a character.
  */
+// TODO: delete this class
 public interface ICharacterListener {
 
     /**
