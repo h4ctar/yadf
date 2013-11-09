@@ -80,12 +80,14 @@ public abstract class AbstractDesignation extends AbstractGameObject implements 
      * @param area an area to add to the designation
      */
     public void addToDesignation(final MapArea area) {
+        System.out.println(area);
         for (int x = area.pos.x; x < area.pos.x + area.width; x++) {
             for (int y = area.pos.y; y < area.pos.y + area.height; y++) {
                 MapIndex mapIndex = new MapIndex(x, y, area.pos.z);
                 if (!valid(mapIndex)) {
                     continue;
                 }
+                System.out.println(mapIndex);
                 boolean alreadyAdded = false;
                 for (MapIndex existingMapIndex : mapIndicies) {
                     if (existingMapIndex.equals(mapIndex)) {

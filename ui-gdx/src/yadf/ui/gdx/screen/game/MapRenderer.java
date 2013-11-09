@@ -1,8 +1,9 @@
 package yadf.ui.gdx.screen.game;
 
 import yadf.simulation.map.BlockType;
-import yadf.simulation.map.MapArea;
+import yadf.simulation.map.MapIndex;
 import yadf.simulation.map.RegionMap;
+import yadf.ui.gdx.screen.TileCamera;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -19,30 +20,30 @@ public class MapRenderer {
     private TextureAtlas atlas;
 
     /** The sprite batch. */
-    private SpriteBatch spriteBatch;
+    private SpriteBatch spriteBatch = new SpriteBatch();
 
     /**
      * Constructor.
      * @param mapTmp the map
      * @param atlasTmp the texture atlas
-     * @param spriteBatchTmp the sprite batch
      */
-    public MapRenderer(RegionMap mapTmp, TextureAtlas atlasTmp, SpriteBatch spriteBatchTmp) {
+    public MapRenderer(RegionMap mapTmp, TextureAtlas atlasTmp) {
         map = mapTmp;
         atlas = atlasTmp;
-        spriteBatch = spriteBatchTmp;
     }
 
     /**
      * Render the map.
-     * @param viewArea the area to render
+     * @param camera the area to render
      */
-    public void render(MapArea viewArea) {
-        for (int x = 0; x < viewArea.width; x++) {
-            for (int y = 0; y < viewArea.height; y++) {
-                BlockType block = map.getBlock(viewArea.pos.add(x, y, -1));
-                BlockType blockBelow = map.getBlock(viewArea.pos.add(x, y, -2));
-                BlockType blockAbove = map.getBlock(viewArea.pos.add(x, y, 0));
+    public void draw(TileCamera camera) {
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        for (int x = 0; x < map.getMapSize().x; x++) {
+            for (int y = 0; y < map.getMapSize().y; y++) {
+                BlockType block = map.getBlock(new MapIndex(x, y, (int) (camera.position.z - 1)));
+                BlockType blockBelow = map.getBlock(new MapIndex(x, y, (int) (camera.position.z - 2)));
+                BlockType blockAbove = map.getBlock(new MapIndex(x, y, (int) camera.position.z));
 
                 if (blockBelow != BlockType.RAMP && blockBelow != BlockType.STAIR) {
                     drawBlock(blockBelow, x, y);
@@ -65,6 +66,7 @@ public class MapRenderer {
                 }
             }
         }
+        spriteBatch.end();
     }
 
     /**
@@ -85,6 +87,7 @@ public class MapRenderer {
      * @param y the y position to draw at
      */
     private void drawSprite(String name, int x, int y) {
-        spriteBatch.draw(atlas.findRegion(name), x * GameScreen.SPRITE_SIZE, y * GameScreen.SPRITE_SIZE);
+        spriteBatch.draw(atlas.findRegion(name), x * GameScreen.SPRITE_SIZE, y * GameScreen.SPRITE_SIZE,
+                GameScreen.SPRITE_SIZE, GameScreen.SPRITE_SIZE);
     }
 }

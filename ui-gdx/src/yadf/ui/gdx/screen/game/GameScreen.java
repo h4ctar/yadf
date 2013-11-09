@@ -1,7 +1,6 @@
 package yadf.ui.gdx.screen.game;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Stack;
 
 import yadf.controller.AbstractController;
 import yadf.controller.SinglePlayerController;
@@ -9,25 +8,24 @@ import yadf.misc.MyRandom;
 import yadf.settings.Settings;
 import yadf.simulation.GoblinPlayer;
 import yadf.simulation.HumanPlayer;
-import yadf.simulation.IGameObject;
-import yadf.simulation.IGameObjectManagerListener;
 import yadf.simulation.Region;
 import yadf.simulation.character.ICharacterManager;
-import yadf.simulation.character.IGameCharacter;
-import yadf.simulation.map.MapArea;
+import yadf.simulation.item.IStockManager;
 import yadf.simulation.map.MapIndex;
 import yadf.ui.gdx.screen.AbstractScreen;
 import yadf.ui.gdx.screen.IScreenController;
+import yadf.ui.gdx.screen.TileCamera;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * The game screen.
  */
-public class GameScreen extends AbstractScreen implements IGameObjectManagerListener {
+public class GameScreen extends AbstractScreen implements IControlsController, IInteractorManager {
 
     /** The size of a sprite. */
     public static final int SPRITE_SIZE = 18;
@@ -35,11 +33,8 @@ public class GameScreen extends AbstractScreen implements IGameObjectManagerList
     /** The number of simulation steps to take before sending commands. */
     private static final int SIMULATION_STEPS_SEND_COMMAND = 10;
 
-    /** The sprite batch. */
-    private SpriteBatch spriteBatch;
-
     /** The texture atlas. */
-    private TextureAtlas atlas;
+    private TextureAtlas textureAtlas;
 
     /** The map renderer. */
     private MapRenderer mapRenderer;
@@ -53,13 +48,19 @@ public class GameScreen extends AbstractScreen implements IGameObjectManagerList
     /** The controller. */
     private AbstractController controller;
 
-    /** The currently viewable area. */
-    private MapArea viewArea = new MapArea();
-
     /** How many simulation steps since the controller was updated. */
     private int simulationSteps;
 
-    private Map<IGameObject, Actor> gameObject2ds = new HashMap<>();
+    private TileCamera camera = new TileCamera();
+
+    private CameraInputProcessor cameraInputProcessor;
+
+    /** The stage for the game objects. */
+    private Stage gameStage;
+
+    private Stack<Actor> controlsStack = new Stack<>();
+
+    private IInteractor interactor;
 
     /**
      * Constructor.
@@ -73,12 +74,19 @@ public class GameScreen extends AbstractScreen implements IGameObjectManagerList
     public void show() {
         super.show();
 
-        spriteBatch = new SpriteBatch();
-        atlas = new TextureAtlas(Gdx.files.internal("image-atlases/images.atlas"));
-
+        gameStage = new Stage();
+        textureAtlas = new TextureAtlas(Gdx.files.internal("image-atlases/images.atlas"));
         setupSinglePlayerGame();
 
-        mapRenderer = new MapRenderer(region.getMap(), atlas, spriteBatch);
+        mapRenderer = new MapRenderer(region.getMap(), textureAtlas);
+        cameraInputProcessor = new CameraInputProcessor(camera);
+        inputMultiplexer.addProcessor(cameraInputProcessor);
+        gameStage.setCamera(camera);
+
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+
+        controlsStack.add(new MainControls(skin, this, this, player, camera, controller));
+        uiStage.addActor(controlsStack.peek());
     }
 
     /**
@@ -87,7 +95,7 @@ public class GameScreen extends AbstractScreen implements IGameObjectManagerList
     private void setupSinglePlayerGame() {
         try {
             MyRandom.getInstance().setSeed(2);
-            MapIndex regionSize = new MapIndex(64, 64, 32);
+            MapIndex regionSize = new MapIndex(128, 128, 16);
             String playerName = "Ben";
 
             int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
@@ -96,7 +104,14 @@ public class GameScreen extends AbstractScreen implements IGameObjectManagerList
             region = new Region();
 
             player = new HumanPlayer(playerName, region);
-            player.getComponent(ICharacterManager.class).addGameObjectManagerListener(this);
+
+            // TODO: do this later and make method to get all game objects
+            player.getComponent(ICharacterManager.class).addGameObjectManagerListener(
+                    new GameCharacter2dController(textureAtlas, gameStage));
+            player.getComponent(IStockManager.class).addGameObjectManagerListener(
+                    new Item2dController(textureAtlas, gameStage));
+            region.getTreeManager().addGameObjectManagerListener(new Plant2dController(textureAtlas, gameStage));
+
             region.addPlayer(player);
 
             GoblinPlayer goblinPlayer = new GoblinPlayer(region);
@@ -108,39 +123,24 @@ public class GameScreen extends AbstractScreen implements IGameObjectManagerList
             embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
             player.setup(embarkPosition, numberOfStartingDwarfs);
             goblinPlayer.setup();
-            zoomToPosition(embarkPosition);
+
+            camera.zoomToPosition(embarkPosition);
         } catch (Exception e) {
             e.printStackTrace();
+            Gdx.app.exit();
         }
-    }
-
-    /**
-     * Zoom to a map index.
-     * @param position the position to zoom to
-     */
-    private void zoomToPosition(MapIndex position) {
-        viewArea.pos.x = position.x - viewArea.width / 2;
-        viewArea.pos.y = position.y - viewArea.height / 2;
-        viewArea.pos.z = position.z;
     }
 
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
-        // To keep the view centered on the same location it is moved so the corner is where it use to be centered then
-        // moved back or something, does that make any sense?
-        viewArea.pos.x += viewArea.width / 2;
-        viewArea.pos.y += viewArea.height / 2;
-        viewArea.width = width / SPRITE_SIZE + 1;
-        viewArea.height = height / SPRITE_SIZE + 1;
-        viewArea.pos.x -= viewArea.width / 2;
-        viewArea.pos.y -= viewArea.height / 2;
+        camera.resize(width, height);
     }
 
     @Override
     protected void update(float delta) {
         super.update(delta);
-
+        gameStage.act();
         try {
             if (simulationSteps++ > SIMULATION_STEPS_SEND_COMMAND) {
                 controller.doCommands(region);
@@ -149,28 +149,46 @@ public class GameScreen extends AbstractScreen implements IGameObjectManagerList
             region.update();
         } catch (Exception e) {
             e.printStackTrace();
+            Gdx.app.exit();
         }
     }
 
     @Override
-    protected void drawBackground() {
-        spriteBatch.begin();
-        mapRenderer.render(viewArea);
-        spriteBatch.end();
+    protected void draw() {
+        mapRenderer.draw(camera);
+        gameStage.draw();
     }
 
     @Override
-    public void gameObjectAdded(IGameObject gameObject, int index) {
-        assert !gameObject2ds.containsKey(gameObject);
-        Actor gameObject2d = new GameCharacter2d((IGameCharacter) gameObject, atlas);
-        gameObject2ds.put(gameObject, gameObject2d);
-        stage.addActor(gameObject2d);
+    public void setCurrentControls(Actor controls) {
+        uiStage.getRoot().removeActor(controlsStack.peek());
+        controlsStack.add(controls);
+        uiStage.addActor(controls);
     }
 
     @Override
-    public void gameObjectRemoved(IGameObject gameObject, int index) {
-        assert gameObject2ds.containsKey(gameObject);
-        Actor gameObject2d = gameObject2ds.remove(gameObject);
-        stage.getRoot().removeActor(gameObject2d);
+    public void cancelCurrentControls() {
+        uiStage.getRoot().removeActor(controlsStack.pop());
+        if (!controlsStack.isEmpty()) {
+            Actor controls = controlsStack.peek();
+            uiStage.addActor(controls);
+        }
+    }
+
+    @Override
+    public void installInteractor(IInteractor interactorTmp) {
+        assert interactor == null;
+        interactor = interactorTmp;
+        interactor.addListener(this);
+        inputMultiplexer.addProcessor(0, interactor.getInputProcessor());
+        interactor.start();
+    }
+
+    @Override
+    public void interactionDone(IInteractor interactorTmp) {
+        assert interactor == interactorTmp;
+        interactor.removeListener(this);
+        inputMultiplexer.removeProcessor(interactor.getInputProcessor());
+        interactor = null;
     }
 }

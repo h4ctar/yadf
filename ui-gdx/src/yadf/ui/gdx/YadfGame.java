@@ -2,6 +2,10 @@ package yadf.ui.gdx;
 
 import java.util.Stack;
 
+import yadf.simulation.item.ItemTypeManager;
+import yadf.simulation.labor.LaborTypeManager;
+import yadf.simulation.recipe.RecipeManager;
+import yadf.simulation.workshop.WorkshopTypeManager;
 import yadf.ui.gdx.screen.IScreenController;
 import yadf.ui.gdx.screen.SplashScreen;
 
@@ -20,6 +24,16 @@ public class YadfGame extends Game implements IScreenController {
     @Override
     public void create() {
         addScreen(new SplashScreen(this));
+
+        try {
+            ItemTypeManager.getInstance().load();
+            WorkshopTypeManager.getInstance().load();
+            LaborTypeManager.getInstance().load();
+            RecipeManager.getInstance().load();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Gdx.app.exit();
+        }
     }
 
     @Override
@@ -33,7 +47,7 @@ public class YadfGame extends Game implements IScreenController {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(final int width, final int height) {
         super.resize(width, height);
     }
 
@@ -48,14 +62,14 @@ public class YadfGame extends Game implements IScreenController {
     }
 
     @Override
-    public void addScreen(Screen screen) {
+    public void addScreen(final Screen screen) {
         System.out.println("addScreen: " + screen.getClass().getSimpleName());
         currentScreenStack.add(screen);
         setScreen(screen);
     }
 
     @Override
-    public void replaceScreen(Screen screen) {
+    public void replaceScreen(final Screen screen) {
         System.out.println("replaceScreen: " + screen.getClass().getSimpleName());
         currentScreenStack.pop();
         currentScreenStack.add(screen);

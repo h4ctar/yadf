@@ -28,7 +28,7 @@ public class SplashScreen extends AbstractScreen {
      * Constructor.
      * @param screenController the screen controller
      */
-    public SplashScreen(IScreenController screenController) {
+    public SplashScreen(final IScreenController screenController) {
         super(screenController);
     }
 
@@ -47,11 +47,11 @@ public class SplashScreen extends AbstractScreen {
 
         Action action = sequence(fadeIn(0.2f), delay(0.4f), fadeOut(0.2f), new StartMainMenuAction());
         splashImage.addAction(action);
-        stage.addActor(splashImage);
+        uiStage.addActor(splashImage);
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(final int width, final int height) {
         super.resize(width, height);
         splashImage.setSize(width, height);
     }
@@ -67,7 +67,7 @@ public class SplashScreen extends AbstractScreen {
     private final class StartMainMenuAction extends Action {
 
         @Override
-        public boolean act(float delta) {
+        public boolean act(final float delta) {
             System.out.println("StartMainMenuAction.act");
             screenController.replaceScreen(new MainMenuScreen(screenController));
             return true;

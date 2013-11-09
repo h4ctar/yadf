@@ -1,33 +1,33 @@
 package yadf.ui.gdx.screen.game;
 
-import yadf.simulation.character.IGameCharacter;
+import yadf.simulation.Tree;
 import yadf.simulation.map.MapIndex;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
- * A game charactor actor.
+ * A plant actor.
  */
-public class GameCharacter2d extends Image {
+public class Plant2d extends Image {
 
-    /** The game character. */
-    private IGameCharacter character;
+    /** The tree. */
+    private Tree tree;
 
     /**
      * Constructor.
      * @param characterTmp the game character
      * @param atlas the texture atlas
      */
-    public GameCharacter2d(IGameCharacter characterTmp, TextureAtlas atlas) {
-        super(atlas.findRegion("characters/dwarf"));
-        character = characterTmp;
+    public Plant2d(Tree treeTmp, TextureAtlas atlas) {
+        super(atlas.findRegion("plants/tree"));
+        tree = treeTmp;
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        MapIndex position = character.getPosition();
+        MapIndex position = tree.getPosition();
         setX(position.x * GameScreen.SPRITE_SIZE);
         setY(position.y * GameScreen.SPRITE_SIZE);
         setVisible((int) getStage().getCamera().position.z == position.z);

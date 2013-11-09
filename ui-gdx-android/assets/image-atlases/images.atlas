@@ -104,10 +104,153 @@ images3.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+items/anvil
+  rotate: false
+  xy: 0, 108
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/axe
+  rotate: false
+  xy: 0, 90
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/barrel
+  rotate: false
+  xy: 18, 108
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/beer
+  rotate: false
+  xy: 0, 72
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/bread
+  rotate: false
+  xy: 18, 90
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/fish
+  rotate: false
+  xy: 36, 108
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/flour
+  rotate: false
+  xy: 0, 54
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/hammer
+  rotate: false
+  xy: 18, 72
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/hoe
+  rotate: false
+  xy: 36, 90
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/oven
+  rotate: false
+  xy: 0, 36
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/pick
+  rotate: false
+  xy: 18, 54
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/pork
+  rotate: false
+  xy: 36, 72
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/rolling pin
+  rotate: false
+  xy: 0, 18
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/sack
+  rotate: false
+  xy: 18, 36
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/saw
+  rotate: false
+  xy: 36, 54
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/seed
+  rotate: false
+  xy: 0, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/sword
+  rotate: false
+  xy: 18, 18
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/wheat
+  rotate: false
+  xy: 36, 36
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+
+images4.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+plants/tree
+  rotate: false
+  xy: 0, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+
+images5.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 splash/splash
   rotate: false
   xy: 0, 0
-  size: 512, 320
-  orig: 512, 320
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1

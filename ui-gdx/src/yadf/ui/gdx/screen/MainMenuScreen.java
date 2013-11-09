@@ -18,7 +18,7 @@ public class MainMenuScreen extends AbstractScreen {
      * Constructor.
      * @param screenController the screen controller.
      */
-    public MainMenuScreen(IScreenController screenController) {
+    public MainMenuScreen(final IScreenController screenController) {
         super(screenController);
     }
 
@@ -28,7 +28,7 @@ public class MainMenuScreen extends AbstractScreen {
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         Table table = new Table();
         table.setFillParent(true);
-        stage.addActor(table);
+        uiStage.addActor(table);
 
         TextButton newSinglePlayerGameButton = new TextButton("New Single Player Game", skin);
         newSinglePlayerGameButton.addListener(new NewSinglePlayerGameButtonListener());
@@ -61,8 +61,7 @@ public class MainMenuScreen extends AbstractScreen {
     private final class NewSinglePlayerGameButtonListener extends ClickListener {
 
         @Override
-        public void clicked(InputEvent event, float x, float y) {
-            super.clicked(event, x, y);
+        public void clicked(final InputEvent event, final float x, final float y) {
             screenController.replaceScreen(new GameScreen(screenController));
         }
     }
@@ -73,8 +72,7 @@ public class MainMenuScreen extends AbstractScreen {
     private final class LoadSinglePlayerGameButtonListener extends ClickListener {
 
         @Override
-        public void clicked(InputEvent event, float x, float y) {
-            super.clicked(event, x, y);
+        public void clicked(final InputEvent event, final float x, final float y) {
         }
     }
 
@@ -84,8 +82,7 @@ public class MainMenuScreen extends AbstractScreen {
     private final class HostMultiplayerGameButtonListener extends ClickListener {
 
         @Override
-        public void clicked(InputEvent event, float x, float y) {
-            super.clicked(event, x, y);
+        public void clicked(final InputEvent event, final float x, final float y) {
         }
     }
 
@@ -95,8 +92,7 @@ public class MainMenuScreen extends AbstractScreen {
     private final class JoinMultiplayerGameButtonListener extends ClickListener {
 
         @Override
-        public void clicked(InputEvent event, float x, float y) {
-            super.clicked(event, x, y);
+        public void clicked(final InputEvent event, final float x, final float y) {
         }
     }
 
@@ -106,8 +102,7 @@ public class MainMenuScreen extends AbstractScreen {
     private final class QuitButtonListener extends ClickListener {
 
         @Override
-        public void clicked(InputEvent event, float x, float y) {
-            super.clicked(event, x, y);
+        public void clicked(final InputEvent event, final float x, final float y) {
             screenController.endScreen();
         }
     }

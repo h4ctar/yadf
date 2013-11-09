@@ -37,20 +37,26 @@ package yadf.simulation.job.designation;
 public enum DesignationType {
 
     /** The channel. */
-    CHANNEL,
+    CHANNEL("Channel"),
 
     /** The mine. */
-    MINE,
+    MINE("Mine"),
 
     /** The chop tree. */
-    CHOP_TREE,
+    CHOP_TREE("Chop Tree"),
 
     /** The build wall. */
-    BUILD_WALL,
+    BUILD_WALL("Build Wall"),
 
     /** The build ramp. */
-    BUILD_RAMP,
+    BUILD_RAMP("Build Ramp"),
 
     /** The carve stair. */
-    CARVE_STAIR;
+    CARVE_STAIR("Carve Stair");
+
+    public String name;
+
+    DesignationType(final String nameTmp) {
+        name = nameTmp;
+    }
 }

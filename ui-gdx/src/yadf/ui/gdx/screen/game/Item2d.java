@@ -1,33 +1,30 @@
 package yadf.ui.gdx.screen.game;
 
-import yadf.simulation.character.IGameCharacter;
+import yadf.simulation.item.Item;
 import yadf.simulation.map.MapIndex;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-/**
- * A game charactor actor.
- */
-public class GameCharacter2d extends Image {
+public class Item2d extends Image {
 
-    /** The game character. */
-    private IGameCharacter character;
+    /** The item. */
+    private Item item;
 
     /**
      * Constructor.
-     * @param characterTmp the game character
+     * @param itemTmp the item
      * @param atlas the texture atlas
      */
-    public GameCharacter2d(IGameCharacter characterTmp, TextureAtlas atlas) {
-        super(atlas.findRegion("characters/dwarf"));
-        character = characterTmp;
+    public Item2d(Item itemTmp, TextureAtlas atlas) {
+        super(atlas.findRegion("items/" + itemTmp.getType().name.toLowerCase()));
+        item = itemTmp;
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        MapIndex position = character.getPosition();
+        MapIndex position = item.getPosition();
         setX(position.x * GameScreen.SPRITE_SIZE);
         setY(position.y * GameScreen.SPRITE_SIZE);
         setVisible((int) getStage().getCamera().position.z == position.z);

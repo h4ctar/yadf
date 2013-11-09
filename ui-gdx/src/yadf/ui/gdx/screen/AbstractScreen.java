@@ -1,6 +1,7 @@
 package yadf.ui.gdx.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,39 +16,43 @@ public class AbstractScreen implements Screen {
     /** The screen controller. */
     protected IScreenController screenController;
 
-    /** The stage. */
-    protected Stage stage;
+    /** The stage for the UI components. */
+    protected Stage uiStage;
+
+    /** The input multiplexer. */
+    protected InputMultiplexer inputMultiplexer;
 
     /**
-     * Constructor
+     * Constructor.
      * @param screenControllerTmp the screen controller.
      */
-    public AbstractScreen(IScreenController screenControllerTmp) {
+    public AbstractScreen(final IScreenController screenControllerTmp) {
         screenController = screenControllerTmp;
     }
 
     @Override
     public void show() {
         System.out.println("AbstractScreen.show");
-        stage = new Stage(0, 0, true);
-        Gdx.input.setInputProcessor(stage);
+        uiStage = new Stage();
+        inputMultiplexer = new InputMultiplexer(uiStage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(final int width, final int height) {
         System.out.println("AbstractScreen.resize");
-        stage.setViewport(width, height, true);
+        uiStage.setViewport(width, height, false);
     }
 
     @Override
-    public void render(float delta) {
+    public void render(final float delta) {
         update(delta);
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-        drawBackground();
-        stage.draw();
+        draw();
+        uiStage.draw();
     }
 
     /**
@@ -56,8 +61,8 @@ public class AbstractScreen implements Screen {
      * Called everytime the screen is rendered.
      * @param delta the time in seconds since the last update
      */
-    protected void update(float delta) {
-        stage.act(delta);
+    protected void update(final float delta) {
+        uiStage.act(delta);
     }
 
     /**
@@ -65,8 +70,7 @@ public class AbstractScreen implements Screen {
      * <p>
      * Called before the stage is drawn.
      */
-    protected void drawBackground() {
-
+    protected void draw() {
     }
 
     @Override
@@ -87,6 +91,6 @@ public class AbstractScreen implements Screen {
     @Override
     public void dispose() {
         System.out.println("AbstractScreen.dispose");
-        stage.dispose();
+        uiStage.dispose();
     }
 }
