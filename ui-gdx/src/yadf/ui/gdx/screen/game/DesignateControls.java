@@ -4,6 +4,8 @@ import yadf.controller.AbstractController;
 import yadf.simulation.IPlayer;
 import yadf.simulation.job.designation.DesignationType;
 import yadf.ui.gdx.screen.TileCamera;
+import yadf.ui.gdx.screen.game.interactor.DesignateInteractor;
+import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -54,14 +56,19 @@ public class DesignateControls extends Table {
      */
     private final class DesignateButtonListener extends ClickListener {
 
+        /** The type of the designation. */
         private DesignationType designationType;
 
-        public DesignateButtonListener(DesignationType designationTypeTmp) {
+        /**
+         * Constructor.
+         * @param designationTypeTmp the type of the designation
+         */
+        public DesignateButtonListener(final DesignationType designationTypeTmp) {
             designationType = designationTypeTmp;
         }
 
         @Override
-        public void clicked(InputEvent event, float x, float y) {
+        public void clicked(final InputEvent event, final float x, final float y) {
             interactorManager.installInteractor(new DesignateInteractor(designationType, player, camera,
                     controller));
         }
@@ -73,7 +80,7 @@ public class DesignateControls extends Table {
     private final class CancelButtonListener extends ClickListener {
 
         @Override
-        public void clicked(InputEvent event, float x, float y) {
+        public void clicked(final InputEvent event, final float x, final float y) {
             controlsController.cancelCurrentControls();
         }
     }

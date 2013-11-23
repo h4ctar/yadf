@@ -1,22 +1,23 @@
-package yadf.ui.gdx.screen.game;
+package yadf.ui.gdx.screen.game.object;
 
 import yadf.simulation.IGameObject;
-import yadf.simulation.Tree;
+import yadf.simulation.item.Item;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class Plant2dController extends AbstractGameObject2dController {
+public class Item2dController extends AbstractGameObject2dController {
 
     private TextureAtlas textureAtlas;
 
-    public Plant2dController(TextureAtlas textureAtlasTmp, Stage gameStage) {
+    public Item2dController(TextureAtlas textureAtlasTmp, Stage gameStage) {
         super(gameStage);
         textureAtlas = textureAtlasTmp;
     }
 
     protected Actor createGameObject2d(IGameObject gameObject) {
-        return new Plant2d((Tree) gameObject, textureAtlas);
+        System.out.println(((Item) gameObject).getType().name);
+        return new Item2d((Item) gameObject, textureAtlas);
     }
 }

@@ -1,7 +1,8 @@
-package yadf.ui.gdx.screen.game;
+package yadf.ui.gdx.screen.game.object;
 
 import yadf.simulation.item.Item;
 import yadf.simulation.map.MapIndex;
+import yadf.ui.gdx.screen.game.GameScreen;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;

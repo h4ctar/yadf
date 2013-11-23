@@ -3,6 +3,7 @@ package yadf.ui.gdx.screen.game;
 import yadf.controller.AbstractController;
 import yadf.simulation.IPlayer;
 import yadf.ui.gdx.screen.TileCamera;
+import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;

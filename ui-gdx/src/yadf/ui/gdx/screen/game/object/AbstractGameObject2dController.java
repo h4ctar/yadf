@@ -1,4 +1,4 @@
-package yadf.ui.gdx.screen.game;
+package yadf.ui.gdx.screen.game.object;
 
 import java.util.HashMap;
 import java.util.Map;

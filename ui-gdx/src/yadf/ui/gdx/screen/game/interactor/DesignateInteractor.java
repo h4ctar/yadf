@@ -1,4 +1,4 @@
-package yadf.ui.gdx.screen.game;
+package yadf.ui.gdx.screen.game.interactor;
 
 import yadf.controller.AbstractController;
 import yadf.controller.command.DesignationCommand;

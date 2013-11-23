@@ -4,10 +4,16 @@ import yadf.ui.gdx.screen.TileCamera;
 
 import com.badlogic.gdx.InputProcessor;
 
+/**
+ * Input processor for the camera.
+ */
 public class CameraInputProcessor implements InputProcessor {
 
+    /** The camera. */
     private TileCamera camera;
+
     private int lastX;
+
     private int lastY;
 
     public CameraInputProcessor(TileCamera cameraTmp) {

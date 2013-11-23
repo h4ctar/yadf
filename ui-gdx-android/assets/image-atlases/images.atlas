@@ -167,65 +167,72 @@ items/hoe
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/oven
+items/log
   rotate: false
   xy: 0, 36
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/pick
+items/oven
   rotate: false
   xy: 18, 54
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/pork
+items/pick
   rotate: false
   xy: 36, 72
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/rolling pin
+items/pork
   rotate: false
   xy: 0, 18
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/sack
+items/rolling pin
   rotate: false
   xy: 18, 36
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/saw
+items/sack
   rotate: false
   xy: 36, 54
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/seed
+items/saw
   rotate: false
   xy: 0, 0
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/sword
+items/seed
   rotate: false
   xy: 18, 18
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/wheat
+items/sword
   rotate: false
   xy: 36, 36
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+items/wheat
+  rotate: false
+  xy: 18, 0
   size: 18, 18
   orig: 18, 18
   offset: 0, 0

@@ -1,4 +1,4 @@
-package yadf.ui.gdx.screen.game;
+package yadf.ui.gdx.screen.game.interactor;
 
 public interface IInteractorManager extends IInteractorListener {
 

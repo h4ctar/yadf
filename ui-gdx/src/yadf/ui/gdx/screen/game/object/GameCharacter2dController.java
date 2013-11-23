@@ -1,4 +1,4 @@
-package yadf.ui.gdx.screen.game;
+package yadf.ui.gdx.screen.game.object;
 
 import yadf.simulation.IGameObject;
 import yadf.simulation.character.IGameCharacter;

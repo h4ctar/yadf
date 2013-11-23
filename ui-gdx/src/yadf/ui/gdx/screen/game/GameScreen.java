@@ -15,6 +15,11 @@ import yadf.simulation.map.MapIndex;
 import yadf.ui.gdx.screen.AbstractScreen;
 import yadf.ui.gdx.screen.IScreenController;
 import yadf.ui.gdx.screen.TileCamera;
+import yadf.ui.gdx.screen.game.interactor.IInteractor;
+import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
+import yadf.ui.gdx.screen.game.object.GameCharacter2dController;
+import yadf.ui.gdx.screen.game.object.Item2dController;
+import yadf.ui.gdx.screen.game.object.Plant2dController;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
