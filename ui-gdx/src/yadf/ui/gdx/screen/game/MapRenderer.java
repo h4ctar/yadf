@@ -27,7 +27,7 @@ public class MapRenderer {
      * @param mapTmp the map
      * @param atlasTmp the texture atlas
      */
-    public MapRenderer(RegionMap mapTmp, TextureAtlas atlasTmp) {
+    public MapRenderer(final RegionMap mapTmp, final TextureAtlas atlasTmp) {
         map = mapTmp;
         atlas = atlasTmp;
     }
@@ -36,7 +36,7 @@ public class MapRenderer {
      * Render the map.
      * @param camera the area to render
      */
-    public void draw(TileCamera camera) {
+    public void draw(final TileCamera camera) {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         for (int x = 0; x < map.getMapSize().x; x++) {
@@ -75,7 +75,7 @@ public class MapRenderer {
      * @param x the x position to draw at
      * @param y the y position to draw at
      */
-    private void drawBlock(BlockType blockType, int x, int y) {
+    private void drawBlock(final BlockType blockType, final int x, final int y) {
         String name = "block/" + blockType.name().toLowerCase();
         drawSprite(name, x, y);
     }
@@ -86,7 +86,7 @@ public class MapRenderer {
      * @param x the x position to draw at
      * @param y the y position to draw at
      */
-    private void drawSprite(String name, int x, int y) {
+    private void drawSprite(final String name, final int x, final int y) {
         spriteBatch.draw(atlas.findRegion(name), x * GameScreen.SPRITE_SIZE, y * GameScreen.SPRITE_SIZE,
                 GameScreen.SPRITE_SIZE, GameScreen.SPRITE_SIZE);
     }

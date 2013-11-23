@@ -56,22 +56,26 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
     /** How many simulation steps since the controller was updated. */
     private int simulationSteps;
 
+    /** The camera. */
     private TileCamera camera = new TileCamera();
 
+    /** The input processor for the camera. */
     private CameraInputProcessor cameraInputProcessor;
 
     /** The stage for the game objects. */
     private Stage gameStage;
 
+    /** The controls stack (the buttons in the top left). */
     private Stack<Actor> controlsStack = new Stack<>();
 
+    /** The current interactor. */
     private IInteractor interactor;
 
     /**
      * Constructor.
      * @param screenController the screen controller.
      */
-    public GameScreen(IScreenController screenController) {
+    public GameScreen(final IScreenController screenController) {
         super(screenController);
     }
 
@@ -137,13 +141,13 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(final int width, final int height) {
         super.resize(width, height);
         camera.resize(width, height);
     }
 
     @Override
-    protected void update(float delta) {
+    protected void update(final float delta) {
         super.update(delta);
         gameStage.act();
         try {
@@ -162,10 +166,13 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
     protected void draw() {
         mapRenderer.draw(camera);
         gameStage.draw();
+        if (interactor != null) {
+            interactor.draw();
+        }
     }
 
     @Override
-    public void setCurrentControls(Actor controls) {
+    public void setCurrentControls(final Actor controls) {
         uiStage.getRoot().removeActor(controlsStack.peek());
         controlsStack.add(controls);
         uiStage.addActor(controls);
@@ -181,7 +188,7 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
     }
 
     @Override
-    public void installInteractor(IInteractor interactorTmp) {
+    public void installInteractor(final IInteractor interactorTmp) {
         assert interactor == null;
         interactor = interactorTmp;
         interactor.addListener(this);
@@ -190,7 +197,7 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
     }
 
     @Override
-    public void interactionDone(IInteractor interactorTmp) {
+    public void interactionDone(final IInteractor interactorTmp) {
         assert interactor == interactorTmp;
         interactor.removeListener(this);
         inputMultiplexer.removeProcessor(interactor.getInputProcessor());

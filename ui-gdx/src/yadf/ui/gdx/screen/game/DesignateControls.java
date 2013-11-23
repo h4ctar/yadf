@@ -14,21 +14,44 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/**
+ * The designate controls.
+ * <p>
+ * Contains all the buttons for the designations.
+ */
 public class DesignateControls extends Table {
 
+    /** The controls controller. */
     private IControlsController controlsController;
 
+    /** The interactor manager. */
     private IInteractorManager interactorManager;
 
+    /** The player. */
     private IPlayer player;
 
+    /** The camera. */
     private TileCamera camera;
 
+    /** The controller. */
     private AbstractController controller;
 
-    public DesignateControls(Skin skin, IControlsController controlsControllerTmp,
-            IInteractorManager interactorManagerTmp, IPlayer playerTmp, TileCamera cameraTmp,
-            AbstractController controllerTmp) {
+    /** The skin. */
+    private Skin skin;
+
+    /**
+     * Constructor.
+     * @param skinTmp the skin for the buttons
+     * @param controlsControllerTmp the controls controller
+     * @param interactorManagerTmp the interactor manager
+     * @param playerTmp the player
+     * @param cameraTmp the camera
+     * @param controllerTmp the controller
+     */
+    public DesignateControls(final Skin skinTmp, final IControlsController controlsControllerTmp,
+            final IInteractorManager interactorManagerTmp, final IPlayer playerTmp, final TileCamera cameraTmp,
+            final AbstractController controllerTmp) {
+        skin = skinTmp;
         controlsController = controlsControllerTmp;
         interactorManager = interactorManagerTmp;
         player = playerTmp;
@@ -69,7 +92,7 @@ public class DesignateControls extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            interactorManager.installInteractor(new DesignateInteractor(designationType, player, camera,
+            interactorManager.installInteractor(new DesignateInteractor(skin, designationType, player, camera,
                     controller));
         }
     }
