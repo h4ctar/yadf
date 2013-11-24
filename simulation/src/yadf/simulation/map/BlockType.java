@@ -39,37 +39,39 @@ package yadf.simulation.map;
 public enum BlockType {
     /* isStandIn isStandOn isClimb isMineable itemMined sprite */
     /** The empty. */
-    EMPTY(true, false, false, false, null, 1),
+    EMPTY("Empty", true, false, false, false, null, 1),
 
     /** The grass. */
-    GRASS(false, true, false, true, null, 22),
+    GRASS("Grass", false, true, false, true, null, 22),
 
     /** The dirt. */
-    DIRT(false, true, false, true, null, 29),
+    DIRT("Dirt", false, true, false, true, null, 29),
 
     /** The rock. */
-    ROCK(false, true, false, true, "Rock", 28),
+    ROCK("Rock", false, true, false, true, "Rock", 28),
 
     /** The gold. */
-    GOLD(false, true, false, true, "Gold ore", 30),
+    GOLD("Gold", false, true, false, true, "Gold ore", 30),
 
     /** The iron. */
-    IRON(false, true, false, true, "Iron ore", 32),
+    IRON("Iron", false, true, false, true, "Iron ore", 32),
 
     /** The coal. */
-    COAL(false, true, false, true, "Coal ore", 33),
+    COAL("Coal", false, true, false, true, "Coal ore", 33),
 
     /** The ramp. */
-    RAMP(true, true, true, false, null, 26),
+    RAMP("Ramp", true, true, true, false, null, 26),
 
     /** The stair. */
-    STAIR(true, true, true, false, null, 27),
+    STAIR("Stair", true, true, true, false, null, 27),
 
     /** The wall. */
-    WALL(false, true, false, false, null, 0),
+    WALL("Wall", false, true, false, false, null, 0),
 
     /** The mine grass. */
-    MINE(true, true, false, false, null, GRASS.sprite);
+    MINE("Mine", true, true, false, false, null, GRASS.sprite);
+
+    public final String name;
 
     /** The is stand in. */
     public final boolean isStandIn;
@@ -94,7 +96,7 @@ public enum BlockType {
 
     /**
      * Instantiates a new block type.
-     * 
+     * @param nameTmp the string representation of the block type
      * @param isStandInTmp the is stand in
      * @param isStandOnTmp the is stand on
      * @param isClimbTmp the is climb
@@ -102,8 +104,9 @@ public enum BlockType {
      * @param itemMinedTmp the item mined
      * @param spriteTmp the sprite
      */
-    BlockType(final boolean isStandInTmp, final boolean isStandOnTmp, final boolean isClimbTmp,
-            final boolean isMineableTmp, final String itemMinedTmp, final int spriteTmp) {
+    BlockType(final String nameTmp, final boolean isStandInTmp, final boolean isStandOnTmp,
+            final boolean isClimbTmp, final boolean isMineableTmp, final String itemMinedTmp, final int spriteTmp) {
+        name = nameTmp;
         isStandIn = isStandInTmp;
         isStandOn = isStandOnTmp;
         isClimb = isClimbTmp;

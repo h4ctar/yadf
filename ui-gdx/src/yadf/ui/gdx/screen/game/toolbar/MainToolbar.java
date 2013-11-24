@@ -1,8 +1,11 @@
-package yadf.ui.gdx.screen.game;
+package yadf.ui.gdx.screen.game.toolbar;
 
 import yadf.controller.AbstractController;
 import yadf.simulation.IPlayer;
+import yadf.simulation.job.IJobManager;
 import yadf.ui.gdx.screen.TileCamera;
+import yadf.ui.gdx.screen.game.dialogwindow.IDialogWindowManager;
+import yadf.ui.gdx.screen.game.dialogwindow.JobsDialogWindow;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,13 +18,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 /**
  * The top level of the controls stack (the buttons in the top left).
  */
-public class MainControls extends Table {
+public class MainToolbar extends Table {
 
     /** The skin. */
     private Skin skin;
 
-    /** The controls controller. */
-    private IControlsController controlsController;
+    /** The toolbar manager. */
+    private IToolbarManager toolbarManager;
+
+    /** The dialog window manager. */
+    private IDialogWindowManager dialogWindowManager;
 
     /** The interactor manager. */
     private IInteractorManager interactorManager;
@@ -38,17 +44,19 @@ public class MainControls extends Table {
     /**
      * Constructor.
      * @param skinTmp the skin
-     * @param controlsControllerTmp the controls controller
+     * @param toolbarManagerTmp the toolbar manager
+     * @param dialogWindowManagerTmp the dialog window manager
      * @param interactorManagerTmp the interactor manager
      * @param playerTmp the player
      * @param cameraTmp the camera
      * @param controllerTmp the controller
      */
-    public MainControls(final Skin skinTmp, final IControlsController controlsControllerTmp,
-            final IInteractorManager interactorManagerTmp, final IPlayer playerTmp, final TileCamera cameraTmp,
-            final AbstractController controllerTmp) {
+    public MainToolbar(final Skin skinTmp, final IToolbarManager toolbarManagerTmp,
+            final IDialogWindowManager dialogWindowManagerTmp, final IInteractorManager interactorManagerTmp,
+            final IPlayer playerTmp, final TileCamera cameraTmp, final AbstractController controllerTmp) {
         skin = skinTmp;
-        controlsController = controlsControllerTmp;
+        toolbarManager = toolbarManagerTmp;
+        dialogWindowManager = dialogWindowManagerTmp;
         interactorManager = interactorManagerTmp;
         player = playerTmp;
         camera = cameraTmp;
@@ -81,7 +89,12 @@ public class MainControls extends Table {
 
         row();
         TextButton farmButton = new TextButton("Build Farm", skin);
-        add(farmButton).width(140);
+        add(farmButton).width(140).spaceBottom(10);
+
+        row();
+        TextButton jobsButton = new TextButton("Jobs", skin);
+        jobsButton.addListener(new JobsButtonListener());
+        add(jobsButton).width(140);
     }
 
     /**
@@ -91,8 +104,8 @@ public class MainControls extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            controlsController.setCurrentControls(new DesignateControls(skin, controlsController,
-                    interactorManager, player, camera, controller));
+            toolbarManager.setToolbar(new DesignateToolbar(skin, toolbarManager, interactorManager, player,
+                    camera, controller));
         }
     }
 
@@ -103,8 +116,20 @@ public class MainControls extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            controlsController.setCurrentControls(new BuildWorkshopControls(skin, controlsController,
-                    interactorManager, player, camera, controller));
+            toolbarManager.setToolbar(new BuildWorkshopToolbar(skin, toolbarManager, interactorManager, player,
+                    camera, controller));
+        }
+    }
+
+    /**
+     * The listener for the jobs button.
+     */
+    private final class JobsButtonListener extends ClickListener {
+
+        @Override
+        public void clicked(final InputEvent event, final float x, final float y) {
+            JobsDialogWindow dialogWindow = new JobsDialogWindow(player.getComponent(IJobManager.class), skin);
+            dialogWindowManager.setDialogWindow(dialogWindow);
         }
     }
 }

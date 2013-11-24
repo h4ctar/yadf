@@ -1,10 +1,13 @@
-package yadf.ui.gdx.screen.game;
+package yadf.ui.gdx.screen.game.toolbar;
 
 import yadf.controller.AbstractController;
 import yadf.simulation.IPlayer;
 import yadf.simulation.workshop.WorkshopType;
 import yadf.simulation.workshop.WorkshopTypeManager;
 import yadf.ui.gdx.screen.TileCamera;
+import yadf.ui.gdx.screen.game.interactor.BuildWorkshopInteractor;
+import yadf.ui.gdx.screen.game.interactor.IInteractor;
+import yadf.ui.gdx.screen.game.interactor.IInteractorListener;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -14,10 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class BuildWorkshopControls extends Table {
+/**
+ * The controls for the build workshop.
+ */
+public class BuildWorkshopToolbar extends Table implements IInteractorListener {
 
     /** The controls controller. */
-    private IControlsController controlsController;
+    private IToolbarManager controlsController;
 
     /** The interactor manager. */
     private IInteractorManager interactorManager;
@@ -43,7 +49,7 @@ public class BuildWorkshopControls extends Table {
      * @param cameraTmp the camera
      * @param controllerTmp the controller
      */
-    public BuildWorkshopControls(final Skin skinTmp, final IControlsController controlsControllerTmp,
+    public BuildWorkshopToolbar(final Skin skinTmp, final IToolbarManager controlsControllerTmp,
             final IInteractorManager interactorManagerTmp, final IPlayer playerTmp, final TileCamera cameraTmp,
             final AbstractController controllerTmp) {
         skin = skinTmp;
@@ -69,6 +75,11 @@ public class BuildWorkshopControls extends Table {
         add(cancelButton).width(140);
     }
 
+    @Override
+    public void interactionDone(final IInteractor interactor) {
+        controlsController.closeToolbar();
+    }
+
     /**
      * The listener for all of the build workshop buttons.
      */
@@ -87,8 +98,10 @@ public class BuildWorkshopControls extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            interactorManager.installInteractor(new BuildWorkshopInteractor(skin, workshopType, player, camera,
-                    controller));
+            BuildWorkshopInteractor interactor = new BuildWorkshopInteractor(skin, workshopType, player, camera,
+                    controller);
+            interactor.addListener(BuildWorkshopToolbar.this);
+            interactorManager.installInteractor(interactor);
         }
     }
 
@@ -99,7 +112,7 @@ public class BuildWorkshopControls extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            controlsController.cancelCurrentControls();
+            controlsController.closeToolbar();
         }
     }
 }

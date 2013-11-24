@@ -1,4 +1,4 @@
-package yadf.ui.gdx.screen.game;
+package yadf.ui.gdx.screen.game.interactor;
 
 import yadf.controller.AbstractController;
 import yadf.controller.command.BuildWorkshopCommand;
@@ -6,7 +6,7 @@ import yadf.simulation.IPlayer;
 import yadf.simulation.map.MapIndex;
 import yadf.simulation.workshop.WorkshopType;
 import yadf.ui.gdx.screen.TileCamera;
-import yadf.ui.gdx.screen.game.interactor.AbstractInteractor;
+import yadf.ui.gdx.screen.game.GameScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;

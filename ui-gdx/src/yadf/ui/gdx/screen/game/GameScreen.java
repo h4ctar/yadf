@@ -16,6 +16,7 @@ import yadf.simulation.workshop.IWorkshopManager;
 import yadf.ui.gdx.screen.AbstractScreen;
 import yadf.ui.gdx.screen.IScreenController;
 import yadf.ui.gdx.screen.TileCamera;
+import yadf.ui.gdx.screen.game.dialogwindow.IDialogWindowManager;
 import yadf.ui.gdx.screen.game.interactor.IInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
 import yadf.ui.gdx.screen.game.object.GameCharacter2d;
@@ -23,17 +24,21 @@ import yadf.ui.gdx.screen.game.object.GameObject2dController;
 import yadf.ui.gdx.screen.game.object.Item2d;
 import yadf.ui.gdx.screen.game.object.Plant2d;
 import yadf.ui.gdx.screen.game.object.Workshop2d;
+import yadf.ui.gdx.screen.game.toolbar.IToolbarManager;
+import yadf.ui.gdx.screen.game.toolbar.MainToolbar;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * The game screen.
  */
-public class GameScreen extends AbstractScreen implements IControlsController, IInteractorManager {
+public class GameScreen extends AbstractScreen implements IToolbarManager, IInteractorManager,
+        IDialogWindowManager {
 
     /** The size of a sprite. */
     public static final int SPRITE_SIZE = 18;
@@ -69,7 +74,10 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
     private Stage gameStage;
 
     /** The controls stack (the buttons in the top left). */
-    private Stack<Actor> controlsStack = new Stack<>();
+    private Stack<Actor> toolbarStack = new Stack<>();
+
+    /** The current dialog window. */
+    private Dialog dialogWindow = null;
 
     /** The current interactor. */
     private IInteractor interactor;
@@ -97,8 +105,8 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
 
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
-        controlsStack.add(new MainControls(skin, this, this, player, camera, controller));
-        uiStage.addActor(controlsStack.peek());
+        toolbarStack.add(new MainToolbar(skin, this, this, this, player, camera, controller));
+        uiStage.addActor(toolbarStack.peek());
     }
 
     /**
@@ -122,10 +130,10 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
                     new GameObject2dController(GameCharacter2d.class, textureAtlas, gameStage));
             player.getComponent(IStockManager.class).addGameObjectManagerListener(
                     new GameObject2dController(Item2d.class, textureAtlas, gameStage));
-            region.getTreeManager().addGameObjectManagerListener(
-                    new GameObject2dController(Plant2d.class, textureAtlas, gameStage));
             player.getComponent(IWorkshopManager.class).addGameObjectManagerListener(
                     new GameObject2dController(Workshop2d.class, textureAtlas, gameStage));
+            region.getTreeManager().addGameObjectManagerListener(
+                    new GameObject2dController(Plant2d.class, textureAtlas, gameStage));
 
             region.addPlayer(player);
 
@@ -178,19 +186,35 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
     }
 
     @Override
-    public void setCurrentControls(final Actor controls) {
-        uiStage.getRoot().removeActor(controlsStack.peek());
-        controlsStack.add(controls);
+    public void setToolbar(final Actor controls) {
+        uiStage.getRoot().removeActor(toolbarStack.peek());
+        toolbarStack.add(controls);
         uiStage.addActor(controls);
     }
 
     @Override
-    public void cancelCurrentControls() {
-        uiStage.getRoot().removeActor(controlsStack.pop());
-        if (!controlsStack.isEmpty()) {
-            Actor controls = controlsStack.peek();
+    public void closeToolbar() {
+        uiStage.getRoot().removeActor(toolbarStack.pop());
+        if (!toolbarStack.isEmpty()) {
+            Actor controls = toolbarStack.peek();
             uiStage.addActor(controls);
         }
+    }
+
+    @Override
+    public void setDialogWindow(final Dialog dialogWindowTmp) {
+        if (dialogWindow != null) {
+            dialogWindow.hide();
+        }
+        dialogWindow = dialogWindowTmp;
+        dialogWindow.show(uiStage);
+    }
+
+    @Override
+    public void closeDialogWindow(final Dialog dialogWindowTmp) {
+        assert dialogWindow == dialogWindowTmp;
+        dialogWindow.hide();
+        dialogWindow = null;
     }
 
     @Override
@@ -205,7 +229,6 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
     @Override
     public void interactionDone(final IInteractor interactorTmp) {
         assert interactor == interactorTmp;
-        interactor.removeListener(this);
         inputMultiplexer.removeProcessor(interactor.getInputProcessor());
         interactor = null;
     }

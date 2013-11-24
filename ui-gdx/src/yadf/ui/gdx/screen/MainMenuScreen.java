@@ -28,7 +28,6 @@ public class MainMenuScreen extends AbstractScreen {
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         Table table = new Table();
         table.setFillParent(true);
-        uiStage.addActor(table);
 
         TextButton newSinglePlayerGameButton = new TextButton("New Single Player Game", skin);
         newSinglePlayerGameButton.addListener(new NewSinglePlayerGameButtonListener());
@@ -53,6 +52,8 @@ public class MainMenuScreen extends AbstractScreen {
         TextButton quitButton = new TextButton("Quit", skin);
         quitButton.addListener(new QuitButtonListener());
         table.add(quitButton).width(300);
+
+        uiStage.addActor(table);
     }
 
     /**

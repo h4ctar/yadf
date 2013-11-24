@@ -59,7 +59,7 @@ public class ConstructionDesignation extends AbstractDesignation {
 
     @Override
     public String toString() {
-        return "Construction Designation (" + blockType.name() + ")";
+        return blockType.name + " Construction Designation";
     }
 
     @Override
