@@ -12,43 +12,49 @@ public class CameraInputProcessor implements InputProcessor {
     /** The camera. */
     private TileCamera camera;
 
+    /** The last x position of the mouse. */
     private int lastX;
 
+    /** The last y position of the mouse. */
     private int lastY;
 
-    public CameraInputProcessor(TileCamera cameraTmp) {
+    /**
+     * Constructor.
+     * @param cameraTmp the camera
+     */
+    public CameraInputProcessor(final TileCamera cameraTmp) {
         camera = cameraTmp;
     }
 
     @Override
-    public boolean keyDown(int keycode) {
+    public boolean keyDown(final int keycode) {
         return false;
     }
 
     @Override
-    public boolean keyUp(int keycode) {
+    public boolean keyUp(final int keycode) {
         return false;
     }
 
     @Override
-    public boolean keyTyped(char character) {
+    public boolean keyTyped(final char character) {
         return false;
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    public boolean touchDown(final int screenX, final int screenY, final int pointer, final int button) {
         lastX = screenX;
         lastY = screenY;
         return false;
     }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
         return false;
     }
 
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
+    public boolean touchDragged(final int screenX, final int screenY, final int pointer) {
         camera.position.x -= screenX - lastX;
         camera.position.y += screenY - lastY;
         camera.update();
@@ -58,12 +64,12 @@ public class CameraInputProcessor implements InputProcessor {
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
+    public boolean mouseMoved(final int screenX, final int screenY) {
         return false;
     }
 
     @Override
-    public boolean scrolled(int amount) {
+    public boolean scrolled(final int amount) {
         camera.position.z += amount;
         camera.update();
         return true;

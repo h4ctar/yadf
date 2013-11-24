@@ -261,3 +261,15 @@ splash/splash
   orig: 24, 24
   offset: 0, 0
   index: -1
+
+images6.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+workshops/sawmill
+  rotate: false
+  xy: 0, 0
+  size: 54, 54
+  orig: 54, 54
+  offset: 0, 0
+  index: -1

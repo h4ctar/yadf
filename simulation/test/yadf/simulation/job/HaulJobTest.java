@@ -20,7 +20,6 @@ import yadf.simulation.character.component.WalkMovementComponent;
 import yadf.simulation.item.ContainerItem;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.item.Item;
-import yadf.simulation.job.HaulJob;
 import yadf.simulation.map.MapIndex;
 
 public class HaulJobTest extends TestCase {

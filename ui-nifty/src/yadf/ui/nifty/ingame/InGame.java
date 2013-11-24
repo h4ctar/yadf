@@ -7,8 +7,6 @@ import de.lessvoid.nifty.screen.ScreenController;
 
 public class InGame implements ScreenController {
 
-    private Nifty nifty;
-
     private RenderLoop renderLoop;
 
     private InGameRenderCallback renderCallback;
@@ -20,7 +18,6 @@ public class InGame implements ScreenController {
 
     @Override
     public void bind(Nifty niftyTmp, Screen screen) {
-        nifty = niftyTmp;
     }
 
     @Override

@@ -162,8 +162,7 @@ public class RegionMap {
         }
 
         if (blockType == null) {
-            // Channel it - if it is on an edge, make it a ramp, else just make
-            // it empty
+            // Channel it - if it is on an edge, make it a ramp, else just make it empty
             if (getBlock(index.add(0, 0, -1)).isSolid
                     && (!getBlock(index.add(-1, -1, 0)).isStandIn || !getBlock(index.add(0, -1, 0)).isStandIn
                             || !getBlock(index.add(1, -1, 0)).isStandIn

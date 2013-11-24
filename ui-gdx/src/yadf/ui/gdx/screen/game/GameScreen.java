@@ -12,14 +12,17 @@ import yadf.simulation.Region;
 import yadf.simulation.character.ICharacterManager;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.map.MapIndex;
+import yadf.simulation.workshop.IWorkshopManager;
 import yadf.ui.gdx.screen.AbstractScreen;
 import yadf.ui.gdx.screen.IScreenController;
 import yadf.ui.gdx.screen.TileCamera;
 import yadf.ui.gdx.screen.game.interactor.IInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
-import yadf.ui.gdx.screen.game.object.GameCharacter2dController;
-import yadf.ui.gdx.screen.game.object.Item2dController;
-import yadf.ui.gdx.screen.game.object.Plant2dController;
+import yadf.ui.gdx.screen.game.object.GameCharacter2d;
+import yadf.ui.gdx.screen.game.object.GameObject2dController;
+import yadf.ui.gdx.screen.game.object.Item2d;
+import yadf.ui.gdx.screen.game.object.Plant2d;
+import yadf.ui.gdx.screen.game.object.Workshop2d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -116,10 +119,13 @@ public class GameScreen extends AbstractScreen implements IControlsController, I
 
             // TODO: do this later and make method to get all game objects
             player.getComponent(ICharacterManager.class).addGameObjectManagerListener(
-                    new GameCharacter2dController(textureAtlas, gameStage));
+                    new GameObject2dController(GameCharacter2d.class, textureAtlas, gameStage));
             player.getComponent(IStockManager.class).addGameObjectManagerListener(
-                    new Item2dController(textureAtlas, gameStage));
-            region.getTreeManager().addGameObjectManagerListener(new Plant2dController(textureAtlas, gameStage));
+                    new GameObject2dController(Item2d.class, textureAtlas, gameStage));
+            region.getTreeManager().addGameObjectManagerListener(
+                    new GameObject2dController(Plant2d.class, textureAtlas, gameStage));
+            player.getComponent(IWorkshopManager.class).addGameObjectManagerListener(
+                    new GameObject2dController(Workshop2d.class, textureAtlas, gameStage));
 
             region.addPlayer(player);
 

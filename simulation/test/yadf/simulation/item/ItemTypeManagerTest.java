@@ -18,10 +18,6 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import yadf.simulation.item.Item;
-import yadf.simulation.item.ItemFactory;
-import yadf.simulation.item.ItemType;
-import yadf.simulation.item.ItemTypeManager;
 import yadf.simulation.map.MapIndex;
 
 /**

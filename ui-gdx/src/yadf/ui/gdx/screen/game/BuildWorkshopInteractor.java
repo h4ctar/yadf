@@ -1,13 +1,12 @@
-package yadf.ui.gdx.screen.game.interactor;
+package yadf.ui.gdx.screen.game;
 
 import yadf.controller.AbstractController;
-import yadf.controller.command.DesignationCommand;
+import yadf.controller.command.BuildWorkshopCommand;
 import yadf.simulation.IPlayer;
-import yadf.simulation.job.designation.DesignationType;
-import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
+import yadf.simulation.workshop.WorkshopType;
 import yadf.ui.gdx.screen.TileCamera;
-import yadf.ui.gdx.screen.game.GameScreen;
+import yadf.ui.gdx.screen.game.interactor.AbstractInteractor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
@@ -19,18 +18,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-/**
- * Interactor to modify designations.
- */
-public class DesignateInteractor extends AbstractInteractor {
+public class BuildWorkshopInteractor extends AbstractInteractor {
 
-    /** The type of the designation. */
-    private DesignationType designationType;
+    /** The type of the workshop. */
+    private WorkshopType workshopType;
 
     /** The input processor for the interactor. */
-    private DesignateInputProcessor inputProcessor = new DesignateInputProcessor();
+    private WorkshopInputProcessor inputProcessor = new WorkshopInputProcessor();
 
-    /** The player that we're modifying the designations of. */
+    /** The player that we're building a workshop for. */
     private IPlayer player;
 
     /** The camera. */
@@ -48,15 +44,15 @@ public class DesignateInteractor extends AbstractInteractor {
     /**
      * Constructor.
      * @param skinTmp the skin
-     * @param designationTypeTmp the type of the designation
+     * @param workshopTypeTmp the type of the workshop
      * @param playerTmp the player
      * @param cameraTmp the camera
      * @param controllerTmp the controller
      */
-    public DesignateInteractor(final Skin skinTmp, final DesignationType designationTypeTmp,
+    public BuildWorkshopInteractor(final Skin skinTmp, final WorkshopType workshopTypeTmp,
             final IPlayer playerTmp, final TileCamera cameraTmp, final AbstractController controllerTmp) {
         skin = skinTmp;
-        designationType = designationTypeTmp;
+        workshopType = workshopTypeTmp;
         player = playerTmp;
         camera = cameraTmp;
         controller = controllerTmp;
@@ -73,18 +69,18 @@ public class DesignateInteractor extends AbstractInteractor {
     }
 
     /**
-     * Modify the designation.
-     * @param selection the selection
+     * Build the workshop.
+     * @param position the position of the new workshop
      */
-    private void designate(final MapArea selection) {
-        controller.addCommand(new DesignationCommand(selection, designationType, true, player));
+    private void buildWorkshop(final MapIndex position) {
+        controller.addCommand(new BuildWorkshopCommand(player, position, workshopType.name));
     }
 
     @Override
     public void draw() {
         BitmapFont font = skin.getFont("default-font");
         spriteBatch.begin();
-        font.draw(spriteBatch, "Designate " + designationType.name, 10, 20);
+        font.draw(spriteBatch, "Build " + workshopType.name, 10, 20);
         spriteBatch.end();
         inputProcessor.draw();
     }
@@ -92,36 +88,21 @@ public class DesignateInteractor extends AbstractInteractor {
     /**
      * The input processor for the interactor.
      */
-    private class DesignateInputProcessor extends InputAdapter {
+    private class WorkshopInputProcessor extends InputAdapter {
 
-        /** The selection. */
-        MapArea selection = new MapArea();
-
-        /** The start point. */
-        private MapIndex start;
-
-        /** The end point. */
-        private MapIndex end;
-
-        @Override
-        public boolean touchDown(final int screenX, final int screenY, final int pointer, final int button) {
-            start = camera.getMapIndex(screenX, screenY);
-            end = camera.getMapIndex(screenX, screenY);
-            updateSelection();
-            return true;
-        }
+        /** The position. */
+        private MapIndex position;
 
         @Override
         public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
-            designate(selection);
+            buildWorkshop(position);
             finishInteraction();
             return true;
         }
 
         @Override
-        public boolean touchDragged(final int screenX, final int screenY, final int pointer) {
-            end = camera.getMapIndex(screenX, screenY);
-            updateSelection();
+        public boolean mouseMoved(final int screenX, final int screenY) {
+            position = camera.getMapIndex(screenX, screenY);
             return true;
         }
 
@@ -129,13 +110,13 @@ public class DesignateInteractor extends AbstractInteractor {
          * Draw.
          */
         public void draw() {
-            if (start != null && end != null) {
+            if (position != null) {
                 ShapeRenderer shapeRenderer = new ShapeRenderer();
                 shapeRenderer.setProjectionMatrix(camera.combined);
-                int x = selection.pos.x * GameScreen.SPRITE_SIZE;
-                int y = selection.pos.y * GameScreen.SPRITE_SIZE;
-                int width = selection.width * GameScreen.SPRITE_SIZE;
-                int height = selection.height * GameScreen.SPRITE_SIZE;
+                int x = position.x * GameScreen.SPRITE_SIZE;
+                int y = position.y * GameScreen.SPRITE_SIZE;
+                int width = 3 * GameScreen.SPRITE_SIZE;
+                int height = 3 * GameScreen.SPRITE_SIZE;
                 Gdx.gl.glEnable(GL10.GL_BLEND);
                 shapeRenderer.begin(ShapeType.FilledRectangle);
                 shapeRenderer.setColor(0.0f, 0.0f, 1.0f, 0.25f);
@@ -147,17 +128,6 @@ public class DesignateInteractor extends AbstractInteractor {
                 shapeRenderer.rect(x, y, width, height);
                 shapeRenderer.end();
             }
-        }
-
-        /**
-         * Update the selection.
-         */
-        private void updateSelection() {
-            selection.width = Math.abs(start.x - end.x) + 1;
-            selection.height = Math.abs(start.y - end.y) + 1;
-            selection.pos.x = Math.min(start.x, end.x);
-            selection.pos.y = Math.min(start.y, end.y);
-            selection.pos.z = start.z;
         }
     }
 }

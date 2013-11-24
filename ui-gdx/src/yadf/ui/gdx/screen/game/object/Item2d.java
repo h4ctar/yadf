@@ -7,6 +7,9 @@ import yadf.ui.gdx.screen.game.GameScreen;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
+/**
+ * The actor for an item.
+ */
 public class Item2d extends Image {
 
     /** The item. */
@@ -17,13 +20,13 @@ public class Item2d extends Image {
      * @param itemTmp the item
      * @param atlas the texture atlas
      */
-    public Item2d(Item itemTmp, TextureAtlas atlas) {
+    public Item2d(final Item itemTmp, final TextureAtlas atlas) {
         super(atlas.findRegion("items/" + itemTmp.getType().name.toLowerCase()));
         item = itemTmp;
     }
 
     @Override
-    public void act(float delta) {
+    public void act(final float delta) {
         super.act(delta);
         MapIndex position = item.getPosition();
         setX(position.x * GameScreen.SPRITE_SIZE);

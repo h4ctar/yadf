@@ -20,13 +20,13 @@ public class GameCharacter2d extends Image {
      * @param characterTmp the game character
      * @param atlas the texture atlas
      */
-    public GameCharacter2d(IGameCharacter characterTmp, TextureAtlas atlas) {
+    public GameCharacter2d(final IGameCharacter characterTmp, final TextureAtlas atlas) {
         super(atlas.findRegion("characters/dwarf"));
         character = characterTmp;
     }
 
     @Override
-    public void act(float delta) {
+    public void act(final float delta) {
         super.act(delta);
         MapIndex position = character.getPosition();
         setX(position.x * GameScreen.SPRITE_SIZE);

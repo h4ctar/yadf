@@ -3,13 +3,31 @@ package yadf.ui.gdx.tools;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 
-public class YadfTexturePacker {
+/**
+ * The texture packer.
+ */
+public final class YadfTexturePacker {
 
+    /** Input directory. */
     private static final String INPUT_DIR = "etc/images";
+
+    /** Output directory. */
     private static final String OUTPUT_DIR = "../ui-gdx-android/assets/image-atlases";
+
+    /** Name of the pack file. */
     private static final String PACK_FILE = "images";
 
-    public static void main(String[] args) {
+    /**
+     * Constructor.
+     */
+    private YadfTexturePacker() {
+    }
+
+    /**
+     * Main.
+     * @param args app args
+     */
+    public static void main(final String[] args) {
         // create the packing's settings
         Settings settings = new Settings();
 

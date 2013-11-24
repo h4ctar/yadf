@@ -25,12 +25,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import yadf.simulation.HumanPlayer;
-import yadf.simulation.item.ContainerItem;
-import yadf.simulation.item.IStockManager;
-import yadf.simulation.item.Item;
-import yadf.simulation.item.ItemType;
-import yadf.simulation.item.ItemTypeManager;
-import yadf.simulation.item.StockManager;
 import yadf.simulation.map.MapIndex;
 
 /**
@@ -43,8 +37,8 @@ public class ContainerItemTest {
     /** Test item types. */
     private static final String BARREL_ITEM_TYPE_ELEMENT = "<categories><category name=\"Food\">"
             + "<itemType name=\"Bread\" weight=\"1\"/><itemType name=\"Chips\" weight=\"1\"/></category>"
-            + "<category name=\"Storage\">" + "<itemType name=\"Barrel\" weight=\"4\" capacity=\"" + BARREL_CAPACITY
-            + "\" sprite=\"47\" contentItemTypes=\"Bread\" />" + "</category></categories>";
+            + "<category name=\"Storage\">" + "<itemType name=\"Barrel\" weight=\"4\" capacity=\""
+            + BARREL_CAPACITY + "\" sprite=\"47\" contentItemTypes=\"Bread\" />" + "</category></categories>";
 
     /** A container element that is empty. */
     private static final String EMPTY_CONTAINER_ELEMENT = "<item type=\"Barrel\" />";

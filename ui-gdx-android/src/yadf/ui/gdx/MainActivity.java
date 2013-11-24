@@ -1,7 +1,5 @@
 package yadf.ui.gdx;
 
-import yadf.ui.gdx.YadfGame;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 

@@ -54,8 +54,13 @@ public enum DesignationType {
     /** The carve stair. */
     CARVE_STAIR("Carve Stair");
 
+    /** The name of the designation. */
     public String name;
 
+    /**
+     * Constructor.
+     * @param nameTmp the name of the designation
+     */
     DesignationType(final String nameTmp) {
         name = nameTmp;
     }
