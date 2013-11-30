@@ -20,17 +20,36 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public abstract class AbstractSelectionInteractor extends AbstractInteractor {
 
     /** The input processor for the interactor. */
-    private SelectionInputProcessor inputProcessor = new SelectionInputProcessor();
+    private AbstractSelectionInputProcessor inputProcessor;
 
     /** The camera. */
     private TileCamera camera;
 
+    /** The size of the selection; if it's not resizable. */
+    private int size;
+
     /**
      * Constructor.
+     * <p>
+     * Creates a resizable interactor.
      * @param cameraTmp the camera
      */
     public AbstractSelectionInteractor(final TileCamera cameraTmp) {
         camera = cameraTmp;
+        inputProcessor = new ResizableSelectionInputProcessor();
+    }
+
+    /**
+     * Constructor.
+     * <p>
+     * Creates a fixed size interactor.
+     * @param cameraTmp the camera
+     * @param sizeTmp the size
+     */
+    public AbstractSelectionInteractor(final TileCamera cameraTmp, final int sizeTmp) {
+        camera = cameraTmp;
+        inputProcessor = new NotResizableSelectionInputProcessor();
+        size = sizeTmp;
     }
 
     @Override
@@ -55,9 +74,75 @@ public abstract class AbstractSelectionInteractor extends AbstractInteractor {
     }
 
     /**
+     * Abstract Selection Input Processor.
+     */
+    private abstract class AbstractSelectionInputProcessor extends InputAdapter {
+
+        /**
+         * Draw.
+         */
+        public void draw() {
+            MapArea selection = getSelection();
+            if (selection != null) {
+                ShapeRenderer shapeRenderer = new ShapeRenderer();
+                shapeRenderer.setProjectionMatrix(camera.combined);
+                int x = selection.pos.x * GameScreen.SPRITE_SIZE;
+                int y = selection.pos.y * GameScreen.SPRITE_SIZE;
+                int width = selection.width * GameScreen.SPRITE_SIZE;
+                int height = selection.height * GameScreen.SPRITE_SIZE;
+                Gdx.gl.glEnable(GL10.GL_BLEND);
+                shapeRenderer.begin(ShapeType.FilledRectangle);
+                shapeRenderer.setColor(0.0f, 0.0f, 1.0f, 0.25f);
+                shapeRenderer.filledRect(x, y, width, height);
+                shapeRenderer.end();
+                Gdx.gl.glDisable(GL10.GL_BLEND);
+                shapeRenderer.begin(ShapeType.Rectangle);
+                shapeRenderer.setColor(0.0f, 0.0f, 1.0f, 1.0f);
+                shapeRenderer.rect(x, y, width, height);
+                shapeRenderer.end();
+            }
+        }
+
+        /**
+         * Get the selection.
+         * @return the selection
+         */
+        protected abstract MapArea getSelection();
+    }
+
+    /**
      * The input processor for the interactor.
      */
-    private class SelectionInputProcessor extends InputAdapter {
+    private class NotResizableSelectionInputProcessor extends AbstractSelectionInputProcessor {
+
+        /** The selection. */
+        MapArea selection = new MapArea();
+
+        @Override
+        public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
+            doAction(selection);
+            finishInteraction();
+            return true;
+        }
+
+        @Override
+        public boolean mouseMoved(final int screenX, final int screenY) {
+            selection.pos = camera.getMapIndex(screenX, screenY);
+            selection.width = size;
+            selection.height = size;
+            return true;
+        }
+
+        @Override
+        protected MapArea getSelection() {
+            return selection;
+        }
+    }
+
+    /**
+     * The input processor for the interactor.
+     */
+    private class ResizableSelectionInputProcessor extends AbstractSelectionInputProcessor {
 
         /** The selection. */
         MapArea selection = new MapArea();
@@ -91,30 +176,6 @@ public abstract class AbstractSelectionInteractor extends AbstractInteractor {
         }
 
         /**
-         * Draw.
-         */
-        public void draw() {
-            if (start != null && end != null) {
-                ShapeRenderer shapeRenderer = new ShapeRenderer();
-                shapeRenderer.setProjectionMatrix(camera.combined);
-                int x = selection.pos.x * GameScreen.SPRITE_SIZE;
-                int y = selection.pos.y * GameScreen.SPRITE_SIZE;
-                int width = selection.width * GameScreen.SPRITE_SIZE;
-                int height = selection.height * GameScreen.SPRITE_SIZE;
-                Gdx.gl.glEnable(GL10.GL_BLEND);
-                shapeRenderer.begin(ShapeType.FilledRectangle);
-                shapeRenderer.setColor(0.0f, 0.0f, 1.0f, 0.25f);
-                shapeRenderer.filledRect(x, y, width, height);
-                shapeRenderer.end();
-                Gdx.gl.glDisable(GL10.GL_BLEND);
-                shapeRenderer.begin(ShapeType.Rectangle);
-                shapeRenderer.setColor(0.0f, 0.0f, 1.0f, 1.0f);
-                shapeRenderer.rect(x, y, width, height);
-                shapeRenderer.end();
-            }
-        }
-
-        /**
          * Update the selection.
          */
         private void updateSelection() {
@@ -123,6 +184,11 @@ public abstract class AbstractSelectionInteractor extends AbstractInteractor {
             selection.pos.x = Math.min(start.x, end.x);
             selection.pos.y = Math.min(start.y, end.y);
             selection.pos.z = start.z;
+        }
+
+        @Override
+        protected MapArea getSelection() {
+            return selection;
         }
     }
 }

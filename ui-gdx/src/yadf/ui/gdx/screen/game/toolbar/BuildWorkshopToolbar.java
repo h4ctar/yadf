@@ -27,23 +27,19 @@ public class BuildWorkshopToolbar extends AbstractInteractorToolbar<WorkshopType
     /** The controller. */
     private AbstractController controller;
 
-    /** The skin. */
-    private Skin skin;
-
     /**
      * Constructor.
-     * @param skinTmp the skin to use for the buttons
+     * @param skin the skin to use for the buttons
      * @param toolbarManagerTmp the toolbar manager
      * @param interactorManagerTmp the interactor manager
      * @param playerTmp the player
      * @param cameraTmp the camera
      * @param controllerTmp the controller
      */
-    public BuildWorkshopToolbar(final Skin skinTmp, final IToolbarManager toolbarManagerTmp,
+    public BuildWorkshopToolbar(final Skin skin, final IToolbarManager toolbarManagerTmp,
             final IInteractorManager interactorManagerTmp, final IPlayer playerTmp, final TileCamera cameraTmp,
             final AbstractController controllerTmp) {
-        super(skinTmp, toolbarManagerTmp, interactorManagerTmp);
-        skin = skinTmp;
+        super(skin, toolbarManagerTmp, interactorManagerTmp);
         player = playerTmp;
         camera = cameraTmp;
         controller = controllerTmp;
@@ -56,6 +52,6 @@ public class BuildWorkshopToolbar extends AbstractInteractorToolbar<WorkshopType
 
     @Override
     protected IInteractor createInteractor(final WorkshopType type) {
-        return new BuildWorkshopInteractor(skin, type, player, camera, controller);
+        return new BuildWorkshopInteractor(type, player, camera, controller);
     }
 }
