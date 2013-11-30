@@ -77,6 +77,7 @@ public class MainToolbar extends Table {
 
         row();
         TextButton roomButton = new TextButton("Create Room", skin);
+        roomButton.addListener(new CreateRoomButtonListener());
         add(roomButton).width(140).spaceBottom(10);
 
         row();
@@ -117,6 +118,18 @@ public class MainToolbar extends Table {
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
             toolbarManager.setToolbar(new BuildWorkshopToolbar(skin, toolbarManager, interactorManager, player,
+                    camera, controller));
+        }
+    }
+
+    /**
+     * The listener for the create room button.
+     */
+    private final class CreateRoomButtonListener extends ClickListener {
+
+        @Override
+        public void clicked(final InputEvent event, final float x, final float y) {
+            toolbarManager.setToolbar(new CreateRoomToolbar(skin, toolbarManager, interactorManager, player,
                     camera, controller));
         }
     }

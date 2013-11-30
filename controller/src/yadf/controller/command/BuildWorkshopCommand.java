@@ -35,6 +35,7 @@ import yadf.simulation.IPlayer;
 import yadf.simulation.job.BuildWorkshopJob;
 import yadf.simulation.job.IJobManager;
 import yadf.simulation.map.MapIndex;
+import yadf.simulation.workshop.WorkshopType;
 
 /**
  * The Class BuildWorkshopCommand.
@@ -45,7 +46,7 @@ public class BuildWorkshopCommand extends AbstractCommand {
     private static final long serialVersionUID = 5483294380986462194L;
 
     /** The workshop type. */
-    private final String workshopType;
+    private final WorkshopType workshopType;
 
     /** The position. */
     private final MapIndex position;
@@ -57,7 +58,8 @@ public class BuildWorkshopCommand extends AbstractCommand {
      * @param positionTmp the position
      * @param workshopTypeTmp the workshop type
      */
-    public BuildWorkshopCommand(final IPlayer player, final MapIndex positionTmp, final String workshopTypeTmp) {
+    public BuildWorkshopCommand(final IPlayer player, final MapIndex positionTmp,
+            final WorkshopType workshopTypeTmp) {
         super(player);
         workshopType = workshopTypeTmp;
         position = positionTmp;

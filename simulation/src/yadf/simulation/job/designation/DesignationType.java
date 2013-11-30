@@ -64,4 +64,9 @@ public enum DesignationType {
     DesignationType(final String nameTmp) {
         name = nameTmp;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

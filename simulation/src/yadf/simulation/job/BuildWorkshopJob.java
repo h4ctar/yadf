@@ -49,7 +49,6 @@ import yadf.simulation.map.MapIndex;
 import yadf.simulation.workshop.IWorkshopManager;
 import yadf.simulation.workshop.Workshop;
 import yadf.simulation.workshop.WorkshopType;
-import yadf.simulation.workshop.WorkshopTypeManager;
 
 /**
  * The Class BuildWorkshopJob.
@@ -80,10 +79,10 @@ public class BuildWorkshopJob extends AbstractJob {
      * @param workshopTypeTmp the workshop type
      * @param player the player that this job belongs to
      */
-    public BuildWorkshopJob(final MapIndex positionTmp, final String workshopTypeTmp, final IPlayer player) {
+    public BuildWorkshopJob(final MapIndex positionTmp, final WorkshopType workshopTypeTmp, final IPlayer player) {
         super(player);
         position = positionTmp;
-        workshopType = WorkshopTypeManager.getInstance().getWorkshopType(workshopTypeTmp);
+        workshopType = workshopTypeTmp;
         setJobState(new HaulBuildingMaterialsState());
     }
 

@@ -83,6 +83,11 @@ public class WorkshopType implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
     public boolean equals(final Object other) {
         if (other instanceof WorkshopType) {
             return ((WorkshopType) other).name.equals(name);

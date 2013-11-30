@@ -18,6 +18,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+/**
+ * Interactor to build a workshop.
+ */
 public class BuildWorkshopInteractor extends AbstractInteractor {
 
     /** The type of the workshop. */
@@ -44,15 +47,15 @@ public class BuildWorkshopInteractor extends AbstractInteractor {
     /**
      * Constructor.
      * @param skinTmp the skin
-     * @param workshopTypeTmp the type of the workshop
+     * @param type the type of the workshop
      * @param playerTmp the player
      * @param cameraTmp the camera
      * @param controllerTmp the controller
      */
-    public BuildWorkshopInteractor(final Skin skinTmp, final WorkshopType workshopTypeTmp,
-            final IPlayer playerTmp, final TileCamera cameraTmp, final AbstractController controllerTmp) {
+    public BuildWorkshopInteractor(final Skin skinTmp, final WorkshopType type, final IPlayer playerTmp,
+            final TileCamera cameraTmp, final AbstractController controllerTmp) {
         skin = skinTmp;
-        workshopType = workshopTypeTmp;
+        workshopType = type;
         player = playerTmp;
         camera = cameraTmp;
         controller = controllerTmp;
@@ -73,14 +76,14 @@ public class BuildWorkshopInteractor extends AbstractInteractor {
      * @param position the position of the new workshop
      */
     private void buildWorkshop(final MapIndex position) {
-        controller.addCommand(new BuildWorkshopCommand(player, position, workshopType.name));
+        controller.addCommand(new BuildWorkshopCommand(player, position, workshopType));
     }
 
     @Override
     public void draw() {
         BitmapFont font = skin.getFont("default-font");
         spriteBatch.begin();
-        font.draw(spriteBatch, "Build " + workshopType.name, 10, 20);
+        font.draw(spriteBatch, "Build " + workshopType, 10, 20);
         spriteBatch.end();
         inputProcessor.draw();
     }
