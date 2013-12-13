@@ -80,6 +80,12 @@ public abstract class AbstractGameObject implements IGameObject {
         }
     }
 
+    protected void notifyGameObjectChanged() {
+        for (IGameObjectListener listener : listeners) {
+            listener.gameObjectChanged(this);
+        }
+    }
+
     @Override
     public void addGameObjectListener(final IGameObjectListener listener) {
         assert !listeners.contains(listener);

@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.Set;
 
 import yadf.misc.MyRandom;
+import yadf.simulation.IGameObject;
 import yadf.simulation.IGameObjectListener;
 import yadf.simulation.IGameObjectManagerListener;
 import yadf.simulation.IRegion;
@@ -116,8 +117,13 @@ public class TreeManager implements ITreeManager, IGameObjectListener {
     }
 
     @Override
-    public void gameObjectDeleted(final Object gameObject) {
+    public void gameObjectDeleted(final IGameObject gameObject) {
         assert trees.contains(gameObject);
         removeTree((Tree) gameObject);
+    }
+
+    @Override
+    public void gameObjectChanged(final IGameObject gameObject) {
+        // Do nothing
     }
 }

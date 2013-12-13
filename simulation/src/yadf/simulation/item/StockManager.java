@@ -37,6 +37,7 @@ import java.util.Set;
 
 import yadf.logger.Logger;
 import yadf.simulation.AbstractGameObject;
+import yadf.simulation.IGameObject;
 import yadf.simulation.IGameObjectListener;
 import yadf.simulation.IGameObjectManagerListener;
 import yadf.simulation.map.MapArea;
@@ -283,9 +284,15 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     }
 
     @Override
-    public void gameObjectDeleted(final Object gameObject) {
+    public void gameObjectDeleted(final IGameObject gameObject) {
         assert stockpiles.contains(gameObject);
         removeStockpile((Stockpile) gameObject);
+    }
+
+    @Override
+    public void gameObjectChanged(IGameObject gameObject) {
+        // TODO Auto-generated method stub
+
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import yadf.simulation.IGameObject;
 import yadf.simulation.IGameObjectListener;
 import yadf.simulation.IGameObjectManagerListener;
 import yadf.simulation.map.MapIndex;
@@ -81,13 +82,18 @@ public class RoomManager implements IRoomManager, IGameObjectListener {
     }
 
     @Override
-    public void gameObjectDeleted(final Object gameObject) {
+    public void gameObjectDeleted(final IGameObject gameObject) {
         assert rooms.contains(gameObject);
         removeRoom((Room) gameObject);
     }
 
     @Override
+    public void gameObjectChanged(final IGameObject gameObject) {
+        // Do nothing
+    }
+
+    @Override
     public void update() {
-        // nothing to do
+        // Do nothing
     }
 }

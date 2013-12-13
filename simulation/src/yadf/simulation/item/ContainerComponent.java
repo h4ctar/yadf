@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import yadf.simulation.AbstractGameObject;
+import yadf.simulation.IGameObject;
 import yadf.simulation.IGameObjectListener;
 import yadf.simulation.IGameObjectManagerListener;
 
@@ -48,7 +49,6 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
             if (!item.used) {
                 notifyItemAvailable(item);
             }
-            item.addListener(this);
             item.addGameObjectListener(this);
         }
         return itemAdded;
@@ -61,7 +61,6 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
         if (itemRemoved) {
             // Only notify when an item is directly removed from this container, not if its removed from any of the sub
             // containers
-            item.removeListener(this);
             item.removeGameObjectListener(this);
             notifyItemRemoved(item, index);
         }
@@ -240,8 +239,16 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     }
 
     @Override
-    public void gameObjectDeleted(final Object gameObject) {
+    public void gameObjectDeleted(final IGameObject gameObject) {
         assert items.contains(gameObject);
         removeItem((Item) gameObject);
+    }
+
+    @Override
+    public void gameObjectChanged(final IGameObject gameObject) {
+        Item item = (Item) gameObject;
+        if (!item.used) {
+            notifyItemAvailable(item);
+        }
     }
 }

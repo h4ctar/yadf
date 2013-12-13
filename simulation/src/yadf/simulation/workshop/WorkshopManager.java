@@ -3,6 +3,7 @@ package yadf.simulation.workshop;
 import java.util.ArrayList;
 import java.util.List;
 
+import yadf.simulation.IGameObject;
 import yadf.simulation.IGameObjectListener;
 import yadf.simulation.IGameObjectManagerListener;
 import yadf.simulation.map.MapIndex;
@@ -84,8 +85,13 @@ public class WorkshopManager implements IWorkshopManager, IGameObjectListener {
     }
 
     @Override
-    public void gameObjectDeleted(final Object gameObject) {
+    public void gameObjectDeleted(final IGameObject gameObject) {
         assert workshops.contains(gameObject);
         removeWorkshop((Workshop) gameObject);
+    }
+
+    @Override
+    public void gameObjectChanged(IGameObject gameObject) {
+        // Do nothing
     }
 }

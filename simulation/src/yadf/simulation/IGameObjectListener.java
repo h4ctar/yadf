@@ -9,5 +9,11 @@ public interface IGameObjectListener {
      * The game object has been deleted.
      * @param gameObject the game object that was deleted
      */
-    void gameObjectDeleted(Object gameObject);
+    void gameObjectDeleted(IGameObject gameObject);
+
+    /**
+     * The game object has changed.
+     * @param gameObject the game object that changed
+     */
+    void gameObjectChanged(IGameObject gameObject);
 }

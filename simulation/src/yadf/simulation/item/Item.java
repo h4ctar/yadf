@@ -32,7 +32,6 @@
 package yadf.simulation.item;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,9 +63,6 @@ public class Item extends AbstractEntity {
 
     /** The player that this item belongs to. */
     protected final IPlayer player;
-
-    /** Item available listeners. */
-    private final Set<IItemAvailableListener> listeners = new LinkedHashSet<>();
 
     /**
      * Create an item from a DOM element.
@@ -154,11 +150,9 @@ public class Item extends AbstractEntity {
      * @param usedTmp Boolean representing if it is used or not
      */
     public void setUsed(final boolean usedTmp) {
-        used = usedTmp;
-        if (!used) {
-            for (IItemAvailableListener listener : listeners) {
-                listener.itemAvailable(this, null);
-            }
+        if (used != usedTmp) {
+            used = usedTmp;
+            notifyGameObjectChanged();
         }
     }
 
@@ -178,23 +172,5 @@ public class Item extends AbstractEntity {
             storable = true;
         }
         return storable;
-    }
-
-    /**
-     * Add a new listener.
-     * @param listener the new listener
-     */
-    public void addListener(final IItemAvailableListener listener) {
-        assert !listeners.contains(listener);
-        listeners.add(listener);
-    }
-
-    /**
-     * Remove a listener.
-     * @param listener the listener to remove
-     */
-    public void removeListener(final IItemAvailableListener listener) {
-        assert listeners.contains(listener);
-        listeners.remove(listener);
     }
 }
