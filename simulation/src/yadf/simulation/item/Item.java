@@ -31,7 +31,9 @@
  */
 package yadf.simulation.item;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.w3c.dom.Element;
@@ -47,6 +49,12 @@ public class Item extends AbstractEntity {
 
     /** The type of the item. */
     protected final ItemType itemType;
+
+    /** The type of item that this item is storing if it's a container, will be null if it's not a container. */
+    private ItemType contentItemType;
+
+    /** The content items. */
+    private final List<Item> items = new ArrayList<>();
 
     /** Is the item being used by a dwarf. */
     protected boolean used = false;
@@ -70,6 +78,16 @@ public class Item extends AbstractEntity {
         player = null;
         String itemTypeName = itemElement.getAttribute("type");
         itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
+        String contentTypeName = itemElement.getAttribute("contentType");
+        if (!"".equals(contentTypeName)) {
+            contentItemType = ItemTypeManager.getInstance().getItemType(contentTypeName);
+            String tempString = itemElement.getAttribute("contentQuantity");
+            int quantity = "".equals(tempString) ? 0 : Integer.parseInt(tempString);
+            for (int i = 0; i < quantity; i++) {
+                Item contentItem = new Item(new MapIndex(), contentItemType, player);
+                items.add(contentItem);
+            }
+        }
     }
 
     /**

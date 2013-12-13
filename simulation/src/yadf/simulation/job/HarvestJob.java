@@ -38,7 +38,6 @@ import yadf.simulation.character.component.ISkillComponent;
 import yadf.simulation.farm.IFarmPlot;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.item.Item;
-import yadf.simulation.item.ItemFactory;
 import yadf.simulation.item.ItemType;
 import yadf.simulation.item.ItemTypeManager;
 import yadf.simulation.job.jobstate.IJobState;
@@ -151,10 +150,10 @@ public class HarvestJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
-            Item newItem = ItemFactory.createItem(farmPlot.getPosition(), itemType, getPlayer());
+            Item newItem = new Item(farmPlot.getPosition(), itemType, getPlayer());
             getPlayer().getComponent(IStockManager.class).addItem(newItem);
             itemType = ItemTypeManager.getInstance().getItemType("Seed");
-            newItem = ItemFactory.createItem(farmPlot.getPosition(), itemType, getPlayer());
+            newItem = new Item(farmPlot.getPosition(), itemType, getPlayer());
             getPlayer().getComponent(IStockManager.class).addItem(newItem);
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             farmer.setFree();

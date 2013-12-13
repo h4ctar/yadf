@@ -39,7 +39,6 @@ import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.character.component.ISkillComponent;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.item.Item;
-import yadf.simulation.item.ItemFactory;
 import yadf.simulation.job.jobstate.HaulResourcesState;
 import yadf.simulation.job.jobstate.IJobState;
 import yadf.simulation.job.jobstate.LookingForDwarfState;
@@ -197,7 +196,7 @@ public class CraftJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             for (int i = 0; i < recipe.quantity; i++) {
-                Item newItem = ItemFactory.createItem(workshop.getPosition(), recipe.itemType, getPlayer());
+                Item newItem = new Item(workshop.getPosition(), recipe.itemType, getPlayer());
                 getPlayer().getComponent(IStockManager.class).addItem(newItem);
             }
             workshop.setOccupied(false);

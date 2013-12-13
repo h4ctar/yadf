@@ -38,7 +38,6 @@ import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.character.component.ISkillComponent;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.item.Item;
-import yadf.simulation.item.ItemFactory;
 import yadf.simulation.item.ItemType;
 import yadf.simulation.item.ItemTypeManager;
 import yadf.simulation.job.jobstate.IJobState;
@@ -155,7 +154,7 @@ public class ChopTreeJob extends AbstractJob {
                 return;
             }
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Log");
-            Item log = ItemFactory.createItem(tree.getPosition(), itemType, getPlayer());
+            Item log = new Item(tree.getPosition(), itemType, getPlayer());
             getPlayer().getComponent(IStockManager.class).addItem(log);
             tree.delete();
             lumberjack.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);

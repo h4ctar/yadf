@@ -37,7 +37,6 @@ import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.character.component.ISkillComponent;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.item.Item;
-import yadf.simulation.item.ItemFactory;
 import yadf.simulation.item.ItemType;
 import yadf.simulation.item.ItemTypeManager;
 import yadf.simulation.job.jobstate.IJobState;
@@ -166,7 +165,7 @@ public class ChannelJob extends AbstractJob {
             String minedItemTypeName = map.getBlock(downPosition).itemMined;
             if (minedItemTypeName != null) {
                 ItemType minedItemType = ItemTypeManager.getInstance().getItemType(minedItemTypeName);
-                Item minedItem = ItemFactory.createItem(downPosition, minedItemType, getPlayer());
+                Item minedItem = new Item(downPosition, minedItemType, getPlayer());
                 getPlayer().getComponent(IStockManager.class).addItem(minedItem);
             }
             map.channelBlock(downPosition, blockType);

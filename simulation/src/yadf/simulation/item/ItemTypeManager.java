@@ -105,8 +105,7 @@ public final class ItemTypeManager {
     public List<Item> getEmbarkItems(final IPlayer player) {
         List<Item> copyOfEmbarkItems = new ArrayList<>();
         for (Item item : embarkItems) {
-            Item copyItem = ItemFactory.createItem(item, player);
-            copyOfEmbarkItems.add(copyItem);
+            copyOfEmbarkItems.add(new Item(item, player));
         }
         return copyOfEmbarkItems;
     }
@@ -224,8 +223,7 @@ public final class ItemTypeManager {
             String tempString = itemElement.getAttribute("quantity");
             int quantity = "".equals(tempString) ? 1 : Integer.parseInt(tempString);
             for (int j = 0; j < quantity; j++) {
-                Item item = ItemFactory.createItem(itemElement);
-                embarkItems.add(item);
+                embarkItems.add(new Item(itemElement));
             }
         }
     }

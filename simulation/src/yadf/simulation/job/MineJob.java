@@ -37,7 +37,6 @@ import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.character.component.ISkillComponent;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.item.Item;
-import yadf.simulation.item.ItemFactory;
 import yadf.simulation.item.ItemType;
 import yadf.simulation.item.ItemTypeManager;
 import yadf.simulation.job.jobstate.AbstractJobState;
@@ -222,7 +221,7 @@ public class MineJob extends AbstractJob {
             String itemTypeName = map.getBlock(position).itemMined;
             if (itemTypeName != null) {
                 ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
-                Item blockItem = ItemFactory.createItem(position, itemType, getPlayer());
+                Item blockItem = new Item(position, itemType, getPlayer());
                 getPlayer().getComponent(IStockManager.class).addItem(blockItem);
             }
             map.mineBlock(position);
