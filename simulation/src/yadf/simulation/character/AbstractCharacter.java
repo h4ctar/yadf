@@ -31,10 +31,8 @@
  */
 package yadf.simulation.character;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import yadf.logger.Logger;
 import yadf.simulation.AbstractEntity;
@@ -56,12 +54,6 @@ class AbstractCharacter extends AbstractEntity implements IGameCharacter {
 
     /** All the components. */
     private final Map<Class<? extends ICharacterComponent>, ICharacterComponent> components = new ConcurrentHashMap<>();
-
-    /** The list of listeners that want to be notified when the dwarf becomes available. */
-    private final List<ICharacterAvailableListener> availableListeners = new CopyOnWriteArrayList<>();
-
-    /** The listeners that want to be notified when anything changes. */
-    private final List<ICharacterListener> changeListeners = new CopyOnWriteArrayList<>();
 
     /** The dead. */
     private boolean dead;
@@ -104,7 +96,6 @@ class AbstractCharacter extends AbstractEntity implements IGameCharacter {
     @Override
     public void setJob(final IJob jobTmp) {
         assert job == null;
-        // TODO: Push components onto a "stack" and pop them in the release
         job = jobTmp;
         super.setAvailable(false);
     }
@@ -116,12 +107,6 @@ class AbstractCharacter extends AbstractEntity implements IGameCharacter {
         job = null;
         if (!dead) {
             setComponent(IMovementComponent.class, new IdleMovementComponent(this));
-            for (ICharacterAvailableListener listener : availableListeners) {
-                listener.characterAvailable(this);
-                if (job != null) {
-                    break;
-                }
-            }
         }
         super.setAvailable(available);
     }
@@ -139,36 +124,7 @@ class AbstractCharacter extends AbstractEntity implements IGameCharacter {
                 component.kill();
             }
             dead = true;
-            notifyCharacterListeners();
-        }
-    }
-
-    @Override
-    public void addListener(final ICharacterAvailableListener listener) {
-        availableListeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(final ICharacterAvailableListener listener) {
-        availableListeners.remove(listener);
-    }
-
-    @Override
-    public void addListener(final ICharacterListener listener) {
-        changeListeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(final ICharacterListener listener) {
-        changeListeners.remove(listener);
-    }
-
-    /**
-     * Notify all the character listeners that something has changed.
-     */
-    protected void notifyCharacterListeners() {
-        for (ICharacterListener listener : changeListeners) {
-            listener.characterChanged(this);
+            notifyGameObjectChanged();
         }
     }
 

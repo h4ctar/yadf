@@ -10,7 +10,7 @@ import yadf.simulation.map.MapIndex;
 /**
  * Interface for the dwarf manager.
  */
-public interface ICharacterManager extends IGameObjectManager, IPlayerComponent {
+public interface ICharacterManager extends IGameObjectManager<IGameCharacter>, IPlayerComponent {
 
     /**
      * Get a character with a specific ID.

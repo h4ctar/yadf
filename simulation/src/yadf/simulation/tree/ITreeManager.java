@@ -7,7 +7,7 @@ import yadf.simulation.map.MapIndex;
 /**
  * Interface for a tree manager.
  */
-public interface ITreeManager extends IGameObjectManager {
+public interface ITreeManager extends IGameObjectManager<Tree> {
 
     /**
      * Returns a tree at a specific location if it exists.

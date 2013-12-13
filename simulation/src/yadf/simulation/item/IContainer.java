@@ -8,7 +8,7 @@ import yadf.simulation.IGameObjectManager;
 /**
  * Interface for a container.
  */
-public interface IContainer extends IGameObject, IGameObjectManager {
+public interface IContainer extends IGameObject, IGameObjectManager<Item> {
     /**
      * Add an item to this container.
      * @param item the item to add

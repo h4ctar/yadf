@@ -9,7 +9,7 @@ import yadf.simulation.map.MapIndex;
 /**
  * Interface for a workshop manager.
  */
-public interface IWorkshopManager extends IGameObjectManager, IPlayerComponent {
+public interface IWorkshopManager extends IGameObjectManager<IWorkshop>, IPlayerComponent {
 
     /**
      * Add a new workshop.

@@ -3,6 +3,8 @@ package yadf.simulation.character;
 import java.util.ArrayList;
 import java.util.List;
 
+import yadf.simulation.IGameObject;
+import yadf.simulation.IGameObjectListener;
 import yadf.simulation.IGameObjectManagerListener;
 import yadf.simulation.character.component.ISkillComponent;
 import yadf.simulation.labor.LaborType;
@@ -11,7 +13,7 @@ import yadf.simulation.map.MapIndex;
 /**
  * An abstract character manager to provide implementations of the boring stuff.
  */
-public abstract class AbstractCharacterManager implements ICharacterManager, ICharacterAvailableListener {
+public abstract class AbstractCharacterManager implements ICharacterManager, IGameObjectListener {
 
     /** The dwarfs. */
     private final List<IGameCharacter> characters = new ArrayList<>();
@@ -70,8 +72,16 @@ public abstract class AbstractCharacterManager implements ICharacterManager, ICh
     }
 
     @Override
-    public void characterAvailable(final IGameCharacter character) {
-        notifyDwarfNowIdle(character);
+    public void gameObjectChanged(final IGameObject gameObject) {
+        IGameCharacter gameCharacter = (IGameCharacter) gameObject;
+        if (gameCharacter.isAvailable()) {
+            notifyDwarfNowIdle(gameCharacter);
+        }
+    }
+
+    @Override
+    public void gameObjectDeleted(final IGameObject gameObject) {
+        // Do nothing
     }
 
     @Override

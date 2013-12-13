@@ -9,7 +9,7 @@ import yadf.simulation.map.MapArea;
 /**
  * The farm manager.
  */
-public interface IFarmManager extends IGameObjectManager, IPlayerComponent {
+public interface IFarmManager extends IGameObjectManager<Farm>, IPlayerComponent {
 
     /**
      * Adds a new farm.

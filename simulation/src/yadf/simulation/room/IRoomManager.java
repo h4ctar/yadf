@@ -9,7 +9,7 @@ import yadf.simulation.map.MapIndex;
 /**
  * Interface for a room manager.
  */
-public interface IRoomManager extends IGameObjectManager, IPlayerComponent {
+public interface IRoomManager extends IGameObjectManager<Room>, IPlayerComponent {
 
     /**
      * Adds a room.

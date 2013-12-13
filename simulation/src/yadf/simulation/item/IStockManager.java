@@ -10,7 +10,7 @@ import yadf.simulation.map.MapIndex;
 /**
  * Interface for a stock manager.
  */
-public interface IStockManager extends IGameObjectManager, IContainer, IPlayerComponent {
+public interface IStockManager extends IGameObjectManager<Item>, IContainer, IPlayerComponent {
 
     /**
      * Finds an item that is not stored, including containers.

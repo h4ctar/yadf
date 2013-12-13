@@ -3,9 +3,10 @@ package yadf.simulation.job;
 import java.util.Random;
 
 import yadf.misc.MyRandom;
+import yadf.simulation.IGameObject;
+import yadf.simulation.IGameObjectListener;
 import yadf.simulation.IRegion;
 import yadf.simulation.ITimeListener;
-import yadf.simulation.character.ICharacterListener;
 import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.character.component.AttackComponent;
 import yadf.simulation.character.component.ChaseMovementComponent;
@@ -215,7 +216,7 @@ public class MilitaryStationJob extends AbstractJob {
     /**
      * The attack state.
      */
-    public class AttackState extends AbstractJobState implements ICharacterListener, ITimeListener,
+    public class AttackState extends AbstractJobState implements IGameObjectListener, ITimeListener,
             ICharacterComponentListener {
 
         /** How long does it take for the soldier to prepare for a hit. */
@@ -256,7 +257,7 @@ public class MilitaryStationJob extends AbstractJob {
             chaseMovementComponent.addListener(this);
             soldier.setComponent(IMovementComponent.class, chaseMovementComponent);
             soldier.setComponent(IAttackComponent.class, new AttackComponent(soldier, enemy));
-            enemy.addListener(this);
+            enemy.addGameObjectListener(this);
             hitTime = soldier.getRegion().addTimeListener(PREPARE_FOR_HIT_DURATION, this);
         }
 
@@ -271,8 +272,8 @@ public class MilitaryStationJob extends AbstractJob {
         }
 
         @Override
-        public void characterChanged(final Object character) {
-            assert character == enemy;
+        public void gameObjectChanged(final IGameObject gameObject) {
+            assert gameObject == enemy;
             if (enemy.isDead()) {
                 soldier.getRegion().removeTimeListener(hitTime, this);
                 finishState();
@@ -304,6 +305,11 @@ public class MilitaryStationJob extends AbstractJob {
                 hitTime = soldier.getRegion().addTimeListener(PREPARE_FOR_HIT_DURATION, this);
                 readyToHit = false;
             }
+        }
+
+        @Override
+        public void gameObjectDeleted(final IGameObject gameObject) {
+            // TODO Auto-generated method stub
         }
     }
 

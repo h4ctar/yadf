@@ -1,6 +1,7 @@
 package yadf.simulation.job.jobstate;
 
-import yadf.simulation.character.ICharacterAvailableListener;
+import yadf.simulation.IGameObject;
+import yadf.simulation.IGameObjectListener;
 import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.job.AbstractJob;
 
@@ -9,7 +10,7 @@ import yadf.simulation.job.AbstractJob;
  * 
  * Waits until a dwarf becomes free and acquires a lock on them.
  */
-public abstract class WaitingForDwarfState extends AbstractJobState implements ICharacterAvailableListener {
+public abstract class WaitingForDwarfState extends AbstractJobState implements IGameObjectListener {
 
     /** The dwarf we're waiting for. */
     private final IGameCharacter dwarf;
@@ -35,21 +36,30 @@ public abstract class WaitingForDwarfState extends AbstractJobState implements I
             dwarf.setJob(getJob());
             finishState();
         } else {
-            dwarf.addListener(this);
+            dwarf.addGameObjectListener(this);
         }
     }
 
     @Override
-    public void characterAvailable(final IGameCharacter character) {
-        assert character == dwarf;
-        assert dwarf.isAvailable();
-        dwarf.setJob(getJob());
-        dwarf.removeListener(this);
-        finishState();
+    public void interrupt(final String message) {
+        dwarf.removeGameObjectListener(this);
     }
 
     @Override
-    public void interrupt(final String message) {
-        dwarf.removeListener(this);
+    public void gameObjectDeleted(final IGameObject gameObject) {
+        interrupt("Dwarf died");
+    }
+
+    /**
+     * The game object has changed.
+     * @param gameObject the game object that changed
+     */
+    public void gameObjectChanged(final IGameObject gameObject) {
+        assert gameObject == dwarf;
+        if (dwarf.isAvailable()) {
+            dwarf.setJob(getJob());
+            dwarf.removeGameObjectListener(this);
+            finishState();
+        }
     }
 }

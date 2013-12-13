@@ -52,30 +52,6 @@ public interface IGameCharacter extends IEntity {
     IPlayer getPlayer();
 
     /**
-     * Add a listener to this character that will be notified when the character becomes available.
-     * @param listener the listener to add
-     */
-    void addListener(ICharacterAvailableListener listener);
-
-    /**
-     * Remove a listener from this character that was being notified of the characters availablilty.
-     * @param listener the listener to remove
-     */
-    void removeListener(ICharacterAvailableListener listener);
-
-    /**
-     * Add a listener to this character that will be notified when the character changes.
-     * @param listener the listener to add
-     */
-    void addListener(ICharacterListener listener);
-
-    /**
-     * Remove a listener from this character that was being notified of changes.
-     * @param listener the listener to remove
-     */
-    void removeListener(ICharacterListener listener);
-
-    /**
      * Set the job of the character.
      * @param job the new job
      */
