@@ -58,7 +58,7 @@ public class PickupToolJob extends AbstractJob {
         super(characterTmp.getPlayer());
         character = characterTmp;
         tool = toolTmp;
-        tool.setUsed(true);
+        tool.setAvailable(false);
         setJobState(new WaitingForDwarfState());
     }
 
@@ -76,10 +76,10 @@ public class PickupToolJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (character != null) {
-            character.setFree();
+            character.setAvailable(true);
         }
         if (tool != null) {
-            tool.setUsed(false);
+            tool.setAvailable(true);
         }
     }
 
@@ -116,7 +116,7 @@ public class PickupToolJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             character.getComponent(IInventoryComponent.class).pickupTool(tool);
-            character.setFree();
+            character.setAvailable(true);
         }
 
         @Override

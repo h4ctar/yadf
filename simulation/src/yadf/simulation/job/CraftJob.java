@@ -83,7 +83,7 @@ public class CraftJob extends AbstractJob {
         super(player);
         workshop = workshopTmp;
         recipe = recipeTmp;
-        workshop.setOccupied(true);
+        workshop.setAvailable(false);
         requiredLabor = LaborTypeManager.getInstance().getLaborType(recipe.skill);
         setJobState(new HaulCraftingMaterialsState());
     }
@@ -108,11 +108,11 @@ public class CraftJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (crafter != null) {
-            crafter.setFree();
+            crafter.setAvailable(true);
         }
         if (resources != null) {
             for (Item resource : resources) {
-                resource.setUsed(false);
+                resource.setAvailable(true);
             }
         }
     }
@@ -199,14 +199,14 @@ public class CraftJob extends AbstractJob {
                 Item newItem = new Item(workshop.getPosition(), recipe.itemType, getPlayer());
                 getPlayer().getComponent(IStockManager.class).addItem(newItem);
             }
-            workshop.setOccupied(false);
+            workshop.setAvailable(true);
             if (recipe.skill != null) {
                 crafter.getComponent(ISkillComponent.class).increaseSkillLevel(requiredLabor);
             }
             for (Item resource : resources) {
                 resource.delete();
             }
-            crafter.setFree();
+            crafter.setAvailable(true);
         }
 
         @Override

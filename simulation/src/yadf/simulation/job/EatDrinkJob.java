@@ -100,13 +100,13 @@ public class EatDrinkJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (dwarf != null) {
-            dwarf.setFree();
+            dwarf.setAvailable(true);
         }
         if (chair != null) {
-            chair.setUsed(false);
+            chair.setAvailable(true);
         }
         if (foodDrinkItem != null) {
-            foodDrinkItem.setUsed(false);
+            foodDrinkItem.setAvailable(true);
         }
     }
 
@@ -163,7 +163,7 @@ public class EatDrinkJob extends AbstractJob {
                             if (horizontal || vertical) {
                                 chair = chairTmp;
                                 table = tableTmp;
-                                chair.setUsed(true);
+                                chair.setAvailable(false);
                                 break;
                             }
                         }
@@ -268,14 +268,14 @@ public class EatDrinkJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             foodDrinkItem.delete();
-            dwarf.setFree();
+            dwarf.setAvailable(true);
             if (eat) {
                 dwarf.getComponent(IEatDrinkComponent.class).eat();
             } else {
                 dwarf.getComponent(IEatDrinkComponent.class).drink();
             }
             if (chair != null) {
-                chair.setUsed(false);
+                chair.setAvailable(true);
             }
         }
 

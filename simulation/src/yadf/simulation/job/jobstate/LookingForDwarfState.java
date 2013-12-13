@@ -48,7 +48,7 @@ public abstract class LookingForDwarfState extends AbstractJobState implements I
     @Override
     public void characterAvailable(final IGameCharacter character) {
         assert character instanceof Dwarf;
-        if (character.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && character.isFree()) {
+        if (character.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && character.isAvailable()) {
             character.setJob(getJob());
             getJob().getPlayer().getComponent(ICharacterManager.class).removeListener(this);
             dwarf = character;

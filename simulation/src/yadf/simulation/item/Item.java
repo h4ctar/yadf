@@ -55,9 +55,6 @@ public class Item extends AbstractEntity {
     /** The content items. */
     private final List<Item> items = new ArrayList<>();
 
-    /** Is the item being used by a dwarf. */
-    protected boolean used = false;
-
     /** Is the item placed, i.e. a table, bed or door */
     protected boolean placed = false;
 
@@ -130,30 +127,11 @@ public class Item extends AbstractEntity {
     }
 
     /**
-     * Is the item being used.
-     * @return Boolean representing if it is used or not
-     */
-    public boolean isUsed() {
-        return used;
-    }
-
-    /**
      * Sets the placed.
      * @param placedTmp the new placed
      */
     public void setPlaced(final boolean placedTmp) {
         placed = placedTmp;
-    }
-
-    /**
-     * Sets the item as being used, this is to make sure no one will try claim it.
-     * @param usedTmp Boolean representing if it is used or not
-     */
-    public void setUsed(final boolean usedTmp) {
-        if (used != usedTmp) {
-            used = usedTmp;
-            notifyGameObjectChanged();
-        }
     }
 
     @Override

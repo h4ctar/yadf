@@ -64,7 +64,7 @@ public class MilitaryStationJob extends AbstractJob {
         super.interrupt(message);
         soldier.getComponent(IEatDrinkComponent.class).setSpawnJobs(true);
         soldier.getComponent(ISleepComponent.class).setSpawnJobs(true);
-        soldier.setFree();
+        soldier.setAvailable(true);
     }
 
     /**

@@ -44,6 +44,9 @@ public abstract class AbstractGameObject implements IGameObject {
     /** Has the entity been deleted. */
     private boolean deleted = false;
 
+    /** Is the object available. */
+    private boolean available = true;
+
     /** The id. */
     private final int id;
 
@@ -80,6 +83,22 @@ public abstract class AbstractGameObject implements IGameObject {
         }
     }
 
+    @Override
+    public boolean isAvailable() {
+        return available;
+    }
+
+    @Override
+    public void setAvailable(final boolean availableTmp) {
+        if (available != availableTmp) {
+            available = availableTmp;
+            notifyGameObjectChanged();
+        }
+    }
+
+    /**
+     * Notify that the game object has changed.
+     */
     protected void notifyGameObjectChanged() {
         for (IGameObjectListener listener : listeners) {
             listener.gameObjectChanged(this);

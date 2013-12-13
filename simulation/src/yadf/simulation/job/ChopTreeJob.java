@@ -90,7 +90,7 @@ public class ChopTreeJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (lumberjack != null) {
-            lumberjack.setFree();
+            lumberjack.setAvailable(true);
         }
     }
 
@@ -158,7 +158,7 @@ public class ChopTreeJob extends AbstractJob {
             getPlayer().getComponent(IStockManager.class).addItem(log);
             tree.delete();
             lumberjack.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-            lumberjack.setFree();
+            lumberjack.setAvailable(true);
         }
 
         @Override

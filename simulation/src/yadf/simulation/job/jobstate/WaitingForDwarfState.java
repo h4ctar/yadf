@@ -31,7 +31,7 @@ public abstract class WaitingForDwarfState extends AbstractJobState implements I
 
     @Override
     public void start() {
-        if (dwarf.isFree()) {
+        if (dwarf.isAvailable()) {
             dwarf.setJob(getJob());
             finishState();
         } else {
@@ -42,7 +42,7 @@ public abstract class WaitingForDwarfState extends AbstractJobState implements I
     @Override
     public void characterAvailable(final IGameCharacter character) {
         assert character == dwarf;
-        assert dwarf.isFree();
+        assert dwarf.isAvailable();
         dwarf.setJob(getJob());
         dwarf.removeListener(this);
         finishState();

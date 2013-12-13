@@ -46,7 +46,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
         boolean itemAdded = items.add(item);
         if (itemAdded) {
             notifyItemAdded(item);
-            if (!item.used) {
+            if (item.isAvailable()) {
                 notifyItemAvailable(item);
             }
             item.addGameObjectListener(this);
@@ -86,7 +86,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     public Item getItem(final String itemTypeName, final boolean used, final boolean placed) {
         Item foundItem = null;
         for (Item item : items) {
-            if (item.getType().name.equals(itemTypeName) && item.isUsed() == used && item.isPlaced() == placed
+            if (item.getType().name.equals(itemTypeName) && item.isAvailable() != used && item.isPlaced() == placed
                     && !item.isDeleted()) {
                 foundItem = item;
                 break;
@@ -105,7 +105,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     public Item getItemFromCategory(final String category, final boolean used, final boolean placed) {
         Item foundItem = null;
         for (Item item : items) {
-            if (item.getType().category.equals(category) && !item.isDeleted() && item.isUsed() == used
+            if (item.getType().category.equals(category) && !item.isDeleted() && item.isAvailable() != used
                     && item.isPlaced() == placed) {
                 foundItem = item;
                 break;
@@ -231,7 +231,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
         if (itemAvailableListeners.containsKey(item.getType())) {
             for (IItemAvailableListener listener : itemAvailableListeners.get(item.getType())) {
                 listener.itemAvailable(item, container);
-                if (item.isUsed()) {
+                if (!item.isAvailable()) {
                     break;
                 }
             }
@@ -247,7 +247,7 @@ public class ContainerComponent extends AbstractGameObject implements IContainer
     @Override
     public void gameObjectChanged(final IGameObject gameObject) {
         Item item = (Item) gameObject;
-        if (!item.used) {
+        if (item.isAvailable()) {
             notifyItemAvailable(item);
         }
     }

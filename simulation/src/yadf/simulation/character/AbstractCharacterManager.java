@@ -63,7 +63,7 @@ public abstract class AbstractCharacterManager implements ICharacterManager, ICh
     protected void notifyDwarfNowIdle(final IGameCharacter dwarf) {
         for (ICharacterAvailableListener listener : availableListeners) {
             listener.characterAvailable(dwarf);
-            if (!dwarf.isFree()) {
+            if (!dwarf.isAvailable()) {
                 break;
             }
         }
@@ -128,7 +128,7 @@ public abstract class AbstractCharacterManager implements ICharacterManager, ICh
             if (dwarf.isDead()) {
                 continue;
             }
-            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && dwarf.isFree()) {
+            if (dwarf.getComponent(ISkillComponent.class).canDoJob(requiredLabor) && dwarf.isAvailable()) {
                 return dwarf;
             }
         }

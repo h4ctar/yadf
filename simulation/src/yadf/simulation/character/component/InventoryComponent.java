@@ -77,7 +77,7 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
             dropHaulItem(true);
         }
         itemHauling = item;
-        itemHauling.setUsed(true);
+        itemHauling.setAvailable(false);
         notifyListeners();
     }
 
@@ -85,7 +85,7 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
     public void dropHaulItem(final boolean freeItem) {
         if (itemHauling != null) {
             if (freeItem) {
-                itemHauling.setUsed(false);
+                itemHauling.setAvailable(true);
             }
             itemHauling = null;
             notifyListeners();

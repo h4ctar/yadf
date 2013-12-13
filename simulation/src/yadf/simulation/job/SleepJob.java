@@ -51,10 +51,10 @@ public class SleepJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (dwarf != null) {
-            dwarf.setFree();
+            dwarf.setAvailable(true);
         }
         if (bed != null) {
-            bed.setUsed(false);
+            bed.setAvailable(true);
         }
     }
 
@@ -78,7 +78,7 @@ public class SleepJob extends AbstractJob {
                 if (room.getType().equals("Dormitory")) {
                     bed = room.getItem("Bed", false, true);
                     if (bed != null) {
-                        bed.setUsed(true);
+                        bed.setAvailable(false);
                         break;
                     }
                 }
@@ -130,9 +130,9 @@ public class SleepJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             dwarf.getComponent(ISleepComponent.class).sleep();
-            dwarf.setFree();
+            dwarf.setAvailable(true);
             if (bed != null) {
-                bed.setUsed(false);
+                bed.setAvailable(true);
             }
         }
 

@@ -91,7 +91,7 @@ public class PlaceItemJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (item != null) {
-            item.setUsed(false);
+            item.setAvailable(true);
         }
     }
 
@@ -134,7 +134,7 @@ public class PlaceItemJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            item.setUsed(false);
+            item.setAvailable(true);
             item.setPlaced(true);
         }
 

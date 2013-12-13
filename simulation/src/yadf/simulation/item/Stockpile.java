@@ -191,9 +191,9 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
     public void jobDone(final IJob job) {
         assert job.isDone();
         HaulJob haulJob = (HaulJob) job;
-        Logger.getInstance().log(this,
-                "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
-        haulJob.getItem().setUsed(false);
+        Logger.getInstance()
+                .log(this, "Haul job is finished, job removed - itemType: " + haulJob.getItem().getType());
+        haulJob.getItem().setAvailable(true);
         haulJobs.remove(haulJob);
     }
 
@@ -250,7 +250,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
                     if (!used[x][y]) {
                         Item item = player.getComponent(IStockManager.class).getUnstoredItem(acceptableItemTypes);
                         if (item != null) {
-                            item.setUsed(true);
+                            item.setAvailable(false);
                             used[x][y] = true;
                             HaulJob haulJob = new HaulJob(item, this, area.pos.add(x, y, 0), player);
                             haulJob.addListener(this);

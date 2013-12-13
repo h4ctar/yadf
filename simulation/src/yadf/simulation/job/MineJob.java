@@ -98,7 +98,7 @@ public class MineJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (miner != null) {
-            miner.setFree();
+            miner.setAvailable(true);
         }
     }
 
@@ -226,7 +226,7 @@ public class MineJob extends AbstractJob {
             }
             map.mineBlock(position);
             miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-            miner.setFree();
+            miner.setAvailable(true);
         }
 
         @Override

@@ -17,6 +17,18 @@ public interface IGameObject {
     boolean isDeleted();
 
     /**
+     * Is the object available.
+     * @return true if it's available
+     */
+    boolean isAvailable();
+
+    /**
+     * Set the object as available.
+     * @param available true if it's available
+     */
+    void setAvailable(boolean available);
+
+    /**
      * Delete the game object.
      */
     void delete();

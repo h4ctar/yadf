@@ -102,7 +102,7 @@ public class ChannelJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (miner != null) {
-            miner.setFree();
+            miner.setAvailable(true);
         }
     }
 
@@ -170,7 +170,7 @@ public class ChannelJob extends AbstractJob {
             }
             map.channelBlock(downPosition, blockType);
             miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-            miner.setFree();
+            miner.setAvailable(true);
         }
 
         @Override

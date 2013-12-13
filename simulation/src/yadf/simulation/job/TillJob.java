@@ -86,7 +86,7 @@ public class TillJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (farmer != null) {
-            farmer.setFree();
+            farmer.setAvailable(true);
         }
     }
 
@@ -146,7 +146,7 @@ public class TillJob extends AbstractJob {
         @Override
         protected void doFinalActions() {
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-            farmer.setFree();
+            farmer.setAvailable(true);
         }
 
         @Override

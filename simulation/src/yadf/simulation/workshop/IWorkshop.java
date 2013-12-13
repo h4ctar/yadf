@@ -13,12 +13,6 @@ import yadf.simulation.recipe.Recipe;
 public interface IWorkshop extends IGameObject {
 
     /**
-     * Sets if the room is occupied.
-     * @param occupied the new occupied
-     */
-    void setOccupied(boolean occupied);
-
-    /**
      * Gets the position of the workshop.
      * @return the position
      */

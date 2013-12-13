@@ -134,7 +134,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     public Item getUnstoredItem(final Set<ItemType> itemTypes) {
         Item foundItem = null;
         for (Item item : getItems()) {
-            if (item.canBeStored(itemTypes) && !item.isUsed()) {
+            if (item.canBeStored(itemTypes) && item.isAvailable()) {
                 foundItem = item;
                 break;
             }
@@ -150,7 +150,7 @@ public class StockManager extends AbstractGameObject implements IStockManager, I
     @Override
     public Item getUnstoredItem(final ItemType itemType) {
         for (Item item : getItems()) {
-            if (itemType.equals(item.getType()) && !item.isUsed() && !item.isDeleted() && !item.isPlaced()) {
+            if (itemType.equals(item.getType()) && item.isAvailable() && !item.isDeleted() && !item.isPlaced()) {
                 return item;
             }
         }

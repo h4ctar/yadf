@@ -102,19 +102,16 @@ class AbstractCharacter extends AbstractEntity implements IGameCharacter {
     }
 
     @Override
-    public boolean isFree() {
-        return job == null;
-    }
-
-    @Override
     public void setJob(final IJob jobTmp) {
         assert job == null;
         // TODO: Push components onto a "stack" and pop them in the release
         job = jobTmp;
+        super.setAvailable(false);
     }
 
     @Override
-    public void setFree() {
+    public void setAvailable(final boolean available) {
+        assert available;
         assert job != null;
         job = null;
         if (!dead) {
@@ -126,6 +123,7 @@ class AbstractCharacter extends AbstractEntity implements IGameCharacter {
                 }
             }
         }
+        super.setAvailable(available);
     }
 
     @Override
@@ -182,10 +180,10 @@ class AbstractCharacter extends AbstractEntity implements IGameCharacter {
 
     @Override
     public <T extends ICharacterComponent> void setComponent(final Class<T> componentInterface, final T component) {
-        Logger.getInstance().log(
-                this,
-                "Set component: " + componentInterface.getSimpleName() + " = "
-                        + component.getClass().getSimpleName());
+        Logger.getInstance()
+                .log(this,
+                        "Set component: " + componentInterface.getSimpleName() + " = "
+                                + component.getClass().getSimpleName());
         components.put(componentInterface, component);
     }
 

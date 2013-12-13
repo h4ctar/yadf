@@ -18,4 +18,10 @@ public interface IGameObjectManagerListener {
      * @param index the index of the removed game object
      */
     void gameObjectRemoved(IGameObject gameObject, int index);
+
+    /**
+     * A game object has become available.
+     * @param gameObject the newly available game object
+     */
+    void gameObjectAvailable(IGameObject gameObject);
 }

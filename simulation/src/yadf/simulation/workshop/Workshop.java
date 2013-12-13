@@ -47,7 +47,6 @@ import yadf.simulation.recipe.RecipeManager;
 /**
  * The Class Workshop.
  */
-// TODO: should be a container
 public class Workshop extends AbstractGameObject implements IWorkshop {
 
     /** The position. */
@@ -58,9 +57,6 @@ public class Workshop extends AbstractGameObject implements IWorkshop {
 
     /** Size of a workshop. */
     public static final int WORKSHOP_SIZE = 3;
-
-    /** The occupied. */
-    private boolean occupied = false;
 
     /** The craft job. */
     private IJob craftJob;
@@ -106,14 +102,6 @@ public class Workshop extends AbstractGameObject implements IWorkshop {
         }
     }
 
-    /**
-     * Gets if the workshop is occupied.
-     * @return the occupied
-     */
-    public boolean getOccupied() {
-        return occupied;
-    }
-
     @Override
     public List<Recipe> getOrders() {
         return orders;
@@ -143,13 +131,6 @@ public class Workshop extends AbstractGameObject implements IWorkshop {
         Recipe recipe = RecipeManager.getInstance().getRecipe(recipeName);
         orders.add(recipe);
         notifyListenersOfOrderAdded(recipe, orders.size() - 1);
-    }
-
-    @Override
-    public void setOccupied(final boolean occupiedTmp) {
-        if (occupiedTmp != occupied) {
-            occupied = occupiedTmp;
-        }
     }
 
     @Override

@@ -9,7 +9,7 @@ package yadf.simulation;
 public interface IGameObjectManager<T extends IGameObject> {
 
     /**
-     * Add a new farm manager listener who will be notified when a farm is added or removed.
+     * Add a new farm manager listener who will be notified when an object is added or removed or becomes available.
      * @param listener the new listener
      */
     void addGameObjectManagerListener(IGameObjectManagerListener listener);

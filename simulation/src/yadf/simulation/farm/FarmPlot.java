@@ -135,7 +135,7 @@ public class FarmPlot implements IFarmPlot {
                 Item seed = player.getComponent(IStockManager.class).getItem("Seed", false, false);
                 if (seed != null) {
                     player.getComponent(IStockManager.class).removeItem(seed);
-                    seed.setUsed(true);
+                    seed.setAvailable(false);
                     job = new PlantJob(seed, this, player);
                     player.getComponent(IJobManager.class).addJob(job);
                 }

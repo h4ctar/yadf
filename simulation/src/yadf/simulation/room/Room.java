@@ -137,7 +137,7 @@ public class Room extends AbstractGameObject implements IContainer {
     public Set<Item> getUnusedItems(final String itemTypeName) {
         Set<Item> foundItems = new LinkedHashSet<>();
         for (Item item : getItems()) {
-            if (item.getType().name.equals(itemTypeName) && !item.isUsed()) {
+            if (item.getType().name.equals(itemTypeName) && item.isAvailable()) {
                 foundItems.add(item);
             }
         }

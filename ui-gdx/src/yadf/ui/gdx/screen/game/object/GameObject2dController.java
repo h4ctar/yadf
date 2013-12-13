@@ -73,4 +73,9 @@ public class GameObject2dController implements IGameObjectManagerListener {
         }
         return actor;
     }
+
+    @Override
+    public void gameObjectAvailable(final IGameObject gameObject) {
+        // Do nothing
+    }
 }

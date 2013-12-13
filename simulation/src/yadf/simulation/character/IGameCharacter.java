@@ -76,17 +76,6 @@ public interface IGameCharacter extends IEntity {
     void removeListener(ICharacterListener listener);
 
     /**
-     * Is the character locked.
-     * @return true if the character is locked
-     */
-    boolean isFree();
-
-    /**
-     * Release the lock on a character.
-     */
-    void setFree();
-
-    /**
      * Set the job of the character.
      * @param job the new job
      */

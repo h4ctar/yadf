@@ -104,11 +104,11 @@ public class BuildWorkshopJob extends AbstractJob {
     public void interrupt(final String message) {
         super.interrupt(message);
         if (builder != null) {
-            builder.setFree();
+            builder.setAvailable(true);
         }
         if (resources != null) {
             for (Item resource : resources) {
-                resource.setUsed(false);
+                resource.setAvailable(true);
             }
         }
     }
@@ -194,7 +194,7 @@ public class BuildWorkshopJob extends AbstractJob {
             getPlayer().getComponent(IWorkshopManager.class).addWorkshop(
                     new Workshop(getPlayer(), workshopType, position));
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
-            builder.setFree();
+            builder.setAvailable(true);
             for (Item resource : resources) {
                 resource.delete();
             }
