@@ -1,5 +1,6 @@
 package yadf.simulation;
 
+import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
 
 /**
@@ -18,4 +19,29 @@ public interface IEntity extends IGameObject {
      * @param positionTmp the new position
      */
     void setPosition(final MapIndex positionTmp);
+
+    /**
+     * Get the area of the entity.
+     * @return the area
+     */
+    MapArea getArea();
+
+    /**
+     * Get the width of the entity.
+     * @return the width
+     */
+    int getWidth();
+
+    /**
+     * Get the height of the entity.
+     * @return the height
+     */
+    int getHeight();
+
+    /**
+     * Checks if a map index is within the entity.
+     * @param index the index
+     * @return true, if successful
+     */
+    boolean hasIndex(final MapIndex index);
 }

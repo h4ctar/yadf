@@ -57,9 +57,6 @@ public class Stockpile extends AbstractEntity implements IContainer, IJobListene
     /** Is the position in the stockpile used. */
     private final boolean[][] used;
 
-    /** The area of the stockpile. */
-    private final MapArea area;
-
     /** What item type the stockpile accepts. */
     private final Set<ItemType> acceptableItemTypes = new LinkedHashSet<>();
 
@@ -74,12 +71,11 @@ public class Stockpile extends AbstractEntity implements IContainer, IJobListene
 
     /**
      * Constructor for the stockpile.
-     * @param areaTmp The area the stockpile will occupy
+     * @param area The area the stockpile will occupy
      * @param playerTmp the player the stockpile belongs to
      */
-    public Stockpile(final MapArea areaTmp, final IPlayer playerTmp) {
-        super(areaTmp.pos);
-        area = areaTmp;
+    public Stockpile(final MapArea area, final IPlayer playerTmp) {
+        super(area);
         player = playerTmp;
         used = new boolean[area.width][area.height];
         Logger.getInstance().log(this, "New stockpile - id: " + getId());
@@ -98,7 +94,7 @@ public class Stockpile extends AbstractEntity implements IContainer, IJobListene
             Logger.getInstance().log(this, "Stockpile has been deleted", true);
         } else {
             if (item.canBeStored(acceptableItemTypes)) {
-                MapIndex pos = item.getPosition().sub(area.pos);
+                MapIndex pos = item.getPosition().sub(getPosition());
                 itemAdded = containerComponent.addItem(item);
                 used[pos.x][pos.y] = itemAdded;
             } else {
@@ -114,7 +110,7 @@ public class Stockpile extends AbstractEntity implements IContainer, IJobListene
         boolean itemRemoved = false;
         itemRemoved = containerComponent.removeItem(item);
         if (itemRemoved) {
-            MapIndex pos = item.getPosition().sub(area.pos);
+            MapIndex pos = item.getPosition().sub(getPosition());
             if (getItem(item.getPosition()) == null) {
                 used[pos.x][pos.y] = false;
             }
@@ -136,14 +132,6 @@ public class Stockpile extends AbstractEntity implements IContainer, IJobListene
             }
         }
         return accepted;
-    }
-
-    /**
-     * Gets the area of the stockpile.
-     * @return The area of the stockpile
-     */
-    public MapArea getArea() {
-        return area;
     }
 
     /**
@@ -224,7 +212,7 @@ public class Stockpile extends AbstractEntity implements IContainer, IJobListene
             for (HaulJob haulJob : haulJobs) {
                 if (haulJob.getItem().getType().name.equals(itemTypeName)) {
                     haulJob.interrupt("The stockpile no longer accepts this item type");
-                    MapIndex pos = haulJob.getPosition().sub(area.pos);
+                    MapIndex pos = haulJob.getPosition().sub(getPosition());
                     used[pos.x][pos.y] = false;
                 }
             }
@@ -233,7 +221,7 @@ public class Stockpile extends AbstractEntity implements IContainer, IJobListene
                 if (item.getType().equals(itemType)) {
                     getItems().remove(item);
                     player.getComponent(IStockManager.class).addItem(item);
-                    MapIndex pos = item.getPosition().sub(area.pos);
+                    MapIndex pos = item.getPosition().sub(getPosition());
                     used[pos.x][pos.y] = false;
                 }
             }
@@ -246,14 +234,14 @@ public class Stockpile extends AbstractEntity implements IContainer, IJobListene
     private void createHaulJobs() {
         Logger.getInstance().log(this, "Create haul jobs");
         if (!acceptableItemTypes.isEmpty()) {
-            for (int x = 0; x < area.width; x++) {
-                for (int y = 0; y < area.height; y++) {
+            for (int x = 0; x < getWidth(); x++) {
+                for (int y = 0; y < getHeight(); y++) {
                     if (!used[x][y]) {
                         Item item = player.getComponent(IStockManager.class).getUnstoredItem(acceptableItemTypes);
                         if (item != null) {
                             item.setAvailable(false);
                             used[x][y] = true;
-                            HaulJob haulJob = new HaulJob(item, this, area.pos.add(x, y, 0), player);
+                            HaulJob haulJob = new HaulJob(item, this, getPosition().add(x, y, 0), player);
                             haulJob.addListener(this);
                             player.getComponent(IJobManager.class).addJob(haulJob);
                             haulJobs.add(haulJob);

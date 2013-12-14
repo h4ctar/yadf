@@ -24,13 +24,6 @@ public interface IWorkshop extends IEntity {
     void update();
 
     /**
-     * Checks if a map index is within the workshop.
-     * @param index the index
-     * @return true, if successful
-     */
-    boolean hasIndex(final MapIndex index);
-
-    /**
      * New order.
      * @param recipeName the recipe name
      */

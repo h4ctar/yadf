@@ -1,7 +1,7 @@
 package yadf.ui.gdx.screen.game.object;
 
 import yadf.simulation.IEntity;
-import yadf.simulation.map.MapIndex;
+import yadf.simulation.map.MapArea;
 import yadf.ui.gdx.screen.game.GameScreen;
 
 import com.badlogic.gdx.Gdx;
@@ -16,37 +16,27 @@ public class EntitySolid2d extends Actor {
     /** The entity. */
     private IEntity entity;
 
-    private int width;
-
-    private int height;
-
     /**
      * Constructor.
      * @param entityTmp the entity
      */
-    public EntitySolid2d(final IEntity entityTmp, final int widthTmp, final int heightTmp) {
+    public EntitySolid2d(final IEntity entityTmp) {
         entity = entityTmp;
-        width = widthTmp;
-        height = heightTmp;
-        // TODO: all game objects should have width and height
-        setWidth(width * GameScreen.SPRITE_SIZE);
-        setHeight(height * GameScreen.SPRITE_SIZE);
     }
 
     @Override
     public void act(final float delta) {
         super.act(delta);
-        MapIndex position = entity.getPosition();
-        setX(position.x * GameScreen.SPRITE_SIZE);
-        setY(position.y * GameScreen.SPRITE_SIZE);
-        setVisible((int) getStage().getCamera().position.z == position.z);
+        MapArea area = entity.getArea();
+        setX(area.pos.x * GameScreen.SPRITE_SIZE);
+        setY(area.pos.y * GameScreen.SPRITE_SIZE);
+        setWidth(area.width * GameScreen.SPRITE_SIZE);
+        setHeight(area.height * GameScreen.SPRITE_SIZE);
+        setVisible((int) getStage().getCamera().position.z == area.pos.z);
     }
 
-    /**
-     * Draw.
-     */
     @Override
-    public void draw(SpriteBatch batch, float parentAlpha) {
+    public void draw(final SpriteBatch batch, final float parentAlpha) {
         ShapeRenderer shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(getStage().getCamera().combined);
         Gdx.gl.glEnable(GL10.GL_BLEND);

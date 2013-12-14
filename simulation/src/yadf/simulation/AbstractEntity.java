@@ -31,6 +31,7 @@
  */
 package yadf.simulation;
 
+import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
 
 /**
@@ -38,26 +39,56 @@ import yadf.simulation.map.MapIndex;
  */
 public abstract class AbstractEntity extends AbstractGameObject implements IEntity {
 
-    /** The position of the entity. */
-    protected MapIndex position;
+    /** The area of the entity. */
+    private MapArea area;
 
     /**
      * Instantiates a new entity.
      * @param positionTmp the position
      */
     public AbstractEntity(final MapIndex positionTmp) {
-        position = new MapIndex(positionTmp);
+        area = new MapArea(new MapIndex(positionTmp), 1, 1);
+    }
+
+    public AbstractEntity(MapArea areaTmp) {
+        area = new MapArea(areaTmp);
+    }
+
+    public AbstractEntity(MapIndex position, int width, int height) {
+        area = new MapArea(position, width, height);
     }
 
     @Override
     public MapIndex getPosition() {
-        return new MapIndex(position);
+        return new MapIndex(area.pos);
     }
 
     @Override
     public void setPosition(final MapIndex positionTmp) {
-        position.x = positionTmp.x;
-        position.y = positionTmp.y;
-        position.z = positionTmp.z;
+        area.pos.x = positionTmp.x;
+        area.pos.y = positionTmp.y;
+        area.pos.z = positionTmp.z;
+    }
+
+    @Override
+    public MapArea getArea() {
+        return new MapArea(area);
+    }
+
+    @Override
+    public int getWidth() {
+        return area.width;
+    }
+
+    @Override
+    public int getHeight() {
+        return area.height;
+    }
+
+    @Override
+    public boolean hasIndex(final MapIndex index) {
+        MapIndex pos = getPosition();
+        return index.x >= pos.x && index.x <= pos.x + area.width - 1 && index.y >= pos.y
+                && index.y <= pos.y + area.height - 1 && pos.z == index.z;
     }
 }

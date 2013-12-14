@@ -33,7 +33,7 @@ public class Item2dController extends Abstract2dController {
             return new EntityImage2d(item, textureAtlas, "items/" + item.getType().name.toLowerCase());
         } else {
             Stockpile stockpile = (Stockpile) gameObject;
-            return new EntitySolid2d(stockpile, stockpile.getArea().width, stockpile.getArea().height);
+            return new EntitySolid2d(stockpile);
         }
     }
 }

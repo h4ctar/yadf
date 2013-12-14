@@ -39,7 +39,6 @@ import yadf.simulation.IPlayer;
 import yadf.simulation.job.CraftJob;
 import yadf.simulation.job.IJob;
 import yadf.simulation.job.IJobManager;
-import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
 import yadf.simulation.recipe.Recipe;
 import yadf.simulation.recipe.RecipeManager;
@@ -74,7 +73,7 @@ public class Workshop extends AbstractEntity implements IWorkshop {
      * @param position the position
      */
     public Workshop(final IPlayer playerTmp, final WorkshopType workshopTypeTmp, final MapIndex position) {
-        super(position);
+        super(position, WORKSHOP_SIZE, WORKSHOP_SIZE);
         workshopType = workshopTypeTmp;
         player = playerTmp;
     }
@@ -107,15 +106,6 @@ public class Workshop extends AbstractEntity implements IWorkshop {
     @Override
     public WorkshopType getType() {
         return workshopType;
-    }
-
-    @Override
-    public boolean hasIndex(final MapIndex index) {
-        if (index.x >= position.x && index.x <= position.x + WORKSHOP_SIZE - 1 && index.y >= position.y
-                && index.y <= position.y + WORKSHOP_SIZE - 1 && position.z == index.z) {
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -162,10 +152,5 @@ public class Workshop extends AbstractEntity implements IWorkshop {
         for (IWorkshopListener listener : listeners) {
             listener.orderRemoved(recipe, index);
         }
-    }
-
-    @Override
-    public MapArea getArea() {
-        return new MapArea(position, WORKSHOP_SIZE, WORKSHOP_SIZE);
     }
 }

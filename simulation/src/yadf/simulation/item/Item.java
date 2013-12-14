@@ -101,7 +101,7 @@ public class Item extends AbstractEntity {
      * @param playerTmp if null, will use original items player otherwise it will use the passed player
      */
     public Item(final Item item, final IPlayer playerTmp) {
-        super(item.position);
+        super(item.getPosition());
         itemType = item.getType();
         if (playerTmp == null) {
             player = item.player;
