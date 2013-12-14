@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 import yadf.logger.Logger;
-import yadf.simulation.AbstractGameObject;
+import yadf.simulation.AbstractEntity;
 import yadf.simulation.IGameObjectManagerListener;
 import yadf.simulation.IPlayer;
 import yadf.simulation.job.HaulJob;
@@ -49,7 +49,7 @@ import yadf.simulation.map.MapIndex;
 /**
  * The Class Stockpile.
  */
-public class Stockpile extends AbstractGameObject implements IContainer, IJobListener, IItemAvailableListener {
+public class Stockpile extends AbstractEntity implements IContainer, IJobListener, IItemAvailableListener {
 
     /** The container component; contains unstored items. */
     private final ContainerComponent containerComponent = new ContainerComponent(this);
@@ -78,6 +78,7 @@ public class Stockpile extends AbstractGameObject implements IContainer, IJobLis
      * @param playerTmp the player the stockpile belongs to
      */
     public Stockpile(final MapArea areaTmp, final IPlayer playerTmp) {
+        super(areaTmp.pos);
         area = areaTmp;
         player = playerTmp;
         used = new boolean[area.width][area.height];

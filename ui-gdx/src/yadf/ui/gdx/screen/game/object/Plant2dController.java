@@ -28,6 +28,6 @@ public class Plant2dController extends Abstract2dController {
     @Override
     protected Actor createGameObject2d(final IGameObject gameObject) {
         Tree tree = (Tree) gameObject;
-        return new Entity2d(tree, textureAtlas, "plants/tree");
+        return new EntityImage2d(tree, textureAtlas, "plants/tree");
     }
 }

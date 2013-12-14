@@ -28,6 +28,6 @@ public class Workshop2dController extends Abstract2dController {
     @Override
     protected Actor createGameObject2d(final IGameObject gameObject) {
         IWorkshop workshop = (IWorkshop) gameObject;
-        return new Entity2d(workshop, textureAtlas, "workshops/" + workshop.getType().name.toLowerCase());
+        return new EntityImage2d(workshop, textureAtlas, "workshops/" + workshop.getType().name.toLowerCase());
     }
 }

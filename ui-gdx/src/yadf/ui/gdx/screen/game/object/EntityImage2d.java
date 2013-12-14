@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
- * Abstract Entity 2D.
+ * Entity Image 2D.
  */
-public class Entity2d extends Actor {
+public class EntityImage2d extends Actor {
 
     /** The entity. */
     private IEntity entity;
@@ -27,7 +27,7 @@ public class Entity2d extends Actor {
      * @param atlas the texture atlas
      * @param regionName the name of the texture region
      */
-    public Entity2d(final IEntity entityTmp, final TextureAtlas atlas, final String regionName) {
+    public EntityImage2d(final IEntity entityTmp, final TextureAtlas atlas, final String regionName) {
         entity = entityTmp;
         AtlasRegion region = atlas.findRegion(regionName);
         if (region == null) {

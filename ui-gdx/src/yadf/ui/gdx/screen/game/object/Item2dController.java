@@ -2,6 +2,7 @@ package yadf.ui.gdx.screen.game.object;
 
 import yadf.simulation.IGameObject;
 import yadf.simulation.item.Item;
+import yadf.simulation.item.Stockpile;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -27,7 +28,12 @@ public class Item2dController extends Abstract2dController {
 
     @Override
     protected Actor createGameObject2d(final IGameObject gameObject) {
-        Item item = (Item) gameObject;
-        return new Entity2d(item, textureAtlas, "items/" + item.getType().name.toLowerCase());
+        if (gameObject instanceof Item) {
+            Item item = (Item) gameObject;
+            return new EntityImage2d(item, textureAtlas, "items/" + item.getType().name.toLowerCase());
+        } else {
+            Stockpile stockpile = (Stockpile) gameObject;
+            return new EntitySolid2d(stockpile, stockpile.getArea().width, stockpile.getArea().height);
+        }
     }
 }

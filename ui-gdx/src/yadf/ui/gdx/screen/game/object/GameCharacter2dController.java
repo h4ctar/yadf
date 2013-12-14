@@ -28,6 +28,6 @@ public class GameCharacter2dController extends Abstract2dController {
     @Override
     protected Actor createGameObject2d(final IGameObject gameObject) {
         IGameCharacter gameCharacter = (IGameCharacter) gameObject;
-        return new Entity2d(gameCharacter, textureAtlas, "characters/dwarf");
+        return new EntityImage2d(gameCharacter, textureAtlas, "characters/dwarf");
     }
 }
