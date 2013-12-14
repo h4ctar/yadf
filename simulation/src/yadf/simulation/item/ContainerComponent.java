@@ -17,6 +17,8 @@ import yadf.simulation.IGameObjectManagerListener;
  * IContainer interface can contain a field of this type and delegate all the methods to it.
  * <p>
  * This is basically a hack to get around no multiple inheritance.
+ * <p>
+ * TODO: Change it to ItemManager
  */
 public class ContainerComponent extends AbstractGameObject implements IContainer, IItemAvailableListener,
         IGameObjectListener {

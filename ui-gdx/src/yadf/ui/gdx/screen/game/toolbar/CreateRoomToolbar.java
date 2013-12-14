@@ -36,22 +36,18 @@ public class CreateRoomToolbar extends Table implements IInteractorListener {
     /** The controller. */
     private AbstractController controller;
 
-    /** The skin. */
-    private Skin skin;
-
     /**
      * Constructor.
-     * @param skinTmp the skin for the buttons
+     * @param skin the skin for the buttons
      * @param controlsControllerTmp the controls controller
      * @param interactorManagerTmp the interactor manager
      * @param playerTmp the player
      * @param cameraTmp the camera
      * @param controllerTmp the controller
      */
-    public CreateRoomToolbar(final Skin skinTmp, final IToolbarManager controlsControllerTmp,
+    public CreateRoomToolbar(final Skin skin, final IToolbarManager controlsControllerTmp,
             final IInteractorManager interactorManagerTmp, final IPlayer playerTmp, final TileCamera cameraTmp,
             final AbstractController controllerTmp) {
-        skin = skinTmp;
         controlsController = controlsControllerTmp;
         interactorManager = interactorManagerTmp;
         player = playerTmp;
@@ -97,7 +93,7 @@ public class CreateRoomToolbar extends Table implements IInteractorListener {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            CreateRoomInteractor interactor = new CreateRoomInteractor(skin, roomType, player, camera, controller);
+            CreateRoomInteractor interactor = new CreateRoomInteractor(roomType, player, camera, controller);
             interactor.addListener(CreateRoomToolbar.this);
             interactorManager.installInteractor(interactor);
         }

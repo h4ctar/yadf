@@ -34,7 +34,7 @@ package yadf.simulation.workshop;
 import java.util.ArrayList;
 import java.util.List;
 
-import yadf.simulation.AbstractGameObject;
+import yadf.simulation.AbstractEntity;
 import yadf.simulation.IPlayer;
 import yadf.simulation.job.CraftJob;
 import yadf.simulation.job.IJob;
@@ -47,10 +47,7 @@ import yadf.simulation.recipe.RecipeManager;
 /**
  * The Class Workshop.
  */
-public class Workshop extends AbstractGameObject implements IWorkshop {
-
-    /** The position. */
-    private final MapIndex position;
+public class Workshop extends AbstractEntity implements IWorkshop {
 
     /** The workshop type. */
     private final WorkshopType workshopType;
@@ -74,11 +71,11 @@ public class Workshop extends AbstractGameObject implements IWorkshop {
      * Instantiates a new workshop.
      * @param playerTmp the player that this workshop belongs to
      * @param workshopTypeTmp the workshop type
-     * @param positionTmp the position
+     * @param position the position
      */
-    public Workshop(final IPlayer playerTmp, final WorkshopType workshopTypeTmp, final MapIndex positionTmp) {
+    public Workshop(final IPlayer playerTmp, final WorkshopType workshopTypeTmp, final MapIndex position) {
+        super(position);
         workshopType = workshopTypeTmp;
-        position = positionTmp;
         player = playerTmp;
     }
 
@@ -105,11 +102,6 @@ public class Workshop extends AbstractGameObject implements IWorkshop {
     @Override
     public List<Recipe> getOrders() {
         return orders;
-    }
-
-    @Override
-    public MapIndex getPosition() {
-        return position;
     }
 
     @Override

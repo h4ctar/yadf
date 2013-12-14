@@ -6,8 +6,6 @@ import yadf.simulation.IPlayer;
 import yadf.simulation.map.MapArea;
 import yadf.ui.gdx.screen.TileCamera;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 /**
  * Interactor to create a room.
  */
@@ -24,14 +22,13 @@ public class CreateRoomInteractor extends AbstractSelectionInteractor {
 
     /**
      * Constructor.
-     * @param skin the skin
      * @param roomTypeTmp the type of room that this interactor will create
      * @param playerTmp the player
      * @param camera the camera
      * @param controllerTmp the controller
      */
-    public CreateRoomInteractor(final Skin skin, final String roomTypeTmp, final IPlayer playerTmp,
-            final TileCamera camera, final AbstractController controllerTmp) {
+    public CreateRoomInteractor(final String roomTypeTmp, final IPlayer playerTmp, final TileCamera camera,
+            final AbstractController controllerTmp) {
         super(camera);
         roomType = roomTypeTmp;
         player = playerTmp;

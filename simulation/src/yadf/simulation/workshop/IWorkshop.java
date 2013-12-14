@@ -2,7 +2,7 @@ package yadf.simulation.workshop;
 
 import java.util.List;
 
-import yadf.simulation.IGameObject;
+import yadf.simulation.IEntity;
 import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
 import yadf.simulation.recipe.Recipe;
@@ -10,7 +10,7 @@ import yadf.simulation.recipe.Recipe;
 /**
  * Interface for a workshop.
  */
-public interface IWorkshop extends IGameObject {
+public interface IWorkshop extends IEntity {
 
     /**
      * Gets the position of the workshop.

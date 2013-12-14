@@ -6,6 +6,8 @@ import yadf.simulation.job.IJobManager;
 import yadf.ui.gdx.screen.TileCamera;
 import yadf.ui.gdx.screen.game.dialogwindow.IDialogWindowManager;
 import yadf.ui.gdx.screen.game.dialogwindow.JobsDialogWindow;
+import yadf.ui.gdx.screen.game.interactor.CreateStockpileInteractor;
+import yadf.ui.gdx.screen.game.interactor.IInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -86,6 +88,7 @@ public class MainToolbar extends Table {
 
         row();
         TextButton stockpileButton = new TextButton("Create Stockpile", skin);
+        stockpileButton.addListener(new CreateStockpileButtonListener());
         add(stockpileButton).width(140).spaceBottom(10);
 
         row();
@@ -105,8 +108,8 @@ public class MainToolbar extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            toolbarManager.setToolbar(new DesignateToolbar(skin, toolbarManager, interactorManager, player,
-                    camera, controller));
+            toolbarManager.setToolbar(new DesignateToolbar(skin, toolbarManager, interactorManager, player, camera,
+                    controller));
         }
     }
 
@@ -129,8 +132,20 @@ public class MainToolbar extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            toolbarManager.setToolbar(new CreateRoomToolbar(skin, toolbarManager, interactorManager, player,
-                    camera, controller));
+            toolbarManager.setToolbar(new CreateRoomToolbar(skin, toolbarManager, interactorManager, player, camera,
+                    controller));
+        }
+    }
+
+    /**
+     * The listener for the create stockpile button.
+     */
+    private final class CreateStockpileButtonListener extends ClickListener {
+
+        @Override
+        public void clicked(final InputEvent event, final float x, final float y) {
+            IInteractor interactor = new CreateStockpileInteractor(player, camera, controller);
+            interactorManager.installInteractor(interactor);
         }
     }
 

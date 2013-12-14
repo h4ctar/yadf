@@ -19,11 +19,10 @@ import yadf.ui.gdx.screen.TileCamera;
 import yadf.ui.gdx.screen.game.dialogwindow.IDialogWindowManager;
 import yadf.ui.gdx.screen.game.interactor.IInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
-import yadf.ui.gdx.screen.game.object.GameCharacter2d;
-import yadf.ui.gdx.screen.game.object.GameObject2dController;
-import yadf.ui.gdx.screen.game.object.Item2d;
-import yadf.ui.gdx.screen.game.object.Plant2d;
-import yadf.ui.gdx.screen.game.object.Workshop2d;
+import yadf.ui.gdx.screen.game.object.GameCharacter2dController;
+import yadf.ui.gdx.screen.game.object.Item2dController;
+import yadf.ui.gdx.screen.game.object.Plant2dController;
+import yadf.ui.gdx.screen.game.object.Workshop2dController;
 import yadf.ui.gdx.screen.game.toolbar.IToolbarManager;
 import yadf.ui.gdx.screen.game.toolbar.MainToolbar;
 
@@ -37,8 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 /**
  * The game screen.
  */
-public class GameScreen extends AbstractScreen implements IToolbarManager, IInteractorManager,
-        IDialogWindowManager {
+public class GameScreen extends AbstractScreen implements IToolbarManager, IInteractorManager, IDialogWindowManager {
 
     /** The size of a sprite. */
     public static final int SPRITE_SIZE = 18;
@@ -127,13 +125,13 @@ public class GameScreen extends AbstractScreen implements IToolbarManager, IInte
 
             // TODO: do this later and make method to get all game objects
             player.getComponent(ICharacterManager.class).addGameObjectManagerListener(
-                    new GameObject2dController(GameCharacter2d.class, textureAtlas, gameStage));
+                    new GameCharacter2dController(textureAtlas, gameStage));
             player.getComponent(IStockManager.class).addGameObjectManagerListener(
-                    new GameObject2dController(Item2d.class, textureAtlas, gameStage));
+                    new Item2dController(textureAtlas, gameStage));
             player.getComponent(IWorkshopManager.class).addGameObjectManagerListener(
-                    new GameObject2dController(Workshop2d.class, textureAtlas, gameStage));
-            region.getTreeManager().addGameObjectManagerListener(
-                    new GameObject2dController(Plant2d.class, textureAtlas, gameStage));
+                    new Workshop2dController(textureAtlas, gameStage));
+            // player.getComponent(IJobManager.class).addGameObjectManagerListener(new Job2dController(gameStage));
+            region.getTreeManager().addGameObjectManagerListener(new Plant2dController(textureAtlas, gameStage));
 
             region.addPlayer(player);
 
