@@ -222,7 +222,7 @@ public class MineJob extends AbstractJob {
             if (itemTypeName != null) {
                 ItemType itemType = ItemTypeManager.getInstance().getItemType(itemTypeName);
                 Item blockItem = new Item(position, itemType, getPlayer());
-                getPlayer().getComponent(IStockManager.class).addItem(blockItem);
+                getPlayer().getComponent(IStockManager.class).getUnstoredItemManager().addGameObject(blockItem);
             }
             map.mineBlock(position);
             miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);

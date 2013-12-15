@@ -70,7 +70,7 @@ public class EnableLaborCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        IGameCharacter dwarf = player.getComponent(ICharacterManager.class).getCharacter(dwarfId);
+        IGameCharacter dwarf = player.getComponent(ICharacterManager.class).getGameObject(dwarfId);
         dwarf.getComponent(ISkillComponent.class).setLaborEnabled(laborTypeName, enabled);
     }
 }

@@ -1,7 +1,5 @@
 package yadf.simulation.job;
 
-import java.util.List;
-
 import yadf.simulation.IRegion;
 import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.character.component.ISleepComponent;
@@ -10,8 +8,6 @@ import yadf.simulation.job.jobstate.IJobState;
 import yadf.simulation.job.jobstate.WalkToPositionState;
 import yadf.simulation.job.jobstate.WasteTimeState;
 import yadf.simulation.map.MapIndex;
-import yadf.simulation.room.IRoomManager;
-import yadf.simulation.room.Room;
 
 /**
  * The dwarf looks for somewhere to sleep, walks there, then sleeps.
@@ -72,17 +68,7 @@ public class SleepJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            List<Room> rooms = getPlayer().getComponent(IRoomManager.class).getRooms();
-            for (Room room : rooms) {
-                // TODO: do I have my own room?
-                if (room.getType().equals("Dormitory")) {
-                    bed = room.getItem("Bed", false, true);
-                    if (bed != null) {
-                        bed.setAvailable(false);
-                        break;
-                    }
-                }
-            }
+            // TODO: Dormitory
         }
 
         @Override

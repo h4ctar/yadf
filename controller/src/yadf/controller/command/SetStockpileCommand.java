@@ -32,8 +32,6 @@
 package yadf.controller.command;
 
 import yadf.simulation.IPlayer;
-import yadf.simulation.item.IStockManager;
-import yadf.simulation.item.Stockpile;
 
 /**
  * The Class SetStockpileCommand.
@@ -69,7 +67,8 @@ public class SetStockpileCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        Stockpile stockpile = player.getComponent(IStockManager.class).getStockpile(stockpileId);
-        stockpile.setItemType(itemTypeName, accept);
+        // Stockpile stockpile = player.getComponent(IStockManager.class).getStockpileManager()
+        // .getGameObject(stockpileId);
+        // stockpile.setItemType(itemTypeName, accept);
     }
 }

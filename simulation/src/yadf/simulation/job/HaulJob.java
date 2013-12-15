@@ -31,11 +31,10 @@
  */
 package yadf.simulation.job;
 
-import yadf.logger.Logger;
 import yadf.simulation.IPlayer;
 import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.character.component.IInventoryComponent;
-import yadf.simulation.item.IContainer;
+import yadf.simulation.item.IItemManager;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.item.Item;
 import yadf.simulation.item.ItemType;
@@ -64,7 +63,7 @@ public class HaulJob extends AbstractJob {
     private Item item = null;
 
     /** If not null, the item should be stored here. */
-    private final IContainer container;
+    private final IItemManager container;
 
     /** The drop position. */
     private final MapIndex dropPosition;
@@ -82,7 +81,7 @@ public class HaulJob extends AbstractJob {
      * @param containerTmp the container to put the item in
      * @param dropPositionTmp the drop position
      */
-    public HaulJob(final IGameCharacter character, final Item itemTmp, final IContainer containerTmp,
+    public HaulJob(final IGameCharacter character, final Item itemTmp, final IItemManager containerTmp,
             final MapIndex dropPositionTmp) {
         super(character.getPlayer());
         item = itemTmp;
@@ -101,7 +100,7 @@ public class HaulJob extends AbstractJob {
      * @param dropPositionTmp the drop position
      * @param playerTmp the player
      */
-    public HaulJob(final Item itemTmp, final IContainer containerTmp, final MapIndex dropPositionTmp,
+    public HaulJob(final Item itemTmp, final IItemManager containerTmp, final MapIndex dropPositionTmp,
             final IPlayer playerTmp) {
         super(playerTmp);
         item = itemTmp;
@@ -119,7 +118,7 @@ public class HaulJob extends AbstractJob {
      * @param dropPositionTmp the drop position
      * @param playerTmp the player
      */
-    public HaulJob(final ItemType itemTypeTmp, final IContainer containerTmp, final MapIndex dropPositionTmp,
+    public HaulJob(final ItemType itemTypeTmp, final IItemManager containerTmp, final MapIndex dropPositionTmp,
             final IPlayer playerTmp) {
         super(playerTmp);
         container = containerTmp;
@@ -160,7 +159,7 @@ public class HaulJob extends AbstractJob {
             hauler.setAvailable(true);
             if (item != null) {
                 hauler.getComponent(IInventoryComponent.class).dropHaulItem(true);
-                getPlayer().getComponent(IStockManager.class).addItem(item);
+                getPlayer().getComponent(IStockManager.class).getUnstoredItemManager().addGameObject(item);
             }
         } else if (item != null) {
             item.setAvailable(true);
@@ -176,7 +175,7 @@ public class HaulJob extends AbstractJob {
          * Constructor.
          */
         public LookingForHaulItemState() {
-            super(itemType, false, false, HaulJob.this);
+            super(itemType, false, HaulJob.this);
         }
 
         @Override
@@ -233,7 +232,7 @@ public class HaulJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            getPlayer().getComponent(IStockManager.class).removeItem(item);
+            getPlayer().getComponent(IStockManager.class).removeGameObject(item);
             hauler.getComponent(IInventoryComponent.class).pickupHaulItem(item);
         }
 
@@ -263,15 +262,7 @@ public class HaulJob extends AbstractJob {
                 hauler.setAvailable(true);
             }
             if (container != null) {
-                if (container.isDeleted()) {
-                    Logger.getInstance().log(this, "Can't store item, container has been deleted", true);
-                    getPlayer().getComponent(IStockManager.class).addItem(item);
-                } else {
-                    if (!container.addItem(item)) {
-                        Logger.getInstance().log(this, "Can't store item, container didn't accept it", true);
-                        getPlayer().getComponent(IStockManager.class).addItem(item);
-                    }
-                }
+                container.addGameObject(item);
             }
         }
 

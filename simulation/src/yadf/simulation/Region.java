@@ -39,7 +39,6 @@ import java.util.Set;
 
 import yadf.logger.Logger;
 import yadf.misc.MyRandom;
-import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
 import yadf.simulation.map.RegionMap;
 import yadf.simulation.tree.ITreeManager;
@@ -85,53 +84,6 @@ public class Region implements IRegion {
     public void addPlayer(final IPlayer player) {
         Logger.getInstance().log(this, "Adding player " + player.getName());
         players.add(player);
-    }
-
-    // TODO: both these check methods need to be refactored to off load the work to the proper responsibles
-    @Override
-    public boolean checkAreaValid(final MapArea area) {
-        for (IPlayer player : players) {
-            if (!player.checkAreaValid(area)) {
-                return false;
-            }
-        }
-        if (!treeManager.getTrees(area).isEmpty()) {
-            return false;
-        }
-        for (int x = area.pos.x; x < area.pos.x + area.width; x++) {
-            for (int y = area.pos.y; y < area.pos.y + area.height; y++) {
-                // Check that area is flat
-                if (!map.isWalkable(new MapIndex(x, y, area.pos.z))) {
-                    return false;
-                }
-                // Can't build on a ramp or top of stair case
-                if (map.getBlock(x, y, area.pos.z - 1).isClimb) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean checkIndexValid(final MapIndex mapIndex) {
-        for (IPlayer player : players) {
-            if (!player.checkAreaValid(mapIndex)) {
-                return false;
-            }
-        }
-        if (treeManager.getTree(mapIndex) != null) {
-            return false;
-        }
-        // Must be able to stand on the block below
-        if (!map.isWalkable(mapIndex)) {
-            return false;
-        }
-        // Can't build on a ramp or top of stair case
-        if (map.getBlock(mapIndex.add(0, 0, -1)).isClimb) {
-            return false;
-        }
-        return true;
     }
 
     @Override

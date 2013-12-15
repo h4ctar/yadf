@@ -1,7 +1,5 @@
 package yadf.simulation.farm;
 
-import java.util.List;
-
 import yadf.simulation.IGameObjectManager;
 import yadf.simulation.IPlayerComponent;
 import yadf.simulation.map.MapArea;
@@ -16,10 +14,4 @@ public interface IFarmManager extends IGameObjectManager<Farm>, IPlayerComponent
      * @param area the area of the farm
      */
     void addNewFarm(final MapArea area);
-
-    /**
-     * Gets all the farms.
-     * @return the farms
-     */
-    List<Farm> getFarms();
 }

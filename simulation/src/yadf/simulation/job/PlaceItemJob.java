@@ -38,7 +38,6 @@ import yadf.simulation.item.ItemType;
 import yadf.simulation.job.jobstate.HaulItemState;
 import yadf.simulation.job.jobstate.IJobState;
 import yadf.simulation.map.MapIndex;
-import yadf.simulation.room.IRoomManager;
 import yadf.simulation.room.Room;
 
 /**
@@ -104,13 +103,13 @@ public class PlaceItemJob extends AbstractJob {
          * Constructor.
          */
         public LookingForItemState() {
-            super(itemType, false, false, PlaceItemJob.this);
+            super(itemType, false, PlaceItemJob.this);
         }
 
         @Override
         protected void doFinalActions() {
             item = getItem();
-            room = getPlayer().getComponent(IRoomManager.class).getRoom(position);
+            // TODO: room = ???
         }
 
         @Override
@@ -128,7 +127,7 @@ public class PlaceItemJob extends AbstractJob {
          * Constructor.
          */
         public PlaceItemState() {
-            super(item, position, room != null ? room : getPlayer().getComponent(IStockManager.class),
+            super(item, position, getPlayer().getComponent(IStockManager.class).getUnstoredItemManager(),
                     PlaceItemJob.this);
         }
 

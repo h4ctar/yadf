@@ -33,6 +33,7 @@ package yadf.controller.command;
 
 import yadf.simulation.IPlayer;
 import yadf.simulation.item.IStockManager;
+import yadf.simulation.item.Stockpile;
 
 /**
  * The Class DeleteStockpileCommand.
@@ -57,6 +58,8 @@ public class DeleteStockpileCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getComponent(IStockManager.class).getStockpile(stockpileId).delete();
+        Stockpile stockpile = player.getComponent(IStockManager.class).getStockpileManager()
+                .getGameObject(stockpileId);
+        stockpile.delete();
     }
 }

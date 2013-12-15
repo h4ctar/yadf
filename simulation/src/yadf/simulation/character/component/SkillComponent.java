@@ -210,7 +210,7 @@ public class SkillComponent extends AbstractCharacterComponent implements ISkill
                 if (laborType.toolType == null) {
                     continue;
                 }
-                tool = player.getComponent(IStockManager.class).getItem(laborType.toolType.name, false, false);
+                tool = player.getComponent(IStockManager.class).getItem(laborType.toolType.name, false);
                 if (tool == null) {
                     continue;
                 }

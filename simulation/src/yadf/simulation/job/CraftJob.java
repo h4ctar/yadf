@@ -197,7 +197,7 @@ public class CraftJob extends AbstractJob {
         protected void doFinalActions() {
             for (int i = 0; i < recipe.quantity; i++) {
                 Item newItem = new Item(workshop.getPosition(), recipe.itemType, getPlayer());
-                getPlayer().getComponent(IStockManager.class).addItem(newItem);
+                getPlayer().getComponent(IStockManager.class).getUnstoredItemManager().addGameObject(newItem);
             }
             workshop.setAvailable(true);
             if (recipe.skill != null) {

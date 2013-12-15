@@ -2,7 +2,6 @@ package yadf.simulation;
 
 import java.util.Set;
 
-import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
 import yadf.simulation.map.RegionMap;
 import yadf.simulation.tree.ITreeManager;
@@ -56,21 +55,6 @@ public interface IRegion {
      * @return the tree manager
      */
     ITreeManager getTreeManager();
-
-    /**
-     * Checks if the location is valid for a new stockpile or building or similar thing that needs a flat area without
-     * trees or items.
-     * @param mapArea The area that the new stockpile will occupy
-     * @return True if the area is a valid location else false
-     */
-    boolean checkAreaValid(MapArea mapArea);
-
-    /**
-     * Check index valid.
-     * @param mapIndex the map index
-     * @return true, if successful
-     */
-    boolean checkIndexValid(MapIndex mapIndex);
 
     /**
      * Add a time listener.

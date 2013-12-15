@@ -98,14 +98,15 @@ public class InventoryComponent extends AbstractCharacterComponent implements II
             dropTool();
         }
         toolHolding = tool;
-        getCharacter().getPlayer().getComponent(IStockManager.class).removeItem(toolHolding);
+        getCharacter().getPlayer().getComponent(IStockManager.class).removeGameObject(toolHolding);
         notifyListeners();
     }
 
     @Override
     public void dropTool() {
         if (toolHolding != null) {
-            getCharacter().getPlayer().getComponent(IStockManager.class).addItem(toolHolding);
+            getCharacter().getPlayer().getComponent(IStockManager.class).getUnstoredItemManager()
+                    .addGameObject(toolHolding);
             toolHolding = null;
             notifyListeners();
         }

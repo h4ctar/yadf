@@ -12,11 +12,21 @@ public interface IGameObjectManager<T extends IGameObject> {
      * Add a new farm manager listener who will be notified when an object is added or removed or becomes available.
      * @param listener the new listener
      */
-    void addGameObjectManagerListener(IGameObjectManagerListener listener);
+    void addManagerListener(IGameObjectManagerListener listener);
 
     /**
      * Remove a farm manager listener.
      * @param listener the listener to remove
      */
-    void removeGameObjectManagerListener(IGameObjectManagerListener listener);
+    void removeManagerListener(IGameObjectManagerListener listener);
+
+    void addAvailableListener(IGameObjectAvailableListener listener);
+
+    void removeAvailableListener(IGameObjectAvailableListener listener);
+
+    T getGameObject(int id);
+
+    void addGameObject(T gameObject);
+
+    void removeGameObject(T gameObject);
 }

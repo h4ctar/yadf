@@ -32,7 +32,7 @@ public abstract class Abstract2dController implements IGameObjectManagerListener
     }
 
     @Override
-    public void gameObjectAdded(final IGameObject gameObject, final int index) {
+    public void gameObjectAdded(final IGameObject gameObject) {
         assert !gameObject2ds.containsKey(gameObject);
         Actor gameObject2d = createGameObject2d(gameObject);
         if (gameObject2d != null) {
@@ -42,13 +42,13 @@ public abstract class Abstract2dController implements IGameObjectManagerListener
     }
 
     @Override
-    public void gameObjectRemoved(final IGameObject gameObject, final int index) {
+    public void gameObjectRemoved(final IGameObject gameObject) {
         Actor gameObject2d = gameObject2ds.remove(gameObject);
         gameStage.getRoot().removeActor(gameObject2d);
     }
 
     @Override
-    public void gameObjectAvailable(IGameObject gameObject) {
+    public void gameObjectAvailable(final IGameObject gameObject) {
         // Do nothing
     }
 

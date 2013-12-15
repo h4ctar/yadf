@@ -28,7 +28,7 @@ public class EnlistDwarfCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        IGameCharacter dwarf = player.getComponent(ICharacterManager.class).getCharacter(dwarfId);
+        IGameCharacter dwarf = player.getComponent(ICharacterManager.class).getGameObject(dwarfId);
         player.getComponent(IMilitaryManager.class).enlistDwarf(dwarf);
     }
 }

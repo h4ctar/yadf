@@ -3,8 +3,6 @@ package yadf.simulation;
 import yadf.logger.Logger;
 import yadf.simulation.character.GoblinManager;
 import yadf.simulation.character.ICharacterManager;
-import yadf.simulation.map.MapArea;
-import yadf.simulation.map.MapIndex;
 
 /**
  * The goblin player, spawns goblins.
@@ -29,15 +27,5 @@ public class GoblinPlayer extends AbstractPlayer {
      */
     public void setup() {
         Logger.getInstance().log(this, "Setting up");
-    }
-
-    @Override
-    public boolean checkAreaValid(final MapArea area) {
-        return true;
-    }
-
-    @Override
-    public boolean checkAreaValid(final MapIndex mapIndex) {
-        return true;
     }
 }

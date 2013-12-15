@@ -1,24 +1,13 @@
 package yadf.simulation.farm;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import yadf.simulation.IGameObjectManagerListener;
+import yadf.simulation.AbstractGameObjectManager;
 import yadf.simulation.IPlayer;
 import yadf.simulation.map.MapArea;
 
 /**
  * The farm manager.
  */
-public class FarmManager implements IFarmManager {
-
-    /** The farms. */
-    private final List<Farm> farms = new ArrayList<>();
-
-    /** The farm manager listeners. */
-    private final Set<IGameObjectManagerListener> listeners = new LinkedHashSet<>();
+public class FarmManager extends AbstractGameObjectManager<Farm> implements IFarmManager {
 
     /** The player that this manager belongs to. */
     private final IPlayer player;
@@ -37,15 +26,7 @@ public class FarmManager implements IFarmManager {
      */
     public void addNewFarm(final MapArea area) {
         Farm farm = new Farm(area, player);
-        farms.add(farm);
-        for (IGameObjectManagerListener listener : listeners) {
-            listener.gameObjectAdded(farm, farms.indexOf(farm));
-        }
-    }
-
-    @Override
-    public List<Farm> getFarms() {
-        return farms;
+        addGameObject(farm);
     }
 
     /**
@@ -53,20 +34,8 @@ public class FarmManager implements IFarmManager {
      */
     public void update() {
         // TODO: Don't update farms every step
-        for (Farm farm : farms) {
+        for (Farm farm : getGameObjects()) {
             farm.update();
         }
-    }
-
-    @Override
-    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
-        assert !listeners.contains(listener);
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
-        assert listeners.contains(listener);
-        listeners.remove(listener);
     }
 }

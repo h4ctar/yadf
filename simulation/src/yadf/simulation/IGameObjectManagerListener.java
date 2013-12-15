@@ -8,16 +8,14 @@ public interface IGameObjectManagerListener {
     /**
      * A game object has been added.
      * @param gameObject the new game object
-     * @param index the index of the new game object
      */
-    void gameObjectAdded(IGameObject gameObject, int index);
+    void gameObjectAdded(IGameObject gameObject);
 
     /**
      * A game object has been removed.
      * @param gameObject the old game object
-     * @param index the index of the removed game object
      */
-    void gameObjectRemoved(IGameObject gameObject, int index);
+    void gameObjectRemoved(IGameObject gameObject);
 
     /**
      * A game object has become available.

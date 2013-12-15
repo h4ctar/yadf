@@ -1,7 +1,7 @@
 package yadf.simulation.job.jobstate;
 
 import yadf.simulation.character.IGameCharacter;
-import yadf.simulation.item.IContainer;
+import yadf.simulation.item.IItemManager;
 import yadf.simulation.item.Item;
 import yadf.simulation.item.ItemType;
 import yadf.simulation.job.AbstractJob;
@@ -33,7 +33,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
     private ItemType itemType;
 
     /** The container to put the item in once its hauled, could be null to leave the item nowhere. */
-    private final IContainer container;
+    private final IItemManager container;
 
     /**
      * Constructor.
@@ -44,7 +44,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * @param jobTmp the job that this state belong to
      */
     public HaulItemState(final IGameCharacter dwarfTmp, final Item itemTmp, final MapIndex positionTmp,
-            final IContainer containerTmp, final AbstractJob jobTmp) {
+            final IItemManager containerTmp, final AbstractJob jobTmp) {
         super(jobTmp);
         dwarf = dwarfTmp;
         item = itemTmp;
@@ -59,7 +59,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * @param containerTmp the container to put the item in once its hauled, could be null to leave the item nowhere
      * @param jobTmp the job that this state belong to
      */
-    public HaulItemState(final Item itemTmp, final MapIndex positionTmp, final IContainer containerTmp,
+    public HaulItemState(final Item itemTmp, final MapIndex positionTmp, final IItemManager containerTmp,
             final AbstractJob jobTmp) {
         super(jobTmp);
         item = itemTmp;
@@ -79,7 +79,7 @@ public abstract class HaulItemState extends AbstractJobState implements IJobList
      * @param containerTmp the container to put the item in once its hauled, could be null to leave the item nowhere
      * @param jobTmp the job that this state belong to
      */
-    public HaulItemState(final ItemType itemTypeTmp, final MapIndex positionTmp, final IContainer containerTmp,
+    public HaulItemState(final ItemType itemTypeTmp, final MapIndex positionTmp, final IItemManager containerTmp,
             final AbstractJob jobTmp) {
         super(jobTmp);
         itemType = itemTypeTmp;

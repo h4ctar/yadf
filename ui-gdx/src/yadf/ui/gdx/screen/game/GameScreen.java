@@ -124,14 +124,14 @@ public class GameScreen extends AbstractScreen implements IToolbarManager, IInte
             player = new HumanPlayer(playerName, region);
 
             // TODO: do this later and make method to get all game objects
-            player.getComponent(ICharacterManager.class).addGameObjectManagerListener(
+            player.getComponent(ICharacterManager.class).addManagerListener(
                     new GameCharacter2dController(textureAtlas, gameStage));
-            player.getComponent(IStockManager.class).addGameObjectManagerListener(
-                    new Item2dController(textureAtlas, gameStage));
-            player.getComponent(IWorkshopManager.class).addGameObjectManagerListener(
+            player.getComponent(IStockManager.class).getUnstoredItemManager()
+                    .addManagerListener(new Item2dController(textureAtlas, gameStage));
+            player.getComponent(IWorkshopManager.class).addManagerListener(
                     new Workshop2dController(textureAtlas, gameStage));
             // player.getComponent(IJobManager.class).addGameObjectManagerListener(new Job2dController(gameStage));
-            region.getTreeManager().addGameObjectManagerListener(new Plant2dController(textureAtlas, gameStage));
+            region.getTreeManager().addManagerListener(new Plant2dController(textureAtlas, gameStage));
 
             region.addPlayer(player);
 

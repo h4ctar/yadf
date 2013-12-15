@@ -64,6 +64,7 @@ public class CreateRoomCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getComponent(IRoomManager.class).addRoom(new Room(area, roomType, player));
+        Room room = new Room(area, roomType, player);
+        player.getComponent(IRoomManager.class).addGameObject(room);
     }
 }

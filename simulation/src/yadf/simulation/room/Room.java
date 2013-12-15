@@ -31,30 +31,15 @@
  */
 package yadf.simulation.room;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import yadf.logger.Logger;
 import yadf.simulation.AbstractGameObject;
-import yadf.simulation.IGameObjectManagerListener;
 import yadf.simulation.IPlayer;
-import yadf.simulation.item.ContainerComponent;
-import yadf.simulation.item.IContainer;
-import yadf.simulation.item.IItemAvailableListener;
-import yadf.simulation.item.IStockManager;
-import yadf.simulation.item.Item;
-import yadf.simulation.item.ItemType;
 import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
 
 /**
  * The Class Room.
  */
-public class Room extends AbstractGameObject implements IContainer {
-
-    /** The container component; contains unstored items. */
-    private final ContainerComponent containerComponent = new ContainerComponent(this);
+public class Room extends AbstractGameObject {
 
     /** The area. */
     private final MapArea area;
@@ -82,34 +67,12 @@ public class Room extends AbstractGameObject implements IContainer {
         return roomType;
     }
 
-    @Override
-    public boolean addItem(final Item item) {
-        Logger.getInstance().log(this, "Adding item: " + item.getType().name);
-        boolean itemAdded = containerComponent.addItem(item);
-        return itemAdded;
-    }
-
-    @Override
-    public boolean removeItem(final Item item) {
-        Logger.getInstance().log(this, "Removing item: " + item.getType().name);
-        return containerComponent.removeItem(item);
-    }
-
     /**
      * Gets the area of the room.
      * @return the area
      */
     public MapArea getArea() {
         return area;
-    }
-
-    /**
-     * Gets the items.
-     * @return the items
-     */
-    @Override
-    public List<Item> getItems() {
-        return containerComponent.getItems();
     }
 
     /**
@@ -126,82 +89,5 @@ public class Room extends AbstractGameObject implements IContainer {
      */
     public String getType() {
         return roomType;
-    }
-
-    /**
-     * Gets all the unused items of a specific type. This is used if the caller needs to make a decision about which
-     * item to take, e.g. the closest item.
-     * @param itemTypeName the type of item to get
-     * @return all the found items
-     */
-    public Set<Item> getUnusedItems(final String itemTypeName) {
-        Set<Item> foundItems = new LinkedHashSet<>();
-        for (Item item : getItems()) {
-            if (item.getType().name.equals(itemTypeName) && item.isAvailable()) {
-                foundItems.add(item);
-            }
-        }
-        return foundItems;
-    }
-
-    @Override
-    public Item getItem(final String itemTypeName, final boolean used, final boolean placed) {
-        return containerComponent.getItem(itemTypeName, used, placed);
-    }
-
-    @Override
-    public void delete() {
-        super.delete();
-        for (Item item : getItems()) {
-            if (item.isPlaced()) {
-                item.setPlaced(false);
-            }
-            player.getComponent(IStockManager.class).addItem(item);
-        }
-    }
-
-    @Override
-    public Item getItemFromCategory(final String category, final boolean used, final boolean placed) {
-        return containerComponent.getItemFromCategory(category, used, placed);
-    }
-
-    @Override
-    public void addGameObjectManagerListener(final IGameObjectManagerListener listener) {
-        containerComponent.addGameObjectManagerListener(listener);
-    }
-
-    @Override
-    public void removeGameObjectManagerListener(final IGameObjectManagerListener listener) {
-        containerComponent.removeGameObjectManagerListener(listener);
-    }
-
-    @Override
-    public void addItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.addItemAvailableListener(itemType, listener);
-    }
-
-    @Override
-    public void removeItemAvailableListener(final ItemType itemType, final IItemAvailableListener listener) {
-        containerComponent.removeItemAvailableListener(itemType, listener);
-    }
-
-    @Override
-    public int getItemQuantity(final String category) {
-        return containerComponent.getItemQuantity(category);
-    }
-
-    @Override
-    public int getItemQuantity(final ItemType itemType) {
-        return containerComponent.getItemQuantity(itemType);
-    }
-
-    @Override
-    public void addItemAvailableListenerListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.addItemAvailableListenerListener(category, listener);
-    }
-
-    @Override
-    public void removeItemAvailableListener(final String category, final IItemAvailableListener listener) {
-        containerComponent.removeItemAvailableListener(category, listener);
     }
 }

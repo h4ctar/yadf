@@ -69,6 +69,6 @@ public class ConstructionDesignation extends AbstractDesignation {
 
     @Override
     protected boolean valid(final MapIndex mapIndex) {
-        return getRegion().checkIndexValid(mapIndex);
+        return true;
     }
 }

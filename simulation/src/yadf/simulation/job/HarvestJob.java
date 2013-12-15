@@ -151,10 +151,10 @@ public class HarvestJob extends AbstractJob {
         protected void doFinalActions() {
             ItemType itemType = ItemTypeManager.getInstance().getItemType("Wheat");
             Item newItem = new Item(farmPlot.getPosition(), itemType, getPlayer());
-            getPlayer().getComponent(IStockManager.class).addItem(newItem);
+            getPlayer().getComponent(IStockManager.class).getUnstoredItemManager().addGameObject(newItem);
             itemType = ItemTypeManager.getInstance().getItemType("Seed");
             newItem = new Item(farmPlot.getPosition(), itemType, getPlayer());
-            getPlayer().getComponent(IStockManager.class).addItem(newItem);
+            getPlayer().getComponent(IStockManager.class).getUnstoredItemManager().addGameObject(newItem);
             farmer.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             farmer.setAvailable(true);
         }

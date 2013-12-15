@@ -166,7 +166,7 @@ public class ChannelJob extends AbstractJob {
             if (minedItemTypeName != null) {
                 ItemType minedItemType = ItemTypeManager.getInstance().getItemType(minedItemTypeName);
                 Item minedItem = new Item(downPosition, minedItemType, getPlayer());
-                getPlayer().getComponent(IStockManager.class).addItem(minedItem);
+                getPlayer().getComponent(IStockManager.class).getUnstoredItemManager().addGameObject(minedItem);
             }
             map.channelBlock(downPosition, blockType);
             miner.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);

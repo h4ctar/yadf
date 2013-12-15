@@ -59,6 +59,7 @@ public class CreateStockpileCommand extends AbstractCommand {
 
     @Override
     public void doCommand() {
-        player.getComponent(IStockManager.class).addStockpile(new Stockpile(area, player));
+        Stockpile stockpile = new Stockpile(area, player);
+        player.getComponent(IStockManager.class).getStockpileManager().addGameObject(stockpile);
     }
 }

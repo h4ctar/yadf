@@ -46,6 +46,7 @@ import yadf.simulation.job.jobstate.WasteTimeState;
 import yadf.simulation.labor.LaborType;
 import yadf.simulation.labor.LaborTypeManager;
 import yadf.simulation.map.MapIndex;
+import yadf.simulation.workshop.IWorkshop;
 import yadf.simulation.workshop.IWorkshopManager;
 import yadf.simulation.workshop.Workshop;
 import yadf.simulation.workshop.WorkshopType;
@@ -191,8 +192,8 @@ public class BuildWorkshopJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            getPlayer().getComponent(IWorkshopManager.class).addWorkshop(
-                    new Workshop(getPlayer(), workshopType, position));
+            IWorkshop workshop = new Workshop(getPlayer(), workshopType, position);
+            getPlayer().getComponent(IWorkshopManager.class).addGameObject(workshop);
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.setAvailable(true);
             for (Item resource : resources) {

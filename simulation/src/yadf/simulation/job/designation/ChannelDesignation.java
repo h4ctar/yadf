@@ -36,7 +36,6 @@ import yadf.simulation.IRegion;
 import yadf.simulation.job.ChannelJob;
 import yadf.simulation.job.IJob;
 import yadf.simulation.map.BlockType;
-import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
 import yadf.simulation.map.RegionMap;
 
@@ -66,9 +65,9 @@ public class ChannelDesignation extends AbstractDesignation {
 
     @Override
     public boolean valid(final MapIndex mapIndex) {
+        // TODO: check region valid
         RegionMap map = getRegion().getMap();
-        return getRegion().checkAreaValid(new MapArea(mapIndex, 1, 1))
-                && map.getBlock(mapIndex.add(0, 0, -1)).isMineable;
+        return map.getBlock(mapIndex.add(0, 0, -1)).isMineable;
     }
 
     @Override

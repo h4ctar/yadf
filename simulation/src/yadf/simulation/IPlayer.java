@@ -1,7 +1,5 @@
 package yadf.simulation;
 
-import yadf.simulation.map.MapArea;
-import yadf.simulation.map.MapIndex;
 
 /**
  * Interface of a player.
@@ -41,18 +39,4 @@ public interface IPlayer extends IGameObject {
      * @return the players name
      */
     String getName();
-
-    /**
-     * Check that an area is valid, i.e. no buildings or workshops on it.
-     * @param area the area to check
-     * @return true if ok to build on
-     */
-    boolean checkAreaValid(MapArea area);
-
-    /**
-     * Check that a position is valid, i.e. no buildings or workshops on it.
-     * @param mapIndex the position to check
-     * @return true if ok to build on
-     */
-    boolean checkAreaValid(MapIndex mapIndex);
 }

@@ -38,23 +38,19 @@ import yadf.logger.Logger;
 import yadf.misc.MyRandom;
 import yadf.simulation.character.DwarfManager;
 import yadf.simulation.character.ICharacterManager;
-import yadf.simulation.farm.Farm;
 import yadf.simulation.farm.FarmManager;
 import yadf.simulation.farm.IFarmManager;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.item.Item;
 import yadf.simulation.item.ItemTypeManager;
 import yadf.simulation.item.StockManager;
-import yadf.simulation.item.Stockpile;
 import yadf.simulation.job.IJobManager;
 import yadf.simulation.job.JobManager;
-import yadf.simulation.map.MapArea;
 import yadf.simulation.map.MapIndex;
 import yadf.simulation.military.IMilitaryManager;
 import yadf.simulation.military.MilitaryManager;
 import yadf.simulation.room.IRoomManager;
 import yadf.simulation.room.RoomManager;
-import yadf.simulation.workshop.IWorkshop;
 import yadf.simulation.workshop.IWorkshopManager;
 import yadf.simulation.workshop.WorkshopManager;
 
@@ -149,53 +145,7 @@ public class HumanPlayer extends AbstractPlayer {
             position.y -= random.nextInt(EMBARK_SIZE) - EMBARK_SIZE / 2;
             position.z = region.getMap().getHeight(position.x, position.y);
             item.setPosition(position);
-            stockManager.addItem(item);
+            stockManager.getUnstoredItemManager().addGameObject(item);
         }
-    }
-
-    @Override
-    public boolean checkAreaValid(final MapArea area) {
-        // Check if overlap with stockpile
-        for (Stockpile stockpile : getComponent(IStockManager.class).getStockpiles()) {
-            if (area.operlapsArea(stockpile.getArea())) {
-                return false;
-            }
-        }
-        // Check that the area is free from workshops
-        for (IWorkshop workshop : getComponent(IWorkshopManager.class).getWorkshops()) {
-            if (area.operlapsArea(workshop.getArea())) {
-                return false;
-            }
-        }
-        // Check that the area is free from farms
-        for (Farm farm : getComponent(IFarmManager.class).getFarms()) {
-            if (area.operlapsArea(farm.getArea())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean checkAreaValid(final MapIndex mapIndex) {
-        // Check if overlap with stockpile
-        for (Stockpile stockpile : getComponent(IStockManager.class).getStockpiles()) {
-            if (stockpile.getArea().containesIndex(mapIndex)) {
-                return false;
-            }
-        }
-        // Check that the area is free from workshops
-        for (IWorkshop workshop : getComponent(IWorkshopManager.class).getWorkshops()) {
-            if (workshop.getArea().containesIndex(mapIndex)) {
-                return false;
-            }
-        }
-        // Check that the area is free from farms
-        for (Farm farm : getComponent(IFarmManager.class).getFarms()) {
-            if (farm.getArea().containesIndex(mapIndex)) {
-                return false;
-            }
-        }
-        return true;
     }
 }

@@ -31,9 +31,6 @@
  */
 package yadf.simulation.job;
 
-import java.util.List;
-import java.util.Set;
-
 import yadf.simulation.IRegion;
 import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.character.component.IEatDrinkComponent;
@@ -45,8 +42,6 @@ import yadf.simulation.job.jobstate.LookingForItemState;
 import yadf.simulation.job.jobstate.WalkToPositionState;
 import yadf.simulation.job.jobstate.WasteTimeState;
 import yadf.simulation.map.MapIndex;
-import yadf.simulation.room.IRoomManager;
-import yadf.simulation.room.Room;
 
 /**
  * The Class EatDrinkJob.
@@ -119,7 +114,7 @@ public class EatDrinkJob extends AbstractJob {
          * Constructor.
          */
         public LookingForFoodDrinkState() {
-            super(eat ? "Food" : "Drink", false, false, EatDrinkJob.this);
+            super(eat ? "Food" : "Drink", false, EatDrinkJob.this);
         }
 
         @Override
@@ -147,35 +142,35 @@ public class EatDrinkJob extends AbstractJob {
 
         @Override
         protected void doFinalActions() {
-            List<Room> rooms = getPlayer().getComponent(IRoomManager.class).getRooms();
-            for (Room room : rooms) {
-                if (room.getType().equals("Dining room")) {
-                    Set<Item> tables = room.getUnusedItems("Table");
-                    Set<Item> chairs = room.getUnusedItems("Chair");
-                    for (Item tableTmp : tables) {
-                        for (Item chairTmp : chairs) {
-                            MapIndex chairPos = chairTmp.getPosition();
-                            MapIndex tablePos = tableTmp.getPosition();
-                            boolean horizontal = chairPos.x == tablePos.x
-                                    && (chairPos.y == tablePos.y - 1 || chairPos.y == tablePos.y + 1);
-                            boolean vertical = chairPos.x == tablePos.x && chairPos.y == tablePos.y
-                                    && (chairPos.x == tablePos.x - 1 || chairPos.x == tablePos.x + 1);
-                            if (horizontal || vertical) {
-                                chair = chairTmp;
-                                table = tableTmp;
-                                chair.setAvailable(false);
-                                break;
-                            }
-                        }
-                        if (table != null) {
-                            break;
-                        }
-                    }
-                }
-                if (table != null) {
-                    break;
-                }
-            }
+            // List<Room> rooms = getPlayer().getComponent(IRoomManager.class).getRooms();
+            // for (Room room : rooms) {
+            // if (room.getType().equals("Dining room")) {
+            // Set<Item> tables = room.getUnusedItems("Table");
+            // Set<Item> chairs = room.getUnusedItems("Chair");
+            // for (Item tableTmp : tables) {
+            // for (Item chairTmp : chairs) {
+            // MapIndex chairPos = chairTmp.getPosition();
+            // MapIndex tablePos = tableTmp.getPosition();
+            // boolean horizontal = chairPos.x == tablePos.x
+            // && (chairPos.y == tablePos.y - 1 || chairPos.y == tablePos.y + 1);
+            // boolean vertical = chairPos.x == tablePos.x && chairPos.y == tablePos.y
+            // && (chairPos.x == tablePos.x - 1 || chairPos.x == tablePos.x + 1);
+            // if (horizontal || vertical) {
+            // chair = chairTmp;
+            // table = tableTmp;
+            // chair.setAvailable(false);
+            // break;
+            // }
+            // }
+            // if (table != null) {
+            // break;
+            // }
+            // }
+            // }
+            // if (table != null) {
+            // break;
+            // }
+            // }
         }
 
         @Override

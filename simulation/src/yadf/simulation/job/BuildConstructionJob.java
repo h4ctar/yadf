@@ -31,8 +31,6 @@
  */
 package yadf.simulation.job;
 
-import java.util.List;
-
 import yadf.simulation.IPlayer;
 import yadf.simulation.IRegion;
 import yadf.simulation.character.IGameCharacter;
@@ -51,7 +49,6 @@ import yadf.simulation.labor.LaborTypeManager;
 import yadf.simulation.map.BlockType;
 import yadf.simulation.map.MapIndex;
 import yadf.simulation.map.RegionMap;
-import yadf.simulation.map.WalkableNode;
 
 /**
  * The Class BuildConstructionJob.
@@ -128,8 +125,8 @@ public class BuildConstructionJob extends AbstractJob {
          * Constructor.
          */
         public HaulBuildingMaterialsState() {
-            super(BUILDING_MATERIAL_TYPE, position, getPlayer().getComponent(IStockManager.class),
-                    BuildConstructionJob.this);
+            super(BUILDING_MATERIAL_TYPE, position, getPlayer().getComponent(IStockManager.class)
+                    .getUnstoredItemManager(), BuildConstructionJob.this);
         }
 
         @Override
@@ -199,16 +196,7 @@ public class BuildConstructionJob extends AbstractJob {
         @Override
         public void doFinalActions() {
             rock.delete();
-            // Move items away from build area
-            for (Item item : getPlayer().getComponent(IStockManager.class).getItems()) {
-                if (item.getPosition().equals(position)) {
-                    List<WalkableNode> adjacencies = map.getAdjacencies(position);
-
-                    if (!adjacencies.isEmpty()) {
-                        item.setPosition(adjacencies.get(0));
-                    }
-                }
-            }
+            // TODO: Move items away from build area
             map.setBlock(position, constructionType);
             builder.getComponent(ISkillComponent.class).increaseSkillLevel(REQUIRED_LABOR);
             builder.setAvailable(true);

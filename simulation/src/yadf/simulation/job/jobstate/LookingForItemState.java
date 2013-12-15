@@ -1,7 +1,7 @@
 package yadf.simulation.job.jobstate;
 
-import yadf.simulation.item.IContainer;
-import yadf.simulation.item.IItemAvailableListener;
+import yadf.simulation.IGameObject;
+import yadf.simulation.IGameObjectAvailableListener;
 import yadf.simulation.item.IStockManager;
 import yadf.simulation.item.Item;
 import yadf.simulation.item.ItemType;
@@ -10,7 +10,7 @@ import yadf.simulation.job.AbstractJob;
 /**
  * Generic looking for item job state.
  */
-public abstract class LookingForItemState extends AbstractJobState implements IItemAvailableListener {
+public abstract class LookingForItemState extends AbstractJobState implements IGameObjectAvailableListener {
 
     /** The required itemType. */
     private final ItemType itemType;
@@ -21,24 +21,18 @@ public abstract class LookingForItemState extends AbstractJobState implements II
     /** The found item. */
     private Item item;
 
-    /** Should it only look for used items. */
-    private boolean used;
-
     /** Should it only look for placed items. */
     private boolean placed;
 
     /**
      * Constructor.
      * @param itemTypeTmp the type of item to look for
-     * @param usedTmp true to only find used items
      * @param placedTmp true to only find placed items
      * @param jobTmp the job that this state belongs to
      */
-    public LookingForItemState(final ItemType itemTypeTmp, final boolean usedTmp, final boolean placedTmp,
-            final AbstractJob jobTmp) {
+    public LookingForItemState(final ItemType itemTypeTmp, final boolean placedTmp, final AbstractJob jobTmp) {
         super(jobTmp);
         itemType = itemTypeTmp;
-        used = usedTmp;
         placed = placedTmp;
         category = null;
     }
@@ -46,15 +40,12 @@ public abstract class LookingForItemState extends AbstractJobState implements II
     /**
      * Constructor.
      * @param categoryTmp the category of item to look for
-     * @param usedTmp true to only find used items
      * @param placedTmp true to only find placed items
      * @param jobTmp the job that this state belongs to
      */
-    public LookingForItemState(final String categoryTmp, final boolean usedTmp, final boolean placedTmp,
-            final AbstractJob jobTmp) {
+    public LookingForItemState(final String categoryTmp, final boolean placedTmp, final AbstractJob jobTmp) {
         super(jobTmp);
         category = categoryTmp;
-        used = usedTmp;
         placed = placedTmp;
         itemType = null;
     }
@@ -67,17 +58,12 @@ public abstract class LookingForItemState extends AbstractJobState implements II
     @Override
     public void start() {
         if (itemType != null) {
-            item = getJob().getPlayer().getComponent(IStockManager.class).getItem(itemType.name, used, placed);
+            item = getJob().getPlayer().getComponent(IStockManager.class).getItem(itemType.name, placed);
         } else {
-            item = getJob().getPlayer().getComponent(IStockManager.class).getItemFromCategory(category, used, placed);
+            item = getJob().getPlayer().getComponent(IStockManager.class).getItemFromCategory(category, placed);
         }
         if (item == null) {
-            if (itemType != null) {
-                getJob().getPlayer().getComponent(IStockManager.class).addItemAvailableListener(itemType, this);
-            } else {
-                getJob().getPlayer().getComponent(IStockManager.class)
-                        .addItemAvailableListenerListener(category, this);
-            }
+            getJob().getPlayer().getComponent(IStockManager.class).addAvailableListener(this);
         } else {
             item.setAvailable(false);
             finishState();
@@ -85,19 +71,16 @@ public abstract class LookingForItemState extends AbstractJobState implements II
     }
 
     @Override
-    public void itemAvailable(final Item availableItem, final IContainer container) {
-        assert availableItem.isAvailable();
-        assert container == getJob().getPlayer().getComponent(IStockManager.class);
-        assert (itemType != null && itemType.equals(availableItem.getType()))
-                || (category != null && category.equals(availableItem.getType().category));
-        item = availableItem;
-        item.setAvailable(false);
-        if (itemType != null) {
-            getJob().getPlayer().getComponent(IStockManager.class).removeItemAvailableListener(itemType, this);
-        } else {
-            getJob().getPlayer().getComponent(IStockManager.class).removeItemAvailableListener(category, this);
+    public void gameObjectAvailable(final IGameObject gameObject) {
+        assert gameObject.isAvailable();
+        Item availableItem = (Item) gameObject;
+        if (itemType != null && itemType.equals(availableItem.getType())
+                || (category != null && category.equals(availableItem.getType().category))) {
+            item = availableItem;
+            item.setAvailable(false);
+            getJob().getPlayer().getComponent(IStockManager.class).removeAvailableListener(this);
+            finishState();
         }
-        finishState();
     }
 
     /**
@@ -110,10 +93,6 @@ public abstract class LookingForItemState extends AbstractJobState implements II
 
     @Override
     public void interrupt(final String message) {
-        if (itemType != null) {
-            getJob().getPlayer().getComponent(IStockManager.class).removeItemAvailableListener(itemType, this);
-        } else {
-            getJob().getPlayer().getComponent(IStockManager.class).removeItemAvailableListener(category, this);
-        }
+        getJob().getPlayer().getComponent(IStockManager.class).removeAvailableListener(this);
     }
 }
