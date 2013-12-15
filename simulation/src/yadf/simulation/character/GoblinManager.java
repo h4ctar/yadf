@@ -31,7 +31,6 @@ public class GoblinManager extends AbstractCharacterManager implements ITimeList
     public void notifyTimeEvent() {
         MapIndex position = region.getRandomSurfacePosition();
         Goblin goblin = new Goblin(position, region, player);
-        goblin.addGameObjectListener(this);
         addGameObject(goblin);
         region.addTimeListener(IRegion.SIMULATION_STEPS_PER_DAY, this);
     }

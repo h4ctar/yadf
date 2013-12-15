@@ -37,7 +37,6 @@ public class DwarfManager extends AbstractCharacterManager {
      */
     public void addNewDwarf(final MapIndex position, final IRegion region) {
         Dwarf dwarf = new Dwarf(nameGenerator.compose(2), position, region, player);
-        dwarf.addGameObjectListener(this);
         addGameObject(dwarf);
     }
 }

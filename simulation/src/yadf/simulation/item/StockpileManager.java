@@ -24,6 +24,18 @@ public class StockpileManager extends AbstractGameObjectManager<Stockpile> imple
     }
 
     @Override
+    public Item getItem(final int id) {
+        Item foundItem = null;
+        for (Stockpile stockpile : getGameObjects()) {
+            foundItem = stockpile.getGameObject(id);
+            if (foundItem != null) {
+                break;
+            }
+        }
+        return foundItem;
+    }
+
+    @Override
     public Item getItemFromCategory(final String category) {
         Item foundItem = null;
         for (Stockpile stockpile : getGameObjects()) {

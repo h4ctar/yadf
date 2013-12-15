@@ -11,6 +11,8 @@ public interface IStockpileManager extends IGameObjectManager<Stockpile> {
 
     Item getItem(String itemTypeName);
 
+    Item getItem(int id);
+
     Item getItemFromCategory(String category);
 
     int getItemQuantity(ItemType itemType);

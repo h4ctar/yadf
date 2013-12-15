@@ -108,28 +108,31 @@ public class StockManager extends AbstractGameObject implements IStockManager {
     }
 
     @Override
-    public void addManagerListener(IGameObjectManagerListener listener) {
-        assert false;
+    public void addManagerListener(final IGameObjectManagerListener listener) {
+        unstoredItemManager.addManagerListener(listener);
     }
 
     @Override
-    public void removeManagerListener(IGameObjectManagerListener listener) {
-        assert false;
+    public void removeManagerListener(final IGameObjectManagerListener listener) {
+        unstoredItemManager.removeManagerListener(listener);
     }
 
     @Override
-    public void addAvailableListener(IGameObjectAvailableListener listener) {
-        assert false;
+    public void addAvailableListener(final IGameObjectAvailableListener listener) {
+        unstoredItemManager.addAvailableListener(listener);
     }
 
     @Override
-    public void removeAvailableListener(IGameObjectAvailableListener listener) {
-        assert false;
+    public void removeAvailableListener(final IGameObjectAvailableListener listener) {
+        unstoredItemManager.removeAvailableListener(listener);
     }
 
     @Override
-    public Item getGameObject(int id) {
-        assert false;
-        return null;
+    public Item getGameObject(final int id) {
+        Item foundItem = unstoredItemManager.getGameObject(id);
+        if (foundItem == null) {
+            foundItem = stockpileManager.getItem(id);
+        }
+        return foundItem;
     }
 }

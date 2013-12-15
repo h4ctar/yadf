@@ -63,6 +63,7 @@ public abstract class AbstractGameObjectManager<T extends IGameObject> extends A
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void gameObjectDeleted(final IGameObject gameObject) {
         if (gameObjects.contains(gameObject)) {
