@@ -14,19 +14,19 @@ public abstract class AbstractGameObjectManager<T extends IGameObject> extends A
     private final List<T> gameObjects = new ArrayList<>();
 
     /** The Game Object Manager listeners, notified of add and remove of Game Object. */
-    private final List<IGameObjectManagerListener> managerListeners = new ArrayList<>();
+    private final List<IGameObjectManagerListener<T>> managerListeners = new ArrayList<>();
 
     /** The available listeners, notified when a Game Object becomes available. */
     private final List<IGameObjectAvailableListener> availableListeners = new ArrayList<>();
 
     @Override
-    public void addManagerListener(final IGameObjectManagerListener listener) {
+    public void addManagerListener(final IGameObjectManagerListener<T> listener) {
         assert !managerListeners.contains(listener);
         managerListeners.add(listener);
     }
 
     @Override
-    public void removeManagerListener(final IGameObjectManagerListener listener) {
+    public void removeManagerListener(final IGameObjectManagerListener<T> listener) {
         assert managerListeners.contains(listener);
         managerListeners.remove(listener);
     }
@@ -81,11 +81,8 @@ public abstract class AbstractGameObjectManager<T extends IGameObject> extends A
         return null;
     }
 
-    /**
-     * Get the game objects.
-     * @return the game objects
-     */
-    protected List<T> getGameObjects() {
+    @Override
+    public List<T> getGameObjects() {
         return gameObjects;
     }
 
@@ -113,7 +110,7 @@ public abstract class AbstractGameObjectManager<T extends IGameObject> extends A
      * @param gameObject the gameObject that was added
      */
     private void notifyGameObjectAdded(final T gameObject) {
-        for (IGameObjectManagerListener listener : managerListeners) {
+        for (IGameObjectManagerListener<T> listener : managerListeners) {
             listener.gameObjectAdded(gameObject);
         }
     }
@@ -123,7 +120,7 @@ public abstract class AbstractGameObjectManager<T extends IGameObject> extends A
      * @param gameObject the gameObject that was added
      */
     private void notifyGameObjectRemoved(final T gameObject) {
-        for (IGameObjectManagerListener listener : managerListeners) {
+        for (IGameObjectManagerListener<T> listener : managerListeners) {
             listener.gameObjectRemoved(gameObject);
         }
     }

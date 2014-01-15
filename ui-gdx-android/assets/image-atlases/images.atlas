@@ -3,272 +3,352 @@ images.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-block/coal
+block-coal
   rotate: false
-  xy: 0, 0
+  xy: 54, 108
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/covered
+block-covered
   rotate: false
-  xy: 18, 0
+  xy: 0, 30
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/dirt
+block-dirt
   rotate: false
-  xy: 36, 0
+  xy: 24, 54
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/empty
+block-empty
   rotate: false
-  xy: 54, 0
+  xy: 54, 90
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/gold
+block-gold
   rotate: false
-  xy: 72, 0
+  xy: 72, 108
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/grass
+block-grass
   rotate: false
-  xy: 90, 0
+  xy: 0, 12
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/iron
+block-iron
   rotate: false
-  xy: 108, 0
+  xy: 54, 72
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/mine
+block-mine
   rotate: false
-  xy: 198, 2
+  xy: 108, 20
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-block/ramp
+block-ramp
   rotate: false
-  xy: 126, 0
+  xy: 42, 54
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/rock
+block-rock
   rotate: false
-  xy: 144, 0
+  xy: 72, 90
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/stair
+block-stair
   rotate: false
-  xy: 162, 0
+  xy: 90, 108
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-block/wall
+block-wall
   rotate: false
-  xy: 180, 0
+  xy: 72, 72
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-
-images2.png
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-characters/dwarf
+character-dwarf
   rotate: false
-  xy: 0, 0
+  xy: 60, 54
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-
-images3.png
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-items/anvil
+item-anvil
   rotate: false
-  xy: 0, 108
+  xy: 90, 90
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/axe
+item-axe
   rotate: false
-  xy: 0, 90
+  xy: 108, 108
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/barrel
+item-barrel
   rotate: false
-  xy: 18, 108
+  xy: 90, 72
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/beer
+item-beer
   rotate: false
-  xy: 0, 72
+  xy: 78, 54
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/bread
+item-bread
   rotate: false
-  xy: 18, 90
+  xy: 108, 90
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/fish
+item-coal ore
   rotate: false
-  xy: 36, 108
+  xy: 108, 72
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/flour
+item-iron ore
   rotate: false
-  xy: 0, 54
+  xy: 108, 72
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/hammer
+item-rock
   rotate: false
-  xy: 18, 72
+  xy: 108, 72
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/hoe
+item-gold ore
   rotate: false
-  xy: 36, 90
+  xy: 108, 72
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/log
+item-fish
   rotate: false
-  xy: 0, 36
+  xy: 96, 54
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/oven
+item-flour
   rotate: false
-  xy: 18, 54
+  xy: 18, 30
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/pick
+item-gold bar
   rotate: false
-  xy: 36, 72
+  xy: 18, 12
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/pork
+item-iron bar
   rotate: false
-  xy: 0, 18
+  xy: 18, 12
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/rolling pin
-  rotate: false
-  xy: 18, 36
-  size: 18, 18
-  orig: 18, 18
-  offset: 0, 0
-  index: -1
-items/sack
-  rotate: false
-  xy: 36, 54
-  size: 18, 18
-  orig: 18, 18
-  offset: 0, 0
-  index: -1
-items/saw
-  rotate: false
-  xy: 0, 0
-  size: 18, 18
-  orig: 18, 18
-  offset: 0, 0
-  index: -1
-items/seed
-  rotate: false
-  xy: 18, 18
-  size: 18, 18
-  orig: 18, 18
-  offset: 0, 0
-  index: -1
-items/sword
+item-hammer
   rotate: false
   xy: 36, 36
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-items/wheat
+item-hoe
   rotate: false
-  xy: 18, 0
+  xy: 36, 18
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-
-images4.png
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-plants/tree
+item-log
   rotate: false
-  xy: 0, 0
+  xy: 54, 36
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-
-images5.png
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-splash/splash
+item-plank
   rotate: false
-  xy: 0, 0
+  xy: 54, 36
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+item-oven
+  rotate: false
+  xy: 54, 18
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+item-pick
+  rotate: false
+  xy: 72, 36
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+item-pork
+  rotate: false
+  xy: 72, 18
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+item-rolling pin
+  rotate: false
+  xy: 90, 36
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+item-sack
+  rotate: false
+  xy: 90, 18
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+item-saw
+  rotate: false
+  xy: 36, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+item-seed
+  rotate: false
+  xy: 54, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+item-sword
+  rotate: false
+  xy: 72, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+item-wheat
+  rotate: false
+  xy: 90, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+stockpile
+  rotate: false
+  xy: 90, 0
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+plant-tree
+  rotate: false
+  xy: 108, 36
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+splash
+  rotate: false
+  xy: 0, 48
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
-
-images6.png
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-workshops/sawmill
+workshop-blacksmiths workshop
   rotate: false
-  xy: 0, 0
+  xy: 0, 72
+  size: 54, 54
+  orig: 54, 54
+  offset: 0, 0
+  index: -1
+workshop-sawmill
+  rotate: false
+  xy: 0, 72
+  size: 54, 54
+  orig: 54, 54
+  offset: 0, 0
+  index: -1
+workshop-smelter
+  rotate: false
+  xy: 0, 72
+  size: 54, 54
+  orig: 54, 54
+  offset: 0, 0
+  index: -1
+workshop-kitchen
+  rotate: false
+  xy: 0, 72
+  size: 54, 54
+  orig: 54, 54
+  offset: 0, 0
+  index: -1
+workshop-brewery
+  rotate: false
+  xy: 0, 72
+  size: 54, 54
+  orig: 54, 54
+  offset: 0, 0
+  index: -1
+workshop-mill
+  rotate: false
+  xy: 0, 72
+  size: 54, 54
+  orig: 54, 54
+  offset: 0, 0
+  index: -1
+workshop-carpenters workshop
+  rotate: false
+  xy: 0, 72
+  size: 54, 54
+  orig: 54, 54
+  offset: 0, 0
+  index: -1
+workshop-masons workshop
+  rotate: false
+  xy: 0, 72
   size: 54, 54
   orig: 54, 54
   offset: 0, 0

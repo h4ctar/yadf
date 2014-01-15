@@ -11,8 +11,6 @@ import yadf.ui.gdx.screen.game.interactor.BuildWorkshopInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 /**
  * The controls for the build workshop.
  */
@@ -29,17 +27,16 @@ public class BuildWorkshopToolbar extends AbstractInteractorToolbar<WorkshopType
 
     /**
      * Constructor.
-     * @param skin the skin to use for the buttons
      * @param toolbarManagerTmp the toolbar manager
      * @param interactorManagerTmp the interactor manager
      * @param playerTmp the player
      * @param cameraTmp the camera
      * @param controllerTmp the controller
      */
-    public BuildWorkshopToolbar(final Skin skin, final IToolbarManager toolbarManagerTmp,
+    public BuildWorkshopToolbar(final IToolbarManager toolbarManagerTmp,
             final IInteractorManager interactorManagerTmp, final IPlayer playerTmp, final TileCamera cameraTmp,
             final AbstractController controllerTmp) {
-        super(skin, toolbarManagerTmp, interactorManagerTmp);
+        super(toolbarManagerTmp, interactorManagerTmp);
         player = playerTmp;
         camera = cameraTmp;
         controller = controllerTmp;

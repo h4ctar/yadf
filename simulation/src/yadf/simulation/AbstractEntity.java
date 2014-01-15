@@ -76,17 +76,7 @@ public abstract class AbstractEntity extends AbstractGameObject implements IEnti
     }
 
     @Override
-    public int getWidth() {
-        return area.width;
-    }
-
-    @Override
-    public int getHeight() {
-        return area.height;
-    }
-
-    @Override
-    public boolean hasIndex(final MapIndex index) {
+    public boolean containsIndex(final MapIndex index) {
         MapIndex pos = getPosition();
         return index.x >= pos.x && index.x <= pos.x + area.width - 1 && index.y >= pos.y
                 && index.y <= pos.y + area.height - 1 && pos.z == index.z;

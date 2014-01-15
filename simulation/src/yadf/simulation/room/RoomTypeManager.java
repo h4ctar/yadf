@@ -31,6 +31,9 @@
  */
 package yadf.simulation.room;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * The Class RoomTypeManager.
  */
@@ -52,40 +55,22 @@ public final class RoomTypeManager {
     }
 
     /** The room types. */
-    private final String[] roomTypes = { "Bedroom", "Dining room", "Dormitory" };
+    private final Set<String> roomTypes = new HashSet<>();
 
     /**
      * Instantiates a new room type manager.
      */
     private RoomTypeManager() {
-
-    }
-
-    /**
-     * Gets the number of room types.
-     * 
-     * @return the number of room types
-     */
-    public int getNumberOfRoomTypes() {
-        return roomTypes.length;
-    }
-
-    /**
-     * Gets the room type.
-     * 
-     * @param index the index
-     * @return the room type
-     */
-    public String getRoomType(final int index) {
-        return roomTypes[index];
+        roomTypes.add("Bedroom");
+        roomTypes.add("Dining room");
+        roomTypes.add("Dormitory");
     }
 
     /**
      * Gets the room types.
-     * 
      * @return the room types
      */
-    public String[] getRoomTypes() {
+    public Set<String> getRoomTypes() {
         return roomTypes;
     }
 }

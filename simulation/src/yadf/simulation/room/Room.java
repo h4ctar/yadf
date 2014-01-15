@@ -31,56 +31,29 @@
  */
 package yadf.simulation.room;
 
-import yadf.simulation.AbstractGameObject;
-import yadf.simulation.IPlayer;
+import yadf.simulation.AbstractEntity;
 import yadf.simulation.map.MapArea;
-import yadf.simulation.map.MapIndex;
 
 /**
  * The Class Room.
  */
-public class Room extends AbstractGameObject {
-
-    /** The area. */
-    private final MapArea area;
+public class Room extends AbstractEntity {
 
     /** The room type. */
     private final String roomType;
 
-    /** The player that this room belongs to. */
-    private final IPlayer player;
-
     /**
      * Instantiates a new room.
-     * @param areaTmp the area
      * @param roomTypeTmp the room type
-     * @param playerTmp the player that this room belongs to
      */
-    public Room(final MapArea areaTmp, final String roomTypeTmp, final IPlayer playerTmp) {
-        area = areaTmp;
+    public Room(final MapArea area, final String roomTypeTmp) {
+        super(area);
         roomType = roomTypeTmp;
-        player = playerTmp;
     }
 
     @Override
     public String toString() {
         return roomType;
-    }
-
-    /**
-     * Gets the area of the room.
-     * @return the area
-     */
-    public MapArea getArea() {
-        return area;
-    }
-
-    /**
-     * Gets the position.
-     * @return the position
-     */
-    public MapIndex getPosition() {
-        return new MapIndex(area.pos);
     }
 
     /**

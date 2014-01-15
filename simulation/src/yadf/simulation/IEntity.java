@@ -9,11 +9,11 @@ import yadf.simulation.map.MapIndex;
 public interface IEntity extends IGameObject {
 
     /**
-     * Gets the position of this entity.
-     * @return A reference to the position
+     * Get the position of the entity.
+     * @return the position
      */
     MapIndex getPosition();
-
+    
     /**
      * Sets the position.
      * @param positionTmp the new position
@@ -27,21 +27,9 @@ public interface IEntity extends IGameObject {
     MapArea getArea();
 
     /**
-     * Get the width of the entity.
-     * @return the width
-     */
-    int getWidth();
-
-    /**
-     * Get the height of the entity.
-     * @return the height
-     */
-    int getHeight();
-
-    /**
      * Checks if a map index is within the entity.
      * @param index the index
      * @return true, if successful
      */
-    boolean hasIndex(final MapIndex index);
+    boolean containsIndex(final MapIndex index);
 }

@@ -7,9 +7,7 @@ import yadf.ui.gdx.screen.game.interactor.IInteractorListener;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -19,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * Interactor toolbars are toolbars where the buttons install interactors.
  * @param <T> the type
  */
-public abstract class AbstractInteractorToolbar<T> extends Table implements IInteractorListener {
+public abstract class AbstractInteractorToolbar<T> extends AbstractToolbar implements IInteractorListener {
 
     /** The toolbar manager. */
     private IToolbarManager toolbarManager;
@@ -29,11 +27,10 @@ public abstract class AbstractInteractorToolbar<T> extends Table implements IInt
 
     /**
      * Constructor.
-     * @param skin the skin for the buttons
      * @param toolbarManagerTmp the toolbar manager
      * @param interactorManagerTmp the interactor manager
      */
-    public AbstractInteractorToolbar(final Skin skin, final IToolbarManager toolbarManagerTmp,
+    public AbstractInteractorToolbar(final IToolbarManager toolbarManagerTmp,
             final IInteractorManager interactorManagerTmp) {
         toolbarManager = toolbarManagerTmp;
         interactorManager = interactorManagerTmp;
@@ -43,15 +40,12 @@ public abstract class AbstractInteractorToolbar<T> extends Table implements IInt
         pad(10);
 
         for (T type : getTypes()) {
-            TextButton button = new TextButton(type.toString(), skin);
+            Button button = addButton(type.toString(), toolbarManager.getSkin());
             button.addListener(new ButtonListener(type));
-            add(button).width(140).spaceBottom(10);
-            row();
         }
 
-        TextButton cancelButton = new TextButton("Cancel", skin);
+        Button cancelButton = addButton("Cancel", toolbarManager.getSkin());
         cancelButton.addListener(new CancelButtonListener());
-        add(cancelButton).width(140);
     }
 
     /**

@@ -1,5 +1,7 @@
 package yadf.simulation.item;
 
+import java.util.Set;
+
 import yadf.simulation.AbstractGameObjectManager;
 
 /**
@@ -13,6 +15,18 @@ public class ItemManager extends AbstractGameObjectManager<Item> implements IIte
         for (Item item : getGameObjects()) {
             if (item.getType().name.equals(itemTypeName) && item.isAvailable() && item.isPlaced() == placed
                     && !item.isDeleted()) {
+                foundItem = item;
+                break;
+            }
+        }
+        return foundItem;
+    }
+
+    @Override
+    public Item getItem(Set<ItemType> itemTypes) {
+        Item foundItem = null;
+        for (Item item : getGameObjects()) {
+            if (itemTypes.contains(item.getType()) && item.isAvailable() && !item.isPlaced() && !item.isDeleted()) {
                 foundItem = item;
                 break;
             }

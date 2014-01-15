@@ -38,7 +38,7 @@ public class SplashScreen extends AbstractScreen {
 
         atlas = new TextureAtlas(Gdx.files.internal("image-atlases/images.atlas"));
 
-        TextureRegion splashRegion = atlas.findRegion("splash/splash");
+        TextureRegion splashRegion = atlas.findRegion("splash");
 
         splashImage = new Image(splashRegion);
         splashImage.setScaling(Scaling.stretch);

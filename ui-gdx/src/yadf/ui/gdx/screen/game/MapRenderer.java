@@ -62,7 +62,7 @@ public class MapRenderer {
                 if (blockAbove == BlockType.RAMP || blockAbove == BlockType.STAIR) {
                     drawBlock(blockAbove, x, y);
                 } else if (!blockAbove.isStandIn) {
-                    drawSprite("block/covered", x, y);
+                    drawSprite("block-covered", x, y);
                 }
             }
         }
@@ -76,7 +76,7 @@ public class MapRenderer {
      * @param y the y position to draw at
      */
     private void drawBlock(final BlockType blockType, final int x, final int y) {
-        String name = "block/" + blockType.name().toLowerCase();
+        String name = "block-" + blockType.name().toLowerCase();
         drawSprite(name, x, y);
     }
 

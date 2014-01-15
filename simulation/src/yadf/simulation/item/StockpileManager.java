@@ -1,5 +1,7 @@
 package yadf.simulation.item;
 
+import java.util.Set;
+
 import yadf.simulation.AbstractGameObjectManager;
 
 public class StockpileManager extends AbstractGameObjectManager<Stockpile> implements IStockpileManager {
@@ -16,6 +18,18 @@ public class StockpileManager extends AbstractGameObjectManager<Stockpile> imple
         Item foundItem = null;
         for (Stockpile stockpile : getGameObjects()) {
             foundItem = stockpile.getItem(itemTypeName, false);
+            if (foundItem != null) {
+                break;
+            }
+        }
+        return foundItem;
+    }
+    
+    @Override
+    public Item getItem(Set<ItemType> itemTypes) {
+        Item foundItem = null;
+        for (Stockpile stockpile : getGameObjects()) {
+            foundItem = stockpile.getItem(itemTypes);
             if (foundItem != null) {
                 break;
             }

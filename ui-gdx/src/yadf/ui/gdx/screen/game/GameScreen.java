@@ -1,5 +1,7 @@
 package yadf.ui.gdx.screen.game;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import yadf.controller.AbstractController;
@@ -8,30 +10,41 @@ import yadf.misc.MyRandom;
 import yadf.settings.Settings;
 import yadf.simulation.GoblinPlayer;
 import yadf.simulation.HumanPlayer;
+import yadf.simulation.IGameObject;
 import yadf.simulation.Region;
+import yadf.simulation.Tree;
 import yadf.simulation.character.ICharacterManager;
+import yadf.simulation.character.IGameCharacter;
 import yadf.simulation.item.IStockManager;
+import yadf.simulation.item.Item;
+import yadf.simulation.item.Stockpile;
 import yadf.simulation.map.MapIndex;
+import yadf.simulation.room.IRoomManager;
+import yadf.simulation.room.Room;
+import yadf.simulation.workshop.IWorkshop;
 import yadf.simulation.workshop.IWorkshopManager;
 import yadf.ui.gdx.screen.AbstractScreen;
 import yadf.ui.gdx.screen.IScreenController;
 import yadf.ui.gdx.screen.TileCamera;
-import yadf.ui.gdx.screen.game.dialogwindow.IDialogWindowManager;
 import yadf.ui.gdx.screen.game.interactor.IInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
-import yadf.ui.gdx.screen.game.object.GameCharacter2dController;
-import yadf.ui.gdx.screen.game.object.Item2dController;
-import yadf.ui.gdx.screen.game.object.Plant2dController;
-import yadf.ui.gdx.screen.game.object.Workshop2dController;
 import yadf.ui.gdx.screen.game.toolbar.IToolbarManager;
 import yadf.ui.gdx.screen.game.toolbar.MainToolbar;
+import yadf.ui.gdx.screen.game.view.CharacterViewController;
+import yadf.ui.gdx.screen.game.view.IViewController;
+import yadf.ui.gdx.screen.game.view.ItemViewController;
+import yadf.ui.gdx.screen.game.view.PlantViewController;
+import yadf.ui.gdx.screen.game.view.RoomViewController;
+import yadf.ui.gdx.screen.game.view.StockpileViewController;
+import yadf.ui.gdx.screen.game.view.WorkshopViewController;
+import yadf.ui.gdx.screen.game.window.IDialogWindowManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 /**
  * The game screen.
@@ -54,7 +67,7 @@ public class GameScreen extends AbstractScreen implements IToolbarManager, IInte
     private Region region;
 
     /** The human player. */
-    private HumanPlayer player;
+    private HumanPlayer thisPlayer;
 
     /** The controller. */
     private AbstractController controller;
@@ -75,10 +88,16 @@ public class GameScreen extends AbstractScreen implements IToolbarManager, IInte
     private Stack<Actor> toolbarStack = new Stack<>();
 
     /** The current dialog window. */
-    private Dialog dialogWindow = null;
+    private Window window = null;
 
     /** The current interactor. */
     private IInteractor interactor;
+
+    /** The skin for everything. */
+    private Skin skin;
+
+    /** The view controllers. */
+    private Map<Class<? extends IGameObject>, IViewController<?>> viewControllers = new HashMap<>();
 
     /**
      * Constructor.
@@ -93,63 +112,80 @@ public class GameScreen extends AbstractScreen implements IToolbarManager, IInte
         super.show();
 
         gameStage = new Stage();
+        inputMultiplexer.addProcessor(gameStage);
         textureAtlas = new TextureAtlas(Gdx.files.internal("image-atlases/images.atlas"));
-        setupSinglePlayerGame();
-
-        mapRenderer = new MapRenderer(region.getMap(), textureAtlas);
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         cameraInputProcessor = new CameraInputProcessor(camera);
         inputMultiplexer.addProcessor(cameraInputProcessor);
         gameStage.setCamera(camera);
-
-        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-
-        toolbarStack.add(new MainToolbar(skin, this, this, this, player, camera, controller));
-        uiStage.addActor(toolbarStack.peek());
+        createViewControllers();
+        setupSinglePlayerGame();
+        mapRenderer = new MapRenderer(region.getMap(), textureAtlas);
+        setToolbar(new MainToolbar(this, this, this, thisPlayer, camera, controller));
     }
 
     /**
      * Setup a new single player game.
      */
     private void setupSinglePlayerGame() {
-        try {
-            MyRandom.getInstance().setSeed(2);
-            MapIndex regionSize = new MapIndex(128, 128, 16);
-            String playerName = "Ben";
+        MyRandom.getInstance().setSeed(2);
 
-            int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
-            MapIndex embarkPosition = new MapIndex(regionSize.x / 2, regionSize.y / 2, 0);
+        region = new Region();
+        MapIndex regionSize = new MapIndex(128, 128, 16);
+        region.setup(regionSize);
+        setupViewControllers(region);
 
-            region = new Region();
+        String playerName = "Ben";
+        thisPlayer = new HumanPlayer(playerName, region);
+        region.addPlayer(thisPlayer);
+        MapIndex embarkPosition = region.getMap().getRandomSurfacePosition();
+        embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
+        int numberOfStartingDwarfs = Integer.parseInt(Settings.getInstance().getSetting("starting_dwarves"));
+        thisPlayer.setup(embarkPosition, numberOfStartingDwarfs);
+        setupViewControllers(thisPlayer);
 
-            player = new HumanPlayer(playerName, region);
+        GoblinPlayer goblinPlayer = new GoblinPlayer(region);
+        region.addPlayer(goblinPlayer);
+        goblinPlayer.setup();
+        setupViewControllers(goblinPlayer);
 
-            // TODO: do this later and make method to get all game objects
-            player.getComponent(ICharacterManager.class).addManagerListener(
-                    new GameCharacter2dController(textureAtlas, gameStage));
-            player.getComponent(IStockManager.class).getUnstoredItemManager()
-                    .addManagerListener(new Item2dController(textureAtlas, gameStage));
-            player.getComponent(IWorkshopManager.class).addManagerListener(
-                    new Workshop2dController(textureAtlas, gameStage));
-            // player.getComponent(IJobManager.class).addGameObjectManagerListener(new Job2dController(gameStage));
-            region.getTreeManager().addManagerListener(new Plant2dController(textureAtlas, gameStage));
+        controller = new SinglePlayerController();
 
-            region.addPlayer(player);
+        camera.zoomToPosition(embarkPosition);
+    }
 
-            GoblinPlayer goblinPlayer = new GoblinPlayer(region);
-            region.addPlayer(goblinPlayer);
+    private <T extends IGameObject> void setViewController(Class<T> clazz, IViewController<T> viewController) {
+        viewControllers.put(clazz, viewController);
+    }
 
-            controller = new SinglePlayerController();
+    @SuppressWarnings("unchecked")
+    private <T extends IGameObject> IViewController<T> getViewController(Class<T> clazz) {
+        return (IViewController<T>) viewControllers.get(clazz);
+    }
 
-            region.setup(regionSize);
-            embarkPosition.z = region.getMap().getHeight(embarkPosition.x, embarkPosition.y);
-            player.setup(embarkPosition, numberOfStartingDwarfs);
-            goblinPlayer.setup();
+    private void createViewControllers() {
+        setViewController(IGameCharacter.class, new CharacterViewController(textureAtlas, gameStage));
+        setViewController(Item.class, new ItemViewController(textureAtlas, gameStage));
+        setViewController(Stockpile.class, new StockpileViewController(textureAtlas, gameStage, getViewController(Item.class), this));
+        setViewController(IWorkshop.class, new WorkshopViewController(textureAtlas, gameStage, thisPlayer, controller, this));
+        setViewController(Room.class, new RoomViewController(gameStage, this));
+        setViewController(Tree.class, new PlantViewController(textureAtlas, gameStage));
+    }
 
-            camera.zoomToPosition(embarkPosition);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Gdx.app.exit();
-        }
+    private void setupViewControllers(Region region) {
+        getViewController(Tree.class).addManager(region.getTreeManager());
+    }
+
+    private void setupViewControllers(HumanPlayer player) {
+        getViewController(IGameCharacter.class).addManager(player.getComponent(ICharacterManager.class));
+        getViewController(Item.class).addManager(player.getComponent(IStockManager.class).getUnstoredItemManager());
+        getViewController(Stockpile.class).addManager(player.getComponent(IStockManager.class).getStockpileManager());
+        getViewController(IWorkshop.class).addManager(player.getComponent(IWorkshopManager.class));
+        getViewController(Room.class).addManager(player.getComponent(IRoomManager.class));
+    }
+
+    private void setupViewControllers(GoblinPlayer player) {
+        getViewController(IGameCharacter.class).addManager(player.getComponent(ICharacterManager.class));
     }
 
     @Override
@@ -185,7 +221,9 @@ public class GameScreen extends AbstractScreen implements IToolbarManager, IInte
 
     @Override
     public void setToolbar(final Actor controls) {
-        uiStage.getRoot().removeActor(toolbarStack.peek());
+        if (!toolbarStack.isEmpty()) {
+            uiStage.getRoot().removeActor(toolbarStack.peek());
+        }
         toolbarStack.add(controls);
         uiStage.addActor(controls);
     }
@@ -200,19 +238,20 @@ public class GameScreen extends AbstractScreen implements IToolbarManager, IInte
     }
 
     @Override
-    public void setDialogWindow(final Dialog dialogWindowTmp) {
-        if (dialogWindow != null) {
-            dialogWindow.hide();
+    public void setWindow(final Window windowTmp) {
+        assert window != windowTmp;
+        if (window != null) {
+            window.remove();
         }
-        dialogWindow = dialogWindowTmp;
-        dialogWindow.show(uiStage);
+        window = windowTmp;
+        uiStage.addActor(window);
     }
 
     @Override
-    public void closeDialogWindow(final Dialog dialogWindowTmp) {
-        assert dialogWindow == dialogWindowTmp;
-        dialogWindow.hide();
-        dialogWindow = null;
+    public void closeWindow(final Window windowTmp) {
+        assert window == windowTmp;
+        window.remove();
+        window = null;
     }
 
     @Override
@@ -229,5 +268,10 @@ public class GameScreen extends AbstractScreen implements IToolbarManager, IInte
         assert interactor == interactorTmp;
         inputMultiplexer.removeProcessor(interactor.getInputProcessor());
         interactor = null;
+    }
+
+    @Override
+    public Skin getSkin() {
+        return skin;
     }
 }

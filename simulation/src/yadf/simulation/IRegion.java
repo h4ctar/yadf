@@ -2,7 +2,6 @@ package yadf.simulation;
 
 import java.util.Set;
 
-import yadf.simulation.map.MapIndex;
 import yadf.simulation.map.RegionMap;
 import yadf.simulation.tree.ITreeManager;
 
@@ -70,10 +69,4 @@ public interface IRegion {
      * @param listener the listener to remove
      */
     void removeTimeListener(long notifyTime, ITimeListener listener);
-
-    /**
-     * Gets a random position on the surface of the map.
-     * @return the random position
-     */
-    MapIndex getRandomSurfacePosition();
 }

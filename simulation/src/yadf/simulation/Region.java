@@ -34,11 +34,9 @@ package yadf.simulation;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import yadf.logger.Logger;
-import yadf.misc.MyRandom;
 import yadf.simulation.map.MapIndex;
 import yadf.simulation.map.RegionMap;
 import yadf.simulation.tree.ITreeManager;
@@ -165,15 +163,5 @@ public class Region implements IRegion {
         if (timeListeners.containsKey(notifyTime)) {
             timeListeners.get(notifyTime).remove(listener);
         }
-    }
-
-    @Override
-    public MapIndex getRandomSurfacePosition() {
-        Random random = MyRandom.getInstance();
-        MapIndex position = new MapIndex();
-        position.x = random.nextInt(map.getMapSize().x);
-        position.y = random.nextInt(map.getMapSize().y);
-        position.z = map.getHeight(position.x, position.y);
-        return position;
     }
 }

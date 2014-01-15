@@ -31,6 +31,9 @@
  */
 package yadf.simulation.item;
 
+import java.util.List;
+import java.util.Set;
+
 import yadf.simulation.AbstractGameObject;
 import yadf.simulation.IGameObjectAvailableListener;
 import yadf.simulation.IGameObjectManagerListener;
@@ -61,11 +64,25 @@ public class StockManager extends AbstractGameObject implements IStockManager {
     }
 
     @Override
+    public List<Item> getGameObjects() {
+        assert false;
+        // TODO: should return all unstored plus all stored, maybe this class should not implement IItemManager
+        return null;
+    }
+
+    @Override
     public Item getItem(final String itemTypeName, final boolean placed) {
         Item foundItem = unstoredItemManager.getItem(itemTypeName, placed);
         if (foundItem == null && !placed) {
             foundItem = stockpileManager.getItem(itemTypeName);
         }
+        return foundItem;
+    }
+
+    @Override
+    public Item getItem(Set<ItemType> itemTypes) {
+        Item foundItem = unstoredItemManager.getItem(itemTypes);
+        foundItem = stockpileManager.getItem(itemTypes);
         return foundItem;
     }
 
@@ -108,12 +125,12 @@ public class StockManager extends AbstractGameObject implements IStockManager {
     }
 
     @Override
-    public void addManagerListener(final IGameObjectManagerListener listener) {
+    public void addManagerListener(final IGameObjectManagerListener<Item> listener) {
         unstoredItemManager.addManagerListener(listener);
     }
 
     @Override
-    public void removeManagerListener(final IGameObjectManagerListener listener) {
+    public void removeManagerListener(final IGameObjectManagerListener<Item> listener) {
         unstoredItemManager.removeManagerListener(listener);
     }
 

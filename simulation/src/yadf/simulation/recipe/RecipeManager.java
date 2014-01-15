@@ -20,8 +20,21 @@ import yadf.simulation.workshop.WorkshopType;
  * Manager to load and store all the recipes.
  */
 public final class RecipeManager {
+    
     /** Instance of this singleton. */
     private static RecipeManager instance;
+
+    /** The recipes, keyed by recipe name. */
+    private final Map<String, Recipe> recipes = new HashMap<>();
+
+    /** The recipes, keyed by workshop type. */
+    private final Map<WorkshopType, Set<Recipe>> recipesByWorkshop = new HashMap<>();
+
+    /**
+     * Constructor.
+     */
+    private RecipeManager() {
+    }
 
     /**
      * Returns the singleton instance.
@@ -32,18 +45,6 @@ public final class RecipeManager {
             instance = new RecipeManager();
         }
         return instance;
-    }
-
-    /** The recipes, keyed by recipe name. */
-    public final Map<String, Recipe> recipes = new HashMap<>();
-
-    /** The recipes, keyed by workshop type. */
-    public final Map<WorkshopType, Set<Recipe>> recipesByWorkshop = new HashMap<>();
-
-    /**
-     * Constructor.
-     */
-    private RecipeManager() {
     }
 
     /**

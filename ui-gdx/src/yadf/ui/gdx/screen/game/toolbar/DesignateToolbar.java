@@ -11,8 +11,6 @@ import yadf.ui.gdx.screen.game.interactor.DesignateInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 /**
  * The designate controls.
  * <p>
@@ -31,17 +29,15 @@ public class DesignateToolbar extends AbstractInteractorToolbar<DesignationType>
 
     /**
      * Constructor.
-     * @param skinTmp the skin to use for the buttons
      * @param toolbarManagerTmp the toolbar manager
      * @param interactorManagerTmp the interactor manager
      * @param playerTmp the player
      * @param cameraTmp the camera
      * @param controllerTmp the controller
      */
-    public DesignateToolbar(final Skin skinTmp, final IToolbarManager toolbarManagerTmp,
-            final IInteractorManager interactorManagerTmp, final IPlayer playerTmp, final TileCamera cameraTmp,
-            final AbstractController controllerTmp) {
-        super(skinTmp, toolbarManagerTmp, interactorManagerTmp);
+    public DesignateToolbar(final IToolbarManager toolbarManagerTmp, final IInteractorManager interactorManagerTmp,
+            final IPlayer playerTmp, final TileCamera cameraTmp, final AbstractController controllerTmp) {
+        super(toolbarManagerTmp, interactorManagerTmp);
         player = playerTmp;
         camera = cameraTmp;
         controller = controllerTmp;

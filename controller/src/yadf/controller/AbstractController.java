@@ -40,10 +40,11 @@ import yadf.simulation.Region;
 /**
  * Abstract base class for the controller, basically every command that changes the region must go through the
  * controller.
- * 
+ * TODO: make this injected
  * @author Ben Smith (bensmith87@gmail.com)
  */
 public abstract class AbstractController {
+    
     /** A vector of the local commands, i.e. commands that apply to the local region/player */
     protected List<AbstractCommand> localCommands = new ArrayList<>();
 

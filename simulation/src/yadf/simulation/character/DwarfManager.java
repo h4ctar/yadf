@@ -25,8 +25,7 @@ public class DwarfManager extends AbstractCharacterManager {
         try {
             nameGenerator = new NameGenerator("elven.txt");
         } catch (Exception e) {
-            e.printStackTrace();
-            nameGenerator = null;
+            assert false;
         }
     }
 

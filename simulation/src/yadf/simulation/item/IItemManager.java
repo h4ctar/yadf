@@ -1,5 +1,7 @@
 package yadf.simulation.item;
 
+import java.util.Set;
+
 import yadf.simulation.IGameObjectManager;
 
 /**
@@ -14,6 +16,8 @@ public interface IItemManager extends IGameObjectManager<Item> {
      * @return a reference to the found item, will be null if none could be found
      */
     Item getItem(String itemTypeName, boolean placed);
+
+    Item getItem(Set<ItemType> itemTypes);
 
     /**
      * Finds an item from a category but does not remove it from the container and does not set the item as used.

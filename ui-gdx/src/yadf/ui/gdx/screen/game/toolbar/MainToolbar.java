@@ -4,26 +4,22 @@ import yadf.controller.AbstractController;
 import yadf.simulation.IPlayer;
 import yadf.simulation.job.IJobManager;
 import yadf.ui.gdx.screen.TileCamera;
-import yadf.ui.gdx.screen.game.dialogwindow.IDialogWindowManager;
-import yadf.ui.gdx.screen.game.dialogwindow.JobsDialogWindow;
 import yadf.ui.gdx.screen.game.interactor.CreateStockpileInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractor;
 import yadf.ui.gdx.screen.game.interactor.IInteractorManager;
+import yadf.ui.gdx.screen.game.window.IDialogWindowManager;
+import yadf.ui.gdx.screen.game.window.JobsWindow;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /**
  * The top level of the controls stack (the buttons in the top left).
  */
-public class MainToolbar extends Table {
-
-    /** The skin. */
-    private Skin skin;
+public class MainToolbar extends AbstractToolbar {
 
     /** The toolbar manager. */
     private IToolbarManager toolbarManager;
@@ -45,7 +41,6 @@ public class MainToolbar extends Table {
 
     /**
      * Constructor.
-     * @param skinTmp the skin
      * @param toolbarManagerTmp the toolbar manager
      * @param dialogWindowManagerTmp the dialog window manager
      * @param interactorManagerTmp the interactor manager
@@ -53,10 +48,9 @@ public class MainToolbar extends Table {
      * @param cameraTmp the camera
      * @param controllerTmp the controller
      */
-    public MainToolbar(final Skin skinTmp, final IToolbarManager toolbarManagerTmp,
-            final IDialogWindowManager dialogWindowManagerTmp, final IInteractorManager interactorManagerTmp,
-            final IPlayer playerTmp, final TileCamera cameraTmp, final AbstractController controllerTmp) {
-        skin = skinTmp;
+    public MainToolbar(final IToolbarManager toolbarManagerTmp, final IDialogWindowManager dialogWindowManagerTmp,
+            final IInteractorManager interactorManagerTmp, final IPlayer playerTmp, final TileCamera cameraTmp,
+            final AbstractController controllerTmp) {
         toolbarManager = toolbarManagerTmp;
         dialogWindowManager = dialogWindowManagerTmp;
         interactorManager = interactorManagerTmp;
@@ -68,37 +62,26 @@ public class MainToolbar extends Table {
         align(Align.top | Align.left);
         pad(10);
 
-        TextButton designateButton = new TextButton("Designate", skin);
+        Skin skin = toolbarManager.getSkin();
+
+        Button designateButton = addButton("Designate", skin);
         designateButton.addListener(new DesignateButtonListener());
-        add(designateButton).width(140).spaceBottom(10);
 
-        row();
-        TextButton workshopButton = new TextButton("Build Workshop", skin);
+        Button workshopButton = addButton("Build Workshop", skin);
         workshopButton.addListener(new BuildWorkshopButtonListener());
-        add(workshopButton).width(140).spaceBottom(10);
 
-        row();
-        TextButton roomButton = new TextButton("Create Room", skin);
+        Button roomButton = addButton("Create Room", skin);
         roomButton.addListener(new CreateRoomButtonListener());
-        add(roomButton).width(140).spaceBottom(10);
 
-        row();
-        TextButton itemButton = new TextButton("Place Item", skin);
-        add(itemButton).width(140).spaceBottom(10);
+        // Button itemButton = addButton("Place Item", skin);
 
-        row();
-        TextButton stockpileButton = new TextButton("Create Stockpile", skin);
+        Button stockpileButton = addButton("Create Stockpile", skin);
         stockpileButton.addListener(new CreateStockpileButtonListener());
-        add(stockpileButton).width(140).spaceBottom(10);
 
-        row();
-        TextButton farmButton = new TextButton("Build Farm", skin);
-        add(farmButton).width(140).spaceBottom(10);
+        // Button farmButton = addButton("Build Farm", skin);
 
-        row();
-        TextButton jobsButton = new TextButton("Jobs", skin);
+        Button jobsButton = addButton("Jobs", skin);
         jobsButton.addListener(new JobsButtonListener());
-        add(jobsButton).width(140);
     }
 
     /**
@@ -108,7 +91,7 @@ public class MainToolbar extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            toolbarManager.setToolbar(new DesignateToolbar(skin, toolbarManager, interactorManager, player, camera,
+            toolbarManager.setToolbar(new DesignateToolbar(toolbarManager, interactorManager, player, camera,
                     controller));
         }
     }
@@ -120,8 +103,8 @@ public class MainToolbar extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            toolbarManager.setToolbar(new BuildWorkshopToolbar(skin, toolbarManager, interactorManager, player,
-                    camera, controller));
+            toolbarManager.setToolbar(new BuildWorkshopToolbar(toolbarManager, interactorManager, player, camera,
+                    controller));
         }
     }
 
@@ -132,7 +115,7 @@ public class MainToolbar extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            toolbarManager.setToolbar(new CreateRoomToolbar(skin, toolbarManager, interactorManager, player, camera,
+            toolbarManager.setToolbar(new CreateRoomToolbar(toolbarManager, interactorManager, player, camera,
                     controller));
         }
     }
@@ -156,8 +139,9 @@ public class MainToolbar extends Table {
 
         @Override
         public void clicked(final InputEvent event, final float x, final float y) {
-            JobsDialogWindow dialogWindow = new JobsDialogWindow(player.getComponent(IJobManager.class), skin);
-            dialogWindowManager.setDialogWindow(dialogWindow);
+            JobsWindow dialogWindow = new JobsWindow(player.getComponent(IJobManager.class),
+                    dialogWindowManager.getSkin());
+            dialogWindowManager.setWindow(dialogWindow);
         }
     }
 }

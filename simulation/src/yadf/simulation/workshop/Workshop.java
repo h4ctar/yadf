@@ -94,7 +94,7 @@ public class Workshop extends AbstractEntity implements IWorkshop {
             craftJob.interrupt("Order canceled");
         } else {
             Recipe removedOrder = orders.remove(orderIndex);
-            notifyListenersOfOrderRemoved(removedOrder, orderIndex);
+            notifyListenersOfOrderRemoved(removedOrder);
         }
     }
 
@@ -112,7 +112,7 @@ public class Workshop extends AbstractEntity implements IWorkshop {
     public void newOrder(final String recipeName) {
         Recipe recipe = RecipeManager.getInstance().getRecipe(recipeName);
         orders.add(recipe);
-        notifyListenersOfOrderAdded(recipe, orders.size() - 1);
+        notifyListenersOfOrderAdded(recipe);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class Workshop extends AbstractEntity implements IWorkshop {
         } else {
             if (craftJob.isDone()) {
                 Recipe removedOrder = orders.remove(0);
-                notifyListenersOfOrderRemoved(removedOrder, 0);
+                notifyListenersOfOrderRemoved(removedOrder);
                 craftJob = null;
             }
         }
@@ -135,22 +135,20 @@ public class Workshop extends AbstractEntity implements IWorkshop {
     /**
      * Notify all the listeners that an order has been added.
      * @param recipe the recipe that was added
-     * @param index the index of the recipe that was added
      */
-    private void notifyListenersOfOrderAdded(final Recipe recipe, final int index) {
+    private void notifyListenersOfOrderAdded(final Recipe recipe) {
         for (IWorkshopListener listener : listeners) {
-            listener.orderAdded(recipe, index);
+            listener.orderAdded(recipe);
         }
     }
 
     /**
      * Notify all the listeners that an order has been removed.
      * @param recipe the recipe that was removed
-     * @param index the index of the recipe that was removed
      */
-    private void notifyListenersOfOrderRemoved(final Recipe recipe, final int index) {
+    private void notifyListenersOfOrderRemoved(final Recipe recipe) {
         for (IWorkshopListener listener : listeners) {
-            listener.orderRemoved(recipe, index);
+            listener.orderRemoved(recipe);
         }
     }
 }

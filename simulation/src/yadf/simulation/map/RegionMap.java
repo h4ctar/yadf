@@ -165,10 +165,9 @@ public class RegionMap {
             // Channel it - if it is on an edge, make it a ramp, else just make it empty
             if (getBlock(index.add(0, 0, -1)).isSolid
                     && (!getBlock(index.add(-1, -1, 0)).isStandIn || !getBlock(index.add(0, -1, 0)).isStandIn
-                            || !getBlock(index.add(1, -1, 0)).isStandIn
-                            || !getBlock(index.add(-1, 1, 0)).isStandIn || !getBlock(index.add(0, 1, 0)).isStandIn
-                            || !getBlock(index.add(1, 1, 0)).isStandIn || !getBlock(index.add(-1, 0, 0)).isStandIn || !getBlock(index
-                                .add(1, 0, 0)).isStandIn)) {
+                            || !getBlock(index.add(1, -1, 0)).isStandIn || !getBlock(index.add(-1, 1, 0)).isStandIn
+                            || !getBlock(index.add(0, 1, 0)).isStandIn || !getBlock(index.add(1, 1, 0)).isStandIn
+                            || !getBlock(index.add(-1, 0, 0)).isStandIn || !getBlock(index.add(1, 0, 0)).isStandIn)) {
                 setBlock(index, BlockType.RAMP);
             } else {
                 setBlock(index, BlockType.EMPTY);
@@ -530,5 +529,18 @@ public class RegionMap {
                 setBlock(neighbour, BlockType.EMPTY);
             }
         }
+    }
+
+    /**
+     * Gets a random position on the surface of the map.
+     * @return the random position
+     */
+    public MapIndex getRandomSurfacePosition() {
+        Random random = MyRandom.getInstance();
+        MapIndex position = new MapIndex();
+        position.x = random.nextInt(getMapSize().x);
+        position.y = random.nextInt(getMapSize().y);
+        position.z = getHeight(position.x, position.y);
+        return position;
     }
 }
