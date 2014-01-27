@@ -22,7 +22,6 @@ public class StockpileView extends EntityImageView<Stockpile> {
 
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            System.out.println("asdf");
             dialogWindowManager.setWindow(new StockpileWindow(dialogWindowManager.getSkin()));
         }
     }

@@ -7,6 +7,7 @@ import yadf.ui.gdx.screen.TileCamera;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 /**
  * The map renderer.
@@ -41,28 +42,23 @@ public class MapRenderer {
         spriteBatch.begin();
         for (int x = 0; x < map.getMapSize().x; x++) {
             for (int y = 0; y < map.getMapSize().y; y++) {
-                BlockType block = map.getBlock(new MapIndex(x, y, (int) (camera.position.z - 1)));
-                BlockType blockBelow = map.getBlock(new MapIndex(x, y, (int) (camera.position.z - 2)));
-                BlockType blockAbove = map.getBlock(new MapIndex(x, y, (int) camera.position.z));
+                BlockType block = map.getBlock(new MapIndex(x, y, (int) (camera.position.z)));
+                BlockType blockBelow = map.getBlock(new MapIndex(x, y, (int) (camera.position.z - 1)));
 
-                if (blockBelow != BlockType.RAMP && blockBelow != BlockType.STAIR) {
-                    drawBlock(blockBelow, x, y);
+                // Draw top of block below
+                drawBlock(blockBelow, "-top", x, y);
+
+                // Draw inside of block
+                if (block.isStandIn) {
+                    drawBlock(block, "-in", x, y);
                 }
 
-                if (block != BlockType.RAMP && block != BlockType.STAIR) {
-                    drawBlock(BlockType.EMPTY, x, y);
-                }
-
-                drawBlock(block, x, y);
-
-                if (block == BlockType.RAMP || block == BlockType.STAIR) {
-                    drawSprite("block/empty", x, y);
-                }
-
-                if (blockAbove == BlockType.RAMP || blockAbove == BlockType.STAIR) {
-                    drawBlock(blockAbove, x, y);
-                } else if (!blockAbove.isStandIn) {
-                    drawSprite("block-covered", x, y);
+                // Draw top of block
+                else {
+                    drawBlock(block, "-top", x, y);
+                    if (block.isSolid) {
+                        drawSprite(atlas.findRegion("block-covered"), x, y);
+                    }
                 }
             }
         }
@@ -75,19 +71,18 @@ public class MapRenderer {
      * @param x the x position to draw at
      * @param y the y position to draw at
      */
-    private void drawBlock(final BlockType blockType, final int x, final int y) {
+    private void drawBlock(final BlockType blockType, String sufix, final int x, final int y) {
         String name = "block-" + blockType.name().toLowerCase();
-        drawSprite(name, x, y);
+        AtlasRegion region = atlas.findRegion(name + sufix);
+        if (region == null) {
+            region = atlas.findRegion(name);
+        }
+        if (region != null) {
+            drawSprite(region, x, y);
+        }
     }
 
-    /**
-     * Draw a sprite.
-     * @param name the name of the region in the texture atlas
-     * @param x the x position to draw at
-     * @param y the y position to draw at
-     */
-    private void drawSprite(final String name, final int x, final int y) {
-        spriteBatch.draw(atlas.findRegion(name), x * GameScreen.SPRITE_SIZE, y * GameScreen.SPRITE_SIZE,
-                GameScreen.SPRITE_SIZE, GameScreen.SPRITE_SIZE);
+    private void drawSprite(AtlasRegion region, int x, int y) {
+        spriteBatch.draw(region, x * GameScreen.SPRITE_SIZE, y * GameScreen.SPRITE_SIZE, GameScreen.SPRITE_SIZE, GameScreen.SPRITE_SIZE);
     }
 }

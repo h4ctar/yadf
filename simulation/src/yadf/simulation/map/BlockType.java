@@ -9,25 +9,19 @@
  * 
  * Copyright (c) 2012-2013, Ben Smith All rights reserved.
  * 
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
- * following conditions are met:
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  * 
- * - Redistributions of source code must retain the above copyright notice, this list of conditions and the following
- * disclaimer.
+ * - Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * 
- * - Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
- * disclaimer in the documentation and/or other materials provided with the distribution.
+ * - Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution.
  * 
- * - Neither the name of the yadf project nor the names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
+ * - Neither the name of the yadf project nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package yadf.simulation.map;
 
@@ -37,39 +31,39 @@ package yadf.simulation.map;
  * @author Ben Smith (bensmith87@gmail.com)
  */
 public enum BlockType {
-    /* isStandIn isStandOn isClimb isMineable itemMined sprite */
+    /* name isStandIn isStandOn isClimb isMineable itemMined */
     /** The empty. */
-    EMPTY("Empty", true, false, false, false, null, 1),
+    EMPTY("Empty", true, false, false, false, null),
 
     /** The grass. */
-    GRASS("Grass", false, true, false, true, null, 22),
+    GRASS("Grass", true, false, false, false, null),
 
     /** The dirt. */
-    DIRT("Dirt", false, true, false, true, null, 29),
+    DIRT("Dirt", false, true, false, true, null),
 
     /** The rock. */
-    ROCK("Rock", false, true, false, true, "Rock", 28),
+    ROCK("Rock", false, true, false, true, "Rock"),
 
     /** The gold. */
-    GOLD("Gold", false, true, false, true, "Gold ore", 30),
+    GOLD("Gold", false, true, false, true, "Gold ore"),
 
     /** The iron. */
-    IRON("Iron", false, true, false, true, "Iron ore", 32),
+    IRON("Iron", false, true, false, true, "Iron ore"),
 
     /** The coal. */
-    COAL("Coal", false, true, false, true, "Coal ore", 33),
+    COAL("Coal", false, true, false, true, "Coal ore"),
 
     /** The ramp. */
-    RAMP("Ramp", true, true, true, false, null, 26),
+    RAMP("Ramp", true, true, true, false, null),
 
     /** The stair. */
-    STAIR("Stair", true, true, true, false, null, 27),
+    STAIR("Stair", true, true, true, false, null),
 
     /** The wall. */
-    WALL("Wall", false, true, false, false, null, 0),
+    WALL("Wall", false, true, false, false, null),
 
     /** The mine grass. */
-    MINE("Mine", true, true, false, false, null, GRASS.sprite);
+    MINE("Mine", true, true, false, false, null);
 
     public final String name;
 
@@ -91,9 +85,6 @@ public enum BlockType {
     /** What item is produced when mined. */
     public final String itemMined;
 
-    /** The sprite. */
-    public final int sprite;
-
     /**
      * Instantiates a new block type.
      * @param nameTmp the string representation of the block type
@@ -104,14 +95,12 @@ public enum BlockType {
      * @param itemMinedTmp the item mined
      * @param spriteTmp the sprite
      */
-    BlockType(final String nameTmp, final boolean isStandInTmp, final boolean isStandOnTmp,
-            final boolean isClimbTmp, final boolean isMineableTmp, final String itemMinedTmp, final int spriteTmp) {
+    BlockType(final String nameTmp, final boolean isStandInTmp, final boolean isStandOnTmp, final boolean isClimbTmp, final boolean isMineableTmp, final String itemMinedTmp) {
         name = nameTmp;
         isStandIn = isStandInTmp;
         isStandOn = isStandOnTmp;
         isClimb = isClimbTmp;
         isMineable = isMineableTmp;
-        sprite = spriteTmp;
         itemMined = itemMinedTmp;
         isSolid = isStandOn && !isStandIn;
     }

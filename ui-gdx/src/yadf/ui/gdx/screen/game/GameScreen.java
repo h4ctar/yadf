@@ -168,7 +168,7 @@ public class GameScreen extends AbstractScreen implements IToolbarManager, IInte
         setViewController(Item.class, new ItemViewController(textureAtlas, gameStage));
         setViewController(Stockpile.class, new StockpileViewController(textureAtlas, gameStage, getViewController(Item.class), this));
         setViewController(IWorkshop.class, new WorkshopViewController(textureAtlas, gameStage, thisPlayer, controller, this));
-        setViewController(Room.class, new RoomViewController(gameStage, this));
+        setViewController(Room.class, new RoomViewController(textureAtlas, gameStage, this));
         setViewController(Tree.class, new PlantViewController(textureAtlas, gameStage));
     }
 
